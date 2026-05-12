@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Small Practice Security Kit Practice Profile",
+  "type": "object",
+  "required": ["practice", "readiness", "systems", "flows", "vendors", "ai_workflows", "downtime"],
+  "properties": {
+    "practice": {
+      "type": "object",
+      "required": ["name", "type", "staff_count", "locations", "review_period", "security_owner", "technical_owner"]
+    },
+    "readiness": {
+      "type": "object",
+      "required": ["mfa_email", "mfa_ehr", "unique_accounts", "quarterly_access_review", "tested_backups", "vendor_inventory", "baa_register", "incident_contact_list", "downtime_plan", "security_training_current", "log_review_cadence"]
+    },
+    "systems": {"type": "array"},
+    "flows": {"type": "array"},
+    "vendors": {"type": "array"},
+    "ai_workflows": {"type": "array"},
+    "downtime": {"type": "object"}
+  }
+}

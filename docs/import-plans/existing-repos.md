@@ -47,11 +47,19 @@ Adapters should normalize into these fields:
 
 ## First Three Adapters
 
-Build these first:
+Implemented first-wave adapters:
 
 1. `hipaa-evidence-binder-template` export because the evidence binder is the strongest companion.
 2. `ephi-data-flow-mapper` import because ePHI flow is the star module.
 3. `vendor-risk-manager` import because vendor/BAA review is a direct practice need.
+
+Commands:
+
+```bash
+python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml
+python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml
+```
 
 ## Public Safety Rules
 

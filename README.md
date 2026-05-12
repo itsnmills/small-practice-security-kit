@@ -43,6 +43,9 @@ This kit creates one local-first packet that helps answer:
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python scripts/build.py samples/family_dental_clinic.yaml
+.venv/bin/python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+.venv/bin/python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml
+.venv/bin/python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml
 .venv/bin/python scripts/validate_content.py
 .venv/bin/python -m unittest discover -s tests
 ```
@@ -88,6 +91,18 @@ This kit is designed to become the front door for the broader `itsnmills` health
 | [`iomt-risk-scorer`](https://github.com/itsnmills/iomt-risk-scorer) | IoMT risk triage | Import device risk summaries into ePHI and technical evidence |
 
 Detailed import notes live in [docs/import-plans/existing-repos.md](docs/import-plans/existing-repos.md).
+
+## First Integrations
+
+The first implemented integrations are:
+
+| Command | Purpose |
+|---|---|
+| `python scripts/export_binder_index.py samples/family_dental_clinic.yaml` | Create `hipaa-evidence-binder-template` compatible CSV/Markdown evidence exports |
+| `python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml` | Import ePHI flow rows into a profile |
+| `python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml` | Import vendor/BAA rows into a profile |
+
+The adapter contract is documented in [docs/adapter-contract.md](docs/adapter-contract.md).
 
 ## Safety Model
 

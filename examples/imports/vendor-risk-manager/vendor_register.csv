@@ -1,0 +1,4 @@
+name,service,touches_ephi,baa_status,ai_training_use,subcontractors_known,incident_notification_terms,risk
+Example EHR Vendor,EHR hosting and support,yes,signed,not reviewed,partial,24 hours in contract,medium
+Example Billing Vendor,Claims and billing,yes,missing review date,unknown,unknown,unknown,high
+Example Reminder Vendor,Appointment reminders,yes,needs BAA confirmation,unknown,partial,not reviewed,high

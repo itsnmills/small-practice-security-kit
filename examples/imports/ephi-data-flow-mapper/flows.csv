@@ -1,0 +1,4 @@
+id,source,destination,ephi_type,vendor,transmission,baa_needed,risk,evidence_needed
+FLOW-101,Online intake form,Cloud EHR,"demographics, insurance, treatment notes",Example EHR Vendor,HTTPS portal,yes,medium,"BAA, portal access controls, intake workflow owner"
+FLOW-102,Cloud EHR,Billing Portal,claim and billing data,Example Billing Vendor,vendor integration,yes,high,"BAA, integration owner, incident notification terms"
+FLOW-103,Imaging workstation,Shared Drive,diagnostic image labels,Workspace Provider,local sync,yes,medium,"access review, sharing settings, backup reference"

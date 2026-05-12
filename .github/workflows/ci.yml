@@ -16,6 +16,16 @@ jobs:
         run: python -m pip install -r requirements.txt
       - name: Build sample packet
         run: python scripts/build.py samples/family_dental_clinic.yaml
+      - name: Export evidence binder index
+        run: python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+      - name: Import ePHI flows
+        run: python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml
+      - name: Build imported ePHI profile
+        run: python scripts/build.py out/family_dental_clinic/imported-ephi-profile.yaml
+      - name: Import vendor register
+        run: python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml
+      - name: Build imported vendor profile
+        run: python scripts/build.py out/family_dental_clinic/imported-vendor-profile.yaml
       - name: Validate content
         run: python scripts/validate_content.py
       - name: Run tests

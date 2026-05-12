@@ -1,18 +1,14 @@
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from small_practice_security_kit.safety import assert_safe_tree
+
 
 ROOT = Path(__file__).resolve().parents[1]
-PROHIBITED = [
-    re.compile(r"\bMRN\s*[:=]", re.IGNORECASE),
-    re.compile(r"\bPatient Name\s*[:=]", re.IGNORECASE),
-    re.compile(r"\bDOB\s*[:=]", re.IGNORECASE),
-    re.compile(r"\bapi[_ -]?key\s*[:=]", re.IGNORECASE),
-    re.compile(r"-----BEGIN .*PRIVATE KEY-----"),
-]
 
 
 def fail(message: str) -> None:
@@ -33,12 +29,8 @@ def main() -> None:
     for path in required:
         if not path.exists() or path.stat().st_size < 100:
             fail(f"missing or too small: {path}")
-    for path in list((ROOT / "samples").rglob("*")) + list((ROOT / "out").rglob("*")):
-        if path.is_file() and path.suffix in {".md", ".yaml", ".yml", ".csv", ".json", ".html"}:
-            text = path.read_text(encoding="utf-8")
-            for pattern in PROHIBITED:
-                if pattern.search(text):
-                    fail(f"possible sensitive pattern in {path}: {pattern.pattern}")
+    for path in [ROOT / "samples", ROOT / "out", ROOT / "examples"]:
+        assert_safe_tree(path)
     print("Content validation passed")
 
 

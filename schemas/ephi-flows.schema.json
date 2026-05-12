@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ePHI Flow Import CSV",
+  "required_columns": ["id", "source", "destination", "ephi_type", "vendor", "transmission", "baa_needed", "risk", "evidence_needed"],
+  "risk_values": ["low", "medium", "high", "critical"]
+}
