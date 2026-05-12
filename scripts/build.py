@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import re
 import sys
 from pathlib import Path
 
@@ -201,14 +202,170 @@ Initial risk level: **{risk}**
 """
 
 
-def render_html(markdown: str) -> str:
-    body = "\n".join(
-        f"<h1>{html.escape(line[2:])}</h1>" if line.startswith("# ") else
-        f"<h2>{html.escape(line[3:])}</h2>" if line.startswith("## ") else
-        f"<p>{html.escape(line)}</p>" if line.strip() else ""
-        for line in markdown.splitlines()
-    )
-    return f"<!doctype html><html><head><meta charset='utf-8'><title>Review Packet</title><style>body{{font-family:Arial,sans-serif;max-width:960px;margin:40px auto;line-height:1.5}}table{{border-collapse:collapse;width:100%}}td,th{{border:1px solid #ccc;padding:6px}}</style></head><body>{body}</body></html>"
+def inline_markdown(text: str) -> str:
+    escaped = html.escape(text)
+    return re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", escaped)
+
+
+def render_table(lines: list[str]) -> str:
+    rows = []
+    for line in lines:
+        cells = [cell.strip() for cell in line.strip("|").split("|")]
+        if all(set(cell) <= {"-", ":", " "} for cell in cells):
+            continue
+        tag = "th" if not rows else "td"
+        rows.append("<tr>" + "".join(f"<{tag}>{inline_markdown(cell)}</{tag}>" for cell in cells) + "</tr>")
+    return "<div class='table-wrap'><table>" + "".join(rows) + "</table></div>"
+
+
+def render_html(markdown: str, profile: dict) -> str:
+    blocks: list[str] = []
+    table_buffer: list[str] = []
+    list_buffer: list[str] = []
+
+    def flush_table() -> None:
+        nonlocal table_buffer
+        if table_buffer:
+            blocks.append(render_table(table_buffer))
+            table_buffer = []
+
+    def flush_list() -> None:
+        nonlocal list_buffer
+        if list_buffer:
+            blocks.append("<ul>" + "".join(f"<li>{inline_markdown(item)}</li>" for item in list_buffer) + "</ul>")
+            list_buffer = []
+
+    for line in markdown.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("|") and stripped.endswith("|"):
+            flush_list()
+            table_buffer.append(stripped)
+            continue
+        flush_table()
+        if stripped.startswith("- "):
+            list_buffer.append(stripped[2:])
+            continue
+        flush_list()
+        if not stripped:
+            continue
+        if stripped == "---":
+            blocks.append("<hr>")
+        elif stripped.startswith("# "):
+            blocks.append(f"<section class='packet-section'><h1>{inline_markdown(stripped[2:])}</h1>")
+        elif stripped.startswith("## "):
+            blocks.append(f"<h2>{inline_markdown(stripped[3:])}</h2>")
+        else:
+            blocks.append(f"<p>{inline_markdown(stripped)}</p>")
+    flush_table()
+    flush_list()
+    body = "\n".join(blocks)
+    practice = profile["practice"]
+    title = f"{practice['name']} Security Review Packet"
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{html.escape(title)}</title>
+  <style>
+    :root {{
+      --ink: #17211b;
+      --muted: #5b685f;
+      --paper: #fbfaf6;
+      --line: #cbd7cc;
+      --accent: #0f6b57;
+      --accent-soft: #e3f2eb;
+      --warn: #9b4d13;
+      --warn-soft: #fff0dd;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.55;
+    }}
+    .shell {{ max-width: 1120px; margin: 0 auto; padding: 32px 22px 56px; }}
+    .cover {{
+      border-top: 8px solid var(--accent);
+      padding: 28px 0 22px;
+      display: grid;
+      gap: 8px;
+    }}
+    .kicker {{
+      color: var(--accent);
+      font-family: Arial, sans-serif;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      font-size: 12px;
+    }}
+    h1, h2 {{ line-height: 1.12; letter-spacing: 0; }}
+    .cover h1 {{ font-size: clamp(34px, 5vw, 60px); margin: 0; max-width: 900px; }}
+    .meta {{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 18px;
+      font-family: Arial, sans-serif;
+    }}
+    .meta div {{ border: 1px solid var(--line); padding: 10px; background: #fffdf8; }}
+    .meta strong {{ display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }}
+    .notice {{
+      background: var(--warn-soft);
+      border-left: 4px solid var(--warn);
+      padding: 12px 14px;
+      margin: 22px 0;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+    }}
+    .packet-section {{
+      display: block;
+      padding: 24px 0 12px;
+      border-top: 1px solid var(--line);
+    }}
+    .packet-section h1 {{ font-size: 30px; margin: 0 0 12px; }}
+    h2 {{ font-size: 20px; margin: 22px 0 10px; color: var(--accent); }}
+    p, li {{ font-size: 15px; }}
+    ul {{ margin-top: 8px; }}
+    .table-wrap {{ overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: white; }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-family: Arial, sans-serif; font-size: 13px; }}
+    th {{ text-align: left; background: var(--accent-soft); color: var(--ink); }}
+    th, td {{ border-bottom: 1px solid var(--line); padding: 9px 10px; vertical-align: top; }}
+    tr:last-child td {{ border-bottom: 0; }}
+    hr {{ border: 0; border-top: 1px solid var(--line); margin: 28px 0; }}
+    @media print {{
+      body {{ background: white; }}
+      .shell {{ max-width: none; padding: 0.4in; }}
+      .table-wrap {{ overflow: visible; }}
+      table {{ min-width: 0; font-size: 10px; }}
+      .packet-section {{ page-break-inside: avoid; }}
+    }}
+    @media (max-width: 760px) {{
+      .meta {{ grid-template-columns: 1fr; }}
+      .cover h1 {{ font-size: 34px; }}
+    }}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="cover">
+      <div class="kicker">Small Practice Security Kit</div>
+      <h1>{html.escape(title)}</h1>
+      <div class="meta">
+        <div><strong>Practice Type</strong>{html.escape(str(practice['type']))}</div>
+        <div><strong>Review Period</strong>{html.escape(str(practice['review_period']))}</div>
+        <div><strong>Security Owner</strong>{html.escape(str(practice['security_owner']))}</div>
+        <div><strong>Technical Owner</strong>{html.escape(str(practice['technical_owner']))}</div>
+      </div>
+    </header>
+    <div class="notice">This packet is an operational planning aid. It is not legal advice, HIPAA certification, breach determination, or a substitute for qualified review. Do not include PHI, secrets, credentials, or real incident details.</div>
+    {body}
+  </main>
+</body>
+</html>
+"""
 
 
 def build(profile_path: Path) -> Path:
@@ -228,7 +385,7 @@ def build(profile_path: Path) -> Path:
         (out_dir / name).write_text(content, encoding="utf-8", newline="\n")
     packet = "\n\n---\n\n".join(docs.values())
     (out_dir / "review-packet.md").write_text(packet, encoding="utf-8", newline="\n")
-    (out_dir / "review-packet.html").write_text(render_html(packet), encoding="utf-8", newline="\n")
+    (out_dir / "review-packet.html").write_text(render_html(packet, profile), encoding="utf-8", newline="\n")
     return out_dir
 
 

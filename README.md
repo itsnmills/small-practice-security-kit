@@ -1,31 +1,63 @@
 # Small Practice Security Kit
 
-Open-source security review kit for small healthcare practices that need practical HIPAA, ePHI, vendor, AI, downtime, and evidence workflows without buying enterprise GRC software.
+Open-source security kit for small healthcare practices that need practical HIPAA, ePHI, vendor, AI, downtime, and evidence workflows without buying enterprise GRC software.
 
-This repository is the umbrella kit. It turns a simple practice profile into a review packet:
+This is the flagship umbrella project for a privacy-first healthcare security toolkit. It turns a simple practice profile into a review packet:
 
 ```text
 intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> evidence index -> 30/60/90 roadmap
 ```
 
-## What This Is
+The goal is not to replace attorneys, security assessors, incident responders, or full GRC platforms. The goal is to give small practices a local, understandable way to organize the first evidence-backed conversation.
 
-Small practices often know they need MFA, backups, BAAs, access reviews, AI rules, incident procedures, and risk documentation, but the work lives across email, vendor portals, tickets, screenshots, spreadsheets, and memory.
+## Why This Exists
 
-This kit creates one local-first packet that helps a practice understand:
+Small practices often know they need MFA, backups, BAAs, access reviews, AI rules, incident procedures, and risk documentation. The problem is that the proof gets scattered across email, vendor portals, tickets, screenshots, spreadsheets, and memory.
 
-- what needs attention first,
-- where ePHI enters, moves, rests, and leaves,
-- which vendors touch ePHI,
-- which AI workflows are allowed, restricted, or prohibited,
-- what evidence should be collected,
-- what should be done in the next 30, 60, and 90 days.
+This kit creates one local-first packet that helps answer:
 
-## What It Is Not
+- Where does ePHI enter, move, rest, and leave?
+- Which vendors touch ePHI?
+- Which workflows use AI, and are they allowed, restricted, or prohibited?
+- Which evidence references should be collected?
+- Which gaps should be fixed in the next 30, 60, and 90 days?
+- What should be handed to a qualified reviewer, MSP, consultant, or practice owner?
 
-This is not legal advice, HIPAA certification, a formal Security Risk Analysis opinion, penetration testing, breach determination, or a substitute for qualified legal, security, compliance, or incident response professionals.
+## What You Get
 
-Do not put PHI, patient identifiers, medical record numbers, diagnoses, claim contents, passwords, API keys, MFA recovery codes, private keys, or real incident details in sample files.
+| Output | Purpose |
+|---|---|
+| `readiness-review.md` | Plain-English baseline readiness review |
+| `ephi-flow-map.md` | Systems, workflows, vendors, ePHI categories, BAA needs, and risk |
+| `vendor-baa-review.md` | Vendor, BAA, incident terms, subcontractor, and AI data-use review |
+| `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflow review |
+| `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter packet |
+| `evidence-binder-index.md` | Evidence references to collect in a binder |
+| `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
+| `review-packet.md` | Complete Markdown packet |
+| `review-packet.html` | Print-friendly HTML packet |
+
+## Quick Start
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python scripts/build.py samples/family_dental_clinic.yaml
+.venv/bin/python scripts/validate_content.py
+.venv/bin/python -m unittest discover -s tests
+```
+
+Generated files appear in:
+
+```text
+out/family_dental_clinic/
+```
+
+Open the HTML packet locally:
+
+```text
+out/family_dental_clinic/review-packet.html
+```
 
 ## Modules
 
@@ -39,43 +71,67 @@ Do not put PHI, patient identifiers, medical record numbers, diagnoses, claim co
 | `06-downtime-ransomware-tabletop/` | Downtime, restore test, tabletop, and incident evidence |
 | `07-review-packet-builder/` | Packet builder scripts and output conventions |
 
-## Quick Start
+## Companion Repos and Import Plan
 
-```bash
-python3 scripts/build.py samples/family_dental_clinic.yaml
-python3 scripts/validate_content.py
-python3 -m unittest discover -s tests
-```
+This kit is designed to become the front door for the broader `itsnmills` healthcare security ecosystem:
 
-Generated files appear in `out/family_dental_clinic/`.
+| Repo | Role in the Kit | Planned Integration |
+|---|---|---|
+| [`hipaa-evidence-binder-template`](https://github.com/itsnmills/hipaa-evidence-binder-template) | Evidence operating system | Export `evidence-binder-index.md` into binder-compatible CSV/Markdown |
+| [`healthcare-cyber-readiness-checklist`](https://github.com/itsnmills/healthcare-cyber-readiness-checklist) | Readiness checklist | Import checklist item register and map results into readiness review |
+| `ephi-data-flow-mapper` | ePHI flow documentation | Promote flow schema into this kit's `flows` model |
+| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due diligence | Import/export vendor register and annual review fields |
+| [`health-ai-governance-auditor`](https://github.com/itsnmills/health-ai-governance-auditor) | AI tool and workflow governance | Import AI vendor/workflow findings into AI workflow review |
+| [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit evidence | Link agent/tool logs as restricted evidence references |
+| [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples | Reuse allowed/prohibited data handling examples |
+| [`healthcare-ai-security-lab`](https://github.com/itsnmills/healthcare-ai-security-lab) | Healthcare KEV triage | Import priority vulnerabilities as technical evidence references |
+| [`iomt-risk-scorer`](https://github.com/itsnmills/iomt-risk-scorer) | IoMT risk triage | Import device risk summaries into ePHI and technical evidence |
 
-## Generated Packet
+Detailed import notes live in [docs/import-plans/existing-repos.md](docs/import-plans/existing-repos.md).
 
-The sample build creates:
+## Safety Model
 
-- `readiness-review.md`
-- `ephi-flow-map.md`
-- `vendor-baa-review.md`
-- `ai-workflow-review.md`
-- `downtime-ransomware-tabletop.md`
-- `evidence-binder-index.md`
-- `30-60-90-roadmap.md`
-- `review-packet.md`
-- `review-packet.html`
+This repository is local-first and PHI-avoidant.
 
-## Companion Projects
+Recommended:
 
-This umbrella kit is designed to connect with the broader `itsnmills` healthcare security ecosystem:
+- fictional sample practices,
+- system names,
+- vendor names,
+- role names,
+- ticket references,
+- evidence folder references,
+- non-sensitive summary notes.
 
-- `hipaa-evidence-binder-template`
-- `healthcare-cyber-readiness-checklist`
-- `ephi-data-flow-mapper`
-- `vendor-risk-manager`
-- `health-ai-governance-auditor`
-- `agent-audit-trail`
-- `Strands-PHI-Guardrails-Demo`
-- `healthcare-ai-security-lab`
-- `iomt-risk-scorer`
+Do not enter:
 
-The first version here is intentionally lightweight and self-contained. Deeper imports from those repos should be added module-by-module.
+- patient names,
+- medical record numbers,
+- DOBs,
+- diagnoses,
+- claim contents,
+- clinical notes,
+- passwords,
+- API keys,
+- MFA recovery codes,
+- private keys,
+- real incident details.
 
+## What This Is Not
+
+This is not legal advice, HIPAA certification, a formal Security Risk Analysis opinion, penetration testing, breach determination, or a substitute for qualified legal, security, compliance, or incident response professionals.
+
+Use this as a practical organizer and first-pass evidence workflow.
+
+## Roadmap
+
+1. Add schema validation for practice profiles.
+2. Export binder-compatible CSV for `hipaa-evidence-binder-template`.
+3. Add imports from readiness checklist, vendor manager, AI governance auditor, and ePHI mapper.
+4. Add a public demo packet under `docs/demo/`.
+5. Add optional PDF rendering.
+6. Add richer scoring and priority explanations.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
