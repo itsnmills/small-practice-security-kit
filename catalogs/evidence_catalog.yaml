@@ -1,0 +1,71 @@
+evidence_types:
+  signed_baa:
+    title: Signed BAA
+    area: Vendor/BAA
+    sensitivity: restricted
+    prompt: Reference the signed BAA location and review date. Do not upload patient data.
+  vendor_security_contact:
+    title: Vendor security contact
+    area: Vendor/BAA
+    sensitivity: internal
+    prompt: Record the vendor security or incident contact route.
+  incident_notification_terms:
+    title: Incident notification terms
+    area: Vendor/BAA
+    sensitivity: internal
+    prompt: Record the contract section or vendor document that describes incident timing.
+  ai_data_use_statement:
+    title: AI/customer-data use statement
+    area: AI workflow
+    sensitivity: internal
+    prompt: Reference whether vendor uses customer data for AI training or improvement.
+  admin_settings_export:
+    title: Admin settings export
+    area: Access
+    sensitivity: restricted
+    prompt: Reference the export or screenshot location. Avoid storing credentials.
+  user_access_review:
+    title: User access review
+    area: Access
+    sensitivity: restricted
+    prompt: Record who reviewed access, when, and where the signoff is stored.
+  mfa_settings:
+    title: MFA settings reference
+    area: Access
+    sensitivity: internal
+    prompt: Reference MFA configuration evidence for EHR/email/remote access.
+  backup_configuration:
+    title: Backup configuration
+    area: Resilience
+    sensitivity: restricted
+    prompt: Reference backup scope, frequency, retention, and owner.
+  restore_test:
+    title: Restore test result
+    area: Resilience
+    sensitivity: internal
+    prompt: Reference date, system tested, outcome, and next action.
+  downtime_procedure:
+    title: Downtime procedure
+    area: Resilience
+    sensitivity: internal
+    prompt: Reference manual workflow and critical-system owners.
+  tabletop_notes:
+    title: Tabletop notes
+    area: Incident
+    sensitivity: internal
+    prompt: Reference exercise date, scenario, attendees, and improvements.
+  training_roster:
+    title: Security training roster
+    area: Workforce
+    sensitivity: internal
+    prompt: Reference completion evidence without storing employee sensitive data.
+  ai_policy:
+    title: AI use policy and examples
+    area: AI workflow
+    sensitivity: internal
+    prompt: Reference allowed, restricted, and prohibited AI use examples.
+  ephi_flow_map:
+    title: ePHI flow map
+    area: ePHI flow
+    sensitivity: internal
+    prompt: Reference this kit's generated map or an approved external map.

@@ -36,8 +36,43 @@ This kit creates one local-first packet that helps answer:
 | `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
 | `review-packet.md` | Complete Markdown packet |
 | `review-packet.html` | Print-friendly HTML packet |
+| `dashboard.html` | Owner-friendly local workflow dashboard |
 
 ## Quick Start
+
+### Owner-friendly local intake workspace
+
+On macOS, double-click:
+
+```text
+open_dashboard.command
+```
+
+That opens a local dashboard for the sample practice at:
+
+```text
+http://127.0.0.1:8765/
+```
+
+The intake workspace is the preferred owner-facing experience. It lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, add evidence references, review AI workflows, and generate the local dashboard and review packet.
+
+Terminal version:
+
+```bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
+```
+
+Generated dashboard file:
+
+```text
+out/family_dental_clinic/dashboard.html
+```
+
+More details live in [docs/dashboard.md](docs/dashboard.md), [docs/intake-mode.md](docs/intake-mode.md), and [docs/security-model.md](docs/security-model.md).
+
+### Packet builder CLI
 
 ```bash
 python3 -m venv .venv

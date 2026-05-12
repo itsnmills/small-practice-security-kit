@@ -1,0 +1,181 @@
+vendors:
+  ehr_vendor:
+    label: EHR vendor
+    service: EHR hosting and support
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  forms_vendor:
+    label: Digital forms vendor
+    service: Patient intake forms
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium
+  billing_vendor:
+    label: Billing vendor
+    service: Billing and practice management
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: unknown
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  clearinghouse:
+    label: Claims clearinghouse
+    service: Claims clearinghouse
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  portal_vendor:
+    label: Patient portal vendor
+    service: Patient portal
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  scheduling_vendor:
+    label: Scheduling vendor
+    service: Appointment scheduling
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium
+  lab_vendor:
+    label: Lab vendor
+    service: Lab ordering/results
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  imaging_vendor:
+    label: Imaging vendor
+    service: Imaging portal or device support
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  erx_vendor:
+    label: eRx vendor
+    service: Electronic prescribing
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  telehealth_vendor:
+    label: Telehealth vendor
+    service: Video visits and virtual care
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  texting_vendor:
+    label: Patient texting vendor
+    service: Patient reminders and texting
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium
+  email_provider:
+    label: Email provider
+    service: Email and calendar
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  voip_vendor:
+    label: Phone / VoIP vendor
+    service: Phones, voicemail, call routing
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium
+  fax_vendor:
+    label: Fax / eFax vendor
+    service: Fax and eFax
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  storage_provider:
+    label: Cloud storage provider
+    service: File storage and sharing
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: unknown
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  backup_provider:
+    label: Backup provider
+    service: Backup and restore
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  endpoint_security_provider:
+    label: Endpoint security provider
+    service: Endpoint security
+    touches_ephi: false
+    baa_status: not applicable
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium
+  msp_or_remote_access:
+    label: MSP / remote access vendor
+    service: IT support and remote access
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  ai_assistant:
+    label: AI assistant or AI scribe vendor
+    service: AI drafting, summarization, scribing, or workflow assistance
+    touches_ephi: true
+    baa_status: unknown
+    ai_training_use: unknown
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: high
+  payer_portal:
+    label: Payer portal
+    service: Payer eligibility, claims, remits, or authorizations
+    touches_ephi: true
+    baa_status: payer relationship
+    ai_training_use: not reviewed
+    subcontractors_known: unknown
+    incident_notification_terms: unknown
+    risk: medium

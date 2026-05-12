@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Small Practice Security Kit Intake</title>
+  <link rel="stylesheet" href="/static/intake.css">
+</head>
+<body>
+  <a class="skip-link" href="#app">Skip to intake</a>
+  <header class="topbar">
+    <div>
+      <span class="eyebrow">Small Practice Security Kit</span>
+      <h1>Local intake workspace</h1>
+      <p>Pick a practice type, confirm common systems, collect evidence references, and generate the owner packet without storing PHI.</p>
+    </div>
+    <div class="status-card">
+      <strong>Local only</strong>
+      <span id="network-status">Checking...</span>
+      <small>No telemetry. No cloud sync. No patient data required.</small>
+    </div>
+  </header>
+
+  <main id="app" class="layout">
+    <aside class="rail" aria-label="Intake sections">
+      <button data-section="start" class="active">Start</button>
+      <button data-section="basics">Practice basics</button>
+      <button data-section="systems">Systems used</button>
+      <button data-section="vendors">Vendors / BAAs</button>
+      <button data-section="flows">ePHI flows</button>
+      <button data-section="readiness">Readiness</button>
+      <button data-section="ai">AI workflows</button>
+      <button data-section="downtime">Downtime</button>
+      <button data-section="evidence">Evidence</button>
+      <button data-section="generate">Generate</button>
+    </aside>
+
+    <section class="workspace">
+      <div id="alert" class="alert" hidden></div>
+
+      <section id="section-start" class="panel intake-section active">
+        <span class="eyebrow">One-day setup</span>
+        <h2>What kind of practice are we setting up?</h2>
+        <p class="lede">Start from a healthcare preset instead of a blank form. You can edit everything before generating the packet.</p>
+        <div class="form-grid">
+          <label>Practice name
+            <input id="practice-name" value="My Practice" autocomplete="organization">
+          </label>
+          <label>Practice size
+            <select id="size-tier"></select>
+          </label>
+        </div>
+        <div id="preset-cards" class="preset-grid"></div>
+        <div class="actions">
+          <button id="create-workspace" class="primary">Create local workspace from preset</button>
+          <a href="/dashboard.html" class="secondary">Open current dashboard</a>
+        </div>
+      </section>
+
+      <section id="section-basics" class="panel intake-section">
+        <span class="eyebrow">Practice basics</span>
+        <h2>Confirm the owner-level details</h2>
+        <p class="safe-note">Do not enter patient names, MRNs, DOBs, clinical notes, passwords, or real incident details.</p>
+        <div id="basics-form" class="form-grid"></div>
+        <div class="actions"><button class="primary save-profile">Save basics</button></div>
+      </section>
+
+      <section id="section-systems" class="panel intake-section">
+        <span class="eyebrow">Systems used</span>
+        <h2>Select what the practice uses</h2>
+        <p class="lede">The app suggests common systems for your preset. Confirm what applies; this drives vendor, BAA, evidence, and ePHI flow suggestions.</p>
+        <div id="systems-list" class="check-grid"></div>
+        <div class="actions">
+          <button id="apply-systems" class="primary">Apply selected systems and rebuild suggestions</button>
+        </div>
+      </section>
+
+      <section id="section-vendors" class="panel intake-section">
+        <span class="eyebrow">Vendor / BAA review</span>
+        <h2>Confirm vendor evidence and BAA status</h2>
+        <p class="safe-note">Use vendor and contract references. Do not paste contracts containing patient data.</p>
+        <div id="vendors-table" class="editor-table"></div>
+        <div class="actions">
+          <button id="add-vendor" class="secondary" type="button">Add vendor</button>
+          <button class="primary save-profile" type="button">Save vendors</button>
+        </div>
+      </section>
+
+      <section id="section-flows" class="panel intake-section">
+        <span class="eyebrow">ePHI flow map</span>
+        <h2>Review suggested ePHI movement</h2>
+        <p class="lede">Flows are suggested deterministically from selected systems. Confirm, edit, or remove them before generating the packet.</p>
+        <div id="flows-table" class="editor-table"></div>
+        <div class="actions">
+          <button id="add-flow" class="secondary" type="button">Add ePHI flow</button>
+          <button class="primary save-profile" type="button">Save flows</button>
+        </div>
+      </section>
+
+      <section id="section-readiness" class="panel intake-section">
+        <span class="eyebrow">Readiness</span>
+        <h2>Answer the short baseline checklist</h2>
+        <div id="readiness-list" class="task-list"></div>
+        <div class="actions"><button class="primary save-profile">Save readiness</button></div>
+      </section>
+
+      <section id="section-ai" class="panel intake-section">
+        <span class="eyebrow">AI workflow safety</span>
+        <h2>Review what staff can and cannot send to AI</h2>
+        <p class="safe-note">Prohibited by default: patient names, clinical notes, MRNs, DOBs, claim narratives, or any patient-level data in public AI tools.</p>
+        <div id="ai-table" class="editor-table"></div>
+        <div class="actions">
+          <button id="add-ai-workflow" class="secondary" type="button">Add AI workflow</button>
+          <button class="primary save-profile" type="button">Save AI workflows</button>
+        </div>
+      </section>
+
+      <section id="section-downtime" class="panel intake-section">
+        <span class="eyebrow">Downtime and incident prep</span>
+        <h2>Confirm critical systems and readiness</h2>
+        <div id="downtime-form" class="form-grid"></div>
+        <div class="actions"><button class="primary save-profile">Save downtime</button></div>
+      </section>
+
+      <section id="section-evidence" class="panel intake-section">
+        <span class="eyebrow">Evidence references</span>
+        <h2>Track where proof lives without storing PHI</h2>
+        <p class="safe-note">Use folder paths, ticket IDs, policy names, or vendor portal references. Do not upload or paste patient records.</p>
+        <div class="inventory-box">
+          <label>Optional local evidence folder inventory
+            <input id="inventory-path" placeholder="/Users/you/Documents/Practice Evidence">
+          </label>
+          <small>Metadata only: filenames, extensions, sizes, and modified times. File contents are not read.</small>
+          <button id="inventory-folder" class="secondary">Scan folder metadata</button>
+        </div>
+        <div id="evidence-table" class="editor-table"></div>
+        <div class="actions">
+          <button id="add-evidence" class="secondary" type="button">Add evidence reference</button>
+          <button class="primary save-profile" type="button">Save evidence references</button>
+        </div>
+      </section>
+
+      <section id="section-generate" class="panel intake-section">
+        <span class="eyebrow">Generate packet</span>
+        <h2>Build the dashboard and security review packet</h2>
+        <p class="lede">This writes local output files from the saved profile. Nothing is sent anywhere.</p>
+        <div id="completion-summary" class="summary-grid"></div>
+        <div class="actions">
+          <button id="generate-packet" class="primary">Generate local packet</button>
+          <a id="dashboard-link" href="/dashboard.html" class="secondary">Open dashboard</a>
+          <a id="packet-link" href="/review-packet.html" class="secondary">Open review packet</a>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/static/intake.js"></script>
+</body>
+</html>

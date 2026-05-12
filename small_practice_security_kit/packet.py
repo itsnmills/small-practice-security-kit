@@ -153,6 +153,15 @@ Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, bil
 
 def evidence_index(profile: dict) -> str:
     rows = []
+    for evidence in profile.get("evidence", []):
+        rows.append(
+            [
+                evidence.get("id", evidence.get("title", "Evidence")),
+                evidence.get("area", evidence.get("type", "Evidence")),
+                evidence.get("title", "Evidence reference") + (f" - {evidence.get('reference')}" if evidence.get("reference") else ""),
+                "03-hipaa-evidence-binder",
+            ]
+        )
     for flow in profile["flows"]:
         rows.append([flow["id"], "ePHI flow", flow["evidence_needed"], "03-hipaa-evidence-binder"])
     for vendor in profile["vendors"]:

@@ -1,0 +1,256 @@
+presets:
+  dental:
+    name: Dental practice
+    description: Small dental or orthodontic office with EHR/practice management, imaging, billing, forms, reminders, email, phones, backups, and likely referral flows.
+    estimated_setup: 2-4 hours
+    common_pitfalls:
+      - Referral attachments sent through ordinary email.
+      - Imaging and billing vendors not linked back to BAA evidence.
+      - AI drafting used for appeals or marketing without staff guidance.
+    systems:
+      - digital_intake
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - clearinghouse
+      - imaging
+      - email
+      - phones
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - billing_appeal
+      - clinical_note_public_chatbot
+  primary_care:
+    name: Primary care / family medicine
+    description: Primary care practice with EHR, portal, labs, e-prescribing, billing, referrals, telehealth, email, phones, backups, and common vendor handoffs.
+    estimated_setup: 3-6 hours
+    common_pitfalls:
+      - Lab, referral, and portal flows are underdocumented.
+      - EHR user access reviews are not captured as evidence.
+      - Staff use AI for summaries without clear prohibited-data rules.
+    systems:
+      - digital_intake
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - clearinghouse
+      - labs
+      - eprescribing
+      - telehealth
+      - email
+      - phones
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - billing_appeal
+      - visit_summary
+  behavioral_health:
+    name: Behavioral health
+    description: Therapy, counseling, psychiatry, or behavioral health practice with scheduling, telehealth, notes, billing, portals, messaging, and heightened sensitivity concerns.
+    estimated_setup: 3-5 hours
+    common_pitfalls:
+      - Session notes and appointment data are especially sensitive.
+      - Telehealth and texting vendors are not reviewed as ePHI vendors.
+      - Public AI use creates high-risk note-summary behavior.
+    systems:
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - telehealth
+      - patient_texting
+      - email
+      - phones
+      - shared_drive
+      - backup
+      - endpoint_security
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - visit_summary
+      - clinical_note_public_chatbot
+  pt_ot_chiro:
+    name: PT / OT / chiropractic
+    description: Therapy or chiropractic practice with scheduling, treatment documentation, billing, referrals, forms, email, phones, backups, and possible wearable/device documentation.
+    estimated_setup: 2-5 hours
+    common_pitfalls:
+      - Referral and imaging records move through email or fax without clear evidence.
+      - Billing appeal drafting can accidentally include patient-level details.
+      - Shared drives collect scans without access review.
+    systems:
+      - digital_intake
+      - ehr
+      - scheduling
+      - billing
+      - clearinghouse
+      - email
+      - phones
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - billing_appeal
+  urgent_care:
+    name: Urgent care
+    description: High-volume clinic with EHR, scheduling/walk-in workflows, labs, imaging, eRx, billing, phones, portal, downtime concerns, and urgent operational evidence needs.
+    estimated_setup: 4-8 hours
+    common_pitfalls:
+      - Downtime procedures are not rehearsed.
+      - Lab/imaging interfaces and user access are not mapped.
+      - Incident contacts and restore evidence are stale.
+    systems:
+      - digital_intake
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - clearinghouse
+      - labs
+      - imaging
+      - eprescribing
+      - phones
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - billing_appeal
+      - visit_summary
+  specialty_clinic:
+    name: Specialty clinic
+    description: Small specialty practice with EHR, referrals, imaging/labs, billing, patient portal, secure messaging, email, phones, backups, and specialist-to-specialist handoffs.
+    estimated_setup: 3-6 hours
+    common_pitfalls:
+      - External referral flows are informal.
+      - Imaging/lab portals are treated as separate from evidence collection.
+      - Vendor incident contacts are missing.
+    systems:
+      - digital_intake
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - labs
+      - imaging
+      - email
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - billing_appeal
+  telehealth:
+    name: Telehealth-first practice
+    description: Virtual-first practice with telehealth, EHR, portal, scheduling, messaging, email, billing, cloud storage, and identity/access evidence needs.
+    estimated_setup: 3-6 hours
+    common_pitfalls:
+      - Telehealth, messaging, and cloud vendors are not all reviewed for BAAs.
+      - Remote access and endpoint evidence is underdocumented.
+      - Staff use public AI while working remotely.
+    systems:
+      - ehr
+      - scheduling
+      - patient_portal
+      - billing
+      - telehealth
+      - patient_texting
+      - email
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+      - public_ai
+    ai_workflows:
+      - marketing_drafting
+      - visit_summary
+      - clinical_note_public_chatbot
+  small_lab:
+    name: Small lab
+    description: Small lab or diagnostic service handling orders, results, portals, interfaces, billing, phones, fax, email, backups, and external provider handoffs.
+    estimated_setup: 4-8 hours
+    common_pitfalls:
+      - Results portals and interfaces are not mapped as ePHI flows.
+      - Provider/customer access reviews are missing.
+      - Fax/email result handling is not evidenced.
+    systems:
+      - labs
+      - patient_portal
+      - billing
+      - clearinghouse
+      - email
+      - phones
+      - efax
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+    ai_workflows:
+      - marketing_drafting
+  billing_rcm:
+    name: Billing / RCM company
+    description: Business associate or billing service with claim data, payer portals, clearinghouses, email, shared storage, remote access, and customer BAAs.
+    estimated_setup: 3-6 hours
+    common_pitfalls:
+      - Customer BAAs and downstream vendor BAAs are not tracked together.
+      - Claim appeal drafting with AI is not governed.
+      - Remote access and user reviews are not collected.
+    systems:
+      - billing
+      - clearinghouse
+      - claims_portal
+      - email
+      - shared_drive
+      - backup
+      - endpoint_security
+      - remote_access
+      - public_ai
+    ai_workflows:
+      - billing_appeal
+      - marketing_drafting
+size_tiers:
+  solo:
+    label: Solo practice
+    staff_count: 3
+    locations: 1
+    setup_hint: Keep ownership simple; assign security and technical owner explicitly.
+  small:
+    label: 2-5 providers
+    staff_count: 12
+    locations: 1
+    setup_hint: Focus on access review, BAA status, backups, and shared workflow evidence.
+  group:
+    label: 6-15 providers
+    staff_count: 35
+    locations: 2
+    setup_hint: Add location-level downtime, user access, and vendor review ownership.
+  multi_location:
+    label: Multi-location small group
+    staff_count: 50
+    locations: 3
+    setup_hint: Require stronger ownership for remote access, backups, access reviews, and incident contacts.
+  business_associate:
+    label: Business associate / support vendor
+    staff_count: 15
+    locations: 1
+    setup_hint: Track customer BAAs, downstream subprocessors, and remote-access evidence.

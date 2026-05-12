@@ -1,0 +1,221 @@
+systems:
+  digital_intake:
+    name: Digital intake forms
+    category: Intake
+    description: Online or tablet forms used to collect demographics, insurance, consent, symptoms, or history.
+    ephi_role: creates, receives, transmits
+    owner: Office Manager
+    vendor_category: forms_vendor
+    access_method: browser or tablet
+    evidence_needed: BAA, form settings, access controls, intake workflow owner
+    baa_likely: true
+    risk: medium
+  ehr:
+    name: EHR / EMR
+    category: EHR
+    description: Primary clinical record and patient charting system.
+    ephi_role: creates, receives, maintains, transmits
+    owner: Practice Owner
+    vendor_category: ehr_vendor
+    access_method: browser or managed application
+    evidence_needed: BAA, admin settings export, user access review, MFA settings
+    baa_likely: true
+    risk: high
+  scheduling:
+    name: Scheduling
+    category: Scheduling
+    description: Appointment booking, reminders, patient schedule, and front desk workflow.
+    ephi_role: receives, maintains, transmits
+    owner: Office Manager
+    vendor_category: scheduling_vendor
+    access_method: browser
+    evidence_needed: BAA, user list, reminder settings
+    baa_likely: true
+    risk: medium
+  patient_portal:
+    name: Patient portal
+    category: Patient portal
+    description: Portal for patient messages, forms, results, appointments, and record access.
+    ephi_role: receives, maintains, transmits
+    owner: Practice Owner
+    vendor_category: portal_vendor
+    access_method: browser
+    evidence_needed: BAA, portal settings, access controls, message workflow
+    baa_likely: true
+    risk: high
+  billing:
+    name: Billing / practice management
+    category: Billing
+    description: Billing, claims, coding, payments, and payer communications.
+    ephi_role: receives, maintains, transmits
+    owner: Billing Lead
+    vendor_category: billing_vendor
+    access_method: browser
+    evidence_needed: BAA, user list, incident terms, payer portal owner
+    baa_likely: true
+    risk: high
+  clearinghouse:
+    name: Claims clearinghouse
+    category: Claims
+    description: Claim submission and payer transaction service.
+    ephi_role: receives, transmits
+    owner: Billing Lead
+    vendor_category: clearinghouse
+    access_method: integration or browser
+    evidence_needed: BAA, transmission owner, incident notification terms
+    baa_likely: true
+    risk: high
+  claims_portal:
+    name: Payer / claims portals
+    category: Claims
+    description: Payer portals used for eligibility, claims, remits, appeals, or authorizations.
+    ephi_role: receives, maintains, transmits
+    owner: Billing Lead
+    vendor_category: payer_portal
+    access_method: browser
+    evidence_needed: user list, access owner, appeal workflow guidance
+    baa_likely: false
+    risk: medium
+  labs:
+    name: Lab ordering/results portal
+    category: Lab
+    description: Lab order and result exchange with external laboratories.
+    ephi_role: receives, maintains, transmits
+    owner: Clinical Lead
+    vendor_category: lab_vendor
+    access_method: portal or interface
+    evidence_needed: BAA, interface owner, result routing workflow
+    baa_likely: true
+    risk: high
+  imaging:
+    name: Imaging portal
+    category: Imaging
+    description: Imaging orders, image access, radiology reports, or dental images.
+    ephi_role: receives, maintains, transmits
+    owner: Clinical Lead
+    vendor_category: imaging_vendor
+    access_method: portal or device
+    evidence_needed: BAA, user access list, image retention owner
+    baa_likely: true
+    risk: high
+  eprescribing:
+    name: e-Prescribing / EPCS
+    category: Prescribing
+    description: Electronic prescribing, controlled substance prescribing, and medication history.
+    ephi_role: receives, transmits
+    owner: Clinical Lead
+    vendor_category: erx_vendor
+    access_method: EHR integration
+    evidence_needed: BAA, identity proofing/MFA reference, prescribing owner
+    baa_likely: true
+    risk: high
+  telehealth:
+    name: Telehealth platform
+    category: Telehealth
+    description: Video visits, virtual waiting room, recordings, captions, or chat.
+    ephi_role: receives, transmits
+    owner: Clinical Lead
+    vendor_category: telehealth_vendor
+    access_method: browser or app
+    evidence_needed: BAA, recording settings, access controls, visit workflow
+    baa_likely: true
+    risk: high
+  patient_texting:
+    name: Patient texting / reminders
+    category: Messaging
+    description: SMS reminders, two-way texting, patient campaigns, or automated messages.
+    ephi_role: receives, maintains, transmits
+    owner: Office Manager
+    vendor_category: texting_vendor
+    access_method: browser
+    evidence_needed: BAA, message template review, opt-in/opt-out workflow
+    baa_likely: true
+    risk: medium
+  email:
+    name: Email and calendar
+    category: Email
+    description: Staff email, calendar, referrals, attachments, reminders, and external communications.
+    ephi_role: receives, maintains, transmits
+    owner: Office Manager
+    vendor_category: email_provider
+    access_method: browser and mobile
+    evidence_needed: BAA if used for ePHI, MFA settings, forwarding review, retention settings
+    baa_likely: true
+    risk: high
+  phones:
+    name: Phones / VoIP
+    category: Communications
+    description: Phone system, voicemail, call recording, call transcription, or contact center.
+    ephi_role: receives, transmits
+    owner: Office Manager
+    vendor_category: voip_vendor
+    access_method: desk phones and admin portal
+    evidence_needed: BAA if recordings/transcripts contain ePHI, voicemail settings, admin access owner
+    baa_likely: true
+    risk: medium
+  efax:
+    name: Fax / eFax
+    category: Fax
+    description: Fax service used for referrals, records requests, prescriptions, lab/imaging orders, or billing.
+    ephi_role: receives, maintains, transmits
+    owner: Office Manager
+    vendor_category: fax_vendor
+    access_method: browser, email, or MFP
+    evidence_needed: BAA, routing workflow, inbox owner, retention settings
+    baa_likely: true
+    risk: high
+  shared_drive:
+    name: Shared drive / file storage
+    category: File storage
+    description: Cloud or local file storage for scanned documents, admin files, policies, or exported reports.
+    ephi_role: maintains
+    owner: Office Manager
+    vendor_category: storage_provider
+    access_method: browser and managed endpoint
+    evidence_needed: access review, sharing settings, BAA if ePHI is stored, backup reference
+    baa_likely: true
+    risk: high
+  backup:
+    name: Backup service
+    category: Backup
+    description: Cloud or local backup for EHR exports, file storage, servers, or workstations.
+    ephi_role: maintains
+    owner: MSP Lead
+    vendor_category: backup_provider
+    access_method: agent and admin portal
+    evidence_needed: BAA if ePHI backed up, backup configuration, restore test record
+    baa_likely: true
+    risk: high
+  endpoint_security:
+    name: Endpoint security / EDR / AV
+    category: Endpoint security
+    description: Endpoint protection, antivirus, EDR, device inventory, or managed detection tooling.
+    ephi_role: safeguards
+    owner: MSP Lead
+    vendor_category: endpoint_security_provider
+    access_method: managed agent and portal
+    evidence_needed: deployment coverage, alert owner, admin access review
+    baa_likely: false
+    risk: medium
+  remote_access:
+    name: Remote access / RMM / VPN
+    category: Remote access
+    description: Remote support, remote monitoring, VPN, remote desktop, or MSP management tooling.
+    ephi_role: safeguards, may access
+    owner: MSP Lead
+    vendor_category: msp_or_remote_access
+    access_method: agent, VPN, or admin portal
+    evidence_needed: MFA settings, admin list, BAA/MSP agreement, remote access policy
+    baa_likely: true
+    risk: high
+  public_ai:
+    name: Public AI / chatbot usage
+    category: AI workflow
+    description: General-purpose AI tools used by staff for drafting, summarizing, appeals, policies, or admin work.
+    ephi_role: should not receive ePHI unless formally approved
+    owner: Security Owner
+    vendor_category: ai_assistant
+    access_method: browser
+    evidence_needed: AI use policy, allowed/prohibited examples, vendor BAA/data-use review if approved
+    baa_likely: true
+    risk: high

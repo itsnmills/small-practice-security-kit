@@ -1,0 +1,109 @@
+flows:
+  - key: intake_to_ehr
+    requires: [digital_intake, ehr]
+    source: Digital intake forms
+    destination: EHR / EMR
+    ephi_type: demographics, insurance, consent, history
+    transmission: HTTPS portal or tablet sync
+    baa_needed: true
+    risk: medium
+    evidence_needed: BAA, form settings, intake workflow owner
+  - key: ehr_to_billing
+    requires: [ehr, billing]
+    source: EHR / EMR
+    destination: Billing / practice management
+    ephi_type: claim and billing data
+    transmission: integration or export
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, integration owner, incident notification terms
+  - key: billing_to_clearinghouse
+    requires: [billing, clearinghouse]
+    source: Billing / practice management
+    destination: Claims clearinghouse
+    ephi_type: claims, remits, eligibility
+    transmission: clearinghouse integration
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, transmission owner, payer transaction evidence
+  - key: ehr_to_portal
+    requires: [ehr, patient_portal]
+    source: EHR / EMR
+    destination: Patient portal
+    ephi_type: messages, results, visit summaries
+    transmission: vendor portal
+    baa_needed: true
+    risk: high
+    evidence_needed: portal settings, BAA, access controls
+  - key: ehr_to_labs
+    requires: [ehr, labs]
+    source: EHR / EMR
+    destination: Lab ordering/results portal
+    ephi_type: lab orders and results
+    transmission: interface or portal
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, interface owner, result routing workflow
+  - key: ehr_to_imaging
+    requires: [ehr, imaging]
+    source: EHR / EMR
+    destination: Imaging portal
+    ephi_type: orders, images, reports
+    transmission: portal, device, or integration
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, user list, retention owner
+  - key: ehr_to_eprescribing
+    requires: [ehr, eprescribing]
+    source: EHR / EMR
+    destination: e-Prescribing / EPCS
+    ephi_type: prescriptions, medication history
+    transmission: EHR integration
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, identity proofing/MFA reference
+  - key: telehealth_to_ehr
+    requires: [telehealth, ehr]
+    source: Telehealth platform
+    destination: EHR / EMR
+    ephi_type: visit details, video visit metadata, chat
+    transmission: manual entry or integration
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, recording settings, visit documentation workflow
+  - key: email_referral
+    requires: [email]
+    source: Email and calendar
+    destination: External specialist or partner
+    ephi_type: referral attachments and patient communications
+    transmission: email
+    baa_needed: true
+    risk: high
+    evidence_needed: secure email policy, forwarding review, staff training
+  - key: fax_to_ehr
+    requires: [efax, ehr]
+    source: Fax / eFax
+    destination: EHR / EMR
+    ephi_type: referrals, records, prescriptions, results
+    transmission: fax or eFax routing
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, inbox owner, routing workflow
+  - key: shared_drive_to_backup
+    requires: [shared_drive, backup]
+    source: Shared drive / file storage
+    destination: Backup service
+    ephi_type: scanned documents, exported reports, admin files
+    transmission: backup agent or cloud sync
+    baa_needed: true
+    risk: high
+    evidence_needed: BAA, backup configuration, restore test
+  - key: public_ai_policy
+    requires: [public_ai]
+    source: Staff browser
+    destination: Public AI / chatbot usage
+    ephi_type: should be no patient-level data
+    transmission: browser
+    baa_needed: true
+    risk: high
+    evidence_needed: AI use policy, prohibited examples, vendor review if approved

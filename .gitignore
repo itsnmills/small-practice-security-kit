@@ -3,3 +3,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 out/
+.venv/
+profiles/*.yaml
+profiles/.backups/
+profiles/.logs/
