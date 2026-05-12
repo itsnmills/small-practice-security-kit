@@ -1,0 +1,122 @@
+practice:
+  name: "Family Dental Clinic"
+  type: "Dental practice"
+  staff_count: 14
+  locations: 1
+  review_period: "2026 Q2"
+  security_owner: "Office Manager"
+  technical_owner: "MSP Lead"
+
+readiness:
+  mfa_email: true
+  mfa_ehr: false
+  unique_accounts: true
+  quarterly_access_review: false
+  tested_backups: false
+  vendor_inventory: true
+  baa_register: false
+  incident_contact_list: true
+  downtime_plan: false
+  security_training_current: true
+  log_review_cadence: false
+
+systems:
+  - name: "Cloud EHR"
+    category: "EHR"
+    ephi_role: "creates, receives, maintains, transmits"
+    owner: "Practice Owner"
+    vendor: "Example EHR Vendor"
+    access_method: "browser"
+    evidence_needed: "admin settings export, BAA, user access review"
+  - name: "Billing Portal"
+    category: "Billing"
+    ephi_role: "receives, maintains, transmits"
+    owner: "Billing Lead"
+    vendor: "Example Billing Vendor"
+    access_method: "browser"
+    evidence_needed: "BAA, user list, incident contact"
+  - name: "Shared Drive"
+    category: "File storage"
+    ephi_role: "maintains"
+    owner: "Office Manager"
+    vendor: "Workspace Provider"
+    access_method: "managed endpoint and browser"
+    evidence_needed: "access review, sharing settings, backup reference"
+
+flows:
+  - id: "FLOW-001"
+    source: "Patient intake form"
+    destination: "Cloud EHR"
+    ephi_type: "demographics, insurance, treatment notes"
+    vendor: "Example EHR Vendor"
+    transmission: "HTTPS portal"
+    baa_needed: true
+    risk: "medium"
+    evidence_needed: "BAA, portal access controls, intake workflow owner"
+  - id: "FLOW-002"
+    source: "Cloud EHR"
+    destination: "Billing Portal"
+    ephi_type: "claim and billing data"
+    vendor: "Example Billing Vendor"
+    transmission: "vendor integration"
+    baa_needed: true
+    risk: "high"
+    evidence_needed: "BAA, integration owner, incident notification terms"
+  - id: "FLOW-003"
+    source: "Staff email"
+    destination: "External specialist"
+    ephi_type: "referral attachments"
+    vendor: "Email provider"
+    transmission: "email"
+    baa_needed: true
+    risk: "high"
+    evidence_needed: "secure email policy, forwarding review, staff training"
+
+vendors:
+  - name: "Example EHR Vendor"
+    service: "EHR hosting and support"
+    touches_ephi: true
+    baa_status: "signed"
+    ai_training_use: "not reviewed"
+    subcontractors_known: "partial"
+    incident_notification_terms: "24 hours in contract"
+    risk: "medium"
+  - name: "Example Billing Vendor"
+    service: "Claims and billing"
+    touches_ephi: true
+    baa_status: "missing review date"
+    ai_training_use: "unknown"
+    subcontractors_known: "unknown"
+    incident_notification_terms: "unknown"
+    risk: "high"
+
+ai_workflows:
+  - name: "Marketing email drafting"
+    proposed_use: "Draft generic outreach copy"
+    data_used: "No patient data"
+    vendor: "General AI assistant"
+    decision: "allowed"
+    evidence_needed: "staff guidance and prohibited data examples"
+  - name: "Billing appeal drafter"
+    proposed_use: "Draft payer appeal language"
+    data_used: "claim and treatment details"
+    vendor: "General AI assistant"
+    decision: "restricted"
+    evidence_needed: "BAA review, redaction workflow, owner approval"
+  - name: "Paste visit note into public chatbot"
+    proposed_use: "Summarize a clinical note"
+    data_used: "clinical note"
+    vendor: "Public chatbot"
+    decision: "prohibited"
+    evidence_needed: "training reminder and AI use policy"
+
+downtime:
+  critical_systems:
+    - "Cloud EHR"
+    - "Billing Portal"
+    - "Phones"
+    - "Shared Drive"
+  last_restore_test: ""
+  downtime_plan_status: "not documented"
+  tabletop_status: "not run"
+
