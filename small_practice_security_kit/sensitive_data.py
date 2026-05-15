@@ -30,7 +30,9 @@ RULES = [
     ("mrn_label", "high", re.compile(r"(?i)\b(MRN|medical record number|patient id)\b[\s_:-]*[A-Za-z0-9-]{4,}"), "Looks like a patient identifier."),
     ("dob_label", "high", re.compile(r"(?i)\b(DOB|date of birth)\b\s*[:=]?\s*\d{1,2}[/-]\d{1,2}[/-]\d{2,4}"), "Looks like a date of birth."),
     ("patient_name_label", "medium", re.compile(r"(?i)\b(patient name|patient:)\b\s+[A-Z][A-Za-z]+"), "Looks like a patient name label."),
-    ("email_address", "medium", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "Contains an email address. Use role contacts when possible."),
+    ("email_address", "high", re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b"), "Contains an email address. Use role contacts or non-sensitive references."),
+    ("private_url", "high", re.compile(r"(?i)https?://[^\s]+(?:token=|secret=|signature=|X-Amz-Signature|sig=|key=|password=|passcode=|presigned|private)[^\s]*"), "Looks like a private or signed URL."),
+    ("bearer_or_basic_auth", "high", re.compile(r"(?i)\b(authorization:\s*)?(bearer|basic)\s+[A-Za-z0-9._~+/=-]{12,}"), "Looks like an authorization credential."),
 ]
 
 CLINICAL_TERMS = re.compile(

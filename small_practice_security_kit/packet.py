@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import html
+import json
 import re
 from pathlib import Path
 
+from .manifest import build_packet_manifest
 from .profile import load_profile, slugify
+from .sensitive_data import blocking_findings
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -179,6 +182,90 @@ def evidence_index(profile: dict) -> str:
 """
 
 
+def owner_msp_handoff(profile: dict) -> str:
+    risk, gaps = risk_level(profile)
+    practice = profile["practice"]
+    vendor_rows = []
+    for vendor in profile["vendors"]:
+        if vendor.get("touches_ephi") or vendor.get("risk") in {"high", "critical"}:
+            vendor_rows.append(
+                [
+                    vendor["name"],
+                    vendor["service"],
+                    vendor["baa_status"],
+                    vendor["risk"],
+                    "Practice manager",
+                    "Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture.",
+                ]
+            )
+    access_actions = []
+    readiness = profile["readiness"]
+    if not readiness["mfa_ehr"]:
+        access_actions.append("Enable or verify MFA for EHR access.")
+    if not readiness["quarterly_access_review"]:
+        access_actions.append("Export user lists and record a quarterly access review.")
+    if not readiness["unique_accounts"]:
+        access_actions.append("Remove shared accounts or document exception owners and sunset dates.")
+    if not access_actions:
+        access_actions.append("Keep current access controls on a quarterly review cadence.")
+
+    return f"""# Owner/MSP Handoff
+
+Practice: {practice['name']}
+
+Initial risk level: **{risk}**
+
+## Owner Decisions Needed
+
+{chr(10).join(f'- {gap}' for gap in gaps) if gaps else '- No immediate owner decision gaps generated from the synthetic profile.'}
+
+## MSP / Technical Follow-Up
+
+{chr(10).join(f'- {action}' for action in access_actions)}
+- Confirm backup restore evidence for critical systems: {', '.join(profile['downtime']['critical_systems'])}.
+- Confirm downtime owner, manual workaround, and escalation contact for each critical system.
+- Return evidence references only; do not send PHI, passwords, private URLs, presigned links, or raw incident details.
+
+## Vendor Follow-Up
+
+{table(['Vendor', 'Service', 'BAA Status', 'Risk', 'Owner', 'Ask'], vendor_rows) if vendor_rows else '- No vendor follow-up rows generated.'}
+
+## Handoff Boundary
+
+This handoff is a coordination aid for the practice owner, MSP, and qualified reviewers. It does not certify compliance, provide legal advice, determine breach status, or replace a formal Security Risk Analysis.
+"""
+
+
+def limitations_appendix(profile: dict) -> str:
+    return f"""# What This Packet Does and Does Not Prove
+
+## What This Packet Does
+
+- Organizes a synthetic or client-provided practice profile into a plain-English readiness packet.
+- Highlights AI, vendor/BAA, ePHI-flow, access, backup, downtime, and evidence-reference gaps.
+- Produces owner/MSP follow-up actions and a 30/60/90 roadmap.
+- Creates reference-only evidence metadata and artifact hashes for generated packet files.
+
+## What This Packet Does Not Prove
+
+- It is not legal advice.
+- It is not HIPAA compliance certification.
+- It is not a formal HIPAA Security Risk Analysis opinion.
+- It is not breach determination.
+- It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.
+- It does not prove that a vendor, workflow, system, or AI tool is safe for PHI/ePHI.
+- It does not verify real contracts, BAAs, subprocessors, access lists, backup restores, logs, or insurance requirements.
+
+## Evidence Boundary
+
+Use evidence references, owners, review dates, and sanitized descriptions. Do not include PHI/ePHI, patient identifiers, staff credentials, secrets, private URLs, presigned links, raw incident details, or full contract text in public packet artifacts.
+
+## Recommended Review
+
+Bring this packet to the practice owner, MSP/IT provider, counsel/compliance advisor, insurer, or qualified security reviewer before relying on it for operational decisions.
+"""
+
+
 def roadmap(profile: dict) -> str:
     risk, gaps = risk_level(profile)
     thirty = gaps[:3] or ["Review generated packet with practice owner and MSP."]
@@ -320,8 +407,13 @@ def render_html(markdown: str, profile: dict) -> str:
 
 def build_packet(profile_path: Path, output_root: Path = OUT) -> Path:
     profile = load_profile(profile_path)
+    sensitive_findings = blocking_findings(profile)
+    if sensitive_findings:
+        joined = "; ".join(f"{finding.path}: {finding.message}" for finding in sensitive_findings[:5])
+        raise ValueError(f"profile contains blocked sensitive data; use references only ({joined})")
     out_dir = output_root / slugify(profile["practice"]["name"])
     out_dir.mkdir(parents=True, exist_ok=True)
+    risk, gaps = risk_level(profile)
     docs = {
         "readiness-review.md": readiness_review(profile),
         "ephi-flow-map.md": ephi_flow_map(profile),
@@ -329,11 +421,22 @@ def build_packet(profile_path: Path, output_root: Path = OUT) -> Path:
         "ai-workflow-review.md": ai_review(profile),
         "downtime-ransomware-tabletop.md": downtime_packet(profile),
         "evidence-binder-index.md": evidence_index(profile),
+        "owner-msp-handoff.md": owner_msp_handoff(profile),
         "30-60-90-roadmap.md": roadmap(profile),
+        "limitations-appendix.md": limitations_appendix(profile),
     }
     for name, content in docs.items():
         (out_dir / name).write_text(content, encoding="utf-8", newline="\n")
     packet = "\n\n---\n\n".join(docs.values())
     (out_dir / "review-packet.md").write_text(packet, encoding="utf-8", newline="\n")
     (out_dir / "review-packet.html").write_text(render_html(packet, profile), encoding="utf-8", newline="\n")
+    manifest = build_packet_manifest(
+        profile=profile,
+        profile_path=profile_path,
+        out_dir=out_dir,
+        artifact_names=[*docs.keys(), "review-packet.md", "review-packet.html"],
+        risk=risk,
+        gaps=gaps,
+    )
+    (out_dir / "packet-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return out_dir

@@ -1,0 +1,520 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velari.local/schemas/packet-manifest.schema.json",
+  "title": "Velari Packet Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "packet_id",
+    "generated_at",
+    "generator",
+    "practice",
+    "data_boundary",
+    "source_profile",
+    "overall_risk",
+    "sections",
+    "evidence_references",
+    "findings",
+    "roadmap_items",
+    "artifacts",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2026-05-15"
+    },
+    "packet_id": {
+      "type": "string",
+      "pattern": "^pkt_[a-z0-9_]+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "mode"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string"
+        }
+      }
+    },
+    "practice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "type",
+        "review_period",
+        "staff_count",
+        "locations"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "review_period": {
+          "type": "string"
+        },
+        "staff_count": {
+          "type": "integer"
+        },
+        "locations": {
+          "type": "integer"
+        }
+      }
+    },
+    "data_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "phi_allowed",
+        "secrets_allowed",
+        "raw_evidence_allowed"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string"
+        },
+        "phi_allowed": {
+          "const": false
+        },
+        "secrets_allowed": {
+          "const": false
+        },
+        "raw_evidence_allowed": {
+          "const": false
+        }
+      }
+    },
+    "source_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\\\u0000]+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "overall_risk": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "sections": {
+      "type": "array",
+      "minItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "title",
+          "status",
+          "artifact_refs",
+          "source_modules"
+        ],
+        "properties": {
+          "id": {
+            "enum": [
+              "executive_scorecard",
+              "ai_findings",
+              "vendor_baa_exposure",
+              "ephi_map_lite",
+              "access_mfa_offboarding",
+              "downtime_ransomware",
+              "evidence_index",
+              "owner_msp_handoff",
+              "roadmap_30_60_90",
+              "limitations_appendix"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "generated",
+              "planned",
+              "not_applicable"
+            ]
+          },
+          "artifact_refs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "source_modules": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "uniqueItems": true,
+      "allOf": [
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "executive_scorecard"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "ai_findings"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "vendor_baa_exposure"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "ephi_map_lite"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "access_mfa_offboarding"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "downtime_ransomware"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "evidence_index"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "owner_msp_handoff"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "roadmap_30_60_90"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "limitations_appendix"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        }
+      ]
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_reference"
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/finding"
+      }
+    },
+    "roadmap_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/roadmap_item"
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/artifact"
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "media_type",
+        "sha256",
+        "bytes",
+        "hash_scope"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\\\u0000]+$"
+        },
+        "media_type": {
+          "type": "string"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "bytes": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "hash_scope": {
+          "const": "file_bytes"
+        }
+      }
+    },
+    "evidence_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "title",
+        "evidence_type",
+        "source_system",
+        "owner",
+        "status",
+        "date_observed",
+        "next_review_date",
+        "sensitivity_boundary",
+        "artifact_refs",
+        "notes"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type": "string"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "missing",
+            "requested",
+            "partial",
+            "reviewed",
+            "outdated",
+            "not_applicable"
+          ]
+        },
+        "date_observed": {
+          "type": "string"
+        },
+        "next_review_date": {
+          "type": "string"
+        },
+        "sensitivity_boundary": {
+          "const": "reference_only_no_phi_no_secret"
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "section_id",
+        "severity",
+        "title",
+        "owner",
+        "evidence_refs"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string"
+        },
+        "section_id": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "roadmap_item": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "horizon",
+        "priority",
+        "action",
+        "owner"
+      ],
+      "properties": {
+        "horizon": {
+          "enum": [
+            "30_days",
+            "60_days",
+            "90_days"
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "action": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
