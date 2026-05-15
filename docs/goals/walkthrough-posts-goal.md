@@ -36,4 +36,8 @@
 4. Draft post 3 from `docs/demo/review-packet.md`, `docs/demo/packet-manifest.json`, and `docs/demo/30-60-90-roadmap.md`.
 5. Run `python scripts/validate_content.py` and manually scan for overclaims.
 
-- Repository public mirror `docs/walkthroughs/*` was produced during implementation and then removed from repo, with final notes now maintained in Dario hub.
+## Delivery rule (Dario-only)
+
+- Final, publishable walkthrough markdown outputs are stored only in `~/Dario/Velari/Content/Small Practice Security Kit Walkthroughs/`.
+- The repo must not retain or reintroduce `docs/walkthroughs/` draft files after implementation is complete.
+- For routing, always mirror only to the Velari hub and keep this rule explicit in future runs.
