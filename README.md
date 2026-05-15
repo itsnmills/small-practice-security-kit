@@ -33,9 +33,12 @@ This kit creates one local-first packet that helps answer:
 | `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflow review |
 | `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter packet |
 | `evidence-binder-index.md` | Evidence references to collect in a binder |
+| `owner-msp-handoff.md` | Owner/MSP follow-up, vendor asks, access actions, and handoff boundary |
 | `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
+| `limitations-appendix.md` | Explicit statement of what the packet does and does not prove |
 | `review-packet.md` | Complete Markdown packet |
 | `review-packet.html` | Print-friendly HTML packet |
+| `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence references, roadmap items, findings, and artifact hashes |
 | `dashboard.html` | Owner-friendly local workflow dashboard |
 
 ## Quick Start
