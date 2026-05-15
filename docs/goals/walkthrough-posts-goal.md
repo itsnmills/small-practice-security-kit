@@ -2,7 +2,7 @@
 
 **Goal:** Create 2–3 polished public walkthrough posts that turn the demo packet into recruiter/client-readable proof-of-work.
 
-**Output path:** `docs/walkthroughs/`
+**Output path:** `~/Dario/Velari/Content/Small Practice Security Kit Walkthroughs/`
 
 ## Draft topics
 
@@ -30,8 +30,10 @@
 
 ## Suggested implementation tasks
 
-1. Create `docs/walkthroughs/README.md` with the index and publishing notes.
+1. Create `~/Dario/Velari/Content/Small Practice Security Kit Walkthroughs/2026-05-15 Small Practice Security Kit Walkthroughs Index.md` with the index and publishing notes.
 2. Draft post 1 from `docs/demo/ephi-flow-map.md` and `docs/security-model.md`.
 3. Draft post 2 from `docs/demo/ai-workflow-review.md`, `docs/demo/vendor-baa-review.md`, and `docs/security-model.md`.
 4. Draft post 3 from `docs/demo/review-packet.md`, `docs/demo/packet-manifest.json`, and `docs/demo/30-60-90-roadmap.md`.
 5. Run `python scripts/validate_content.py` and manually scan for overclaims.
+
+- Repository public mirror `docs/walkthroughs/*` was produced during implementation and then removed from repo, with final notes now maintained in Dario hub.
