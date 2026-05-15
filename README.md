@@ -1,29 +1,51 @@
 # Small Practice Security Kit
 
-Open-source security kit for small healthcare practices that need practical HIPAA, ePHI, vendor, AI, downtime, and evidence workflows without buying enterprise GRC software.
+**Local-first healthcare security readiness packets for small practices.**
 
-This is the flagship umbrella project for a privacy-first healthcare security toolkit. It turns a simple practice profile into a review packet:
+This repo is the public front door for a Velari-style readiness workflow: take a non-PHI practice profile, map where patient data can move outside the EHR, review vendors/BAAs and AI usage, then generate an owner/MSP-ready evidence packet and 30/60/90 roadmap.
 
 ```text
-intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> evidence index -> 30/60/90 roadmap
+local intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> evidence index -> 30/60/90 roadmap
 ```
 
-The goal is not to replace attorneys, security assessors, incident responders, or full GRC platforms. The goal is to give small practices a local, understandable way to organize the first evidence-backed conversation.
+The goal is not to replace attorneys, security assessors, incident responders, or enterprise GRC software. The goal is to give small healthcare practices a practical way to organize the first evidence-backed conversation before an audit, incident, renewal, AI rollout, or MSP handoff.
 
-## Why This Exists
+## What this helps answer
 
-Small practices often know they need MFA, backups, BAAs, access reviews, AI rules, incident procedures, and risk documentation. The problem is that the proof gets scattered across email, vendor portals, tickets, screenshots, spreadsheets, and memory.
+Small practices often know they need MFA, backups, BAAs, access reviews, AI rules, incident procedures, downtime plans, and risk documentation. The hard part is proving what exists when evidence is scattered across email, vendor portals, tickets, screenshots, spreadsheets, and memory.
 
-This kit creates one local-first packet that helps answer:
+This kit helps answer:
 
 - Where does ePHI enter, move, rest, and leave?
-- Which vendors touch ePHI?
-- Which workflows use AI, and are they allowed, restricted, or prohibited?
-- Which evidence references should be collected?
-- Which gaps should be fixed in the next 30, 60, and 90 days?
-- What should be handed to a qualified reviewer, MSP, consultant, or practice owner?
+- Which systems and vendors touch ePHI?
+- Which AI workflows are allowed, restricted, or prohibited?
+- Which evidence references should be collected, refreshed, or handed to an MSP?
+- Which gaps should be handled in the next 30, 60, and 90 days?
+- What can the practice owner safely show a reviewer without uploading PHI?
 
-## What You Get
+## Velari Cyber Readiness Sprint narrative
+
+This repo demonstrates the public version of a focused small-practice readiness sprint:
+
+> In one focused sprint, a small healthcare practice maps AI, vendor, access, ePHI-flow, downtime, and ransomware-readiness gaps, then receives an owner/MSP-ready evidence packet and prioritized 30/60/90 roadmap.
+
+The strongest wedge is the **Patient Data Outside the EHR Map**: inboxes, shared drives, AI tools, vendors, portals, exports, contractors, backups, billing systems, and MSP-managed systems. Once those flows are visible, the evidence binder, vendor/BAA register, AI workflow review, and downtime plan become concrete.
+
+## Public demo
+
+A complete synthetic demo is checked into [`docs/demo/`](docs/demo/). It uses a fictional `Family Dental Clinic` profile and contains no real PHI, credentials, private URLs, contracts, or incident details.
+
+Start here:
+
+- Demo overview: [`docs/demo/README.md`](docs/demo/README.md)
+- Complete Markdown packet: [`docs/demo/review-packet.md`](docs/demo/review-packet.md)
+- Print-friendly HTML packet: [`docs/demo/review-packet.html`](docs/demo/review-packet.html)
+- Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
+- Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
+
+![Review packet screenshot](docs/demo/screenshots/review-packet.png)
+
+## What you get
 
 | Output | Purpose |
 |---|---|
@@ -41,7 +63,7 @@ This kit creates one local-first packet that helps answer:
 | `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence references, roadmap items, findings, and artifact hashes |
 | `dashboard.html` | Owner-friendly local workflow dashboard |
 
-## Quick Start
+## Quick start
 
 ### Owner-friendly local intake workspace
 
@@ -57,8 +79,6 @@ That opens a local dashboard for the sample practice at:
 http://127.0.0.1:8765/
 ```
 
-The intake workspace is the preferred owner-facing experience. It lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, add evidence references, review AI workflows, and generate the local dashboard and review packet.
-
 Terminal version:
 
 ```bash
@@ -67,13 +87,13 @@ python3 -m venv .venv
 .venv/bin/python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
 ```
 
-Generated dashboard file:
+The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, add evidence references, review AI workflows, and generate the local dashboard and review packet.
 
-```text
-out/family_dental_clinic/dashboard.html
-```
+More details:
 
-More details live in [docs/dashboard.md](docs/dashboard.md), [docs/intake-mode.md](docs/intake-mode.md), and [docs/security-model.md](docs/security-model.md).
+- [`docs/dashboard.md`](docs/dashboard.md)
+- [`docs/intake-mode.md`](docs/intake-mode.md)
+- [`docs/security-model.md`](docs/security-model.md)
 
 ### Packet builder CLI
 
@@ -82,8 +102,6 @@ python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python scripts/build.py samples/family_dental_clinic.yaml
 .venv/bin/python scripts/export_binder_index.py samples/family_dental_clinic.yaml
-.venv/bin/python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml
-.venv/bin/python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml
 .venv/bin/python scripts/validate_content.py
 .venv/bin/python -m unittest discover -s tests
 ```
@@ -112,41 +130,26 @@ out/family_dental_clinic/review-packet.html
 | `06-downtime-ransomware-tabletop/` | Downtime, restore test, tabletop, and incident evidence |
 | `07-review-packet-builder/` | Packet builder scripts and output conventions |
 
-## Companion Repos and Import Plan
+## Companion repo map
 
-This kit is designed to become the front door for the broader `itsnmills` healthcare security ecosystem:
+This kit is designed to be the front door for a broader healthcare security proof-of-work portfolio:
 
-| Repo | Role in the Kit | Planned Integration |
-|---|---|---|
-| [`hipaa-evidence-binder-template`](https://github.com/itsnmills/hipaa-evidence-binder-template) | Evidence operating system | Export `evidence-binder-index.md` into binder-compatible CSV/Markdown |
-| [`healthcare-cyber-readiness-checklist`](https://github.com/itsnmills/healthcare-cyber-readiness-checklist) | Readiness checklist | Import checklist item register and map results into readiness review |
-| `ephi-data-flow-mapper` | ePHI flow documentation | Promote flow schema into this kit's `flows` model |
-| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due diligence | Import/export vendor register and annual review fields |
-| [`health-ai-governance-auditor`](https://github.com/itsnmills/health-ai-governance-auditor) | AI tool and workflow governance | Import AI vendor/workflow findings into AI workflow review |
-| [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit evidence | Link agent/tool logs as restricted evidence references |
-| [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples | Reuse allowed/prohibited data handling examples |
-| [`healthcare-ai-security-lab`](https://github.com/itsnmills/healthcare-ai-security-lab) | Healthcare KEV triage | Import priority vulnerabilities as technical evidence references |
-| [`iomt-risk-scorer`](https://github.com/itsnmills/iomt-risk-scorer) | IoMT risk triage | Import device risk summaries into ePHI and technical evidence |
-
-Detailed import notes live in [docs/import-plans/existing-repos.md](docs/import-plans/existing-repos.md).
-
-## First Integrations
-
-The first implemented integrations are:
-
-| Command | Purpose |
+| Repo | Role in the Kit |
 |---|---|
-| `python scripts/export_binder_index.py samples/family_dental_clinic.yaml` | Create `hipaa-evidence-binder-template` compatible CSV/Markdown evidence exports |
-| `python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml` | Import ePHI flow rows into a profile |
-| `python scripts/import_vendor_register.py examples/imports/vendor-risk-manager/vendor_register.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-vendor-profile.yaml` | Import vendor/BAA rows into a profile |
+| [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples for allowed/prohibited data handling |
+| [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit-log evidence references |
+| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due-diligence register |
+| [`hipaa-scanner`](https://github.com/itsnmills/hipaa-scanner) | Public-facing readiness triage and security-header checks |
+| [`hipaa-compliance-engine`](https://github.com/itsnmills/hipaa-compliance-engine) | Evidence/control mapping ideas |
+| [`ai-governance-auditor`](https://github.com/itsnmills/ai-governance-auditor) | AI governance checklist patterns |
 
-The adapter contract is documented in [docs/adapter-contract.md](docs/adapter-contract.md).
+Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md).
 
-## Safety Model
+## Safety and data boundary
 
-This repository is local-first and PHI-avoidant.
+This repository is **local-first and PHI-avoidant**.
 
-Recommended:
+Recommended inputs:
 
 - fictional sample practices,
 - system names,
@@ -156,11 +159,11 @@ Recommended:
 - evidence folder references,
 - non-sensitive summary notes.
 
-Do not enter:
+Do **not** enter:
 
 - patient names,
 - medical record numbers,
-- DOBs,
+- dates of birth,
 - diagnoses,
 - claim contents,
 - clinical notes,
@@ -170,20 +173,21 @@ Do not enter:
 - private keys,
 - real incident details.
 
-## What This Is Not
+Read the full boundary before adapting this for real work: [`docs/security-model.md`](docs/security-model.md).
 
-This is not legal advice, HIPAA certification, a formal Security Risk Analysis opinion, penetration testing, breach determination, or a substitute for qualified legal, security, compliance, or incident response professionals.
+## What this is not
 
-Use this as a practical organizer and first-pass evidence workflow.
+This is not legal advice, HIPAA certification, a formal Security Risk Analysis opinion, penetration testing, breach determination, managed detection and response, a SOC, or a substitute for qualified legal, security, compliance, or incident response professionals.
+
+Use it as a practical organizer and first-pass evidence workflow.
 
 ## Roadmap
 
-1. Add schema validation for practice profiles.
-2. Export binder-compatible CSV for `hipaa-evidence-binder-template`.
-3. Add imports from readiness checklist, vendor manager, AI governance auditor, and ePHI mapper.
-4. Add a public demo packet under `docs/demo/`.
-5. Add optional PDF rendering.
-6. Add richer scoring and priority explanations.
+1. Add optional PDF rendering.
+2. Add richer scoring and priority explanations.
+3. Add more demo profiles for behavioral health, PT/rehab, and small specialty practices.
+4. Add GitHub Actions release artifacts for the public demo packet.
+5. Expand import/export adapters for companion repos.
 
 ## License
 

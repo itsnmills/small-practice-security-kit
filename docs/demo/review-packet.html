@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Dental Clinic Security Review Packet</title>
+  <style>
+    :root { --ink: #17211b; --muted: #5b685f; --paper: #fbfaf6; --line: #cbd7cc; --accent: #0f6b57; --accent-soft: #e3f2eb; --warn: #9b4d13; --warn-soft: #fff0dd; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Georgia, "Times New Roman", serif; line-height: 1.55; }
+    .shell { max-width: 1120px; margin: 0 auto; padding: 32px 22px 56px; }
+    .cover { border-top: 8px solid var(--accent); padding: 28px 0 22px; display: grid; gap: 8px; }
+    .kicker { color: var(--accent); font-family: Arial, sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; }
+    h1, h2 { line-height: 1.12; letter-spacing: 0; }
+    .cover h1 { font-size: clamp(34px, 5vw, 60px); margin: 0; max-width: 900px; }
+    .meta { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; font-family: Arial, sans-serif; }
+    .meta div { border: 1px solid var(--line); padding: 10px; background: #fffdf8; }
+    .meta strong { display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }
+    .notice { background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 12px 14px; margin: 22px 0; font-family: Arial, sans-serif; font-size: 14px; }
+    .packet-section { display: block; padding: 24px 0 12px; border-top: 1px solid var(--line); }
+    .packet-section h1 { font-size: 30px; margin: 0 0 12px; }
+    h2 { font-size: 20px; margin: 22px 0 10px; color: var(--accent); }
+    p, li { font-size: 15px; }
+    .table-wrap { overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: white; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; font-family: Arial, sans-serif; font-size: 13px; }
+    th { text-align: left; background: var(--accent-soft); color: var(--ink); }
+    th, td { border-bottom: 1px solid var(--line); padding: 9px 10px; vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 28px 0; }
+    @media print { body { background: white; } .shell { max-width: none; padding: 0.4in; } .table-wrap { overflow: visible; } table { min-width: 0; font-size: 10px; } .packet-section { page-break-inside: avoid; } }
+    @media (max-width: 760px) { .meta { grid-template-columns: 1fr; } .cover h1 { font-size: 34px; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="cover">
+      <div class="kicker">Small Practice Security Kit</div>
+      <h1>Family Dental Clinic Security Review Packet</h1>
+      <div class="meta">
+        <div><strong>Practice Type</strong>Dental practice</div>
+        <div><strong>Review Period</strong>2026 Q2</div>
+        <div><strong>Security Owner</strong>Office Manager</div>
+        <div><strong>Technical Owner</strong>MSP Lead</div>
+      </div>
+    </header>
+    <div class="notice">This packet is an operational planning aid. It is not legal advice, HIPAA certification, breach determination, or a substitute for qualified review. Do not include PHI, secrets, credentials, or real incident details.</div>
+    <section class='packet-section'><h1>Readiness Review</h1>
+<p>Practice: Family Dental Clinic</p>
+<p>Overall initial risk: <strong>High</strong></p>
+<div class='table-wrap'><table><tr><th>Item</th><th>Ready?</th><th>Area</th></tr><tr><td>Email MFA</td><td>Yes</td><td>Access</td></tr><tr><td>EHR MFA</td><td>No</td><td>Access</td></tr><tr><td>Unique accounts</td><td>Yes</td><td>Access</td></tr><tr><td>Quarterly access review</td><td>No</td><td>Evidence</td></tr><tr><td>Tested backups</td><td>No</td><td>Resilience</td></tr><tr><td>Vendor inventory</td><td>Yes</td><td>Vendor</td></tr><tr><td>BAA register</td><td>No</td><td>Vendor</td></tr><tr><td>Incident contact list</td><td>Yes</td><td>Incident</td></tr><tr><td>Downtime plan</td><td>No</td><td>Resilience</td></tr><tr><td>Training current</td><td>Yes</td><td>Workforce</td></tr><tr><td>Log review cadence</td><td>No</td><td>Monitoring</td></tr></table></div>
+<h2>Priority Gaps</h2>
+<ul><li>Enable MFA for EHR access.</li><li>Run and record a quarterly access review.</li><li>Run a restore test and record evidence.</li><li>Complete the BAA register and review dates.</li><li>Document downtime procedures for critical systems.</li><li>Set a monthly log review cadence.</li></ul>
+<hr>
+<section class='packet-section'><h1>ePHI Flow Map</h1>
+<h2>Systems</h2>
+<div class='table-wrap'><table><tr><th>System</th><th>Category</th><th>ePHI Role</th><th>Vendor</th><th>Evidence Needed</th></tr><tr><td>Cloud EHR</td><td>EHR</td><td>creates, receives, maintains, transmits</td><td>Example EHR Vendor</td><td>admin settings export, BAA, user access review</td></tr><tr><td>Billing Portal</td><td>Billing</td><td>receives, maintains, transmits</td><td>Example Billing Vendor</td><td>BAA, user list, incident contact</td></tr><tr><td>Shared Drive</td><td>File storage</td><td>maintains</td><td>Workspace Provider</td><td>access review, sharing settings, backup reference</td></tr></table></div>
+<h2>Flows</h2>
+<div class='table-wrap'><table><tr><th>Flow</th><th>Source</th><th>Destination</th><th>Vendor</th><th>ePHI Type</th><th>BAA Needed</th><th>Risk</th><th>Evidence Needed</th></tr><tr><td>FLOW-001</td><td>Patient intake form</td><td>Cloud EHR</td><td>Example EHR Vendor</td><td>demographics, insurance, treatment notes</td><td>Yes</td><td>medium</td><td>BAA, portal access controls, intake workflow owner</td></tr><tr><td>FLOW-002</td><td>Cloud EHR</td><td>Billing Portal</td><td>Example Billing Vendor</td><td>claim and billing data</td><td>Yes</td><td>high</td><td>BAA, integration owner, incident notification terms</td></tr><tr><td>FLOW-003</td><td>Staff email</td><td>External specialist</td><td>Email provider</td><td>referral attachments</td><td>Yes</td><td>high</td><td>secure email policy, forwarding review, staff training</td></tr></table></div>
+<hr>
+<section class='packet-section'><h1>Vendor and BAA Review</h1>
+<div class='table-wrap'><table><tr><th>Vendor</th><th>Service</th><th>Touches ePHI?</th><th>BAA Status</th><th>AI Training Use</th><th>Subcontractors</th><th>Incident Terms</th><th>Risk</th></tr><tr><td>Example EHR Vendor</td><td>EHR hosting and support</td><td>Yes</td><td>signed</td><td>not reviewed</td><td>partial</td><td>24 hours in contract</td><td>medium</td></tr><tr><td>Example Billing Vendor</td><td>Claims and billing</td><td>Yes</td><td>missing review date</td><td>unknown</td><td>unknown</td><td>unknown</td><td>high</td></tr></table></div>
+<h2>Next Evidence</h2>
+<ul><li>Confirm BAA review date for each vendor touching ePHI.</li><li>Record incident notification terms.</li><li>Ask AI/data-use questions for any vendor using automation or model training.</li></ul>
+<hr>
+<section class='packet-section'><h1>AI Workflow Review</h1>
+<div class='table-wrap'><table><tr><th>Workflow</th><th>Use</th><th>Data Used</th><th>Vendor</th><th>Decision</th><th>Evidence Needed</th></tr><tr><td>Marketing email drafting</td><td>Draft generic outreach copy</td><td>No patient data</td><td>General AI assistant</td><td>allowed</td><td>staff guidance and prohibited data examples</td></tr><tr><td>Billing appeal drafter</td><td>Draft payer appeal language</td><td>claim and treatment details</td><td>General AI assistant</td><td>restricted</td><td>BAA review, redaction workflow, owner approval</td></tr><tr><td>Paste visit note into public chatbot</td><td>Summarize a clinical note</td><td>clinical note</td><td>Public chatbot</td><td>prohibited</td><td>training reminder and AI use policy</td></tr></table></div>
+<h2>Rules of Thumb</h2>
+<ul><li>Allowed: generic administrative drafting with no patient or clinical details.</li><li>Restricted: workflows involving claim, treatment, billing, or operationally sensitive data.</li><li>Prohibited: pasting patient-level notes or identifiers into tools without approved safeguards and a reviewed vendor relationship.</li></ul>
+<hr>
+<section class='packet-section'><h1>Downtime and Ransomware Tabletop</h1>
+<p>Downtime plan status: <strong>not documented</strong></p>
+<p>Restore test status: <strong>not recorded</strong></p>
+<p>Tabletop status: <strong>not run</strong></p>
+<div class='table-wrap'><table><tr><th>Critical System</th><th>Downtime Owner</th><th>Evidence Needed</th></tr><tr><td>Cloud EHR</td><td>Needs downtime owner</td><td>Needs restore or manual workaround evidence</td></tr><tr><td>Billing Portal</td><td>Needs downtime owner</td><td>Needs restore or manual workaround evidence</td></tr><tr><td>Phones</td><td>Needs downtime owner</td><td>Needs restore or manual workaround evidence</td></tr><tr><td>Shared Drive</td><td>Needs downtime owner</td><td>Needs restore or manual workaround evidence</td></tr></table></div>
+<h2>Tabletop Scenario</h2>
+<p>Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, billing portal is delayed, and staff need to continue patient care safely.</p>
+<hr>
+<section class='packet-section'><h1>Evidence Binder Index</h1>
+<div class='table-wrap'><table><tr><th>Evidence ID</th><th>Area</th><th>Evidence Needed</th><th>Module</th></tr><tr><td>FLOW-001</td><td>ePHI flow</td><td>BAA, portal access controls, intake workflow owner</td><td>03-hipaa-evidence-binder</td></tr><tr><td>FLOW-002</td><td>ePHI flow</td><td>BAA, integration owner, incident notification terms</td><td>03-hipaa-evidence-binder</td></tr><tr><td>FLOW-003</td><td>ePHI flow</td><td>secure email policy, forwarding review, staff training</td><td>03-hipaa-evidence-binder</td></tr><tr><td>Example EHR Vendor</td><td>Vendor/BAA</td><td>BAA, security contact, AI data-use review for Example EHR Vendor</td><td>04-vendor-baa-review</td></tr><tr><td>Example Billing Vendor</td><td>Vendor/BAA</td><td>BAA, security contact, AI data-use review for Example Billing Vendor</td><td>04-vendor-baa-review</td></tr><tr><td>ACCESS-QTR</td><td>Access</td><td>Quarterly access review for EHR, billing, email, remote access</td><td>03-hipaa-evidence-binder</td></tr><tr><td>BACKUP-RESTORE</td><td>Backup</td><td>Restore test record for EHR, billing, shared drive, key workstation</td><td>06-downtime-ransomware-tabletop</td></tr><tr><td>AI-POLICY</td><td>AI workflow</td><td>Allowed/prohibited AI use guidance and staff acknowledgement</td><td>05-ai-workflow-review</td></tr></table></div>
+<hr>
+<section class='packet-section'><h1>Owner/MSP Handoff</h1>
+<p>Practice: Family Dental Clinic</p>
+<p>Initial risk level: <strong>High</strong></p>
+<h2>Owner Decisions Needed</h2>
+<ul><li>Enable MFA for EHR access.</li><li>Run and record a quarterly access review.</li><li>Run a restore test and record evidence.</li><li>Complete the BAA register and review dates.</li><li>Document downtime procedures for critical systems.</li><li>Set a monthly log review cadence.</li></ul>
+<h2>MSP / Technical Follow-Up</h2>
+<ul><li>Enable or verify MFA for EHR access.</li><li>Export user lists and record a quarterly access review.</li><li>Confirm backup restore evidence for critical systems: Cloud EHR, Billing Portal, Phones, Shared Drive.</li><li>Confirm downtime owner, manual workaround, and escalation contact for each critical system.</li><li>Return evidence references only; do not send PHI, passwords, private URLs, presigned links, or raw incident details.</li></ul>
+<h2>Vendor Follow-Up</h2>
+<div class='table-wrap'><table><tr><th>Vendor</th><th>Service</th><th>BAA Status</th><th>Risk</th><th>Owner</th><th>Ask</th></tr><tr><td>Example EHR Vendor</td><td>EHR hosting and support</td><td>signed</td><td>medium</td><td>Practice manager</td><td>Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture.</td></tr><tr><td>Example Billing Vendor</td><td>Claims and billing</td><td>missing review date</td><td>high</td><td>Practice manager</td><td>Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture.</td></tr></table></div>
+<h2>Handoff Boundary</h2>
+<p>This handoff is a coordination aid for the practice owner, MSP, and qualified reviewers. It does not certify compliance, provide legal advice, determine breach status, or replace a formal Security Risk Analysis.</p>
+<hr>
+<section class='packet-section'><h1>30-60-90 Roadmap</h1>
+<p>Initial risk level: <strong>High</strong></p>
+<h2>First 30 Days</h2>
+<ul><li>Enable MFA for EHR access.</li><li>Run and record a quarterly access review.</li><li>Run a restore test and record evidence.</li></ul>
+<h2>Days 31-60</h2>
+<ul><li>Complete the BAA register and review dates.</li><li>Document downtime procedures for critical systems.</li><li>Set a monthly log review cadence.</li></ul>
+<h2>Days 61-90</h2>
+<ul><li>Run a tabletop exercise and record lessons learned.</li><li>Repeat access/vendor/backup evidence review.</li><li>Prepare management signoff packet.</li></ul>
+<hr>
+<section class='packet-section'><h1>What This Packet Does and Does Not Prove</h1>
+<h2>What This Packet Does</h2>
+<ul><li>Organizes a synthetic or client-provided practice profile into a plain-English readiness packet.</li><li>Highlights AI, vendor/BAA, ePHI-flow, access, backup, downtime, and evidence-reference gaps.</li><li>Produces owner/MSP follow-up actions and a 30/60/90 roadmap.</li><li>Creates reference-only evidence metadata and artifact hashes for generated packet files.</li></ul>
+<h2>What This Packet Does Not Prove</h2>
+<ul><li>It is not legal advice.</li><li>It is not HIPAA compliance certification.</li><li>It is not a formal HIPAA Security Risk Analysis opinion.</li><li>It is not breach determination.</li><li>It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.</li><li>It does not prove that a vendor, workflow, system, or AI tool is safe for PHI/ePHI.</li><li>It does not verify real contracts, BAAs, subprocessors, access lists, backup restores, logs, or insurance requirements.</li></ul>
+<h2>Evidence Boundary</h2>
+<p>Use evidence references, owners, review dates, and sanitized descriptions. Do not include PHI/ePHI, patient identifiers, staff credentials, secrets, private URLs, presigned links, raw incident details, or full contract text in public packet artifacts.</p>
+<h2>Recommended Review</h2>
+<p>Bring this packet to the practice owner, MSP/IT provider, counsel/compliance advisor, insurer, or qualified security reviewer before relying on it for operational decisions.</p>
+  </main>
+</body>
+</html>
