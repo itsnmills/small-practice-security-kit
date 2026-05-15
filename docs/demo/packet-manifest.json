@@ -1,0 +1,446 @@
+{
+  "artifacts": [
+    {
+      "bytes": 795,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "readiness-review.md",
+      "sha256": "70ff6b26db495a43a56e6cc55c71f654decdda5a146bfbf619be3fd1d6250ed2"
+    },
+    {
+      "bytes": 1142,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "ephi-flow-map.md",
+      "sha256": "35ad43b668c6eb9ab949914a78662105e73565c99dc1d178e2771f1a040f899c"
+    },
+    {
+      "bytes": 611,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "vendor-baa-review.md",
+      "sha256": "68aed00e3a878341a1053d1900730229777464937b52cfde4cfbdb7a60dd9ceb"
+    },
+    {
+      "bytes": 936,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "ai-workflow-review.md",
+      "sha256": "223d2016ebdcdf9af2efd42d4bfacadf3cc8504ca1ab0a449d2211141a7eddfd"
+    },
+    {
+      "bytes": 734,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "downtime-ransomware-tabletop.md",
+      "sha256": "534b13863ca06e1cdd3804498bedeb3fbcdd30df626caddf91cbafb6d1ab7107"
+    },
+    {
+      "bytes": 1044,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "evidence-binder-index.md",
+      "sha256": "c7cbb06c337db865569dc472accf5b8c3d319f5f970ba6d903daace82cf28cf9"
+    },
+    {
+      "bytes": 1493,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "owner-msp-handoff.md",
+      "sha256": "dc232a08acbeeb461ca5e602d9bddbcf57596e8367ade6ad2e6141ec1ec39e49"
+    },
+    {
+      "bytes": 488,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "30-60-90-roadmap.md",
+      "sha256": "d413fef5eeb7b9266e9dca225d3a25195ef24f0ac301c24b0a2e121006754e12"
+    },
+    {
+      "bytes": 1388,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "limitations-appendix.md",
+      "sha256": "bb88a81a290befeb6d10dbbf162a14f068557d826d402c7a4f530f8f8f638839"
+    },
+    {
+      "bytes": 8687,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "review-packet.md",
+      "sha256": "6dd1b297dc4607cb97c767b2d98e8916d46258180a53a0095269b633630714eb"
+    },
+    {
+      "bytes": 14568,
+      "hash_scope": "file_bytes",
+      "media_type": "text/html",
+      "path": "review-packet.html",
+      "sha256": "3aa3ca4a6dcec4bf4cac6a70e34777c6a6cd231cdc88a1639fe8d7a167c24af5"
+    }
+  ],
+  "data_boundary": {
+    "classification": "synthetic_or_client_reference_metadata_only",
+    "phi_allowed": false,
+    "raw_evidence_allowed": false,
+    "secrets_allowed": false
+  },
+  "evidence_references": [
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-001",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Cloud EHR via Example EHR Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Patient intake form",
+      "status": "requested",
+      "title": "BAA, portal access controls, intake workflow owner"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-002",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Billing Portal via Example Billing Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Cloud EHR",
+      "status": "requested",
+      "title": "BAA, integration owner, incident notification terms"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-003",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to External specialist via Email provider",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Staff email",
+      "status": "requested",
+      "title": "secure email policy, forwarding review, staff training"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_EHR_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: signed",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example EHR Vendor",
+      "status": "reviewed",
+      "title": "BAA, security contact, AI data-use review for Example EHR Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: missing review date",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example Billing Vendor",
+      "status": "requested",
+      "title": "BAA, security contact, AI data-use review for Example Billing Vendor"
+    }
+  ],
+  "findings": [
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-001",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Enable MFA for EHR access"
+    },
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-002",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Run and record a quarterly access review"
+    },
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-003",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Run a restore test and record evidence"
+    },
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-004",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Complete the BAA register and review dates"
+    },
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-005",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Document downtime procedures for critical systems"
+    },
+    {
+      "evidence_refs": [],
+      "finding_id": "READINESS-006",
+      "owner": "Practice owner/MSP",
+      "section_id": "executive_scorecard",
+      "severity": "high",
+      "title": "Set a monthly log review cadence"
+    },
+    {
+      "evidence_refs": [
+        "AI-POLICY"
+      ],
+      "finding_id": "AI-BILLING_APPEAL_DRAFTER",
+      "owner": "Practice owner",
+      "section_id": "ai_findings",
+      "severity": "medium",
+      "title": "AI workflow requires action: Billing appeal drafter"
+    },
+    {
+      "evidence_refs": [
+        "AI-POLICY"
+      ],
+      "finding_id": "AI-PASTE_VISIT_NOTE_INTO_PUBLIC_CHATBOT",
+      "owner": "Practice owner",
+      "section_id": "ai_findings",
+      "severity": "high",
+      "title": "AI workflow requires action: Paste visit note into public chatbot"
+    },
+    {
+      "evidence_refs": [
+        "VENDOR-EXAMPLE_BILLING_VENDOR"
+      ],
+      "finding_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "owner": "Practice manager",
+      "section_id": "vendor_baa_exposure",
+      "severity": "high",
+      "title": "BAA status needs review for Example Billing Vendor"
+    }
+  ],
+  "generated_at": "2026-05-15T19:12:01Z",
+  "generator": {
+    "mode": "local_packet_builder",
+    "name": "small-practice-security-kit"
+  },
+  "limitations": [
+    "Operational planning aid only.",
+    "Not legal advice, HIPAA certification, breach determination, penetration testing, vulnerability scanning, MDR, SOC, or a formal Security Risk Analysis opinion.",
+    "Evidence references must not include PHI, patient identifiers, production secrets, private URLs, or raw restricted evidence."
+  ],
+  "overall_risk": "high",
+  "packet_id": "pkt_family_dental_clinic_2026_q2",
+  "practice": {
+    "label": "Family Dental Clinic",
+    "locations": 1,
+    "review_period": "2026 Q2",
+    "staff_count": 14,
+    "type": "Dental practice"
+  },
+  "roadmap_items": [
+    {
+      "action": "Enable MFA for EHR access.",
+      "horizon": "30_days",
+      "owner": "Practice owner/MSP",
+      "priority": 1
+    },
+    {
+      "action": "Run and record a quarterly access review.",
+      "horizon": "30_days",
+      "owner": "Practice owner/MSP",
+      "priority": 2
+    },
+    {
+      "action": "Run a restore test and record evidence.",
+      "horizon": "30_days",
+      "owner": "Practice owner/MSP",
+      "priority": 3
+    },
+    {
+      "action": "Complete the BAA register and review dates.",
+      "horizon": "60_days",
+      "owner": "Practice owner/MSP",
+      "priority": 1
+    },
+    {
+      "action": "Document downtime procedures for critical systems.",
+      "horizon": "60_days",
+      "owner": "Practice owner/MSP",
+      "priority": 2
+    },
+    {
+      "action": "Set a monthly log review cadence.",
+      "horizon": "60_days",
+      "owner": "Practice owner/MSP",
+      "priority": 3
+    },
+    {
+      "action": "Run a tabletop exercise and record lessons learned.",
+      "horizon": "90_days",
+      "owner": "Practice owner/MSP",
+      "priority": 1
+    },
+    {
+      "action": "Repeat access, vendor, and backup evidence review.",
+      "horizon": "90_days",
+      "owner": "Practice owner/MSP",
+      "priority": 2
+    },
+    {
+      "action": "Prepare management signoff packet.",
+      "horizon": "90_days",
+      "owner": "Practice owner/MSP",
+      "priority": 3
+    }
+  ],
+  "schema_version": "2026-05-15",
+  "sections": [
+    {
+      "artifact_refs": [
+        "readiness-review.md"
+      ],
+      "id": "executive_scorecard",
+      "source_modules": [
+        "readiness"
+      ],
+      "status": "generated",
+      "title": "Executive Scorecard"
+    },
+    {
+      "artifact_refs": [
+        "ai-workflow-review.md"
+      ],
+      "id": "ai_findings",
+      "source_modules": [
+        "ai_workflows"
+      ],
+      "status": "generated",
+      "title": "AI Findings"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md"
+      ],
+      "id": "vendor_baa_exposure",
+      "source_modules": [
+        "vendors"
+      ],
+      "status": "generated",
+      "title": "Vendor/BAA Exposure"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md"
+      ],
+      "id": "ephi_map_lite",
+      "source_modules": [
+        "systems",
+        "flows"
+      ],
+      "status": "generated",
+      "title": "ePHI Map Lite"
+    },
+    {
+      "artifact_refs": [
+        "readiness-review.md"
+      ],
+      "id": "access_mfa_offboarding",
+      "source_modules": [
+        "readiness"
+      ],
+      "status": "generated",
+      "title": "Access, MFA, and Offboarding"
+    },
+    {
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md"
+      ],
+      "id": "downtime_ransomware",
+      "source_modules": [
+        "downtime"
+      ],
+      "status": "generated",
+      "title": "Downtime and Ransomware"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "id": "evidence_index",
+      "source_modules": [
+        "evidence",
+        "flows",
+        "vendors"
+      ],
+      "status": "generated",
+      "title": "Evidence Index"
+    },
+    {
+      "artifact_refs": [
+        "owner-msp-handoff.md"
+      ],
+      "id": "owner_msp_handoff",
+      "source_modules": [
+        "readiness",
+        "vendors",
+        "downtime"
+      ],
+      "status": "generated",
+      "title": "Owner/MSP Handoff"
+    },
+    {
+      "artifact_refs": [
+        "30-60-90-roadmap.md"
+      ],
+      "id": "roadmap_30_60_90",
+      "source_modules": [
+        "readiness"
+      ],
+      "status": "generated",
+      "title": "30/60/90 Roadmap"
+    },
+    {
+      "artifact_refs": [
+        "limitations-appendix.md"
+      ],
+      "id": "limitations_appendix",
+      "source_modules": [
+        "packet_notice"
+      ],
+      "status": "generated",
+      "title": "Limitations Appendix"
+    }
+  ],
+  "source_profile": {
+    "path": "samples/family_dental_clinic.yaml",
+    "sha256": "636b6eede72d1c0bec22e7cb1258ee4cb047b5b98e77582404a150550de68782"
+  }
+}

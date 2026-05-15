@@ -2,23 +2,46 @@
 
 The public story:
 
-> Open-source security kits for small healthcare practices that need practical HIPAA, ePHI, vendor, AI, and incident evidence workflows without buying enterprise GRC software.
+> A local-first healthcare security readiness kit for small practices that need practical ePHI, vendor/BAA, AI, downtime, ransomware-readiness, and evidence-reference workflows without buying enterprise GRC software.
 
-## Why This Is Different
+## Why this exists
 
-This project is not trying to be a full GRC platform, a scanner, or a policy library. It gives small practices a simple operating path:
+Small practices usually do not need another abstract compliance checklist. They need a safe, concrete way to answer:
+
+> Where does patient data go after the visit, what vendors or AI tools touch it, and what can we prove if an owner, MSP, insurer, attorney, or reviewer asks?
+
+## Why this is different
+
+This project is not trying to be a full GRC platform, a scanner, a policy library, or a certification badge. It gives small practices a simple operating path:
 
 ```text
-intake -> ePHI map -> vendor review -> AI workflow review -> evidence index -> 30/60/90 plan
+local intake -> patient-data-outside-the-EHR map -> vendor/BAA review -> AI workflow review -> evidence index -> owner/MSP handoff -> 30/60/90 plan
 ```
 
-## Best Demo
+The evidence packet is the product center. The ePHI flow map is the wedge because it makes every other module more concrete.
+
+## Best demo
+
+Public demo snapshot:
+
+```text
+docs/demo/
+├── README.md
+├── review-packet.md
+├── review-packet.html
+├── packet-manifest.json
+└── screenshots/review-packet.png
+```
+
+Regenerate locally:
 
 ```bash
 python scripts/build.py samples/family_dental_clinic.yaml
+python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+python scripts/validate_content.py
 ```
 
-Output:
+Runtime output:
 
 ```text
 out/family_dental_clinic/
@@ -28,9 +51,20 @@ out/family_dental_clinic/
 ├── ai-workflow-review.md
 ├── downtime-ransomware-tabletop.md
 ├── evidence-binder-index.md
+├── owner-msp-handoff.md
 ├── 30-60-90-roadmap.md
+├── limitations-appendix.md
 ├── review-packet.md
-└── review-packet.html
+├── review-packet.html
+└── packet-manifest.json
 ```
 
-The ePHI flow map should remain the star because it makes every other module more concrete.
+## Boundaries to keep in every public narrative
+
+- No PHI in demos.
+- Evidence references, not raw evidence archives.
+- No legal advice.
+- No HIPAA certification or compliance guarantee.
+- No breach determination.
+- No invasive testing or managed SOC/MDR claim.
+- Qualified reviewers still need to validate real contracts, BAAs, access lists, logs, backups, policies, and incident obligations.
