@@ -2,6 +2,8 @@ name: CI
 
 on:
   push:
+    branches:
+      - main
   pull_request:
 
 jobs:
@@ -14,12 +16,16 @@ jobs:
           python-version: "3.11"
       - name: Install dependencies
         run: python -m pip install -r requirements.txt
+      - name: Validate sample profile
+        run: python -m small_practice_security_kit validate samples/family_dental_clinic.yaml
       - name: Build sample packet
-        run: python scripts/build.py samples/family_dental_clinic.yaml
+        run: python -m small_practice_security_kit build samples/family_dental_clinic.yaml
       - name: Build local intake dashboard
         run: python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml --build-only
       - name: Export evidence binder index
-        run: python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+        run: python -m small_practice_security_kit export-binder samples/family_dental_clinic.yaml
+      - name: Export public demo artifact
+        run: python -m small_practice_security_kit export-demo --profile samples/family_dental_clinic.yaml --output /tmp/spsk-demo-export
       - name: Import ePHI flows
         run: python scripts/import_ephi_flows.py examples/imports/ephi-data-flow-mapper/flows.csv --base samples/family_dental_clinic.yaml --output out/family_dental_clinic/imported-ephi-profile.yaml
       - name: Build imported ePHI profile
@@ -32,3 +38,23 @@ jobs:
         run: python scripts/validate_content.py
       - name: Run tests
         run: python -m unittest discover -s tests
+      - name: Upload demo packet artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: spsk-demo-packet
+          path: |
+            /tmp/spsk-demo-export/review-packet.md
+            /tmp/spsk-demo-export/review-packet.html
+            /tmp/spsk-demo-export/packet-manifest.json
+            /tmp/spsk-demo-export/readiness-review.md
+            /tmp/spsk-demo-export/ephi-flow-map.md
+            /tmp/spsk-demo-export/vendor-baa-review.md
+            /tmp/spsk-demo-export/ai-workflow-review.md
+            /tmp/spsk-demo-export/downtime-ransomware-tabletop.md
+            /tmp/spsk-demo-export/evidence-binder-index.md
+            /tmp/spsk-demo-export/owner-msp-handoff.md
+            /tmp/spsk-demo-export/30-60-90-roadmap.md
+            /tmp/spsk-demo-export/limitations-appendix.md
+            /tmp/spsk-demo-export/evidence-binder-export/*
+            /tmp/spsk-demo-export/review-packet.png
+          if-no-files-found: ignore

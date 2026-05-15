@@ -265,8 +265,9 @@ def build_packet_manifest(
     artifact_names: list[str],
     risk: str,
     gaps: list[str],
+    generated_at: str | None = None,
 ) -> dict[str, Any]:
-    generated_at = utc_now()
+    generated_at = generated_at or utc_now()
     generated_date = date.fromisoformat(generated_at[:10])
     practice = profile["practice"]
     review_period_slug = slug(str(practice["review_period"]))

@@ -72,6 +72,17 @@ class IntakeApiTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 422)
         raised.exception.close()
 
+    def test_invalid_profile_save_is_rejected(self) -> None:
+        profile = self.get_json("/api/profile")["profile"]
+        profile["readiness"]["mfa_email"] = "yes"
+        with self.assertRaises(urllib.error.HTTPError) as raised:
+            self.post_json("/api/profile", {"profile": profile}, self.state.csrf_token)
+        self.assertEqual(raised.exception.code, 400)
+        body = raised.exception.read().decode("utf-8")
+        self.assertIn("readiness.mfa_email", body)
+        self.assertNotIn("yes", body)
+        raised.exception.close()
+
     def test_write_requires_csrf_token(self) -> None:
         with self.assertRaises(urllib.error.HTTPError) as raised:
             self.post_json("/api/build", {}, "wrong-token")

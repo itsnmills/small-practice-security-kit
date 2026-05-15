@@ -1,21 +1,191 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://small-practice-security-kit.local/schemas/practice-profile.schema.json",
   "title": "Small Practice Security Kit Practice Profile",
   "type": "object",
   "required": ["practice", "readiness", "systems", "flows", "vendors", "ai_workflows", "downtime"],
+  "additionalProperties": true,
   "properties": {
+    "workspace": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "intake": {
+      "type": "object",
+      "additionalProperties": true
+    },
     "practice": {
       "type": "object",
-      "required": ["name", "type", "staff_count", "locations", "review_period", "security_owner", "technical_owner"]
+      "required": ["name", "type", "staff_count", "locations", "review_period", "security_owner", "technical_owner"],
+      "additionalProperties": true,
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "staff_count": {"type": "integer", "minimum": 1},
+        "locations": {"type": "integer", "minimum": 1},
+        "review_period": {"type": "string", "minLength": 1},
+        "security_owner": {"type": "string", "minLength": 1},
+        "technical_owner": {"type": "string", "minLength": 1}
+      }
     },
     "readiness": {
       "type": "object",
-      "required": ["mfa_email", "mfa_ehr", "unique_accounts", "quarterly_access_review", "tested_backups", "vendor_inventory", "baa_register", "incident_contact_list", "downtime_plan", "security_training_current", "log_review_cadence"]
+      "required": [
+        "mfa_email",
+        "mfa_ehr",
+        "unique_accounts",
+        "quarterly_access_review",
+        "tested_backups",
+        "vendor_inventory",
+        "baa_register",
+        "incident_contact_list",
+        "downtime_plan",
+        "security_training_current",
+        "log_review_cadence"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "mfa_email": {"type": "boolean"},
+        "mfa_ehr": {"type": "boolean"},
+        "unique_accounts": {"type": "boolean"},
+        "quarterly_access_review": {"type": "boolean"},
+        "tested_backups": {"type": "boolean"},
+        "vendor_inventory": {"type": "boolean"},
+        "baa_register": {"type": "boolean"},
+        "incident_contact_list": {"type": "boolean"},
+        "downtime_plan": {"type": "boolean"},
+        "security_training_current": {"type": "boolean"},
+        "log_review_cadence": {"type": "boolean"}
+      }
     },
-    "systems": {"type": "array"},
-    "flows": {"type": "array"},
-    "vendors": {"type": "array"},
-    "ai_workflows": {"type": "array"},
-    "downtime": {"type": "object"}
+    "systems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "category", "ephi_role", "owner", "vendor", "access_method", "evidence_needed"],
+        "additionalProperties": true,
+        "properties": {
+          "id": {"type": "string"},
+          "catalog_key": {"type": "string"},
+          "name": {"type": "string", "minLength": 1},
+          "category": {"type": "string", "minLength": 1},
+          "ephi_role": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1},
+          "vendor": {"type": "string", "minLength": 1},
+          "vendor_category": {"type": "string"},
+          "access_method": {"type": "string", "minLength": 1},
+          "evidence_needed": {"type": "string", "minLength": 1},
+          "selected": {"type": "boolean"}
+        }
+      }
+    },
+    "flows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "source", "destination", "ephi_type", "vendor", "transmission", "baa_needed", "risk", "evidence_needed"],
+        "additionalProperties": true,
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "template_key": {"type": "string"},
+          "source": {"type": "string", "minLength": 1},
+          "destination": {"type": "string", "minLength": 1},
+          "ephi_type": {"type": "string", "minLength": 1},
+          "vendor": {"type": "string", "minLength": 1},
+          "transmission": {"type": "string", "minLength": 1},
+          "baa_needed": {"type": "boolean"},
+          "risk": {"$ref": "#/$defs/risk"},
+          "evidence_needed": {"type": "string", "minLength": 1},
+          "suggested_by": {
+            "type": "array",
+            "items": {"type": "string"}
+          },
+          "confirmed": {"type": "boolean"}
+        }
+      }
+    },
+    "vendors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "service",
+          "touches_ephi",
+          "baa_status",
+          "ai_training_use",
+          "subcontractors_known",
+          "incident_notification_terms",
+          "risk"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "id": {"type": "string"},
+          "category": {"type": "string"},
+          "name": {"type": "string", "minLength": 1},
+          "service": {"type": "string", "minLength": 1},
+          "touches_ephi": {"type": "boolean"},
+          "baa_status": {"type": "string", "minLength": 1},
+          "ai_training_use": {"type": "string", "minLength": 1},
+          "subcontractors_known": {"type": "string", "minLength": 1},
+          "incident_notification_terms": {"type": "string", "minLength": 1},
+          "risk": {"$ref": "#/$defs/risk"}
+        }
+      }
+    },
+    "ai_workflows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "proposed_use", "data_used", "vendor", "decision", "evidence_needed"],
+        "additionalProperties": true,
+        "properties": {
+          "name": {"type": "string", "minLength": 1},
+          "proposed_use": {"type": "string", "minLength": 1},
+          "data_used": {"type": "string", "minLength": 1},
+          "vendor": {"type": "string", "minLength": 1},
+          "decision": {"enum": ["allowed", "restricted", "prohibited"]},
+          "evidence_needed": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "downtime": {
+      "type": "object",
+      "required": ["critical_systems", "last_restore_test", "downtime_plan_status", "tabletop_status"],
+      "additionalProperties": true,
+      "properties": {
+        "critical_systems": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "last_restore_test": {"type": "string"},
+        "downtime_plan_status": {"type": "string", "minLength": 1},
+        "tabletop_status": {"type": "string", "minLength": 1}
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "id": {"type": "string"},
+          "title": {"type": "string"},
+          "type": {"type": "string"},
+          "area": {"type": "string"},
+          "owner": {"type": "string"},
+          "reference": {"type": "string"},
+          "status": {"type": "string"},
+          "related": {"type": "string"},
+          "stores_sensitive_content": {"type": "boolean"},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "risk": {
+      "enum": ["low", "medium", "high", "critical"]
+    }
   }
 }

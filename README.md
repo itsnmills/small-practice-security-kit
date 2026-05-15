@@ -183,11 +183,10 @@ Use it as a practical organizer and first-pass evidence workflow.
 
 ## Roadmap
 
-1. Add optional PDF rendering.
-2. Add richer scoring and priority explanations.
-3. Add more demo profiles for behavioral health, PT/rehab, and small specialty practices.
-4. Add GitHub Actions release artifacts for the public demo packet.
-5. Expand import/export adapters for companion repos.
+1. Expand imports from readiness checklist, AI governance auditor, and other companion repos.
+2. Add optional PDF rendering and richer scoring/priority explanations.
+3. Add more sample profiles and demo packets for different practice types.
+4. Add release workflow for demo artifacts across repos and improve compatibility for companion integrations.
 
 ## License
 

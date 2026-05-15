@@ -29,7 +29,7 @@ def main() -> None:
     for path in required:
         if not path.exists() or path.stat().st_size < 100:
             fail(f"missing or too small: {path}")
-    for path in [ROOT / "samples", ROOT / "out", ROOT / "examples"]:
+    for path in [ROOT / "samples", ROOT / "out", ROOT / "examples", ROOT / "docs" / "demo"]:
         assert_safe_tree(path)
     print("Content validation passed")
 

@@ -1,11 +1,21 @@
 from __future__ import annotations
 
+import json
+import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any
+
+from jsonschema import Draft202012Validator
+from jsonschema.exceptions import ValidationError as JsonSchemaValidationError
 
 
 class ValidationError(ValueError):
     """Raised when a public profile or import file is structurally invalid."""
 
+
+ROOT = Path(__file__).resolve().parents[1]
+PROFILE_SCHEMA_PATH = ROOT / "schemas" / "practice-profile.schema.json"
 
 REQUIRED_TOP_LEVEL = ["practice", "readiness", "systems", "flows", "vendors", "ai_workflows", "downtime"]
 REQUIRED_PRACTICE = ["name", "type", "staff_count", "locations", "review_period", "security_owner", "technical_owner"]
@@ -41,6 +51,71 @@ VALID_RISKS = {"low", "medium", "high", "critical"}
 VALID_AI_DECISIONS = {"allowed", "restricted", "prohibited"}
 
 
+@lru_cache(maxsize=1)
+def profile_schema() -> dict[str, Any]:
+    return json.loads(PROFILE_SCHEMA_PATH.read_text(encoding="utf-8"))
+
+
+@lru_cache(maxsize=1)
+def profile_validator() -> Draft202012Validator:
+    validator = Draft202012Validator(profile_schema())
+    validator.check_schema(profile_schema())
+    return validator
+
+
+def json_path(path: Any) -> str:
+    parts = ["profile"]
+    for item in path:
+        if isinstance(item, int):
+            parts[-1] = f"{parts[-1]}[{item}]"
+        else:
+            parts.append(str(item))
+    return ".".join(parts)
+
+
+def expected_type(schema_type: Any) -> str:
+    if isinstance(schema_type, list):
+        return " or ".join(str(item) for item in schema_type)
+    return str(schema_type)
+
+
+def required_fields_error(error: JsonSchemaValidationError) -> str:
+    if isinstance(error.instance, dict):
+        missing = [field for field in error.validator_value if field not in error.instance]
+    else:
+        missing = list(error.validator_value)
+    return f"{json_path(error.absolute_path)} missing required field(s): {', '.join(str(field) for field in missing)}"
+
+
+def enum_error(error: JsonSchemaValidationError) -> str:
+    choices = ", ".join(str(choice) for choice in error.validator_value)
+    return f"{json_path(error.absolute_path)} must be one of {choices}"
+
+
+def additional_properties_error(error: JsonSchemaValidationError) -> str:
+    properties = re.findall(r"'([^']+)'", error.message)
+    if properties:
+        return f"{json_path(error.absolute_path)} contains unknown field(s): {', '.join(properties)}"
+    return f"{json_path(error.absolute_path)} contains unknown field(s)"
+
+
+def format_schema_error(error: JsonSchemaValidationError) -> str:
+    path = json_path(error.absolute_path)
+    if error.validator == "required":
+        return required_fields_error(error)
+    if error.validator == "type":
+        return f"{path} must be {expected_type(error.validator_value)}"
+    if error.validator == "enum":
+        return enum_error(error)
+    if error.validator == "minLength":
+        return f"{path} must not be empty"
+    if error.validator == "minimum":
+        return f"{path} must be at least {error.validator_value}"
+    if error.validator == "additionalProperties":
+        return additional_properties_error(error)
+    return f"{path} failed {error.validator} validation"
+
+
 def require_fields(mapping: dict[str, Any], fields: list[str], context: str) -> None:
     missing = [field for field in fields if field not in mapping]
     if missing:
@@ -63,36 +138,13 @@ def require_bool(value: Any, context: str) -> None:
 
 
 def validate_profile(profile: dict[str, Any]) -> None:
-    if not isinstance(profile, dict):
-        raise ValidationError("profile must be a YAML object")
-    require_fields(profile, REQUIRED_TOP_LEVEL, "profile")
-    require_fields(profile["practice"], REQUIRED_PRACTICE, "practice")
-    require_fields(profile["readiness"], REQUIRED_READINESS, "readiness")
-
-    for field in REQUIRED_READINESS:
-        require_bool(profile["readiness"][field], f"readiness.{field}")
-
-    for index, system in enumerate(require_list(profile, "systems")):
-        require_fields(system, REQUIRED_SYSTEM, f"systems[{index}]")
-
-    for index, flow in enumerate(require_list(profile, "flows")):
-        require_fields(flow, REQUIRED_FLOW, f"flows[{index}]")
-        require_bool(flow["baa_needed"], f"flows[{index}].baa_needed")
-        validate_risk(flow["risk"], f"flows[{index}].risk")
-
-    for index, vendor in enumerate(require_list(profile, "vendors")):
-        require_fields(vendor, REQUIRED_VENDOR, f"vendors[{index}]")
-        require_bool(vendor["touches_ephi"], f"vendors[{index}].touches_ephi")
-        validate_risk(vendor["risk"], f"vendors[{index}].risk")
-
-    for index, workflow in enumerate(require_list(profile, "ai_workflows")):
-        require_fields(workflow, REQUIRED_AI_WORKFLOW, f"ai_workflows[{index}]")
-        if workflow["decision"] not in VALID_AI_DECISIONS:
-            raise ValidationError(f"ai_workflows[{index}].decision must be one of {', '.join(sorted(VALID_AI_DECISIONS))}")
-
-    require_fields(profile["downtime"], REQUIRED_DOWNTIME, "downtime")
-    if not isinstance(profile["downtime"]["critical_systems"], list):
-        raise ValidationError("downtime.critical_systems must be a list")
+    errors = sorted(profile_validator().iter_errors(profile), key=lambda err: [str(part) for part in err.absolute_path])
+    if errors:
+        formatted = [format_schema_error(error) for error in errors[:8]]
+        extra = len(errors) - len(formatted)
+        if extra:
+            formatted.append(f"{extra} additional validation error(s)")
+        raise ValidationError("profile schema validation failed:\n- " + "\n- ".join(formatted))
 
 
 def validate_risk(value: Any, context: str) -> None:

@@ -53,7 +53,7 @@ def validate_exchange_records(records: list[ExchangeRecord]) -> None:
 def records_to_csv(records: list[ExchangeRecord], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=EXCHANGE_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=EXCHANGE_FIELDS, lineterminator="\n")
         writer.writeheader()
         for record in records:
             writer.writerow(record.as_row())
