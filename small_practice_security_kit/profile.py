@@ -17,6 +17,7 @@ def load_profile(path: Path, *, validate: bool = True) -> dict[str, Any]:
 
 
 def write_profile(profile: dict[str, Any], path: Path) -> None:
+    validate_profile(profile)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8", newline="\n")
 

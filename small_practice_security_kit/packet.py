@@ -405,7 +405,7 @@ def render_html(markdown: str, profile: dict) -> str:
 """
 
 
-def build_packet(profile_path: Path, output_root: Path = OUT) -> Path:
+def build_packet(profile_path: Path, output_root: Path = OUT, *, generated_at: str | None = None) -> Path:
     profile = load_profile(profile_path)
     sensitive_findings = blocking_findings(profile)
     if sensitive_findings:
@@ -437,6 +437,7 @@ def build_packet(profile_path: Path, output_root: Path = OUT) -> Path:
         artifact_names=[*docs.keys(), "review-packet.md", "review-packet.html"],
         risk=risk,
         gaps=gaps,
+        generated_at=generated_at,
     )
     (out_dir / "packet-manifest.json").write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     return out_dir

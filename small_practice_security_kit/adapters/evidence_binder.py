@@ -124,7 +124,7 @@ def export_binder_index(profile_path: Path, output_dir: Path | None = None) -> P
     output_dir.mkdir(parents=True, exist_ok=True)
     rows = build_binder_rows(profile)
     with (output_dir / "evidence-binder-index.csv").open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fieldnames=BINDER_FIELDS)
+        writer = csv.DictWriter(handle, fieldnames=BINDER_FIELDS, lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
     markdown = ["# Evidence Binder Export", "", "Target companion repo: `hipaa-evidence-binder-template`", "", "| Evidence ID | Section | Priority | Frequency | Evidence Needed |", "|---|---|---|---|---|"]
