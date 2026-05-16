@@ -10,7 +10,7 @@ It is designed for synthetic demos, founder/consultant walkthroughs, and first-p
 
 ## What Sprint Mode Is Not
 
-Sprint Mode is not legal advice, HIPAA certification, breach determination, cyber insurance advice, penetration testing, MDR, SOC, vendor approval, AI tool approval for PHI, or a formal Security Risk Analysis opinion.
+Sprint Mode is not legal advice, does not certify any legal or regulatory requirement, does not decide incident reporting duties, is not cyber insurance advice, and is not penetration testing, MDR, SOC, vendor acceptance, AI production-use authorization, or a formal Security Risk Analysis.
 
 It does not verify real contracts, BAAs, access lists, logs, backup restores, insurance questionnaires, vendor claims, or production evidence.
 
@@ -25,8 +25,8 @@ It does not verify real contracts, BAAs, access lists, logs, backup restores, in
 | Access/offboarding review | Identify MFA, access review, and offboarding gaps | `owner-msp-handoff.md` |
 | Downtime/ransomware review | Identify backup, restore, downtime, and tabletop gaps | `downtime-ransomware-tabletop.md` |
 | Findings/risk register | Convert findings into owner/MSP action rows | `risk-register.csv` |
-| Evidence packet/export | Build packet, manifest, and evidence index | `review-packet.md`, `review-packet.html`, `packet-manifest.json`, `evidence-index.json` |
-| Owner/MSP handoff | Make questions and next actions explicit | `owner-msp-handoff.md`, `handoff-actions.csv` |
+| Evidence packet/export | Build packet, manifest, evidence index, and collection checklist | `review-packet.md`, `review-packet.html`, `packet-manifest.json`, `evidence-index.json`, `evidence-collection-checklist.md` |
+| Owner/MSP handoff | Make questions and next actions explicit | `owner-msp-handoff.md`, `handoff-actions.csv`, `owner-action-plan.md`, `msp-remediation-brief.md` |
 
 ## Data Contracts
 
@@ -35,6 +35,7 @@ Sprint Mode writes contract-oriented outputs for later private app import:
 - `sprint-summary.json` validates against `schemas/sprint-summary.schema.json`.
 - `evidence-index.json` validates against `schemas/evidence-index.schema.json`.
 - `risk-register.csv` and `handoff-actions.csv` include audience, recipient, owner, stage, priority, evidence reference, artifact reference, and 30/60/90 bucket fields.
+- `sprint-summary.json` includes `offering_summary` for private-app import of audience lanes, source anchors, first-week actions, artifact checklist, boundary statements, and stage-to-source mapping.
 
 ## Accepted Inputs
 
@@ -60,6 +61,13 @@ creates `out/family_dental_clinic/` with the existing packet artifacts plus:
 - `sprint-index.md`
 - `sprint-client-readout.md`
 - `sprint-command-center.html`
+- `sprint-offering-readout.md`
+- `owner-action-plan.md`
+- `msp-remediation-brief.md`
+- `vendor-baa-ai-questionnaire.md`
+- `evidence-collection-checklist.md`
+- `day-one-workshop-agenda.md`
+- `source-map.md`
 - `sprint-summary.json`
 - `risk-register.csv`
 - `evidence-index.json`

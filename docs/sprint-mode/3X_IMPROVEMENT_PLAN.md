@@ -13,7 +13,7 @@ What works:
 - The public runner already builds the sprint packet with one command.
 - The existing outputs cover stage status, risk rows, evidence references, handoff rows, packet artifacts, and binder-compatible exports.
 - The synthetic sample has useful small-practice pressure points: EHR MFA, access review, stale backup restore evidence, vendor/BAA gaps, AI workflow boundaries, and cyber insurance evidence pressure.
-- The first-pass docs define clear boundaries: reference-only evidence, no PHI, no secrets, no certification, no legal advice, no breach determination.
+- The first-pass docs define clear boundaries: reference-only evidence, no PHI, no secrets, no certification, no legal advice, and no incident reporting decision.
 - Tests already cover CLI output creation, expected stage ordering, reference-only evidence exports, and sensitive-data blocking.
 
 What still feels thin:

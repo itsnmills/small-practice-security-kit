@@ -65,6 +65,6 @@ out/family_dental_clinic/
 - Evidence references, not raw evidence archives.
 - No legal advice.
 - No HIPAA certification or compliance guarantee.
-- No breach determination.
+- No incident reporting decision.
 - No invasive testing or managed SOC/MDR claim.
 - Qualified reviewers still need to validate real contracts, BAAs, access lists, logs, backups, policies, and incident obligations.

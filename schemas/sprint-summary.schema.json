@@ -19,6 +19,7 @@
     "top_risks",
     "evidence_gap_summary",
     "handoff_lanes",
+    "offering_summary",
     "counts",
     "outputs",
     "contract_artifacts",
@@ -188,6 +189,9 @@
       "items": {
         "$ref": "#/$defs/handoff_lane"
       }
+    },
+    "offering_summary": {
+      "$ref": "#/$defs/offering_summary"
     },
     "counts": {
       "type": "object",
@@ -554,6 +558,301 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "offering_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "positioning",
+        "audience_lanes",
+        "source_anchors",
+        "stage_source_map",
+        "first_7_days_actions",
+        "top_value_outcomes",
+        "artifact_list",
+        "boundary_statements",
+        "escalation_triggers",
+        "private_app_import"
+      ],
+      "properties": {
+        "name": {
+          "const": "Velari Cyber Readiness Sprint for Small Healthcare Practices"
+        },
+        "positioning": {
+          "type": "string"
+        },
+        "audience_lanes": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "$ref": "#/$defs/offering_audience_lane"
+          }
+        },
+        "source_anchors": {
+          "type": "array",
+          "minItems": 4,
+          "items": {
+            "$ref": "#/$defs/offering_source_anchor"
+          }
+        },
+        "stage_source_map": {
+          "type": "array",
+          "minItems": 9,
+          "maxItems": 9,
+          "items": {
+            "$ref": "#/$defs/offering_stage_source_map"
+          }
+        },
+        "first_7_days_actions": {
+          "type": "array",
+          "minItems": 7,
+          "items": {
+            "$ref": "#/$defs/offering_first_week_action"
+          }
+        },
+        "top_value_outcomes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifact_list": {
+          "type": "array",
+          "minItems": 7,
+          "items": {
+            "$ref": "#/$defs/offering_artifact"
+          }
+        },
+        "boundary_statements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "escalation_triggers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "private_app_import": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "contract_key",
+            "import_use",
+            "review_before_import"
+          ],
+          "properties": {
+            "contract_key": {
+              "const": "offering_summary"
+            },
+            "import_use": {
+              "type": "string"
+            },
+            "review_before_import": {
+              "const": true
+            }
+          }
+        }
+      }
+    },
+    "offering_audience_lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "value",
+        "primary_owner",
+        "primary_artifacts",
+        "first_questions"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "practice_owner",
+            "msp",
+            "vendor_baa_ai_reviewer",
+            "legal_compliance_reviewer"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        },
+        "primary_owner": {
+          "type": "string"
+        },
+        "primary_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "first_questions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "offering_source_anchor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "urls",
+        "why_it_matters",
+        "how_this_changes_the_sprint"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "hhs_cyber_gateway",
+            "hhs_405d_hicp",
+            "cisa_cpgs",
+            "onc_ocr_sra_tool"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "urls": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "why_it_matters": {
+          "type": "string"
+        },
+        "how_this_changes_the_sprint": {
+          "type": "string"
+        }
+      }
+    },
+    "offering_stage_source_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stage_id",
+        "stage_name",
+        "control_theme",
+        "source_ids",
+        "source_titles",
+        "how_this_source_changes_what_we_ask",
+        "artifact_refs"
+      ],
+      "properties": {
+        "stage_id": {
+          "enum": [
+            "intake",
+            "patient_data_outside_ehr_map",
+            "ai_phi_review",
+            "vendor_baa_review",
+            "access_offboarding_review",
+            "downtime_ransomware_review",
+            "findings_risk_register",
+            "evidence_packet_export",
+            "owner_msp_handoff"
+          ]
+        },
+        "stage_name": {
+          "type": "string"
+        },
+        "control_theme": {
+          "type": "string"
+        },
+        "source_ids": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_titles": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "how_this_source_changes_what_we_ask": {
+          "type": "string"
+        },
+        "artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "offering_first_week_action": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "day",
+        "lane",
+        "stage_id",
+        "action",
+        "evidence_request",
+        "artifact_ref"
+      ],
+      "properties": {
+        "day": {
+          "type": "string"
+        },
+        "lane": {
+          "type": "string"
+        },
+        "stage_id": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "evidence_request": {
+          "type": "string"
+        },
+        "artifact_ref": {
+          "type": "string"
+        }
+      }
+    },
+    "offering_artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "purpose",
+        "audience"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
         }
       }
     }

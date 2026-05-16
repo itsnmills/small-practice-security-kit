@@ -251,7 +251,7 @@ def limitations_appendix(profile: dict) -> str:
 - It is not legal advice.
 - It is not HIPAA compliance certification.
 - It is not a formal HIPAA Security Risk Analysis opinion.
-- It is not breach determination.
+- It does not decide whether an incident is reportable.
 - It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.
 - It does not prove that a vendor, workflow, system, or AI tool is safe for PHI/ePHI.
 - It does not verify real contracts, BAAs, subprocessors, access lists, backup restores, logs, or insurance requirements.
@@ -397,7 +397,7 @@ def render_html(markdown: str, profile: dict) -> str:
         <div><strong>Technical Owner</strong>{html.escape(str(practice['technical_owner']))}</div>
       </div>
     </header>
-    <div class="notice">This packet is an operational planning aid. It is not legal advice, HIPAA certification, breach determination, or a substitute for qualified review. Do not include PHI, secrets, credentials, or real incident details.</div>
+    <div class="notice">This packet is an operational planning aid. It is not legal advice, does not establish legal or regulatory status, does not decide incident reporting duties, and is not a substitute for qualified review. Do not include PHI, secrets, credentials, or real incident details.</div>
     {body}
   </main>
 </body>

@@ -306,7 +306,7 @@ def build_packet_manifest(
         "artifacts": [artifact_entry(out_dir, name) for name in artifact_names],
         "limitations": [
             "Operational planning aid only.",
-            "Not legal advice, HIPAA certification, breach determination, penetration testing, vulnerability scanning, MDR, SOC, or a formal Security Risk Analysis opinion.",
+            "Not legal advice, not legal or regulatory status, not an incident reporting decision, not penetration testing, vulnerability scanning, MDR, SOC, or a formal Security Risk Analysis.",
             "Evidence references must not include PHI, patient identifiers, production secrets, private URLs, or raw restricted evidence.",
         ],
     }

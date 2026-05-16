@@ -9,6 +9,16 @@ from typing import Any
 
 from .adapters.evidence_binder import export_binder_index
 from .manifest import utc_now
+from .offering import (
+    build_offering_summary,
+    render_day_one_workshop_agenda,
+    render_evidence_collection_checklist,
+    render_msp_remediation_brief,
+    render_owner_action_plan,
+    render_source_map,
+    render_sprint_offering_readout,
+    render_vendor_baa_ai_questionnaire,
+)
 from .packet import OUT, build_packet, risk_level
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
@@ -31,6 +41,13 @@ SPRINT_OUTPUTS = [
     "sprint-index.md",
     "sprint-client-readout.md",
     "sprint-command-center.html",
+    "sprint-offering-readout.md",
+    "owner-action-plan.md",
+    "msp-remediation-brief.md",
+    "vendor-baa-ai-questionnaire.md",
+    "evidence-collection-checklist.md",
+    "day-one-workshop-agenda.md",
+    "source-map.md",
     "sprint-summary.json",
     "risk-register.csv",
     "evidence-index.json",
@@ -472,6 +489,7 @@ def build_summary(
     high_or_critical = [risk for risk in risk_rows if risk["severity"] in {"high", "critical"}]
     stages_needing_evidence = [stage for stage in stages if stage["status"] == "needs_evidence"]
     evidence_gap_summary = build_evidence_gap_summary(evidence_index, stages)
+    offering_summary = build_offering_summary(profile, stages)
     return {
         "schema_version": SPRINT_SCHEMA_VERSION,
         "sprint_id": f"sprint_{slugify(profile['practice']['name'])}_{slugify(str(profile['practice']['review_period']))}",
@@ -499,6 +517,7 @@ def build_summary(
         "top_risks": risk_rows[:8],
         "evidence_gap_summary": evidence_gap_summary,
         "handoff_lanes": build_handoff_lanes(handoff_rows),
+        "offering_summary": offering_summary,
         "counts": {
             "stages": len(stages),
             "stages_needing_evidence": sum(1 for stage in stages if stage["status"] == "needs_evidence"),
@@ -515,11 +534,11 @@ def build_summary(
         "contract_artifacts": {
             "sprint_summary_schema": "schemas/sprint-summary.schema.json",
             "evidence_index_schema": "schemas/evidence-index.schema.json",
-            "private_app_import_hint": "Import sprint-summary.json for stages/actions and evidence-index.json for reference-only evidence gaps.",
+            "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary and evidence-index.json for reference-only evidence gaps.",
         },
         "limitations": [
             "Public Sprint Mode uses synthetic or client-supplied reference metadata only.",
-            "It does not prove HIPAA compliance, provide legal advice, determine breach status, or replace a formal Security Risk Analysis.",
+            "It does not establish legal or regulatory status, provide legal advice, decide incident reporting duties, or replace a formal Security Risk Analysis.",
             "Do not include PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details.",
         ],
     }
@@ -564,7 +583,7 @@ Review period: **{practice['review_period']}**
 
 Overall readiness signal: **{summary['overall_risk']}**
 
-This public Sprint Mode packet is a local, reference-only planning aid. It does not provide legal advice, HIPAA certification, breach determination, insurer acceptance, or a formal Security Risk Analysis opinion. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+This public Sprint Mode packet is a local, reference-only planning aid. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer acceptance, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 
 ## Stage Status
 
@@ -581,11 +600,12 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 ## Owner/MSP Use
 
 - Open `sprint-command-center.html` first for the one-page readout.
+- Use `sprint-offering-readout.md` and `owner-action-plan.md` for the real-offering walkthrough.
 - Use `sprint-client-readout.md` for a portable Markdown summary.
 - Start with `sprint-summary.json` for stage status and counts.
 - Use `risk-register.csv` to assign owners and remediation priority.
 - Use `evidence-index.json` and `evidence-binder-export/` to collect reference-only evidence.
-- Use `owner-msp-handoff.md` and `handoff-actions.csv` to coordinate owner, MSP, vendor, and legal/compliance reviewer follow-up.
+- Use `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `source-map.md`, `owner-msp-handoff.md`, and `handoff-actions.csv` to coordinate owner, MSP, vendor, and legal/compliance reviewer follow-up.
 """
 
 
@@ -646,7 +666,7 @@ Readiness signal: **{summary['readiness_signal']['label']}**
 
 Target delivery signal: **{summary['target_delivery_signal']['status']}**
 
-This readout is a local, reference-only planning artifact. It does not provide legal advice, HIPAA certification, breach determination, insurer acceptance, vendor approval, AI tool approval for PHI, or a formal Security Risk Analysis opinion. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+This readout is a local, reference-only planning artifact. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer or vendor acceptance, authorize AI production use, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 
 ## Executive Snapshot
 
@@ -675,6 +695,13 @@ This readout is a local, reference-only planning artifact. It does not provide l
 ## Generated Artifacts
 
 - `sprint-command-center.html`
+- `sprint-offering-readout.md`
+- `owner-action-plan.md`
+- `msp-remediation-brief.md`
+- `vendor-baa-ai-questionnaire.md`
+- `evidence-collection-checklist.md`
+- `day-one-workshop-agenda.md`
+- `source-map.md`
 - `sprint-summary.json`
 - `evidence-index.json`
 - `risk-register.csv`
@@ -790,6 +817,36 @@ def render_command_center(
         artifact_items.append(f"<li>{_h(name)}</li>")
     artifact_items.append("<li>evidence-binder-export/</li>")
 
+    offering = summary["offering_summary"]
+    value_items = "".join(f"<li>{_h(item)}</li>" for item in offering["top_value_outcomes"][:5])
+    first_week_items = "".join(
+        f"""
+        <li>
+          <strong>{_h(action['day'])} &middot; {_h(action['lane'])}</strong>
+          <span>{_h(action['artifact_ref'])}</span>
+          {_h(action['action'])}
+        </li>
+        """
+        for action in offering["first_7_days_actions"][:7]
+    )
+    offering_lane_items = "".join(
+        f"""
+        <article class="offering-lane">
+          <h3>{_h(lane['label'])}</h3>
+          <p>{_h(lane['value'])}</p>
+        </article>
+        """
+        for lane in offering["audience_lanes"]
+    )
+    source_theme_items = "".join(
+        f"<li><strong>{_h(source['title'])}</strong><span>{_h(source['how_this_changes_the_sprint'])}</span></li>"
+        for source in offering["source_anchors"]
+    )
+    offering_artifact_items = "".join(
+        f"<li><strong>{_h(item['path'])}</strong><span>{_h(item['purpose'])}</span></li>"
+        for item in offering["artifact_list"]
+    )
+
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -895,10 +952,31 @@ def render_command_center(
     }}
     .actions li {{ margin: 0 0 12px; font-size: 13px; }}
     .actions li span {{ display: block; color: var(--muted); font-size: 12px; margin: 2px 0; }}
+    .offering {{
+      background: #f0f6f2;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }}
+    .offering-grid {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr); gap: 14px; }}
+    .offering ul {{ margin: 0; padding-left: 18px; }}
+    .offering li {{ margin-bottom: 8px; font-size: 13px; }}
+    .offering li span {{ display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }}
+    .offering-lanes {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }}
+    .offering-lane {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }}
+    .offering-lane p {{ color: var(--muted); font-size: 12px; margin: 0; }}
+    .source-themes, .offering-artifacts {{ columns: 2; }}
     .footer-note {{ color: var(--muted); font-size: 12px; margin-top: 26px; }}
     @media (max-width: 980px) {{
       .hero, .grid {{ grid-template-columns: 1fr; }}
       .stages {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .offering-grid, .offering-lanes {{ grid-template-columns: 1fr; }}
+      .source-themes, .offering-artifacts {{ columns: 1; }}
     }}
     @media (max-width: 640px) {{
       .shell {{ padding: 18px 14px 42px; }}
@@ -914,7 +992,7 @@ def render_command_center(
         <div class="eyebrow">Velari Sprint Mode</div>
         <h1>{_h(practice['label'])} Sprint Command Center</h1>
         <p class="lead">One local readout for sprint status, top risks, evidence gaps, handoff lanes, and generated artifacts. This page is self-contained and makes no external network calls.</p>
-        <div class="boundary">Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details. This is not legal advice, HIPAA certification, breach determination, insurer acceptance, vendor approval, AI approval for PHI, or a formal Security Risk Analysis opinion.</div>
+        <div class="boundary">Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details. This is not legal advice, does not establish legal or regulatory status, does not decide incident reporting duties, and does not replace a formal Security Risk Analysis.</div>
       </div>
       <aside class="metrics" aria-label="Sprint metrics">
         <div class="metric"><span>Readiness signal</span><strong>{_h(summary['readiness_signal']['label'])}</strong></div>
@@ -923,6 +1001,31 @@ def render_command_center(
         <div class="metric"><span>Evidence needing attention</span><strong>{int(summary['evidence_gap_summary']['needs_attention'])}</strong></div>
       </aside>
     </header>
+
+    <section class="offering">
+      <h2>Offering Mode</h2>
+      <div class="offering-grid">
+        <div>
+          <h3>Top Value Delivered</h3>
+          <ul>{value_items}</ul>
+        </div>
+        <div>
+          <h3>First 7 Days</h3>
+          <ol>{first_week_items}</ol>
+        </div>
+      </div>
+      <div class="offering-lanes">{offering_lane_items}</div>
+      <div class="offering-grid">
+        <div>
+          <h3>Source-Backed Themes</h3>
+          <ul class="source-themes">{source_theme_items}</ul>
+        </div>
+        <div>
+          <h3>Artifact Checklist</h3>
+          <ul class="offering-artifacts">{offering_artifact_items}</ul>
+        </div>
+      </div>
+    </section>
 
     <section>
       <h2>Stage Status</h2>
@@ -1000,6 +1103,13 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     sprint_index_path = out_dir / "sprint-index.md"
     client_readout_path = out_dir / "sprint-client-readout.md"
     command_center_path = out_dir / "sprint-command-center.html"
+    offering_readout_path = out_dir / "sprint-offering-readout.md"
+    owner_action_plan_path = out_dir / "owner-action-plan.md"
+    msp_remediation_brief_path = out_dir / "msp-remediation-brief.md"
+    vendor_questionnaire_path = out_dir / "vendor-baa-ai-questionnaire.md"
+    evidence_checklist_path = out_dir / "evidence-collection-checklist.md"
+    workshop_agenda_path = out_dir / "day-one-workshop-agenda.md"
+    source_map_path = out_dir / "source-map.md"
     summary_path = out_dir / "sprint-summary.json"
     risk_path = out_dir / "risk-register.csv"
     evidence_path = out_dir / "evidence-index.json"
@@ -1007,6 +1117,29 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
 
     sprint_index_path.write_text(render_sprint_index(summary, risk_rows), encoding="utf-8", newline="\n")
     client_readout_path.write_text(render_client_readout(summary, risk_rows, handoff_rows), encoding="utf-8", newline="\n")
+    offering_readout_path.write_text(
+        render_sprint_offering_readout(summary, risk_rows, handoff_rows),
+        encoding="utf-8",
+        newline="\n",
+    )
+    owner_action_plan_path.write_text(render_owner_action_plan(summary, risk_rows), encoding="utf-8", newline="\n")
+    msp_remediation_brief_path.write_text(
+        render_msp_remediation_brief(summary, risk_rows, handoff_rows),
+        encoding="utf-8",
+        newline="\n",
+    )
+    vendor_questionnaire_path.write_text(
+        render_vendor_baa_ai_questionnaire(profile, summary),
+        encoding="utf-8",
+        newline="\n",
+    )
+    evidence_checklist_path.write_text(
+        render_evidence_collection_checklist(profile, summary, evidence_index),
+        encoding="utf-8",
+        newline="\n",
+    )
+    workshop_agenda_path.write_text(render_day_one_workshop_agenda(summary, profile), encoding="utf-8", newline="\n")
+    source_map_path.write_text(render_source_map(summary), encoding="utf-8", newline="\n")
     command_center_path.write_text(
         render_command_center(summary, risk_rows, handoff_rows, evidence_index),
         encoding="utf-8",
@@ -1058,6 +1191,13 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             sprint_index_path,
             client_readout_path,
             command_center_path,
+            offering_readout_path,
+            owner_action_plan_path,
+            msp_remediation_brief_path,
+            vendor_questionnaire_path,
+            evidence_checklist_path,
+            workshop_agenda_path,
+            source_map_path,
             summary_path,
             risk_path,
             evidence_path,

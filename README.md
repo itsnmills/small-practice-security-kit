@@ -132,13 +132,14 @@ Start with:
 out/family_dental_clinic/sprint-command-center.html
 ```
 
-Sprint Mode also writes `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
+Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
 
-The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`.
+The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping.
 
 More details:
 
 - [`docs/sprint-mode/product-contract.md`](docs/sprint-mode/product-contract.md)
+- [`docs/sprint-mode/OFFERING_BLUEPRINT.md`](docs/sprint-mode/OFFERING_BLUEPRINT.md)
 - [`docs/sprint-mode/delivery-playbook.md`](docs/sprint-mode/delivery-playbook.md)
 - [`docs/sprint-mode/output-map.md`](docs/sprint-mode/output-map.md)
 
@@ -201,7 +202,7 @@ Read the full boundary before adapting this for real work: [`docs/security-model
 
 ## What this is not
 
-This is not legal advice, HIPAA certification, a formal Security Risk Analysis opinion, penetration testing, breach determination, managed detection and response, a SOC, or a substitute for qualified legal, security, compliance, or incident response professionals.
+This is not legal advice, does not certify any legal or regulatory requirement, does not decide incident reporting duties, and is not a formal Security Risk Analysis, penetration testing, managed detection and response, a SOC, or a substitute for qualified legal, security, compliance, or incident response professionals.
 
 Use it as a practical organizer and first-pass evidence workflow.
 

@@ -79,7 +79,7 @@ Observed results:
 ## Limitations
 
 - Public Sprint Mode is a local-first demo and packet organizer.
-- It does not provide legal advice, HIPAA certification, breach determination, cyber insurance advice, vendor approval, AI tool approval for PHI, or a formal Security Risk Analysis opinion.
+- It does not provide legal advice, certify any legal or regulatory requirement, decide incident reporting duties, provide cyber insurance advice, confer vendor acceptance, authorize AI production use, or replace a formal Security Risk Analysis.
 - It does not verify real contracts, BAAs, access lists, backup restores, screenshots, logs, vendor claims, or insurance questionnaire answers.
 - It stores evidence references and status summaries only, not raw evidence.
 - The public sample is synthetic and must not be replaced with PHI, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details.

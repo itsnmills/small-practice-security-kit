@@ -410,7 +410,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
           <a class="link-card" href="review-packet.md"><strong>Markdown packet</strong><small>Portable source file</small></a>
         </div>
       </section>
-      <p class="footer">Generated locally by Small Practice Security Kit. This is not legal advice, HIPAA certification, breach determination, or a substitute for qualified professional review.</p>
+      <p class="footer">Generated locally by Small Practice Security Kit. This is not legal advice, does not certify any legal or regulatory requirement, does not decide incident reporting duties, and is not a substitute for qualified professional review.</p>
     </main>
   </div>
 </body>

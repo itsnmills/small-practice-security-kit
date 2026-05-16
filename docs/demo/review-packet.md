@@ -198,7 +198,7 @@ Initial risk level: **High**
 - It is not legal advice.
 - It is not HIPAA compliance certification.
 - It is not a formal HIPAA Security Risk Analysis opinion.
-- It is not breach determination.
+- It does not decide whether an incident is reportable.
 - It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.
 - It does not prove that a vendor, workflow, system, or AI tool is safe for PHI/ePHI.
 - It does not verify real contracts, BAAs, subprocessors, access lists, backup restores, logs, or insurance requirements.

@@ -25,10 +25,12 @@ PHI_PLACEHOLDER_PATTERNS = [
     re.compile(r"Jane Doe", re.IGNORECASE),
 ]
 OVERCLAIM_PATTERNS = [
-    re.compile(r"\bHIPAA[- ]compliant\b", re.IGNORECASE),
-    re.compile(r"\bguaranteed compliance\b", re.IGNORECASE),
-    re.compile(r"\bcertifies compliance\b", re.IGNORECASE),
-    re.compile(r"\bapproved for PHI\b", re.IGNORECASE),
+    re.compile(r"\bHIPAA[- ]" + r"compliant\b", re.IGNORECASE),
+    re.compile(r"\bguaranteed " + r"compliance\b", re.IGNORECASE),
+    re.compile(r"\bcertifies " + r"compliance\b", re.IGNORECASE),
+    re.compile(r"\bapproved for " + r"PHI\b", re.IGNORECASE),
+    re.compile(r"\baudit-ready " + r"guarantee\b", re.IGNORECASE),
+    re.compile(r"\bbreach " + r"determination\b", re.IGNORECASE),
 ]
 
 
@@ -54,6 +56,13 @@ class SprintModeTests(unittest.TestCase):
                 "sprint-index.md",
                 "sprint-client-readout.md",
                 "sprint-command-center.html",
+                "sprint-offering-readout.md",
+                "owner-action-plan.md",
+                "msp-remediation-brief.md",
+                "vendor-baa-ai-questionnaire.md",
+                "evidence-collection-checklist.md",
+                "day-one-workshop-agenda.md",
+                "source-map.md",
                 "sprint-summary.json",
                 "risk-register.csv",
                 "evidence-index.json",
@@ -85,6 +94,7 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("target_delivery_signal", summary)
         self.assertIn("evidence_gap_summary", summary)
         self.assertIn("handoff_lanes", summary)
+        self.assertIn("offering_summary", summary)
         self.assertIn("top_risks", summary)
         self.assertIn("contract_artifacts", summary)
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
@@ -93,6 +103,16 @@ class SprintModeTests(unittest.TestCase):
         self.assertGreater(summary["evidence_gap_summary"]["needs_attention"], 0)
         self.assertTrue(summary["handoff_lanes"])
         self.assertTrue(summary["top_risks"])
+        self.assertEqual(
+            summary["offering_summary"]["name"],
+            "Velari Cyber Readiness Sprint for Small Healthcare Practices",
+        )
+        self.assertGreaterEqual(len(summary["offering_summary"]["audience_lanes"]), 4)
+        self.assertGreaterEqual(len(summary["offering_summary"]["source_anchors"]), 4)
+        self.assertGreaterEqual(len(summary["offering_summary"]["first_7_days_actions"]), 7)
+        self.assertGreaterEqual(len(summary["offering_summary"]["artifact_list"]), 7)
+        self.assertTrue(summary["offering_summary"]["boundary_statements"])
+        self.assertEqual(summary["offering_summary"]["private_app_import"]["contract_key"], "offering_summary")
         for stage in summary["stage_statuses"]:
             self.assertIn("next_action", stage)
             self.assertTrue(stage["artifact_refs"])
@@ -126,6 +146,14 @@ class SprintModeTests(unittest.TestCase):
                     (out_dir / "sprint-index.md").read_text(encoding="utf-8"),
                     (out_dir / "sprint-client-readout.md").read_text(encoding="utf-8"),
                     (out_dir / "sprint-command-center.html").read_text(encoding="utf-8"),
+                    (out_dir / "sprint-offering-readout.md").read_text(encoding="utf-8"),
+                    (out_dir / "owner-action-plan.md").read_text(encoding="utf-8"),
+                    (out_dir / "msp-remediation-brief.md").read_text(encoding="utf-8"),
+                    (out_dir / "vendor-baa-ai-questionnaire.md").read_text(encoding="utf-8"),
+                    (out_dir / "evidence-collection-checklist.md").read_text(encoding="utf-8"),
+                    (out_dir / "day-one-workshop-agenda.md").read_text(encoding="utf-8"),
+                    (out_dir / "source-map.md").read_text(encoding="utf-8"),
+                    (out_dir / "review-packet.md").read_text(encoding="utf-8"),
                     json.dumps(evidence, sort_keys=True),
                     json.dumps(risk_rows, sort_keys=True),
                     json.dumps(handoff_rows, sort_keys=True),
@@ -145,6 +173,36 @@ class SprintModeTests(unittest.TestCase):
             self.assertIsNone(pattern.search(combined), pattern.pattern)
         for pattern in OVERCLAIM_PATTERNS:
             self.assertIsNone(pattern.search(combined), pattern.pattern)
+
+    def test_real_offering_artifacts_include_practical_sections(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
+
+            offering_readout = (out_dir / "sprint-offering-readout.md").read_text(encoding="utf-8")
+            owner_plan = (out_dir / "owner-action-plan.md").read_text(encoding="utf-8")
+            msp_brief = (out_dir / "msp-remediation-brief.md").read_text(encoding="utf-8")
+            questionnaire = (out_dir / "vendor-baa-ai-questionnaire.md").read_text(encoding="utf-8")
+            evidence_checklist = (out_dir / "evidence-collection-checklist.md").read_text(encoding="utf-8")
+            workshop = (out_dir / "day-one-workshop-agenda.md").read_text(encoding="utf-8")
+            source_map = (out_dir / "source-map.md").read_text(encoding="utf-8")
+            command_center = (out_dir / "sprint-command-center.html").read_text(encoding="utf-8")
+
+        self.assertIn("## First 7 Days", offering_readout)
+        self.assertIn("## Questions To Send", offering_readout)
+        self.assertIn("## What This Does Not Prove", offering_readout)
+        self.assertIn("Do Not Upload Or Send PHI To This Public Tool", owner_plan)
+        self.assertIn("Questions To Send To The MSP", owner_plan)
+        self.assertIn("Expected proof", msp_brief)
+        self.assertIn("Stage reference", msp_brief)
+        self.assertIn("AI training-use", questionnaire)
+        self.assertIn("retention, deletion", questionnaire)
+        self.assertIn("MFA status screenshot", evidence_checklist)
+        self.assertIn("backup restore test note", evidence_checklist)
+        self.assertIn("Discovery Questions", workshop)
+        self.assertIn("Evidence Safety Boundaries", workshop)
+        self.assertIn("HHS Cyber Gateway", source_map)
+        self.assertIn("CISA Cybersecurity Performance Goals", source_map)
+        self.assertIn("Offering Mode", command_center)
 
     def test_sprint_blocks_high_confidence_sensitive_profile_data(self) -> None:
         profile = load_profile(PROFILE)
