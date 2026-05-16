@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velari.local/schemas/evidence-index.schema.json",
+  "title": "Velari Sprint Mode Evidence Index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "generated_at",
+    "source_manifest",
+    "data_boundary",
+    "binder_export",
+    "evidence_references"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2026-05-16"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_manifest": {
+      "const": "packet-manifest.json"
+    },
+    "data_boundary": {
+      "$ref": "#/$defs/data_boundary"
+    },
+    "binder_export": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "directory",
+        "artifacts",
+        "share_safety"
+      ],
+      "properties": {
+        "directory": {
+          "const": "evidence-binder-export"
+        },
+        "artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "share_safety": {
+          "const": "reference_only_no_phi_no_secret"
+        }
+      }
+    },
+    "evidence_references": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_reference"
+      }
+    }
+  },
+  "$defs": {
+    "data_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "phi_allowed",
+        "secrets_allowed",
+        "raw_evidence_allowed"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string"
+        },
+        "phi_allowed": {
+          "const": false
+        },
+        "secrets_allowed": {
+          "const": false
+        },
+        "raw_evidence_allowed": {
+          "const": false
+        }
+      }
+    },
+    "evidence_reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id",
+        "title",
+        "evidence_type",
+        "source_system",
+        "owner",
+        "status",
+        "date_observed",
+        "next_review_date",
+        "sensitivity_boundary",
+        "artifact_refs",
+        "notes"
+      ],
+      "properties": {
+        "evidence_id": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "evidence_type": {
+          "type": "string"
+        },
+        "source_system": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "missing",
+            "requested",
+            "partial",
+            "reviewed",
+            "outdated",
+            "not_applicable"
+          ]
+        },
+        "date_observed": {
+          "type": "string"
+        },
+        "next_review_date": {
+          "type": "string"
+        },
+        "sensitivity_boundary": {
+          "const": "reference_only_no_phi_no_secret"
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

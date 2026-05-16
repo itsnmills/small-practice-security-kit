@@ -2,11 +2,13 @@
 
 | Buyer/MSP/legal question | Artifact | Why it helps |
 |---|---|---|
-| What is the quickest human-readable starting point? | `sprint-index.md` | Shows stage status, top findings, generated files, and handoff path. |
-| What did the runner generate and what is the data boundary? | `sprint-summary.json` | Machine-readable stage status, counts, source profile hash, output list, and limitations. |
-| Which risks need owners and next actions? | `risk-register.csv` | CSV for sorting by severity, stage, owner, evidence status, and action. |
+| What is the quickest human-readable starting point? | `sprint-command-center.html` | Self-contained local readout for sprint status, stage stepper, top risks, evidence gaps, handoff lanes, generated artifacts, and boundary language. |
+| What concise client readout can be shared as Markdown? | `sprint-client-readout.md` | Portable summary of readiness signal, top risks, evidence gaps, handoff lanes, and next actions. |
+| What did the runner generate and what is the data boundary? | `sprint-summary.json` | Machine-readable stage status, readiness signal, evidence gap summary, handoff lanes, counts, source profile hash, output list, and limitations. |
+| Which risks need owners and next actions? | `risk-register.csv` | CSV for sorting by severity, stage, owner, recipient, evidence status, 30/60/90 bucket, and action. |
 | What evidence should exist without storing raw evidence? | `evidence-index.json` | Reference-only evidence overlay tied to `packet-manifest.json` and binder export files. |
-| What should the owner, MSP, vendor, or reviewer answer next? | `handoff-actions.csv` | Action rows grouped by audience, priority, stage, evidence reference, and artifact. |
+| What should the owner, MSP, vendor, or reviewer answer next? | `handoff-actions.csv` | Action rows grouped by audience, recipient, owner, priority, stage, evidence reference, artifact, and 30/60/90 bucket. |
+| What schemas define the private app import contract? | `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json` | Validates generated JSON structure before a future reviewed import. |
 | Where can I read the full packet? | `review-packet.md` and `review-packet.html` | Preserved complete Markdown and print-friendly packet. |
 | Where is the canonical generated manifest? | `packet-manifest.json` | Artifact hashes, evidence references, findings, roadmap items, and data boundary. |
 | Where is the patient-data-outside-EHR map? | `ephi-flow-map.md` | Systems and flows with evidence needs, BAA needs, and risk. |

@@ -25,11 +25,11 @@ Run:
 python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out
 ```
 
-Open `out/family_dental_clinic/sprint-index.md` first.
+Open `out/family_dental_clinic/sprint-command-center.html` first. Use `sprint-client-readout.md` when a concise Markdown readout is easier to review.
 
 ## 3. Owner Review
 
-Use `sprint-index.md` and `sprint-summary.json` to walk the owner through:
+Use `sprint-command-center.html`, `sprint-client-readout.md`, and `sprint-summary.json` to walk the owner through:
 
 - top stage statuses,
 - high-priority evidence gaps,
@@ -82,7 +82,7 @@ Use:
 
 - `risk-register.csv` for assigned findings,
 - `30-60-90-roadmap.md` for sequencing,
-- `handoff-actions.csv` for owner/MSP/vendor questions,
+- `handoff-actions.csv` for owner/MSP/vendor/legal reviewer questions,
 - `limitations-appendix.md` for the boundary statement.
 
 Close the sprint only after open questions have owners and next review dates.

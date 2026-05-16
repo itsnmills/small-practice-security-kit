@@ -1,0 +1,561 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velari.local/schemas/sprint-summary.schema.json",
+  "title": "Velari Sprint Mode Summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "sprint_id",
+    "generated_at",
+    "generator",
+    "source_profile",
+    "practice",
+    "overall_risk",
+    "readiness_signal",
+    "target_delivery_signal",
+    "data_boundary",
+    "stage_statuses",
+    "top_risks",
+    "evidence_gap_summary",
+    "handoff_lanes",
+    "counts",
+    "outputs",
+    "contract_artifacts",
+    "limitations"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2026-05-16"
+    },
+    "sprint_id": {
+      "type": "string",
+      "pattern": "^sprint_[a-z0-9_]+$"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "generator": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "mode"
+      ],
+      "properties": {
+        "name": {
+          "const": "small-practice-security-kit"
+        },
+        "mode": {
+          "const": "velari_sprint_mode_public_runner"
+        }
+      }
+    },
+    "source_profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256",
+        "input_path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\\\u0000]+$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "input_path": {
+          "type": "string",
+          "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))[^\\\\\\u0000]+$"
+        }
+      }
+    },
+    "practice": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "type",
+        "review_period",
+        "staff_count",
+        "locations"
+      ],
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "review_period": {
+          "type": "string"
+        },
+        "staff_count": {
+          "type": "integer"
+        },
+        "locations": {
+          "type": "integer"
+        }
+      }
+    },
+    "overall_risk": {
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "readiness_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "label",
+        "meaning",
+        "high_or_critical_findings",
+        "stages_needing_evidence"
+      ],
+      "properties": {
+        "label": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ]
+        },
+        "meaning": {
+          "type": "string"
+        },
+        "high_or_critical_findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stages_needing_evidence": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "target_delivery_signal": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "primary_blocker",
+        "next_artifact"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "needs_evidence_before_closeout",
+            "ready_for_client_readout"
+          ]
+        },
+        "primary_blocker": {
+          "type": "string"
+        },
+        "next_artifact": {
+          "const": "sprint-command-center.html"
+        }
+      }
+    },
+    "data_boundary": {
+      "$ref": "#/$defs/data_boundary"
+    },
+    "stage_statuses": {
+      "type": "array",
+      "minItems": 9,
+      "maxItems": 9,
+      "items": {
+        "$ref": "#/$defs/stage"
+      }
+    },
+    "top_risks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/risk"
+      }
+    },
+    "evidence_gap_summary": {
+      "$ref": "#/$defs/evidence_gap_summary"
+    },
+    "handoff_lanes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/handoff_lane"
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "stages",
+        "stages_needing_evidence",
+        "findings",
+        "high_or_critical_findings",
+        "evidence_references",
+        "handoff_actions"
+      ],
+      "properties": {
+        "stages": {
+          "const": 9
+        },
+        "stages_needing_evidence": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "high_or_critical_findings": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "evidence_references": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "handoff_actions": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "outputs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sprint",
+        "packet",
+        "binder_export"
+      ],
+      "properties": {
+        "sprint": {
+          "type": "array",
+          "contains": {
+            "const": "sprint-command-center.html"
+          },
+          "items": {
+            "type": "string"
+          }
+        },
+        "packet": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "binder_export": {
+          "const": "evidence-binder-export/"
+        }
+      }
+    },
+    "contract_artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sprint_summary_schema",
+        "evidence_index_schema",
+        "private_app_import_hint"
+      ],
+      "properties": {
+        "sprint_summary_schema": {
+          "const": "schemas/sprint-summary.schema.json"
+        },
+        "evidence_index_schema": {
+          "const": "schemas/evidence-index.schema.json"
+        },
+        "private_app_import_hint": {
+          "type": "string"
+        }
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "$defs": {
+    "data_boundary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "classification",
+        "phi_allowed",
+        "secrets_allowed",
+        "raw_evidence_allowed"
+      ],
+      "properties": {
+        "classification": {
+          "type": "string"
+        },
+        "phi_allowed": {
+          "const": false
+        },
+        "secrets_allowed": {
+          "const": false
+        },
+        "raw_evidence_allowed": {
+          "const": false
+        }
+      }
+    },
+    "stage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "name",
+        "status",
+        "owner",
+        "artifact_refs",
+        "evidence_gap_count",
+        "next_action"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "intake",
+            "patient_data_outside_ehr_map",
+            "ai_phi_review",
+            "vendor_baa_review",
+            "access_offboarding_review",
+            "downtime_ransomware_review",
+            "findings_risk_register",
+            "evidence_packet_export",
+            "owner_msp_handoff"
+          ]
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "not_started",
+            "needs_evidence",
+            "ready_for_review",
+            "complete"
+          ]
+        },
+        "owner": {
+          "type": "string"
+        },
+        "artifact_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_gap_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "next_action": {
+          "type": "string"
+        }
+      }
+    },
+    "risk": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "finding_id",
+        "stage_id",
+        "severity",
+        "priority",
+        "title",
+        "owner",
+        "audience",
+        "recipient",
+        "evidence_status",
+        "evidence_refs",
+        "recommended_action",
+        "artifact_ref",
+        "roadmap_bucket"
+      ],
+      "properties": {
+        "finding_id": {
+          "type": "string"
+        },
+        "stage_id": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "priority": {
+          "enum": [
+            "low",
+            "medium",
+            "high",
+            "critical"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "recipient": {
+          "type": "string"
+        },
+        "evidence_status": {
+          "enum": [
+            "missing",
+            "stale",
+            "requested",
+            "referenced"
+          ]
+        },
+        "evidence_refs": {
+          "type": "string"
+        },
+        "recommended_action": {
+          "type": "string"
+        },
+        "artifact_ref": {
+          "type": "string"
+        },
+        "roadmap_bucket": {
+          "enum": [
+            "30_days",
+            "60_days",
+            "90_days"
+          ]
+        }
+      }
+    },
+    "evidence_gap_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_references",
+        "needs_attention",
+        "by_status",
+        "by_owner",
+        "by_stage"
+      ],
+      "properties": {
+        "total_references": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "needs_attention": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_owner": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_stage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "stage_id",
+              "stage_name",
+              "owner",
+              "evidence_gap_count",
+              "recipient",
+              "artifact_refs"
+            ],
+            "properties": {
+              "stage_id": {
+                "type": "string"
+              },
+              "stage_name": {
+                "type": "string"
+              },
+              "owner": {
+                "type": "string"
+              },
+              "evidence_gap_count": {
+                "type": "integer",
+                "minimum": 1
+              },
+              "recipient": {
+                "type": "string"
+              },
+              "artifact_refs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "handoff_lane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "recipient",
+        "audience",
+        "actions",
+        "high_priority_actions",
+        "stage_ids",
+        "artifact_refs"
+      ],
+      "properties": {
+        "recipient": {
+          "type": "string"
+        },
+        "audience": {
+          "type": "string"
+        },
+        "actions": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "high_priority_actions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "stage_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

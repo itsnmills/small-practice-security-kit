@@ -18,7 +18,7 @@ It does not verify real contracts, BAAs, access lists, logs, backup restores, in
 
 | Stage | Purpose | Primary output |
 |---|---|---|
-| Intake | Validate practice profile and safety boundary | `sprint-summary.json` |
+| Intake | Validate practice profile and safety boundary | `sprint-summary.json`, `sprint-command-center.html` |
 | Patient data outside the EHR map | Show where ePHI could move outside the core system | `ephi-flow-map.md` |
 | AI/PHI review | Classify AI workflows as allowed, restricted, or prohibited | `ai-workflow-review.md` |
 | Vendor/BAA review | Identify vendor evidence and BAA gaps | `vendor-baa-review.md` |
@@ -27,6 +27,14 @@ It does not verify real contracts, BAAs, access lists, logs, backup restores, in
 | Findings/risk register | Convert findings into owner/MSP action rows | `risk-register.csv` |
 | Evidence packet/export | Build packet, manifest, and evidence index | `review-packet.md`, `review-packet.html`, `packet-manifest.json`, `evidence-index.json` |
 | Owner/MSP handoff | Make questions and next actions explicit | `owner-msp-handoff.md`, `handoff-actions.csv` |
+
+## Data Contracts
+
+Sprint Mode writes contract-oriented outputs for later private app import:
+
+- `sprint-summary.json` validates against `schemas/sprint-summary.schema.json`.
+- `evidence-index.json` validates against `schemas/evidence-index.schema.json`.
+- `risk-register.csv` and `handoff-actions.csv` include audience, recipient, owner, stage, priority, evidence reference, artifact reference, and 30/60/90 bucket fields.
 
 ## Accepted Inputs
 
@@ -50,6 +58,8 @@ python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml 
 creates `out/family_dental_clinic/` with the existing packet artifacts plus:
 
 - `sprint-index.md`
+- `sprint-client-readout.md`
+- `sprint-command-center.html`
 - `sprint-summary.json`
 - `risk-register.csv`
 - `evidence-index.json`

@@ -129,10 +129,12 @@ python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml 
 Start with:
 
 ```text
-out/family_dental_clinic/sprint-index.md
+out/family_dental_clinic/sprint-command-center.html
 ```
 
-Sprint Mode also writes `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
+Sprint Mode also writes `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
+
+The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`.
 
 More details:
 

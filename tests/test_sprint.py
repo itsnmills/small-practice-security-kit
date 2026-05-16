@@ -24,6 +24,12 @@ PHI_PLACEHOLDER_PATTERNS = [
     re.compile(r"diagnosis\s*:", re.IGNORECASE),
     re.compile(r"Jane Doe", re.IGNORECASE),
 ]
+OVERCLAIM_PATTERNS = [
+    re.compile(r"\bHIPAA[- ]compliant\b", re.IGNORECASE),
+    re.compile(r"\bguaranteed compliance\b", re.IGNORECASE),
+    re.compile(r"\bcertifies compliance\b", re.IGNORECASE),
+    re.compile(r"\bapproved for PHI\b", re.IGNORECASE),
+]
 
 
 class SprintModeTests(unittest.TestCase):
@@ -46,6 +52,8 @@ class SprintModeTests(unittest.TestCase):
             out_dir = output_root / "family_dental_clinic"
             for name in [
                 "sprint-index.md",
+                "sprint-client-readout.md",
+                "sprint-command-center.html",
                 "sprint-summary.json",
                 "risk-register.csv",
                 "evidence-index.json",
@@ -73,13 +81,39 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("outputs", summary)
         self.assertIn("counts", summary)
         self.assertIn("stage_statuses", summary)
+        self.assertIn("readiness_signal", summary)
+        self.assertIn("target_delivery_signal", summary)
+        self.assertIn("evidence_gap_summary", summary)
+        self.assertIn("handoff_lanes", summary)
+        self.assertIn("top_risks", summary)
+        self.assertIn("contract_artifacts", summary)
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
         self.assertTrue(any(stage["status"] == "needs_evidence" for stage in summary["stage_statuses"]))
+        self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "sprint-command-center.html")
+        self.assertGreater(summary["evidence_gap_summary"]["needs_attention"], 0)
+        self.assertTrue(summary["handoff_lanes"])
+        self.assertTrue(summary["top_risks"])
         for stage in summary["stage_statuses"]:
             self.assertIn("next_action", stage)
             self.assertTrue(stage["artifact_refs"])
 
-    def test_risk_and_evidence_exports_are_reference_only(self) -> None:
+    def test_sprint_output_contracts_validate_against_schemas_when_jsonschema_available(self) -> None:
+        try:
+            import jsonschema
+        except ImportError:
+            self.skipTest("jsonschema not installed")
+
+        with tempfile.TemporaryDirectory() as temp:
+            out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
+            summary = json.loads((out_dir / "sprint-summary.json").read_text(encoding="utf-8"))
+            evidence = json.loads((out_dir / "evidence-index.json").read_text(encoding="utf-8"))
+
+        summary_schema = json.loads((ROOT / "schemas" / "sprint-summary.schema.json").read_text(encoding="utf-8"))
+        evidence_schema = json.loads((ROOT / "schemas" / "evidence-index.schema.json").read_text(encoding="utf-8"))
+        jsonschema.validate(summary, summary_schema)
+        jsonschema.validate(evidence, evidence_schema)
+
+    def test_risk_handoff_and_evidence_exports_are_reference_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
             with (out_dir / "risk-register.csv").open(encoding="utf-8") as handle:
@@ -90,6 +124,8 @@ class SprintModeTests(unittest.TestCase):
             combined = "\n".join(
                 [
                     (out_dir / "sprint-index.md").read_text(encoding="utf-8"),
+                    (out_dir / "sprint-client-readout.md").read_text(encoding="utf-8"),
+                    (out_dir / "sprint-command-center.html").read_text(encoding="utf-8"),
                     json.dumps(evidence, sort_keys=True),
                     json.dumps(risk_rows, sort_keys=True),
                     json.dumps(handoff_rows, sort_keys=True),
@@ -101,7 +137,13 @@ class SprintModeTests(unittest.TestCase):
         self.assertTrue(handoff_rows)
         self.assertFalse(evidence["data_boundary"]["raw_evidence_allowed"])
         self.assertEqual(evidence["binder_export"]["share_safety"], "reference_only_no_phi_no_secret")
+        for field in ["audience", "recipient", "owner", "stage_id", "priority", "artifact_ref", "roadmap_bucket"]:
+            self.assertTrue(all(row[field] for row in handoff_rows), field)
+        for field in ["audience", "recipient", "owner", "stage_id", "priority", "artifact_ref", "roadmap_bucket"]:
+            self.assertTrue(all(row[field] for row in risk_rows), field)
         for pattern in PHI_PLACEHOLDER_PATTERNS:
+            self.assertIsNone(pattern.search(combined), pattern.pattern)
+        for pattern in OVERCLAIM_PATTERNS:
             self.assertIsNone(pattern.search(combined), pattern.pattern)
 
     def test_sprint_blocks_high_confidence_sensitive_profile_data(self) -> None:

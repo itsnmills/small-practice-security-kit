@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import html
 import json
 from dataclasses import dataclass
 from pathlib import Path
@@ -25,6 +26,23 @@ STAGE_ORDER = [
     "evidence_packet_export",
     "owner_msp_handoff",
 ]
+
+SPRINT_OUTPUTS = [
+    "sprint-index.md",
+    "sprint-client-readout.md",
+    "sprint-command-center.html",
+    "sprint-summary.json",
+    "risk-register.csv",
+    "evidence-index.json",
+    "handoff-actions.csv",
+]
+
+STATUS_LABELS = {
+    "not_started": "Not started",
+    "needs_evidence": "Needs evidence",
+    "ready_for_review": "Ready for review",
+    "complete": "Complete",
+}
 
 
 @dataclass(frozen=True)
@@ -224,6 +242,32 @@ def _artifact_for_stage(stage_id: str) -> str:
     return mapping.get(stage_id, "30-60-90-roadmap.md")
 
 
+def _recipient_for_stage(stage_id: str) -> str:
+    mapping = {
+        "patient_data_outside_ehr_map": "MSP",
+        "ai_phi_review": "Owner",
+        "vendor_baa_review": "Vendor",
+        "access_offboarding_review": "MSP",
+        "downtime_ransomware_review": "MSP",
+        "findings_risk_register": "Owner",
+        "evidence_packet_export": "Legal/compliance reviewer",
+        "owner_msp_handoff": "Owner/MSP",
+    }
+    return mapping.get(stage_id, "Owner/MSP")
+
+
+def _audience_for_stage(stage_id: str) -> str:
+    return _recipient_for_stage(stage_id).lower().replace("/", "_").replace(" ", "_")
+
+
+def _roadmap_bucket_for_stage(stage_id: str, priority: str = "medium") -> str:
+    if priority in {"critical", "high"}:
+        return "30_days"
+    if stage_id in {"vendor_baa_review", "access_offboarding_review", "downtime_ransomware_review"}:
+        return "60_days"
+    return "90_days"
+
+
 def _evidence_status(evidence_refs: list[str], evidence_by_id: dict[str, dict[str, Any]]) -> str:
     if not evidence_refs:
         return "missing"
@@ -248,12 +292,16 @@ def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
                 "finding_id": str(finding.get("finding_id", "")),
                 "stage_id": stage_id,
                 "severity": str(finding.get("severity", "medium")),
+                "priority": str(finding.get("severity", "medium")),
                 "title": str(finding.get("title", "")),
                 "owner": str(finding.get("owner", "Practice owner/MSP")),
+                "audience": _audience_for_stage(stage_id),
+                "recipient": _recipient_for_stage(stage_id),
                 "evidence_status": _evidence_status(evidence_refs, evidence_by_id),
                 "evidence_refs": ";".join(evidence_refs),
                 "recommended_action": _recommended_action(str(finding.get("title", "")), stage_id),
                 "artifact_ref": _artifact_for_stage(stage_id),
+                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(finding.get("severity", "medium"))),
             }
         )
     return rows
@@ -284,24 +332,35 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
                 {
                     "action_id": f"HANDOFF-{index:03d}",
                     "audience": "owner_msp",
+                    "recipient": _recipient_for_stage(str(stage["id"])),
                     "stage_id": str(stage["id"]),
                     "priority": "high" if stage["status"] == "needs_evidence" else "medium",
+                    "owner": str(stage["owner"]),
                     "action": str(stage["next_action"]),
                     "evidence_ref": "",
                     "artifact_ref": str(stage["artifact_refs"][0]),
+                    "roadmap_bucket": _roadmap_bucket_for_stage(
+                        str(stage["id"]),
+                        "high" if stage["status"] == "needs_evidence" else "medium",
+                    ),
                 }
             )
 
     for question_index, question in enumerate(profile.get("handoff_questions", []), start=1):
+        stage_id = str(question.get("stage_id", "owner_msp_handoff"))
+        audience = str(question.get("audience", "owner_msp")).lower().replace(" ", "_")
         rows.append(
             {
                 "action_id": f"QUESTION-{question_index:03d}",
-                "audience": str(question.get("audience", "owner_msp")).lower().replace(" ", "_"),
-                "stage_id": str(question.get("stage_id", "owner_msp_handoff")),
+                "audience": audience,
+                "recipient": str(question.get("audience", _recipient_for_stage(stage_id))),
+                "stage_id": stage_id,
                 "priority": str(question.get("priority", "medium")),
+                "owner": str(question.get("owner", _recipient_for_stage(stage_id))),
                 "action": str(question.get("question", question.get("action", ""))),
                 "evidence_ref": str(question.get("evidence_ref", "")),
                 "artifact_ref": str(question.get("artifact_ref", "owner-msp-handoff.md")),
+                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(question.get("priority", "medium"))),
             }
         )
 
@@ -309,15 +368,74 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
         rows.append(
             {
                 "action_id": f"RISK-{risk['finding_id']}",
-                "audience": "owner_msp",
+                "audience": risk["audience"],
+                "recipient": risk["recipient"],
                 "stage_id": risk["stage_id"],
                 "priority": risk["severity"],
+                "owner": risk["owner"],
                 "action": risk["recommended_action"],
                 "evidence_ref": risk["evidence_refs"],
                 "artifact_ref": risk["artifact_ref"],
+                "roadmap_bucket": risk["roadmap_bucket"],
             }
         )
     return rows
+
+
+def build_evidence_gap_summary(evidence_index: dict[str, Any], stages: list[dict[str, Any]]) -> dict[str, Any]:
+    references = evidence_index.get("evidence_references", [])
+    status_counts: dict[str, int] = {}
+    owner_counts: dict[str, int] = {}
+    for item in references:
+        status = str(item.get("status", "requested"))
+        status_counts[status] = status_counts.get(status, 0) + 1
+        if status in {"missing", "requested", "partial", "outdated"}:
+            owner = str(item.get("owner", "Practice owner/MSP"))
+            owner_counts[owner] = owner_counts.get(owner, 0) + 1
+
+    return {
+        "total_references": len(references),
+        "needs_attention": sum(status_counts.get(status, 0) for status in ["missing", "requested", "partial", "outdated"]),
+        "by_status": status_counts,
+        "by_owner": owner_counts,
+        "by_stage": [
+            {
+                "stage_id": str(stage["id"]),
+                "stage_name": str(stage["name"]),
+                "owner": str(stage["owner"]),
+                "evidence_gap_count": int(stage["evidence_gap_count"]),
+                "recipient": _recipient_for_stage(str(stage["id"])),
+                "artifact_refs": list(stage["artifact_refs"]),
+            }
+            for stage in stages
+            if int(stage["evidence_gap_count"]) > 0
+        ],
+    }
+
+
+def build_handoff_lanes(handoff_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+    lanes: dict[str, dict[str, Any]] = {}
+    for row in handoff_rows:
+        recipient = row["recipient"]
+        lane = lanes.setdefault(
+            recipient,
+            {
+                "recipient": recipient,
+                "audience": row["audience"],
+                "actions": 0,
+                "high_priority_actions": 0,
+                "stage_ids": [],
+                "artifact_refs": [],
+            },
+        )
+        lane["actions"] += 1
+        if row["priority"] in {"critical", "high"}:
+            lane["high_priority_actions"] += 1
+        if row["stage_id"] not in lane["stage_ids"]:
+            lane["stage_ids"].append(row["stage_id"])
+        if row["artifact_ref"] not in lane["artifact_refs"]:
+            lane["artifact_refs"].append(row["artifact_ref"])
+    return list(lanes.values())
 
 
 def build_evidence_index(manifest: dict[str, Any], binder_dir: Path) -> dict[str, Any]:
@@ -347,9 +465,13 @@ def build_summary(
     manifest: dict[str, Any],
     stages: list[dict[str, Any]],
     risk_rows: list[dict[str, str]],
+    handoff_rows: list[dict[str, str]],
+    evidence_index: dict[str, Any],
     generated_at: str,
 ) -> dict[str, Any]:
     high_or_critical = [risk for risk in risk_rows if risk["severity"] in {"high", "critical"}]
+    stages_needing_evidence = [stage for stage in stages if stage["status"] == "needs_evidence"]
+    evidence_gap_summary = build_evidence_gap_summary(evidence_index, stages)
     return {
         "schema_version": SPRINT_SCHEMA_VERSION,
         "sprint_id": f"sprint_{slugify(profile['practice']['name'])}_{slugify(str(profile['practice']['review_period']))}",
@@ -361,25 +483,39 @@ def build_summary(
         "source_profile": manifest["source_profile"] | {"input_path": profile_path.name},
         "practice": manifest["practice"],
         "overall_risk": manifest["overall_risk"],
+        "readiness_signal": {
+            "label": manifest["overall_risk"],
+            "meaning": "Evidence-backed readiness signal for sprint prioritization only; not a compliance score.",
+            "high_or_critical_findings": len(high_or_critical),
+            "stages_needing_evidence": len(stages_needing_evidence),
+        },
+        "target_delivery_signal": {
+            "status": "needs_evidence_before_closeout" if stages_needing_evidence else "ready_for_client_readout",
+            "primary_blocker": stages_needing_evidence[0]["next_action"] if stages_needing_evidence else "",
+            "next_artifact": "sprint-command-center.html",
+        },
         "data_boundary": manifest["data_boundary"],
         "stage_statuses": stages,
+        "top_risks": risk_rows[:8],
+        "evidence_gap_summary": evidence_gap_summary,
+        "handoff_lanes": build_handoff_lanes(handoff_rows),
         "counts": {
             "stages": len(stages),
             "stages_needing_evidence": sum(1 for stage in stages if stage["status"] == "needs_evidence"),
             "findings": len(risk_rows),
             "high_or_critical_findings": len(high_or_critical),
             "evidence_references": len(manifest.get("evidence_references", [])),
+            "handoff_actions": len(handoff_rows),
         },
         "outputs": {
-            "sprint": [
-                "sprint-index.md",
-                "sprint-summary.json",
-                "risk-register.csv",
-                "evidence-index.json",
-                "handoff-actions.csv",
-            ],
+            "sprint": SPRINT_OUTPUTS,
             "packet": [artifact["path"] for artifact in manifest.get("artifacts", [])],
             "binder_export": "evidence-binder-export/",
+        },
+        "contract_artifacts": {
+            "sprint_summary_schema": "schemas/sprint-summary.schema.json",
+            "evidence_index_schema": "schemas/evidence-index.schema.json",
+            "private_app_import_hint": "Import sprint-summary.json for stages/actions and evidence-index.json for reference-only evidence gaps.",
         },
         "limitations": [
             "Public Sprint Mode uses synthetic or client-supplied reference metadata only.",
@@ -444,10 +580,400 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 
 ## Owner/MSP Use
 
+- Open `sprint-command-center.html` first for the one-page readout.
+- Use `sprint-client-readout.md` for a portable Markdown summary.
 - Start with `sprint-summary.json` for stage status and counts.
 - Use `risk-register.csv` to assign owners and remediation priority.
 - Use `evidence-index.json` and `evidence-binder-export/` to collect reference-only evidence.
 - Use `owner-msp-handoff.md` and `handoff-actions.csv` to coordinate owner, MSP, vendor, and legal/compliance reviewer follow-up.
+"""
+
+
+def render_client_readout(summary: dict[str, Any], risk_rows: list[dict[str, str]], handoff_rows: list[dict[str, str]]) -> str:
+    practice = summary["practice"]
+    top_risks = risk_rows[:5]
+    evidence_gaps = summary["evidence_gap_summary"]["by_stage"][:6]
+    handoff_lanes = summary["handoff_lanes"]
+
+    risk_lines = [
+        "| Finding | Priority | Owner | Recipient | 30/60/90 | Evidence |",
+        "|---|---|---|---|---|---|",
+    ]
+    for risk in top_risks:
+        risk_lines.append(
+            f"| {risk['title']} | {risk['priority']} | {risk['owner']} | {risk['recipient']} | "
+            f"{risk['roadmap_bucket']} | {risk['evidence_status']} |"
+        )
+    if not top_risks:
+        risk_lines.append("| No generated findings | low | Practice owner/MSP | Owner/MSP | 90_days | referenced |")
+
+    gap_lines = [
+        "| Stage | Owner | Recipient | Gaps | Artifact |",
+        "|---|---|---|---:|---|",
+    ]
+    for gap in evidence_gaps:
+        gap_lines.append(
+            f"| {gap['stage_name']} | {gap['owner']} | {gap['recipient']} | "
+            f"{gap['evidence_gap_count']} | {', '.join(gap['artifact_refs'])} |"
+        )
+    if not evidence_gaps:
+        gap_lines.append("| Evidence packet/export | Practice owner/MSP | Owner/MSP | 0 | evidence-index.json |")
+
+    lane_lines = [
+        "| Recipient | Actions | High priority | Artifacts |",
+        "|---|---:|---:|---|",
+    ]
+    for lane in handoff_lanes:
+        lane_lines.append(
+            f"| {lane['recipient']} | {lane['actions']} | {lane['high_priority_actions']} | "
+            f"{', '.join(lane['artifact_refs'])} |"
+        )
+
+    next_actions = [
+        row
+        for row in handoff_rows
+        if row["priority"] in {"critical", "high"}
+    ][:8]
+    action_lines = [f"- **{row['recipient']}**: {row['action']} (`{row['artifact_ref']}`)" for row in next_actions]
+
+    return f"""# Velari Sprint Client Readout
+
+Practice: **{practice['label']}**
+
+Review period: **{practice['review_period']}**
+
+Readiness signal: **{summary['readiness_signal']['label']}**
+
+Target delivery signal: **{summary['target_delivery_signal']['status']}**
+
+This readout is a local, reference-only planning artifact. It does not provide legal advice, HIPAA certification, breach determination, insurer acceptance, vendor approval, AI tool approval for PHI, or a formal Security Risk Analysis opinion. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+
+## Executive Snapshot
+
+- Stages needing evidence: {summary['counts']['stages_needing_evidence']} of {summary['counts']['stages']}
+- High or critical findings: {summary['counts']['high_or_critical_findings']}
+- Evidence references: {summary['counts']['evidence_references']}
+- Evidence references needing attention: {summary['evidence_gap_summary']['needs_attention']}
+- Handoff actions: {summary['counts']['handoff_actions']}
+
+## Top Risks
+
+{chr(10).join(risk_lines)}
+
+## Evidence Gaps By Stage
+
+{chr(10).join(gap_lines)}
+
+## Handoff Lanes
+
+{chr(10).join(lane_lines)}
+
+## Next Actions
+
+{chr(10).join(action_lines) if action_lines else '- Review the packet with the owner and MSP.'}
+
+## Generated Artifacts
+
+- `sprint-command-center.html`
+- `sprint-summary.json`
+- `evidence-index.json`
+- `risk-register.csv`
+- `handoff-actions.csv`
+- `review-packet.md`
+- `review-packet.html`
+- `packet-manifest.json`
+"""
+
+
+def _h(value: Any) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def _status_label(status: str) -> str:
+    return STATUS_LABELS.get(status, status.replace("_", " ").title())
+
+
+def render_command_center(
+    summary: dict[str, Any],
+    risk_rows: list[dict[str, str]],
+    handoff_rows: list[dict[str, str]],
+    evidence_index: dict[str, Any],
+) -> str:
+    practice = summary["practice"]
+    stage_cards = []
+    for number, stage in enumerate(summary["stage_statuses"], start=1):
+        artifact_links = "".join(f"<li>{_h(ref)}</li>" for ref in stage["artifact_refs"])
+        stage_cards.append(
+            f"""
+            <article class="stage-card status-{_h(stage['status'])}">
+              <div class="stage-number">{number}</div>
+              <div>
+                <h3>{_h(stage['name'])}</h3>
+                <p class="stage-meta">{_status_label(str(stage['status']))} &middot; Owner: {_h(stage['owner'])}</p>
+                <p>{_h(stage['next_action'])}</p>
+                <div class="stage-foot">
+                  <span>{int(stage['evidence_gap_count'])} evidence gaps</span>
+                  <ul>{artifact_links}</ul>
+                </div>
+              </div>
+            </article>
+            """
+        )
+
+    risk_rows_html = []
+    for risk in risk_rows[:8]:
+        risk_rows_html.append(
+            f"""
+            <tr>
+              <td><strong>{_h(risk['title'])}</strong><span>{_h(risk['stage_id'])}</span></td>
+              <td><b class="pill severity-{_h(risk['severity'])}">{_h(risk['severity'])}</b></td>
+              <td>{_h(risk['owner'])}</td>
+              <td>{_h(risk['recipient'])}</td>
+              <td>{_h(risk['evidence_status'])}</td>
+              <td>{_h(risk['roadmap_bucket'])}</td>
+            </tr>
+            """
+        )
+    if not risk_rows_html:
+        risk_rows_html.append(
+            "<tr><td><strong>No generated findings</strong><span>findings_risk_register</span></td><td><b class='pill severity-low'>low</b></td><td>Practice owner/MSP</td><td>Owner/MSP</td><td>referenced</td><td>90_days</td></tr>"
+        )
+
+    attention_statuses = {"missing", "requested", "partial", "outdated"}
+    evidence_refs = [
+        item for item in evidence_index.get("evidence_references", []) if str(item.get("status")) in attention_statuses
+    ][:8]
+    evidence_rows_html = []
+    for item in evidence_refs:
+        evidence_rows_html.append(
+            f"""
+            <tr>
+              <td><strong>{_h(item.get('evidence_id', ''))}</strong><span>{_h(item.get('title', ''))}</span></td>
+              <td>{_h(item.get('status', 'requested'))}</td>
+              <td>{_h(item.get('owner', 'Practice owner/MSP'))}</td>
+              <td>{_h(', '.join(item.get('artifact_refs', [])))}</td>
+            </tr>
+            """
+        )
+    if not evidence_rows_html:
+        evidence_rows_html.append("<tr><td><strong>No open evidence gaps</strong></td><td>reviewed</td><td>Practice owner/MSP</td><td>evidence-index.json</td></tr>")
+
+    lane_cards = []
+    for lane in summary["handoff_lanes"]:
+        artifacts = "".join(f"<li>{_h(ref)}</li>" for ref in lane["artifact_refs"])
+        lane_cards.append(
+            f"""
+            <article class="lane-card">
+              <h3>{_h(lane['recipient'])}</h3>
+              <p><strong>{int(lane['high_priority_actions'])}</strong> high-priority actions &middot; {int(lane['actions'])} total</p>
+              <ul>{artifacts}</ul>
+            </article>
+            """
+        )
+
+    action_items = []
+    for row in handoff_rows[:10]:
+        action_items.append(
+            f"""
+            <li>
+              <strong>{_h(row['recipient'])}</strong>
+              <span>{_h(row['priority'])} &middot; {_h(row['roadmap_bucket'])} &middot; {_h(row['artifact_ref'])}</span>
+              {_h(row['action'])}
+            </li>
+            """
+        )
+
+    artifact_items = []
+    for name in summary["outputs"]["sprint"]:
+        artifact_items.append(f"<li>{_h(name)}</li>")
+    for name in summary["outputs"]["packet"][:8]:
+        artifact_items.append(f"<li>{_h(name)}</li>")
+    artifact_items.append("<li>evidence-binder-export/</li>")
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{_h(practice['label'])} Sprint Command Center</title>
+  <style>
+    :root {{
+      --bg: #f8f7f2;
+      --panel: #fffdf8;
+      --ink: #17211b;
+      --muted: #5c665f;
+      --line: #d6d2c6;
+      --accent: #11614f;
+      --accent-2: #8a6a24;
+      --danger: #9b2f24;
+      --warn: #a05a15;
+      --ok: #2d6b43;
+      --soft: #e8f1ec;
+      --gold-soft: #f5ecd0;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }}
+    .shell {{ max-width: 1240px; margin: 0 auto; padding: 28px 22px 56px; }}
+    .hero {{
+      border-top: 6px solid var(--accent);
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+      gap: 24px;
+      padding: 26px 0 22px;
+    }}
+    .eyebrow {{ color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }}
+    h1, h2, h3, p {{ margin-top: 0; }}
+    h1 {{ font-size: clamp(34px, 5vw, 58px); line-height: 1.02; margin-bottom: 12px; letter-spacing: 0; }}
+    h2 {{ font-size: 22px; margin-bottom: 14px; letter-spacing: 0; }}
+    h3 {{ font-size: 16px; margin-bottom: 6px; letter-spacing: 0; }}
+    .lead {{ color: var(--muted); max-width: 760px; font-size: 16px; }}
+    .metrics {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
+    .metric, .boundary, .stage-card, .lane-card {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 1px 0 rgba(23, 33, 27, 0.04);
+    }}
+    .metric {{ padding: 14px; }}
+    .metric span {{ display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 6px; }}
+    .metric strong {{ font-size: 24px; }}
+    .boundary {{ padding: 14px; border-left: 4px solid var(--warn); background: #fff7e7; color: #4f3317; }}
+    .grid {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr); gap: 18px; align-items: start; }}
+    section {{ margin-top: 22px; }}
+    .stages {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }}
+    .stage-card {{ display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 14px; min-height: 190px; }}
+    .stage-number {{
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+    }}
+    .status-needs_evidence {{ border-left: 4px solid var(--warn); }}
+    .status-ready_for_review {{ border-left: 4px solid var(--accent-2); }}
+    .status-complete {{ border-left: 4px solid var(--ok); }}
+    .stage-meta {{ color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 8px; }}
+    .stage-card p {{ font-size: 13px; color: #26332b; }}
+    .stage-foot {{ display: grid; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 12px; }}
+    ul {{ margin: 0; padding-left: 18px; }}
+    .stage-foot ul, .lane-card ul, .artifact-list {{ display: flex; flex-wrap: wrap; gap: 6px; padding-left: 0; list-style: none; }}
+    .stage-foot li, .lane-card li, .artifact-list li {{
+      border: 1px solid var(--line);
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--muted);
+    }}
+    .table-wrap {{ overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }}
+    th, td {{ text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }}
+    th {{ background: #eee8d9; color: #403928; font-size: 12px; }}
+    td span {{ display: block; color: var(--muted); margin-top: 4px; font-size: 12px; }}
+    tr:last-child td {{ border-bottom: 0; }}
+    .pill {{ display: inline-block; border-radius: 999px; padding: 4px 8px; color: #fff; font-size: 12px; }}
+    .severity-critical, .severity-high {{ background: var(--danger); }}
+    .severity-medium {{ background: var(--warn); }}
+    .severity-low {{ background: var(--ok); }}
+    .lanes {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
+    .lane-card {{ padding: 14px; }}
+    .lane-card p {{ color: var(--muted); font-size: 13px; }}
+    .actions {{
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }}
+    .actions li {{ margin: 0 0 12px; font-size: 13px; }}
+    .actions li span {{ display: block; color: var(--muted); font-size: 12px; margin: 2px 0; }}
+    .footer-note {{ color: var(--muted); font-size: 12px; margin-top: 26px; }}
+    @media (max-width: 980px) {{
+      .hero, .grid {{ grid-template-columns: 1fr; }}
+      .stages {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+    }}
+    @media (max-width: 640px) {{
+      .shell {{ padding: 18px 14px 42px; }}
+      .metrics, .stages, .lanes {{ grid-template-columns: 1fr; }}
+      h1 {{ font-size: 34px; }}
+    }}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Velari Sprint Mode</div>
+        <h1>{_h(practice['label'])} Sprint Command Center</h1>
+        <p class="lead">One local readout for sprint status, top risks, evidence gaps, handoff lanes, and generated artifacts. This page is self-contained and makes no external network calls.</p>
+        <div class="boundary">Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details. This is not legal advice, HIPAA certification, breach determination, insurer acceptance, vendor approval, AI approval for PHI, or a formal Security Risk Analysis opinion.</div>
+      </div>
+      <aside class="metrics" aria-label="Sprint metrics">
+        <div class="metric"><span>Readiness signal</span><strong>{_h(summary['readiness_signal']['label'])}</strong></div>
+        <div class="metric"><span>Delivery signal</span><strong>{_h(summary['target_delivery_signal']['status'])}</strong></div>
+        <div class="metric"><span>High/critical findings</span><strong>{int(summary['counts']['high_or_critical_findings'])}</strong></div>
+        <div class="metric"><span>Evidence needing attention</span><strong>{int(summary['evidence_gap_summary']['needs_attention'])}</strong></div>
+      </aside>
+    </header>
+
+    <section>
+      <h2>Stage Status</h2>
+      <div class="stages">{''.join(stage_cards)}</div>
+    </section>
+
+    <div class="grid">
+      <div>
+        <section>
+          <h2>Top Risks</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Finding</th><th>Priority</th><th>Owner</th><th>Recipient</th><th>Evidence</th><th>Bucket</th></tr></thead>
+              <tbody>{''.join(risk_rows_html)}</tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>Evidence Gaps</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Evidence</th><th>Status</th><th>Owner</th><th>Artifact</th></tr></thead>
+              <tbody>{''.join(evidence_rows_html)}</tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <section>
+          <h2>Handoff Lanes</h2>
+          <div class="lanes">{''.join(lane_cards)}</div>
+        </section>
+
+        <section>
+          <h2>Next Actions</h2>
+          <ol class="actions">{''.join(action_items)}</ol>
+        </section>
+
+        <section>
+          <h2>Generated Artifacts</h2>
+          <ul class="artifact-list">{''.join(artifact_items)}</ul>
+        </section>
+      </aside>
+    </div>
+
+    <p class="footer-note">Generated at {_h(summary['generated_at'])}. Source profile hash is tracked in sprint-summary.json and packet-manifest.json for private app import review.</p>
+  </main>
+</body>
+</html>
 """
 
 
@@ -469,15 +995,23 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     risk_rows = build_risk_register_rows(manifest)
     handoff_rows = build_handoff_rows(profile, stages, risk_rows)
     evidence_index = build_evidence_index(manifest, binder_dir)
-    summary = build_summary(profile, profile_path, manifest, stages, risk_rows, generated_at)
+    summary = build_summary(profile, profile_path, manifest, stages, risk_rows, handoff_rows, evidence_index, generated_at)
 
     sprint_index_path = out_dir / "sprint-index.md"
+    client_readout_path = out_dir / "sprint-client-readout.md"
+    command_center_path = out_dir / "sprint-command-center.html"
     summary_path = out_dir / "sprint-summary.json"
     risk_path = out_dir / "risk-register.csv"
     evidence_path = out_dir / "evidence-index.json"
     handoff_path = out_dir / "handoff-actions.csv"
 
     sprint_index_path.write_text(render_sprint_index(summary, risk_rows), encoding="utf-8", newline="\n")
+    client_readout_path.write_text(render_client_readout(summary, risk_rows, handoff_rows), encoding="utf-8", newline="\n")
+    command_center_path.write_text(
+        render_command_center(summary, risk_rows, handoff_rows, evidence_index),
+        encoding="utf-8",
+        newline="\n",
+    )
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     evidence_path.write_text(json.dumps(evidence_index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     _write_csv(
@@ -487,23 +1021,46 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             "finding_id",
             "stage_id",
             "severity",
+            "priority",
             "title",
             "owner",
+            "audience",
+            "recipient",
             "evidence_status",
             "evidence_refs",
             "recommended_action",
             "artifact_ref",
+            "roadmap_bucket",
         ],
     )
     _write_csv(
         handoff_path,
         handoff_rows,
-        ["action_id", "audience", "stage_id", "priority", "action", "evidence_ref", "artifact_ref"],
+        [
+            "action_id",
+            "audience",
+            "recipient",
+            "stage_id",
+            "priority",
+            "owner",
+            "action",
+            "evidence_ref",
+            "artifact_ref",
+            "roadmap_bucket",
+        ],
     )
 
     return SprintBuildResult(
         output_dir=out_dir,
         packet_dir=out_dir,
         binder_dir=binder_dir,
-        artifacts=[sprint_index_path, summary_path, risk_path, evidence_path, handoff_path],
+        artifacts=[
+            sprint_index_path,
+            client_readout_path,
+            command_center_path,
+            summary_path,
+            risk_path,
+            evidence_path,
+            handoff_path,
+        ],
     )
