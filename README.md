@@ -118,6 +118,28 @@ Open the HTML packet locally:
 out/family_dental_clinic/review-packet.html
 ```
 
+### Velari Sprint Mode public runner
+
+The Sprint Mode runner wraps the packet builder into the full Cyber Readiness Sprint demo and adds stage status, risk, evidence, and handoff exports:
+
+```bash
+python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out
+```
+
+Start with:
+
+```text
+out/family_dental_clinic/sprint-index.md
+```
+
+Sprint Mode also writes `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
+
+More details:
+
+- [`docs/sprint-mode/product-contract.md`](docs/sprint-mode/product-contract.md)
+- [`docs/sprint-mode/delivery-playbook.md`](docs/sprint-mode/delivery-playbook.md)
+- [`docs/sprint-mode/output-map.md`](docs/sprint-mode/output-map.md)
+
 ## Modules
 
 | Module | Purpose |

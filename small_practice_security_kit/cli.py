@@ -9,6 +9,7 @@ from .demo_export import export_demo
 from .packet import OUT, build_packet
 from .profile import load_profile
 from .sensitive_data import blocking_findings
+from .sprint import build_sprint
 from .validation import ValidationError
 
 
@@ -30,6 +31,13 @@ def validate_command(args: argparse.Namespace) -> int:
 def build_command(args: argparse.Namespace) -> int:
     out_dir = build_packet(args.profile, args.output_root)
     print(f"Built review packet in {out_dir}")
+    return 0
+
+
+def sprint_command(args: argparse.Namespace) -> int:
+    result = build_sprint(args.profile, args.output_root)
+    print(f"Built Sprint Mode packet in {result.output_dir}")
+    print(f"Exported binder-compatible evidence index to {result.binder_dir}")
     return 0
 
 
@@ -64,6 +72,11 @@ def build_parser() -> argparse.ArgumentParser:
     build.add_argument("profile", type=_path)
     build.add_argument("--output-root", type=_path, default=OUT)
     build.set_defaults(func=build_command)
+
+    sprint = subcommands.add_parser("sprint", help="Build a Velari Sprint Mode packet and owner/MSP runner outputs.")
+    sprint.add_argument("profile", type=_path)
+    sprint.add_argument("--output-root", type=_path, default=OUT)
+    sprint.set_defaults(func=sprint_command)
 
     export_binder = subcommands.add_parser("export-binder", help="Export binder-compatible evidence index files.")
     export_binder.add_argument("profile", type=_path)
