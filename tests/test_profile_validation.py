@@ -35,6 +35,12 @@ class ProfileValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError, "baa_status"):
             validate_profile(profile)
 
+    def test_missing_vendor_attestation_status_fails(self) -> None:
+        profile = copy.deepcopy(self.profile)
+        del profile["vendors"][0]["soc2_status"]
+        with self.assertRaisesRegex(ValidationError, "soc2_status"):
+            validate_profile(profile)
+
     def test_invalid_risk_fails(self) -> None:
         profile = copy.deepcopy(self.profile)
         profile["flows"][0]["risk"] = "spicy"

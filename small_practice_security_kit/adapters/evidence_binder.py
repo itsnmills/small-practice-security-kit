@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ..exchange import ExchangeRecord, records_to_csv, records_to_markdown
 from ..profile import load_profile, slugify
+from ..vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
 BINDER_FIELDS = [
@@ -78,10 +79,13 @@ def build_binder_rows(profile: dict) -> list[dict[str, str]]:
                 owner_role=practice["security_owner"],
                 priority=priority,
                 review_frequency="quarterly",
-                evidence_needed=f"BAA, security contact, AI data-use review, and incident terms for {vendor['name']}",
+                evidence_needed=f"BAA, SOC 2/HITRUST status, security contact, AI data-use review, and incident terms for {vendor['name']}",
                 evidence_reference=f"restricted-evidence/vendors/{vendor['name'].lower().replace(' ', '-')}.md",
                 source_mapping="HIPAA Business Associate Requirements; NIST SP 800-66 Rev. 2",
-                notes=f"BAA status: {vendor['baa_status']}; AI training use: {vendor['ai_training_use']}",
+                notes=(
+                    f"BAA status: {vendor['baa_status']}; SOC 2 status: {vendor_soc2_status(vendor)}; "
+                    f"HITRUST status: {vendor_hitrust_status(vendor)}; AI training use: {vendor['ai_training_use']}"
+                ),
             )
         )
     rows.extend(

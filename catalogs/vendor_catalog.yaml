@@ -4,6 +4,8 @@ vendors:
     service: EHR hosting and support
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -13,6 +15,8 @@ vendors:
     service: Patient intake forms
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -22,6 +26,8 @@ vendors:
     service: Billing and practice management
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: unknown
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -31,6 +37,8 @@ vendors:
     service: Claims clearinghouse
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -40,6 +48,8 @@ vendors:
     service: Patient portal
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -49,6 +59,8 @@ vendors:
     service: Appointment scheduling
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -58,6 +70,8 @@ vendors:
     service: Lab ordering/results
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -67,6 +81,8 @@ vendors:
     service: Imaging portal or device support
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -76,6 +92,8 @@ vendors:
     service: Electronic prescribing
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -85,6 +103,8 @@ vendors:
     service: Video visits and virtual care
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -94,6 +114,8 @@ vendors:
     service: Patient reminders and texting
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -103,6 +125,8 @@ vendors:
     service: Email and calendar
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -112,6 +136,8 @@ vendors:
     service: Phones, voicemail, call routing
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -121,6 +147,8 @@ vendors:
     service: Fax and eFax
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -130,6 +158,8 @@ vendors:
     service: File storage and sharing
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: unknown
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -139,6 +169,8 @@ vendors:
     service: Backup and restore
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -148,6 +180,8 @@ vendors:
     service: Endpoint security
     touches_ephi: false
     baa_status: not applicable
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -157,6 +191,8 @@ vendors:
     service: IT support and remote access
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -166,6 +202,8 @@ vendors:
     service: AI drafting, summarization, scribing, or workflow assistance
     touches_ephi: true
     baa_status: unknown
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: unknown
     subcontractors_known: unknown
     incident_notification_terms: unknown
@@ -175,6 +213,8 @@ vendors:
     service: Payer eligibility, claims, remits, or authorizations
     touches_ephi: true
     baa_status: payer relationship
+    soc2_status: not provided
+    hitrust_status: not provided
     ai_training_use: not reviewed
     subcontractors_known: unknown
     incident_notification_terms: unknown

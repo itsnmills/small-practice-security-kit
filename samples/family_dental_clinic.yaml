@@ -132,6 +132,8 @@ vendors:
     service: "EHR hosting and support"
     touches_ephi: true
     baa_status: "signed"
+    soc2_status: "not provided"
+    hitrust_status: "not provided"
     ai_training_use: "not reviewed"
     subcontractors_known: "partial"
     incident_notification_terms: "24 hours in contract"
@@ -140,6 +142,8 @@ vendors:
     service: "Claims and billing"
     touches_ephi: true
     baa_status: "missing review date"
+    soc2_status: "not provided"
+    hitrust_status: "not provided"
     ai_training_use: "unknown"
     subcontractors_known: "unknown"
     incident_notification_terms: "unknown"
@@ -148,6 +152,8 @@ vendors:
     service: "Email, calendar, and shared drive"
     touches_ephi: true
     baa_status: "signed"
+    soc2_status: "not provided"
+    hitrust_status: "not provided"
     ai_training_use: "not reviewed for add-on AI features"
     subcontractors_known: "published list not reviewed"
     incident_notification_terms: "portal notice terms need review"
@@ -156,6 +162,8 @@ vendors:
     service: "Dental imaging software and support"
     touches_ephi: true
     baa_status: "unknown"
+    soc2_status: "not provided"
+    hitrust_status: "not provided"
     ai_training_use: "not applicable in current deployment"
     subcontractors_known: "unknown"
     incident_notification_terms: "unknown"
@@ -164,6 +172,8 @@ vendors:
     service: "Administrative drafting assistant"
     touches_ephi: false
     baa_status: "not needed for no-PHI demo workflow"
+    soc2_status: "not applicable"
+    hitrust_status: "not applicable"
     ai_training_use: "consumer/default settings not approved for sensitive data"
     subcontractors_known: "not reviewed"
     incident_notification_terms: "not reviewed"
@@ -172,6 +182,8 @@ vendors:
     service: "AI scribe pilot"
     touches_ephi: true
     baa_status: "requested"
+    soc2_status: "not provided"
+    hitrust_status: "not provided"
     ai_training_use: "unknown"
     subcontractors_known: "unknown"
     incident_notification_terms: "unknown"

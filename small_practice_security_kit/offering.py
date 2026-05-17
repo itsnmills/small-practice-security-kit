@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
+
 
 OFFERING_NAME = "Velari Cyber Readiness Sprint for Small Healthcare Practices"
 
@@ -58,7 +60,7 @@ STAGE_SOURCE_MAP: dict[str, dict[str, Any]] = {
     "vendor_baa_review": {
         "control_theme": "Third-party risk, BAA posture, subcontractors, incident notice",
         "source_ids": ["hhs_405d_hicp", "cisa_cpgs"],
-        "how_this_source_changes_what_we_ask": "Ask vendors for BAA scope, security contact, subcontractor posture, incident notification terms, retention/deletion, AI training-use, and export/delete options.",
+        "how_this_source_changes_what_we_ask": "Ask vendors for BAA scope, SOC 2/HITRUST evidence status, security contact, subcontractor posture, incident notification terms, retention/deletion, AI training-use, and export/delete options.",
     },
     "access_offboarding_review": {
         "control_theme": "Identity, access management, MFA, unique accounts",
@@ -95,7 +97,7 @@ BOUNDARY_STATEMENTS = [
 ]
 
 ESCALATION_TRIGGERS = [
-    "A vendor touching ePHI cannot produce a BAA status, security contact, retention/deletion answer, or incident-notification terms.",
+    "A vendor touching ePHI cannot produce a BAA status, SOC 2/HITRUST evidence status, security contact, retention/deletion answer, or incident-notification terms.",
     "MFA is not technically enforced for EHR, billing, email, remote access, administrator, or vendor-support accounts.",
     "Backup scope or restore-test evidence is missing for systems needed to continue patient care.",
     "Staff are using AI tools with patient-level, billing, clinical, credential, or raw evidence details before vendor and policy review.",
@@ -120,7 +122,7 @@ OFFERING_ARTIFACTS: list[dict[str, str]] = [
     },
     {
         "path": "vendor-baa-ai-questionnaire.md",
-        "purpose": "BAA, subcontractor, incident notice, retention/deletion, AI training-use, access, audit-log, and export/delete questions.",
+        "purpose": "BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access, audit-log, and export/delete questions.",
         "audience": "vendor_baa_ai_reviewer",
     },
     {
@@ -194,12 +196,12 @@ def build_audience_lanes(profile: dict[str, Any]) -> list[dict[str, Any]]:
         {
             "id": "vendor_baa_ai_reviewer",
             "label": "Vendor / BAA / AI reviewer",
-            "value": "Answerable vendor questions for BAA scope, subcontractors, incident notice, retention/deletion, AI training-use, access controls, logs, and export/delete capability.",
+            "value": "Answerable vendor questions for BAA scope, SOC 2/HITRUST evidence status, subcontractors, incident notice, retention/deletion, AI training-use, access controls, logs, and export/delete capability.",
             "primary_owner": "Vendor owner / practice manager",
             "primary_artifacts": ["vendor-baa-ai-questionnaire.md", "vendor-baa-review.md"],
             "first_questions": [
                 "Does the vendor touch ePHI or support a workflow that could later receive ePHI?",
-                "What are the BAA, subcontractor, incident notice, retention, deletion, and AI training-use answers?",
+                "What are the BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention, deletion, and AI training-use answers?",
                 "Can the practice export or delete its data, and can audit logs be reviewed?",
             ],
         },
@@ -258,8 +260,8 @@ def build_first_7_days_actions(profile: dict[str, Any]) -> list[dict[str, str]]:
             "day": "Days 3-4",
             "lane": "Vendor",
             "stage_id": "vendor_baa_review",
-            "action": f"Send BAA, subcontractor, incident notice, retention/deletion, AI training-use, access control, audit-log, and export/delete questions to {vendor_text}.",
-            "evidence_request": "Vendor written answers, BAA status/link label, security contact, incident notice terms, and reviewer notes kept outside the public repo.",
+            "action": f"Send BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access control, audit-log, and export/delete questions to {vendor_text}.",
+            "evidence_request": "Vendor written answers, BAA status/link label, SOC 2/HITRUST status label, security contact, incident notice terms, and reviewer notes kept outside the public repo.",
             "artifact_ref": "vendor-baa-ai-questionnaire.md",
         },
         {
@@ -301,7 +303,7 @@ def build_offering_summary(profile: dict[str, Any], stages: list[dict[str, Any]]
             "A plain-English map of where patient-data workflows create operational and trust risk outside the EHR.",
             "A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.",
             "A technical remediation brief that asks for specific proof instead of broad security promises.",
-            "A vendor/BAA/AI questionnaire that makes contract, retention, incident notice, subcontractor, and model-training questions visible.",
+            "A vendor/BAA/AI questionnaire that makes contract, SOC 2/HITRUST evidence status, retention, incident notice, subcontractor, and model-training questions visible.",
             "A reference-only evidence checklist ready for a private/offline binder without moving PHI or raw restricted evidence into this repo.",
             "A source map that shows why each stage exists and which federal healthcare/cross-sector guidance shaped the questions.",
         ],
@@ -378,7 +380,7 @@ def _question_for_finding(title: str, stage_id: str, recipient: str) -> str:
             return "Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?"
         return "Can you provide the technical proof, date observed, owner, and remediation sequence for this stage?"
     if recipient == "Vendor" or stage_id == "vendor_baa_review":
-        return "Can you answer BAA scope, subcontractor, incident notice, retention/deletion, AI training-use, access-control, audit-log, and export/delete questions?"
+        return "Can you answer BAA scope, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access-control, audit-log, and export/delete questions?"
     if stage_id == "ai_phi_review":
         return "Should this workflow remain no-PHI, restricted, or paused until vendor terms and human-review controls are reviewed?"
     return "Does this item require legal/compliance review, owner signoff, or a private evidence review before action?"
@@ -509,6 +511,7 @@ def render_owner_action_plan(summary: dict[str, Any], risk_rows: list[dict[str, 
     ]
     vendor_questions = [
         "Do we have a BAA for this service, and what workflow or data does it cover?",
+        "What SOC 2 or HITRUST evidence status should we record: provided, not provided, absent, or not applicable?",
         "Who is the security contact, and what are the incident-notification terms?",
         "Which subcontractors may access or process our data?",
         "What are the retention, deletion, export, audit-log, and AI training-use terms?",
@@ -572,7 +575,7 @@ def _technical_check_for_risk(risk: dict[str, str]) -> str:
     if "log" in title:
         return "Document log sources, monthly review cadence, alert owner, and escalation path."
     if "baa" in title or stage_id == "vendor_baa_review":
-        return "Confirm vendor security contact, support access method, incident notice terms, and BAA status evidence reference."
+        return "Confirm vendor security contact, support access method, incident notice terms, BAA status, and SOC 2/HITRUST evidence status reference."
     if stage_id == "ai_phi_review":
         return "Confirm AI tool access, approved data classes, admin settings, retention/model-training terms, and staff guidance reference."
     if stage_id == "downtime_ransomware_review":
@@ -589,7 +592,7 @@ def _expected_proof_for_risk(risk: dict[str, str]) -> str:
     if "backup" in title or "restore" in title:
         return "Backup scope summary, restore-test note, recovery owner, date observed, and systems not covered."
     if "baa" in title or risk["stage_id"] == "vendor_baa_review":
-        return "BAA status label, security contact, incident notice clause summary, subcontractor answer, and reviewer note."
+        return "BAA status label, SOC 2/HITRUST status label, security contact, incident notice clause summary, subcontractor answer, and reviewer note."
     if risk["stage_id"] == "ai_phi_review":
         return "AI acceptable-use policy page, admin setting screenshot, vendor terms summary, and staff acknowledgement reference."
     return "Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets."
@@ -651,6 +654,8 @@ def render_vendor_baa_ai_questionnaire(profile: dict[str, Any], summary: dict[st
                 vendor["service"],
                 "yes" if vendor.get("touches_ephi") else "no",
                 vendor.get("baa_status", "unknown"),
+                vendor_soc2_status(vendor),
+                vendor_hitrust_status(vendor),
                 vendor.get("ai_training_use", "unknown"),
                 vendor.get("risk", "medium"),
             ]
@@ -668,6 +673,7 @@ def render_vendor_baa_ai_questionnaire(profile: dict[str, Any], summary: dict[st
         )
     questions = [
         "Is a BAA available for the service and the workflow we use?",
+        "Can you provide SOC 2 or HITRUST evidence for private review, or should the status be recorded as not provided, absent, or not applicable?",
         "Which legal entity provides the service, and who is the security or privacy contact?",
         "Which subcontractors or subprocessors may access, store, support, or process the data?",
         "What incident-notification terms apply, including timing, contact path, and required customer action?",
@@ -685,7 +691,7 @@ Use this as a source-backed question list, not as legal advice or vendor approva
 
 ## Vendors In Scope
 
-{markdown_table(['Vendor', 'Service', 'Touches ePHI-like workflow?', 'BAA status', 'AI training/use', 'Risk'], vendor_rows)}
+{markdown_table(['Vendor', 'Service', 'Touches ePHI-like workflow?', 'BAA status', 'SOC 2 status', 'HITRUST status', 'AI training/use', 'Risk'], vendor_rows)}
 
 ## AI Workflows In Scope
 
@@ -697,7 +703,7 @@ Use this as a source-backed question list, not as legal advice or vendor approva
 
 ## Reviewer Notes
 
-- If a vendor touches ePHI-like workflows or could receive patient, billing, clinical, credential, or raw evidence details later, escalate unanswered BAA, subcontractor, incident notice, retention/deletion, and AI training-use questions.
+- If a vendor touches ePHI-like workflows or could receive patient, billing, clinical, credential, or raw evidence details later, escalate unanswered BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, and AI training-use questions.
 - Do not treat a vendor marketing page as enough by itself. Ask for the contract lane, security contact, and evidence reference a qualified reviewer can inspect privately.
 - Do not paste patient examples, chart content, claim details, credentials, logs, raw contracts, or private links into vendor questionnaires generated from this public repo.
 """
@@ -725,7 +731,7 @@ def render_evidence_collection_checklist(
         "Quarterly access review signoff with removed accounts, exception owners, and dates observed.",
         "Backup scope summary and backup restore test note for EHR exports, billing data, shared drive, imaging workstation, and key endpoints.",
         "Downtime tabletop agenda, participant list by role, manual workflow decisions, and lessons learned.",
-        "BAA link/status label, vendor security contact, incident notice terms, subcontractor answer, and review date.",
+        "BAA link/status label, SOC 2/HITRUST status label, vendor security contact, incident notice terms, subcontractor answer, and review date.",
         "AI tool policy page, admin settings, retention/model-training terms, staff no-PHI guidance, and acknowledgement reference.",
         "Cyber insurance questionnaire evidence references for MFA, backups, incident response, vendor access, training, and endpoint controls.",
         "Security awareness training completion summary and phishing/social-engineering reminder reference.",
@@ -761,7 +767,7 @@ def render_day_one_workshop_agenda(summary: dict[str, Any], profile: dict[str, A
         ["10-25 min", "Practice workflow discovery", "Walk through intake, EHR, billing, referrals, messaging, shared drive, imaging, remote support, and AI-adjacent workflows."],
         ["25-40 min", "Evidence safety check", "Decide where private evidence lives, how references will be named, and who can access raw evidence outside the public repo."],
         ["40-60 min", "MSP technical lane", "Review MFA, user lists, admin roles, backup scope, restore testing, logs, remote support, and vulnerability handling."],
-        ["60-75 min", "Vendor/BAA/AI lane", "Review vendors touching ePHI-like workflows, AI tools, BAA status, retention/deletion, subcontractors, and incident notice questions."],
+        ["60-75 min", "Vendor/BAA/AI lane", "Review vendors touching ePHI-like workflows, AI tools, BAA status, SOC 2/HITRUST evidence status, retention/deletion, subcontractors, and incident notice questions."],
         ["75-85 min", "Legal/compliance reviewer lane", "Park contract, incident, insurance, and formal risk-assessment questions for qualified review."],
         ["85-90 min", "Closeout", "Assign first-week actions, evidence owners, and the next review checkpoint."],
     ]
@@ -793,7 +799,7 @@ Practice: **{summary['practice']['label']}**
 
 - Owner / office manager: priorities, vendor asks, staff guidance, evidence owner decisions.
 - MSP / IT partner: technical checks, proof, remediation sequence, recovery readiness.
-- Vendor / BAA / AI reviewer: contract, data-use, retention, incident notice, subcontractor, access, log, and export/delete answers.
+- Vendor / BAA / AI reviewer: contract, SOC 2/HITRUST evidence status, data-use, retention, incident notice, subcontractor, access, log, and export/delete answers.
 - Legal / compliance reviewer: formal risk-assessment, contract, insurance, incident, and reporting questions.
 
 ## Expected Outputs

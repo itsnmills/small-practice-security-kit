@@ -51,7 +51,7 @@ Start here:
 |---|---|
 | `readiness-review.md` | Plain-English baseline readiness review |
 | `ephi-flow-map.md` | Systems, workflows, vendors, ePHI categories, BAA needs, and risk |
-| `vendor-baa-review.md` | Vendor, BAA, incident terms, subcontractor, and AI data-use review |
+| `vendor-baa-review.md` | Vendor, BAA, SOC 2/HITRUST evidence status, incident terms, subcontractor, and AI data-use review |
 | `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflow review |
 | `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter packet |
 | `evidence-binder-index.md` | Evidence references to collect in a binder |
@@ -150,7 +150,7 @@ More details:
 | `01-readiness-checklist/` | Plain-English security readiness review |
 | `02-ephi-data-flow-map/` | Systems, vendors, workflows, and ePHI movement |
 | `03-hipaa-evidence-binder/` | Evidence references and review packet links |
-| `04-vendor-baa-review/` | Vendor, BAA, AI training/data-use, and subcontractor review |
+| `04-vendor-baa-review/` | Vendor, BAA, SOC 2/HITRUST evidence status, AI training/data-use, and subcontractor review |
 | `05-ai-workflow-review/` | Allowed/prohibited AI workflow review |
 | `06-downtime-ransomware-tabletop/` | Downtime, restore test, tabletop, and incident evidence |
 | `07-review-packet-builder/` | Packet builder scripts and output conventions |

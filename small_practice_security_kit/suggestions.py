@@ -5,6 +5,7 @@ from typing import Any
 
 from .catalogs import evidence_types, flow_templates, presets, size_tiers, systems, vendors
 from .validation import validate_profile
+from .vendor_evidence import DEFAULT_EVIDENCE_STATUS, HITRUST_STATUS_FIELD, SOC2_STATUS_FIELD
 
 
 DEFAULT_READINESS = {
@@ -92,6 +93,8 @@ def build_vendor(vendor_key: str) -> dict[str, Any]:
         "service": item["service"],
         "touches_ephi": bool(item["touches_ephi"]),
         "baa_status": item["baa_status"],
+        SOC2_STATUS_FIELD: item.get(SOC2_STATUS_FIELD, DEFAULT_EVIDENCE_STATUS),
+        HITRUST_STATUS_FIELD: item.get(HITRUST_STATUS_FIELD, DEFAULT_EVIDENCE_STATUS),
         "ai_training_use": item["ai_training_use"],
         "subcontractors_known": item["subcontractors_known"],
         "incident_notification_terms": item["incident_notification_terms"],

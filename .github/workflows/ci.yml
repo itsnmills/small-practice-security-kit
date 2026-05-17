@@ -6,7 +6,39 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+
 jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Gitleaks
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+        run: |
+          set -euo pipefail
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+      - name: Run Gitleaks secret scan
+        run: gitleaks detect --source . --no-git --redact --config .gitleaks.toml
+      - name: Set up Trivy
+        uses: aquasecurity/setup-trivy@3fb12ec12f41e471780db15c232d5dd185dcb514 # v0.2.6
+        with:
+          version: v0.70.0
+      - name: Run Trivy filesystem scan
+        run: trivy fs --scanners vuln,secret,misconfig --severity CRITICAL,HIGH --exit-code 1 --no-progress .
+      - name: Generate Trivy CycloneDX SBOM
+        run: trivy fs --format cyclonedx --output trivy-sbom.cdx.json --no-progress .
+      - name: Upload Trivy SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-cyclonedx-sbom
+          path: trivy-sbom.cdx.json
+          if-no-files-found: error
+
   build:
     runs-on: ubuntu-latest
     steps:

@@ -2,5 +2,6 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Vendor Register Import CSV",
   "required_columns": ["name", "service", "touches_ephi", "baa_status", "ai_training_use", "subcontractors_known", "incident_notification_terms", "risk"],
+  "optional_columns": ["soc2_status", "hitrust_status"],
   "risk_values": ["low", "medium", "high", "critical"]
 }

@@ -28,6 +28,14 @@ class CatalogTests(unittest.TestCase):
                 self.assertTrue(required.issubset(item))
                 self.assertIn(item["vendor_category"], vendors())
 
+    def test_vendor_catalog_items_have_explicit_attestation_statuses(self) -> None:
+        required = {"soc2_status", "hitrust_status"}
+        for key, item in vendors().items():
+            with self.subTest(vendor=key):
+                self.assertTrue(required.issubset(item))
+                self.assertTrue(str(item["soc2_status"]).strip())
+                self.assertTrue(str(item["hitrust_status"]).strip())
+
 
 if __name__ == "__main__":
     unittest.main()
