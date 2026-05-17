@@ -28,7 +28,7 @@ The sample intentionally includes realistic gaps:
 
 - [`readiness-review.md`](readiness-review.md) — baseline readiness review.
 - [`ephi-flow-map.md`](ephi-flow-map.md) — patient-data-outside-the-EHR map for systems, vendors, and flows.
-- [`vendor-baa-review.md`](vendor-baa-review.md) — vendor, BAA, incident terms, subcontractor, and AI data-use review.
+- [`vendor-baa-review.md`](vendor-baa-review.md) — vendor, BAA, SOC 2/HITRUST evidence status, incident terms, subcontractor, and AI data-use review.
 - [`ai-workflow-review.md`](ai-workflow-review.md) — allowed, restricted, and prohibited AI workflow review.
 - [`downtime-ransomware-tabletop.md`](downtime-ransomware-tabletop.md) — downtime/tabletop starter packet.
 - [`evidence-binder-index.md`](evidence-binder-index.md) — evidence references to collect.

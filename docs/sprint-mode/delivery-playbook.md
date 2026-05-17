@@ -57,6 +57,7 @@ Ask for evidence references or sanitized summaries, not raw screenshots, logs, c
 Use `vendor-baa-review.md`, `risk-register.csv`, and `evidence-binder-export/evidence-binder-index.csv` to track:
 
 - BAA status and review date,
+- SOC 2 / HITRUST evidence status, recorded as provided, not provided, absent, or not applicable,
 - incident notification terms,
 - subcontractor posture,
 - AI/model-training/data-use terms,

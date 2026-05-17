@@ -167,7 +167,7 @@ def build_stage_statuses(profile: dict[str, Any], out_dir: Path, gaps: list[str]
             "owner": profile["practice"]["security_owner"],
             "artifact_refs": ["vendor-baa-review.md"],
             "evidence_gap_count": len(vendor_gaps) + int(gap_lookup["baa"]),
-            "next_action": "Collect BAA status, security contact, incident terms, subcontractor posture, and AI/data-use answers.",
+            "next_action": "Collect BAA status, SOC 2/HITRUST evidence status, security contact, incident terms, subcontractor posture, and AI/data-use answers.",
         },
         {
             "id": "access_offboarding_review",

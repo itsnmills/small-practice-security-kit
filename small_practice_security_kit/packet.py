@@ -8,6 +8,7 @@ from pathlib import Path
 from .manifest import build_packet_manifest
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
+from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -103,6 +104,8 @@ def vendor_review(profile: dict) -> str:
             yn(v["touches_ephi"]),
             v["baa_status"],
             v["ai_training_use"],
+            vendor_soc2_status(v),
+            vendor_hitrust_status(v),
             v["subcontractors_known"],
             v["incident_notification_terms"],
             v["risk"],
@@ -111,11 +114,12 @@ def vendor_review(profile: dict) -> str:
     ]
     return f"""# Vendor and BAA Review
 
-{table(['Vendor', 'Service', 'Touches ePHI?', 'BAA Status', 'AI Training Use', 'Subcontractors', 'Incident Terms', 'Risk'], rows)}
+{table(['Vendor', 'Service', 'Touches ePHI?', 'BAA Status', 'AI Training Use', 'SOC 2 Status', 'HITRUST Status', 'Subcontractors', 'Incident Terms', 'Risk'], rows)}
 
 ## Next Evidence
 
 - Confirm BAA review date for each vendor touching ePHI.
+- Record SOC 2 and HITRUST evidence status as provided, not provided, absent, or not applicable; do not infer attestations from marketing pages.
 - Record incident notification terms.
 - Ask AI/data-use questions for any vendor using automation or model training.
 """
@@ -168,7 +172,14 @@ def evidence_index(profile: dict) -> str:
     for flow in profile["flows"]:
         rows.append([flow["id"], "ePHI flow", flow["evidence_needed"], "03-hipaa-evidence-binder"])
     for vendor in profile["vendors"]:
-        rows.append([vendor["name"], "Vendor/BAA", f"BAA, security contact, AI data-use review for {vendor['name']}", "04-vendor-baa-review"])
+        rows.append(
+            [
+                vendor["name"],
+                "Vendor/BAA",
+                f"BAA, SOC 2/HITRUST status, security contact, AI data-use review for {vendor['name']}",
+                "04-vendor-baa-review",
+            ]
+        )
     rows.extend(
         [
             ["ACCESS-QTR", "Access", "Quarterly access review for EHR, billing, email, remote access", "03-hipaa-evidence-binder"],
@@ -193,9 +204,11 @@ def owner_msp_handoff(profile: dict) -> str:
                     vendor["name"],
                     vendor["service"],
                     vendor["baa_status"],
+                    vendor_soc2_status(vendor),
+                    vendor_hitrust_status(vendor),
                     vendor["risk"],
                     "Practice manager",
-                    "Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture.",
+                    "Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture.",
                 ]
             )
     access_actions = []
@@ -228,7 +241,7 @@ Initial risk level: **{risk}**
 
 ## Vendor Follow-Up
 
-{table(['Vendor', 'Service', 'BAA Status', 'Risk', 'Owner', 'Ask'], vendor_rows) if vendor_rows else '- No vendor follow-up rows generated.'}
+{table(['Vendor', 'Service', 'BAA Status', 'SOC 2 Status', 'HITRUST Status', 'Risk', 'Owner', 'Ask'], vendor_rows) if vendor_rows else '- No vendor follow-up rows generated.'}
 
 ## Handoff Boundary
 

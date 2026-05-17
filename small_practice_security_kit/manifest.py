@@ -6,6 +6,8 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
+
 
 SCHEMA_VERSION = "2026-05-15"
 ALLOWED_EVIDENCE_STATUSES = {"missing", "requested", "partial", "reviewed", "outdated", "not_applicable"}
@@ -181,7 +183,7 @@ def evidence_references(profile: dict[str, Any], generated_date: date) -> list[d
         refs.append(
             {
                 "evidence_id": f"VENDOR-{slug(str(vendor['name'])).upper()}",
-                "title": f"BAA, security contact, AI data-use review for {vendor['name']}",
+                "title": f"BAA, SOC 2/HITRUST status, security contact, AI data-use review for {vendor['name']}",
                 "evidence_type": "vendor_baa",
                 "source_system": str(vendor["name"]),
                 "owner": "Practice manager",
@@ -190,7 +192,11 @@ def evidence_references(profile: dict[str, Any], generated_date: date) -> list[d
                 "next_review_date": next_review,
                 "sensitivity_boundary": "reference_only_no_phi_no_secret",
                 "artifact_refs": ["vendor-baa-review.md", "evidence-binder-index.md"],
-                "notes": f"Current BAA status: {vendor.get('baa_status', 'unknown')}",
+                "notes": (
+                    f"Current BAA status: {vendor.get('baa_status', 'unknown')}; "
+                    f"SOC 2 status: {vendor_soc2_status(vendor)}; "
+                    f"HITRUST status: {vendor_hitrust_status(vendor)}"
+                ),
             }
         )
 

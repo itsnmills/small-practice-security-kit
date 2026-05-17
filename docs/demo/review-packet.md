@@ -39,28 +39,40 @@ Overall initial risk: **High**
 | Cloud EHR | EHR | creates, receives, maintains, transmits | Example EHR Vendor | admin settings export, BAA, user access review |
 | Billing Portal | Billing | receives, maintains, transmits | Example Billing Vendor | BAA, user list, incident contact |
 | Shared Drive | File storage | maintains | Workspace Provider | access review, sharing settings, backup reference |
+| Dental Imaging Workstation | Imaging | creates and maintains | Example Imaging Vendor | local account list, backup scope reference, vendor support access procedure |
+| Patient Messaging Portal | Patient communications | receives and transmits | Example Messaging Vendor | BAA, secure message settings, retention settings |
+| General AI Assistant | AI drafting | no PHI approved for public demo workflow | General AI Assistant Vendor | staff no-PHI guidance, acceptable-use acknowledgement |
+| AI Scribe Pilot | AI documentation | potentially receives or creates ePHI if approved later | Example AI Scribe Vendor | BAA review, retention terms, human review process, pilot approval |
 
 ## Flows
 
 | Flow | Source | Destination | Vendor | ePHI Type | BAA Needed | Risk | Evidence Needed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | demographics, insurance, treatment notes | Yes | medium | BAA, portal access controls, intake workflow owner |
-| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | claim and billing data | Yes | high | BAA, integration owner, incident notification terms |
+| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | demographic and insurance categories | Yes | medium | BAA, portal access controls, intake workflow owner |
+| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | billing and payer-submission categories | Yes | high | BAA, integration owner, incident notification terms |
 | FLOW-003 | Staff email | External specialist | Email provider | referral attachments | Yes | high | secure email policy, forwarding review, staff training |
+| FLOW-004 | Dental Imaging Workstation | Shared Drive | Workspace Provider | image export categories | Yes | high | export procedure, shared-folder access review, backup scope reference |
+| FLOW-005 | Front desk notes | General AI Assistant | General AI Assistant Vendor | no patient data approved; generic administrative drafting only | No | medium | AI acceptable-use guidance and staff acknowledgement |
+| FLOW-006 | Provider conversation | AI Scribe Pilot | Example AI Scribe Vendor | potential visit-summary categories if approved after vendor review | Yes | high | BAA, retention terms, model-training terms, human review approval |
 
 
 ---
 
 # Vendor and BAA Review
 
-| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | Subcontractors | Incident Terms | Risk |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | partial | 24 hours in contract | medium |
-| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | unknown | unknown | high |
+| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | SOC 2 Status | HITRUST Status | Subcontractors | Incident Terms | Risk |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | not provided | not provided | partial | 24 hours in contract | medium |
+| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | not provided | not provided | unknown | unknown | high |
+| Workspace Provider | Email, calendar, and shared drive | Yes | signed | not reviewed for add-on AI features | not provided | not provided | published list not reviewed | portal notice terms need review | medium |
+| Example Imaging Vendor | Dental imaging software and support | Yes | unknown | not applicable in current deployment | not provided | not provided | unknown | unknown | high |
+| General AI Assistant Vendor | Administrative drafting assistant | No | not needed for no-PHI demo workflow | consumer/default settings not approved for sensitive data | not applicable | not applicable | not reviewed | not reviewed | medium |
+| Example AI Scribe Vendor | AI scribe pilot | Yes | requested | unknown | not provided | not provided | unknown | unknown | high |
 
 ## Next Evidence
 
 - Confirm BAA review date for each vendor touching ePHI.
+- Record SOC 2 and HITRUST evidence status as provided, not provided, absent, or not applicable; do not infer attestations from marketing pages.
 - Record incident notification terms.
 - Ask AI/data-use questions for any vendor using automation or model training.
 
@@ -72,8 +84,10 @@ Overall initial risk: **High**
 | Workflow | Use | Data Used | Vendor | Decision | Evidence Needed |
 | --- | --- | --- | --- | --- | --- |
 | Marketing email drafting | Draft generic outreach copy | No patient data | General AI assistant | allowed | staff guidance and prohibited data examples |
-| Billing appeal drafter | Draft payer appeal language | claim and treatment details | General AI assistant | restricted | BAA review, redaction workflow, owner approval |
-| Paste visit note into public chatbot | Summarize a clinical note | clinical note | Public chatbot | prohibited | training reminder and AI use policy |
+| Insurance renewal questionnaire drafting | Draft plain-language answers for cyber insurance renewal questions | Control status summaries and evidence reference IDs only | General AI assistant | allowed | owner review and no-PHI/no-secret prompt guidance |
+| Billing appeal drafter | Draft payer appeal language | billing scenario summary; real patient-level details are not approved | General AI assistant | restricted | BAA review, redaction workflow, owner approval |
+| AI scribe pilot | Draft visit summaries after provider review | potential PHI if enabled after vendor approval | Example AI Scribe Vendor | restricted | BAA, retention/model-training terms, human review workflow, pilot owner signoff |
+| Paste patient-level note into public chatbot | Summarize patient-level documentation | patient-level documentation category | Public chatbot | prohibited | training reminder and AI use policy |
 
 ## Rules of Thumb
 
@@ -110,11 +124,23 @@ Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, bil
 
 | Evidence ID | Area | Evidence Needed | Module |
 | --- | --- | --- | --- |
+| EVID-ACCESS-Q2 | Access | Quarterly access review export placeholder - restricted-evidence/access/q2-access-review | 03-hipaa-evidence-binder |
+| EVID-BACKUP-RESTORE | Backup | Backup restore test record placeholder - restricted-evidence/backups/restore-test-record | 03-hipaa-evidence-binder |
+| EVID-CYBER-INSURANCE | Insurance | Cyber insurance renewal evidence list - restricted-evidence/insurance/renewal-evidence-list | 03-hipaa-evidence-binder |
+| EVID-AI-GUIDANCE | AI | Staff AI acceptable-use acknowledgement - restricted-evidence/ai/staff-ai-guidance | 03-hipaa-evidence-binder |
+| EVID-VENDOR-BAA-GAPS | Vendor | Vendor BAA and incident terms follow-up list - restricted-evidence/vendors/baa-follow-up-list | 03-hipaa-evidence-binder |
 | FLOW-001 | ePHI flow | BAA, portal access controls, intake workflow owner | 03-hipaa-evidence-binder |
 | FLOW-002 | ePHI flow | BAA, integration owner, incident notification terms | 03-hipaa-evidence-binder |
 | FLOW-003 | ePHI flow | secure email policy, forwarding review, staff training | 03-hipaa-evidence-binder |
-| Example EHR Vendor | Vendor/BAA | BAA, security contact, AI data-use review for Example EHR Vendor | 04-vendor-baa-review |
-| Example Billing Vendor | Vendor/BAA | BAA, security contact, AI data-use review for Example Billing Vendor | 04-vendor-baa-review |
+| FLOW-004 | ePHI flow | export procedure, shared-folder access review, backup scope reference | 03-hipaa-evidence-binder |
+| FLOW-005 | ePHI flow | AI acceptable-use guidance and staff acknowledgement | 03-hipaa-evidence-binder |
+| FLOW-006 | ePHI flow | BAA, retention terms, model-training terms, human review approval | 03-hipaa-evidence-binder |
+| Example EHR Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor | 04-vendor-baa-review |
+| Example Billing Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor | 04-vendor-baa-review |
+| Workspace Provider | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider | 04-vendor-baa-review |
+| Example Imaging Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Imaging Vendor | 04-vendor-baa-review |
+| General AI Assistant Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for General AI Assistant Vendor | 04-vendor-baa-review |
+| Example AI Scribe Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example AI Scribe Vendor | 04-vendor-baa-review |
 | ACCESS-QTR | Access | Quarterly access review for EHR, billing, email, remote access | 03-hipaa-evidence-binder |
 | BACKUP-RESTORE | Backup | Restore test record for EHR, billing, shared drive, key workstation | 06-downtime-ransomware-tabletop |
 | AI-POLICY | AI workflow | Allowed/prohibited AI use guidance and staff acknowledgement | 05-ai-workflow-review |
@@ -147,10 +173,13 @@ Initial risk level: **High**
 
 ## Vendor Follow-Up
 
-| Vendor | Service | BAA Status | Risk | Owner | Ask |
-| --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | signed | medium | Practice manager | Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture. |
-| Example Billing Vendor | Claims and billing | missing review date | high | Practice manager | Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture. |
+| Vendor | Service | BAA Status | SOC 2 Status | HITRUST Status | Risk | Owner | Ask |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Example EHR Vendor | EHR hosting and support | signed | not provided | not provided | medium | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example Billing Vendor | Claims and billing | missing review date | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Workspace Provider | Email, calendar, and shared drive | signed | not provided | not provided | medium | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example Imaging Vendor | Dental imaging software and support | unknown | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example AI Scribe Vendor | AI scribe pilot | requested | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
 
 ## Handoff Boundary
 

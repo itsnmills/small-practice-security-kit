@@ -19,5 +19,11 @@ Required columns:
 - `incident_notification_terms`
 - `risk`
 
-Imported vendors appear in `vendor-baa-review.md` after building the imported profile.
+Optional columns:
 
+- `soc2_status`
+- `hitrust_status`
+
+If optional SOC 2 or HITRUST columns are omitted, the importer records `not provided` so generated vendor-review outputs stay explicit without inventing attestations.
+
+Imported vendors appear in `vendor-baa-review.md` after building the imported profile.

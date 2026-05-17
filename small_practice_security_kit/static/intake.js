@@ -99,6 +99,8 @@ function newVendor() {
     service: "Describe service",
     touches_ephi: true,
     baa_status: "unknown",
+    soc2_status: "not provided",
+    hitrust_status: "not provided",
     ai_training_use: "not reviewed",
     subcontractors_known: "unknown",
     incident_notification_terms: "unknown",
@@ -191,12 +193,14 @@ function renderSystems() {
 }
 
 function renderVendors() {
-  $("#vendors-table").innerHTML = `<table><thead><tr><th>Vendor</th><th>Service</th><th>Touches ePHI</th><th>BAA</th><th>AI data use</th><th>Subcontractors</th><th>Incident terms</th><th>Risk</th><th>Remove</th></tr></thead><tbody>
+  $("#vendors-table").innerHTML = `<table><thead><tr><th>Vendor</th><th>Service</th><th>Touches ePHI</th><th>BAA</th><th>SOC 2</th><th>HITRUST</th><th>AI data use</th><th>Subcontractors</th><th>Incident terms</th><th>Risk</th><th>Remove</th></tr></thead><tbody>
     ${profile.vendors.map((vendor, index) => `<tr>
       <td>${textInput(vendor.name, `vendors.${index}.name`)}</td>
       <td>${textInput(vendor.service, `vendors.${index}.service`)}</td>
       <td><input type="checkbox" ${vendor.touches_ephi ? "checked" : ""} data-path="vendors.${index}.touches_ephi"></td>
       <td>${selectInput(vendor.baa_status, `vendors.${index}.baa_status`, ["signed", "unknown", "missing review date", "not applicable", "payer relationship"])}</td>
+      <td>${selectInput(vendor.soc2_status || "not provided", `vendors.${index}.soc2_status`, ["not provided", "provided", "absent", "not applicable", "requested"])}</td>
+      <td>${selectInput(vendor.hitrust_status || "not provided", `vendors.${index}.hitrust_status`, ["not provided", "provided", "absent", "not applicable", "requested"])}</td>
       <td>${selectInput(vendor.ai_training_use, `vendors.${index}.ai_training_use`, ["not reviewed", "unknown", "prohibited", "allowed by contract", "not applicable"])}</td>
       <td>${selectInput(vendor.subcontractors_known, `vendors.${index}.subcontractors_known`, ["known", "partial", "unknown", "not applicable"])}</td>
       <td>${textInput(vendor.incident_notification_terms, `vendors.${index}.incident_notification_terms`)}</td>

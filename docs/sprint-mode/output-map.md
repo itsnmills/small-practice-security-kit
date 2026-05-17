@@ -20,7 +20,7 @@
 | Where is the canonical generated manifest? | `packet-manifest.json` | Artifact hashes, evidence references, findings, roadmap items, and data boundary. |
 | Where is the patient-data-outside-EHR map? | `ephi-flow-map.md` | Systems and flows with evidence needs, BAA needs, and risk. |
 | Which AI workflows are allowed, restricted, or prohibited? | `ai-workflow-review.md` | Staff-facing workflow decisions and evidence needed. |
-| Which vendor or BAA questions remain? | `vendor-baa-review.md` | Vendor rows for BAA status, AI training use, subcontractors, incident terms, and risk. |
+| Which vendor or BAA questions remain? | `vendor-baa-review.md` | Vendor rows for BAA status, SOC 2/HITRUST evidence status, AI training use, subcontractors, incident terms, and risk. |
 | What should the MSP handle first? | `owner-msp-handoff.md` | Owner decisions, MSP follow-up, vendor asks, and handoff boundary. |
 | What is the first 30/60/90 sequence? | `30-60-90-roadmap.md` | Plain-language remediation and evidence cadence plan. |
 | What can be imported into a private evidence binder? | `evidence-binder-export/` | Binder-compatible CSV/Markdown exchange files with reference-only evidence rows. |

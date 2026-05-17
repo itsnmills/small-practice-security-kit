@@ -23,10 +23,13 @@ Initial risk level: **High**
 
 ## Vendor Follow-Up
 
-| Vendor | Service | BAA Status | Risk | Owner | Ask |
-| --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | signed | medium | Practice manager | Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture. |
-| Example Billing Vendor | Claims and billing | missing review date | high | Practice manager | Confirm BAA scope, incident terms, subcontractors, and AI/data-use posture. |
+| Vendor | Service | BAA Status | SOC 2 Status | HITRUST Status | Risk | Owner | Ask |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Example EHR Vendor | EHR hosting and support | signed | not provided | not provided | medium | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example Billing Vendor | Claims and billing | missing review date | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Workspace Provider | Email, calendar, and shared drive | signed | not provided | not provided | medium | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example Imaging Vendor | Dental imaging software and support | unknown | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+| Example AI Scribe Vendor | AI scribe pilot | requested | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
 
 ## Handoff Boundary
 

@@ -8,25 +8,25 @@
       "sha256": "70ff6b26db495a43a56e6cc55c71f654decdda5a146bfbf619be3fd1d6250ed2"
     },
     {
-      "bytes": 1142,
+      "bytes": 2479,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ephi-flow-map.md",
-      "sha256": "35ad43b668c6eb9ab949914a78662105e73565c99dc1d178e2771f1a040f899c"
+      "sha256": "5185bb45f8676e730d4117156904006555af08744d8589ede8eaab59a394b9da"
     },
     {
-      "bytes": 611,
+      "bytes": 1628,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "vendor-baa-review.md",
-      "sha256": "68aed00e3a878341a1053d1900730229777464937b52cfde4cfbdb7a60dd9ceb"
+      "sha256": "6db37917c4638854fe3c313f32ff216ab2b64732323c5f36da42d95413ab28f1"
     },
     {
-      "bytes": 936,
+      "bytes": 1516,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ai-workflow-review.md",
-      "sha256": "223d2016ebdcdf9af2efd42d4bfacadf3cc8504ca1ab0a449d2211141a7eddfd"
+      "sha256": "0eb06c9805adf487ec693479d3f249b76718a408c0a4c93b0aabd8993472192f"
     },
     {
       "bytes": 734,
@@ -36,18 +36,18 @@
       "sha256": "534b13863ca06e1cdd3804498bedeb3fbcdd30df626caddf91cbafb6d1ab7107"
     },
     {
-      "bytes": 1044,
+      "bytes": 2819,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "evidence-binder-index.md",
-      "sha256": "c7cbb06c337db865569dc472accf5b8c3d319f5f970ba6d903daace82cf28cf9"
+      "sha256": "347be8bc6e2becfe0151f5714d85df8eec3815be5f2cfff25e830acc79d22f49"
     },
     {
-      "bytes": 1493,
+      "bytes": 2358,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "owner-msp-handoff.md",
-      "sha256": "dc232a08acbeeb461ca5e602d9bddbcf57596e8367ade6ad2e6141ec1ec39e49"
+      "sha256": "9c1cb2068fcb623880427c8ee2d5049d08a6a16399cde079d04d83eef78b770f"
     },
     {
       "bytes": 488,
@@ -57,25 +57,25 @@
       "sha256": "d413fef5eeb7b9266e9dca225d3a25195ef24f0ac301c24b0a2e121006754e12"
     },
     {
-      "bytes": 1388,
+      "bytes": 1410,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "limitations-appendix.md",
-      "sha256": "bb88a81a290befeb6d10dbbf162a14f068557d826d402c7a4f530f8f8f638839"
+      "sha256": "2d7c029f7edd1cd0aa3aa5fb6815d88e7e3ee20aba63ffb4a7302de7d8a529ec"
     },
     {
-      "bytes": 8687,
+      "bytes": 14283,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "6dd1b297dc4607cb97c767b2d98e8916d46258180a53a0095269b633630714eb"
+      "sha256": "0d2b962d974efb1851575a66102e8bf4073b4953baebdc108cf353d95c06235e"
     },
     {
-      "bytes": 14568,
+      "bytes": 21477,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "3aa3ca4a6dcec4bf4cac6a70e34777c6a6cd231cdc88a1639fe8d7a167c24af5"
+      "sha256": "34280d2b3ce9f6198a44d40246fd82ee249128310a58095426cb3ce0d8755e0f"
     }
   ],
   "data_boundary": {
@@ -85,6 +85,81 @@
     "secrets_allowed": false
   },
   "evidence_references": [
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-ACCESS-Q2",
+      "evidence_type": "Access",
+      "next_review_date": "2026-06-14",
+      "notes": "User list export exists for email, but EHR, imaging, billing, and remote support review are not reconciled.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/access/q2-access-review",
+      "status": "partial",
+      "title": "Quarterly access review export placeholder"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-BACKUP-RESTORE",
+      "evidence_type": "Backup",
+      "next_review_date": "2026-06-14",
+      "notes": "Restore test evidence is stale or missing for EHR exports, imaging workstation, and shared drive scope.",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/backups/restore-test-record",
+      "status": "outdated",
+      "title": "Backup restore test record placeholder"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-CYBER-INSURANCE",
+      "evidence_type": "Insurance",
+      "next_review_date": "2026-06-14",
+      "notes": "Prepare reference-only answers for MFA, backups, incident response, vendor access, and staff training.",
+      "owner": "Practice Owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/insurance/renewal-evidence-list",
+      "status": "requested",
+      "title": "Cyber insurance renewal evidence list"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-AI-GUIDANCE",
+      "evidence_type": "AI",
+      "next_review_date": "2026-06-14",
+      "notes": "No patient identifiers, chart content, billing details, credentials, or raw evidence may be entered into public AI tools.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/ai/staff-ai-guidance",
+      "status": "requested",
+      "title": "Staff AI acceptable-use acknowledgement"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-VENDOR-BAA-GAPS",
+      "evidence_type": "Vendor",
+      "next_review_date": "2026-06-14",
+      "notes": "Billing, imaging, and AI scribe vendor terms need owner/MSP review.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/vendors/baa-follow-up-list",
+      "status": "requested",
+      "title": "Vendor BAA and incident terms follow-up list"
+    },
     {
       "artifact_refs": [
         "ephi-flow-map.md",
@@ -135,6 +210,54 @@
     },
     {
       "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-004",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Shared Drive via Workspace Provider",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Dental Imaging Workstation",
+      "status": "requested",
+      "title": "export procedure, shared-folder access review, backup scope reference"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-005",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to General AI Assistant via General AI Assistant Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Front desk notes",
+      "status": "requested",
+      "title": "AI acceptable-use guidance and staff acknowledgement"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-006",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to AI Scribe Pilot via Example AI Scribe Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Provider conversation",
+      "status": "requested",
+      "title": "BAA, retention terms, model-training terms, human review approval"
+    },
+    {
+      "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
@@ -142,12 +265,12 @@
       "evidence_id": "VENDOR-EXAMPLE_EHR_VENDOR",
       "evidence_type": "vendor_baa",
       "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: signed",
+      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
       "source_system": "Example EHR Vendor",
       "status": "reviewed",
-      "title": "BAA, security contact, AI data-use review for Example EHR Vendor"
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor"
     },
     {
       "artifact_refs": [
@@ -158,12 +281,76 @@
       "evidence_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
       "evidence_type": "vendor_baa",
       "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: missing review date",
+      "notes": "Current BAA status: missing review date; SOC 2 status: not provided; HITRUST status: not provided",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
       "source_system": "Example Billing Vendor",
       "status": "requested",
-      "title": "BAA, security contact, AI data-use review for Example Billing Vendor"
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-WORKSPACE_PROVIDER",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Workspace Provider",
+      "status": "reviewed",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: unknown; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example Imaging Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Imaging Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-GENERAL_AI_ASSISTANT_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: not needed for no-PHI demo workflow; SOC 2 status: not applicable; HITRUST status: not applicable",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "General AI Assistant Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for General AI Assistant Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: requested; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example AI Scribe Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example AI Scribe Vendor"
     }
   ],
   "findings": [
@@ -229,11 +416,21 @@
       "evidence_refs": [
         "AI-POLICY"
       ],
-      "finding_id": "AI-PASTE_VISIT_NOTE_INTO_PUBLIC_CHATBOT",
+      "finding_id": "AI-AI_SCRIBE_PILOT",
+      "owner": "Practice owner",
+      "section_id": "ai_findings",
+      "severity": "medium",
+      "title": "AI workflow requires action: AI scribe pilot"
+    },
+    {
+      "evidence_refs": [
+        "AI-POLICY"
+      ],
+      "finding_id": "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "owner": "Practice owner",
       "section_id": "ai_findings",
       "severity": "high",
-      "title": "AI workflow requires action: Paste visit note into public chatbot"
+      "title": "AI workflow requires action: Paste patient-level note into public chatbot"
     },
     {
       "evidence_refs": [
@@ -244,9 +441,29 @@
       "section_id": "vendor_baa_exposure",
       "severity": "high",
       "title": "BAA status needs review for Example Billing Vendor"
+    },
+    {
+      "evidence_refs": [
+        "VENDOR-EXAMPLE_IMAGING_VENDOR"
+      ],
+      "finding_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "owner": "Practice manager",
+      "section_id": "vendor_baa_exposure",
+      "severity": "high",
+      "title": "BAA status needs review for Example Imaging Vendor"
+    },
+    {
+      "evidence_refs": [
+        "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      ],
+      "finding_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "owner": "Practice manager",
+      "section_id": "vendor_baa_exposure",
+      "severity": "high",
+      "title": "BAA status needs review for Example AI Scribe Vendor"
     }
   ],
-  "generated_at": "2026-05-15T19:12:01Z",
+  "generated_at": "2026-05-15T00:00:00Z",
   "generator": {
     "mode": "local_packet_builder",
     "name": "small-practice-security-kit"
@@ -441,6 +658,6 @@
   ],
   "source_profile": {
     "path": "samples/family_dental_clinic.yaml",
-    "sha256": "636b6eede72d1c0bec22e7cb1258ee4cb047b5b98e77582404a150550de68782"
+    "sha256": "14dc25a10a39e4aa4a564a81411c802f265b086360c129537d3a3c971bfe72f5"
   }
 }

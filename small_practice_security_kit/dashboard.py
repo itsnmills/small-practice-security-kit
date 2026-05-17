@@ -6,6 +6,7 @@ from typing import Iterable
 
 from .packet import OUT, render_html, risk_level
 from .profile import load_profile, slugify
+from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
 STATUS_LABELS = {
@@ -32,7 +33,7 @@ def status_class(value: str) -> str:
     normalized = str(value or "").lower()
     if normalized in {"high", "missing", "prohibited", "false", "not documented", "not run"}:
         return "blocked"
-    if normalized in {"medium", "restricted", "unknown", "partial", "missing review date", "not reviewed", ""}:
+    if normalized in {"medium", "restricted", "unknown", "partial", "missing review date", "not reviewed", "not provided", "absent", ""}:
         return "review"
     if normalized in {"low", "signed", "allowed", "true", "ready", "complete", "completed"}:
         return "done"
@@ -130,7 +131,7 @@ def evidence_rows(profile: dict) -> list[list[object]]:
             [
                 esc(vendor["name"]),
                 esc("Vendor/BAA"),
-                esc(f"BAA, incident terms, security contact, AI data-use review for {vendor['name']}"),
+                esc(f"BAA, SOC 2/HITRUST status, incident terms, security contact, AI data-use review for {vendor['name']}"),
                 badge(vendor["risk"]),
             ]
         )
@@ -158,7 +159,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         [
             task_row("Readiness review", "MFA, access, backups, training, logging, and incident basics.", "review" if gaps else "done", "#readiness"),
             task_row("ePHI flow map", "Where ePHI enters, moves, rests, and leaves the practice.", "review" if high_flows else "done", "#flows"),
-            task_row("Vendor and BAA review", "BAA status, subcontractors, incident terms, and AI data use.", "review" if signed_baas < vendors_touching_ephi else "done", "#vendors"),
+            task_row("Vendor and BAA review", "BAA status, SOC 2/HITRUST status, subcontractors, incident terms, and AI data use.", "review" if signed_baas < vendors_touching_ephi else "done", "#vendors"),
             task_row("AI workflow review", "Allowed, restricted, and prohibited AI uses.", "review" if restricted_ai else "done", "#ai"),
             task_row("Downtime packet", "Critical systems, restore tests, tabletop, and manual workarounds.", "blocked" if profile["downtime"]["downtime_plan_status"] != "documented" else "done", "#downtime"),
             task_row("Evidence queue", "The packet of evidence references to collect before review.", "review", "#evidence"),
@@ -182,6 +183,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
             esc(vendor["service"]),
             badge("Touches ePHI" if vendor["touches_ephi"] else "No ePHI", kind="review" if vendor["touches_ephi"] else "unknown"),
             badge(vendor["baa_status"]),
+            badge(vendor_soc2_status(vendor)),
+            badge(vendor_hitrust_status(vendor)),
             badge(vendor["ai_training_use"]),
             badge(vendor["risk"]),
         ]
@@ -383,8 +386,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         {table(["Flow", "Source", "Destination", "Vendor", "BAA", "Risk"], flow_rows)}
       </section>
       <section id="vendors" class="panel section">
-        <div class="section-head"><div><h2>Vendor and BAA review</h2><p>BAA status, incident terms, subcontractor visibility, and AI/customer-data questions.</p></div></div>
-        {table(["Vendor", "Service", "ePHI", "BAA", "AI data use", "Risk"], vendor_rows)}
+        <div class="section-head"><div><h2>Vendor and BAA review</h2><p>BAA status, SOC 2/HITRUST evidence status, incident terms, subcontractor visibility, and AI/customer-data questions.</p></div></div>
+        {table(["Vendor", "Service", "ePHI", "BAA", "SOC 2", "HITRUST", "AI data use", "Risk"], vendor_rows)}
       </section>
       <section id="ai" class="panel section">
         <div class="section-head"><div><h2>AI workflow review</h2><p>Shows which workflows are allowed, restricted, or prohibited before staff paste anything into a tool.</p></div></div>

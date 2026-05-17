@@ -45,6 +45,20 @@ class VendorImportTests(unittest.TestCase):
             with self.assertRaisesRegex(ValidationError, "missing required column"):
                 read_vendor_csv(path)
 
+    def test_import_defaults_missing_attestation_columns_to_not_provided(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "legacy.csv"
+            path.write_text(
+                "name,service,touches_ephi,baa_status,ai_training_use,subcontractors_known,incident_notification_terms,risk\n"
+                "Legacy Vendor,Claims,yes,unknown,unknown,unknown,unknown,high\n",
+                encoding="utf-8",
+            )
+
+            vendors = read_vendor_csv(path)
+
+        self.assertEqual(vendors[0]["soc2_status"], "not provided")
+        self.assertEqual(vendors[0]["hitrust_status"], "not provided")
+
 
 if __name__ == "__main__":
     unittest.main()

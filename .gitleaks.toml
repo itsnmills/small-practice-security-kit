@@ -1,0 +1,14 @@
+title = "small-practice-security-kit gitleaks config"
+
+[extend]
+useDefault = true
+
+# The default generic-api-key rule can interpret this generated Markdown table row
+# as access=<secret>. This is static module wording, not a credential or token.
+[[allowlists]]
+description = "Generated access-review evidence row in packet.py"
+paths = ['''^small_practice_security_kit/packet\.py$''']
+regexTarget = "line"
+regexes = [
+  '''\["ACCESS-QTR",\s*"Access",\s*"Quarterly access review for EHR, billing, email, remote access",\s*"03-hipaa-evidence-binder"\],'''
+]
