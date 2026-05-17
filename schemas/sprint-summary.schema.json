@@ -724,7 +724,9 @@
             "hhs_cyber_gateway",
             "hhs_405d_hicp",
             "cisa_cpgs",
-            "onc_ocr_sra_tool"
+            "onc_ocr_sra_tool",
+            "hhs_security_rule_nprm",
+            "fda_medical_device_cybersecurity"
           ]
         },
         "title": {

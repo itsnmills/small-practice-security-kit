@@ -70,6 +70,9 @@ class SprintModeTests(unittest.TestCase):
                 "review-packet.md",
                 "review-packet.html",
                 "owner-msp-handoff.md",
+                "connected-device-inventory.md",
+                "portal-api-flow-review.md",
+                "incident-decision-log.md",
                 "30-60-90-roadmap.md",
                 "packet-manifest.json",
                 "evidence-binder-export/evidence-binder-index.csv",
@@ -186,6 +189,9 @@ class SprintModeTests(unittest.TestCase):
             workshop = (out_dir / "day-one-workshop-agenda.md").read_text(encoding="utf-8")
             source_map = (out_dir / "source-map.md").read_text(encoding="utf-8")
             command_center = (out_dir / "sprint-command-center.html").read_text(encoding="utf-8")
+            connected_devices = (out_dir / "connected-device-inventory.md").read_text(encoding="utf-8")
+            portal_api = (out_dir / "portal-api-flow-review.md").read_text(encoding="utf-8")
+            incident_log = (out_dir / "incident-decision-log.md").read_text(encoding="utf-8")
 
         self.assertIn("## First 7 Days", offering_readout)
         self.assertIn("## Questions To Send", offering_readout)
@@ -203,6 +209,15 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("HHS Cyber Gateway", source_map)
         self.assertIn("CISA Cybersecurity Performance Goals", source_map)
         self.assertIn("Offering Mode", command_center)
+        self.assertIn("## Connected Device Worksheet", connected_devices)
+        self.assertIn("Firmware / patch owner", connected_devices)
+        self.assertIn("Default credential status", connected_devices)
+        self.assertIn("## Portal And API Flows", portal_api)
+        self.assertIn("Patient identity workflow", portal_api)
+        self.assertIn("FHIR/app/API connections", portal_api)
+        self.assertIn("## Decision Log Template", incident_log)
+        self.assertIn("Technical containment", incident_log)
+        self.assertIn("Qualified legal/compliance decision", incident_log)
 
     def test_sprint_blocks_high_confidence_sensitive_profile_data(self) -> None:
         profile = load_profile(PROFILE)

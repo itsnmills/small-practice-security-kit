@@ -51,6 +51,24 @@ SECTION_MODEL = [
         "source_modules": ["downtime"],
     },
     {
+        "id": "connected_device_inventory",
+        "title": "Connected Device Inventory",
+        "artifact": "connected-device-inventory.md",
+        "source_modules": ["systems", "downtime"],
+    },
+    {
+        "id": "portal_api_flow_review",
+        "title": "Portal and API Flow Review",
+        "artifact": "portal-api-flow-review.md",
+        "source_modules": ["systems", "flows", "vendors"],
+    },
+    {
+        "id": "incident_decision_log",
+        "title": "Incident Decision Log",
+        "artifact": "incident-decision-log.md",
+        "source_modules": ["downtime", "handoff_questions", "packet_notice"],
+    },
+    {
         "id": "evidence_index",
         "title": "Evidence Index",
         "artifact": "evidence-binder-index.md",

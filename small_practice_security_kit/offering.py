@@ -39,6 +39,20 @@ SOURCE_ANCHORS: list[dict[str, Any]] = [
         "why_it_matters": "Supports small and medium providers conducting HIPAA Security Rule risk assessments while keeping entries local to the user's computer.",
         "how_this_changes_the_sprint": "The public runner stays local-first and reference-only, and it points practices toward qualified review for formal risk assessment decisions.",
     },
+    {
+        "id": "hhs_security_rule_nprm",
+        "title": "HHS HIPAA Security Rule NPRM Fact Sheet",
+        "urls": ["https://www.hhs.gov/hipaa/for-professionals/security/hipaa-security-rule-nprm/factsheet/index.html"],
+        "why_it_matters": "Flags proposed modernization items while the current Security Rule remains in effect during rulemaking.",
+        "how_this_changes_the_sprint": "Modernization items such as asset inventory, network maps, MFA, encryption, vulnerability scanning, segmentation, backups, incident response, and BA verification are tracked as watchlist deltas, not guaranteed current obligations.",
+    },
+    {
+        "id": "fda_medical_device_cybersecurity",
+        "title": "FDA Medical Device Cybersecurity Guidance",
+        "urls": ["https://www.fda.gov/medical-devices/digital-health-center-excellence/cybersecurity"],
+        "why_it_matters": "Connected clinical devices can affect patient safety and need owner, patch, support-access, and safety-notice review.",
+        "how_this_changes_the_sprint": "The packet adds a connected-device worksheet for device/vendor ownership, patch evidence, default credential status, downtime fallback, and safety/security notice review.",
+    },
 ]
 
 STAGE_SOURCE_MAP: dict[str, dict[str, Any]] = {
@@ -49,8 +63,8 @@ STAGE_SOURCE_MAP: dict[str, dict[str, Any]] = {
     },
     "patient_data_outside_ehr_map": {
         "control_theme": "ePHI-like workflow visibility, asset inventory, data protection",
-        "source_ids": ["hhs_405d_hicp", "cisa_cpgs"],
-        "how_this_source_changes_what_we_ask": "Ask where patient data leaves the EHR, which vendor or system handles it, whether a BAA may be needed, and what evidence reference proves the control.",
+        "source_ids": ["hhs_405d_hicp", "cisa_cpgs", "hhs_security_rule_nprm", "fda_medical_device_cybersecurity"],
+        "how_this_source_changes_what_we_ask": "Ask where patient data leaves the EHR, which vendor or system handles it, whether a BAA may be needed, what connected devices, portals, apps, or integrations touch the workflow, and what evidence reference proves the control.",
     },
     "ai_phi_review": {
         "control_theme": "AI data-use boundary, data protection, governance",
@@ -139,6 +153,21 @@ OFFERING_ARTIFACTS: list[dict[str, str]] = [
         "path": "source-map.md",
         "purpose": "Stage-to-source map showing how HHS, HICP, CISA, and ONC/OCR anchors change the packet questions.",
         "audience": "reviewer",
+    },
+    {
+        "path": "connected-device-inventory.md",
+        "purpose": "IoMT/medical-device worksheet for vendor, network/access path, PHI handled, patch owner, default credentials, downtime fallback, and safety notice review.",
+        "audience": "msp",
+    },
+    {
+        "path": "portal-api-flow-review.md",
+        "purpose": "Portal, API, app, and FHIR-style flow worksheet covering patient identity workflow, audit logs, secure messaging, ownership, and export/delete evidence.",
+        "audience": "owner_msp_vendor",
+    },
+    {
+        "path": "incident-decision-log.md",
+        "purpose": "Decision-log template separating technical containment from qualified legal/compliance breach-notification decisions.",
+        "audience": "owner_msp_legal",
     },
 ]
 
