@@ -54,6 +54,9 @@ Start here:
 | `vendor-baa-review.md` | Vendor, BAA, SOC 2/HITRUST evidence status, incident terms, subcontractor, and AI data-use review |
 | `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflow review |
 | `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter packet |
+| `connected-device-inventory.md` | IoMT/connected-device worksheet for patch owner, default credentials, downtime fallback, and safety notices |
+| `portal-api-flow-review.md` | Portal, app, API/FHIR-style flow worksheet for identity, audit logs, secure messaging, and export/delete evidence |
+| `incident-decision-log.md` | Decision-log template separating technical containment from legal/compliance breach-notification decisions |
 | `evidence-binder-index.md` | Evidence references to collect in a binder |
 | `owner-msp-handoff.md` | Owner/MSP follow-up, vendor asks, access actions, and handoff boundary |
 | `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
@@ -132,7 +135,7 @@ Start with:
 out/family_dental_clinic/sprint-command-center.html
 ```
 
-Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files.
+Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, and `incident-decision-log.md`.
 
 The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping.
 

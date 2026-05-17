@@ -36,6 +36,27 @@
       "sha256": "534b13863ca06e1cdd3804498bedeb3fbcdd30df626caddf91cbafb6d1ab7107"
     },
     {
+      "bytes": 2243,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "connected-device-inventory.md",
+      "sha256": "801ffaac142df5b834962543ffbad6860f1dd1e75d167a24501169faf385cdd6"
+    },
+    {
+      "bytes": 2066,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "portal-api-flow-review.md",
+      "sha256": "9b90cccf2a0131e4a3acb9ca8fe79368326e78f207c68928e8c90b4f08b8b851"
+    },
+    {
+      "bytes": 2177,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "incident-decision-log.md",
+      "sha256": "d0ae8d44223e47df92901d0a24fbbd6e8c7cd535967e20cb6f34dee87dcc326f"
+    },
+    {
       "bytes": 2819,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
@@ -64,18 +85,18 @@
       "sha256": "2d7c029f7edd1cd0aa3aa5fb6815d88e7e3ee20aba63ffb4a7302de7d8a529ec"
     },
     {
-      "bytes": 14283,
+      "bytes": 20790,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "0d2b962d974efb1851575a66102e8bf4073b4953baebdc108cf353d95c06235e"
+      "sha256": "a2027510bc3a795db8586f4a3bc4e5080341fe8716f529aa2fcd52219c0de93a"
     },
     {
-      "bytes": 21477,
+      "bytes": 29046,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "34280d2b3ce9f6198a44d40246fd82ee249128310a58095426cb3ce0d8755e0f"
+      "sha256": "73a6d300ec1cd1ceba27a45d0bf6ef60c5f71b838cf761ce2b4c0d6f89f697bc"
     }
   ],
   "data_boundary": {
@@ -606,6 +627,44 @@
       ],
       "status": "generated",
       "title": "Downtime and Ransomware"
+    },
+    {
+      "artifact_refs": [
+        "connected-device-inventory.md"
+      ],
+      "id": "connected_device_inventory",
+      "source_modules": [
+        "systems",
+        "downtime"
+      ],
+      "status": "generated",
+      "title": "Connected Device Inventory"
+    },
+    {
+      "artifact_refs": [
+        "portal-api-flow-review.md"
+      ],
+      "id": "portal_api_flow_review",
+      "source_modules": [
+        "systems",
+        "flows",
+        "vendors"
+      ],
+      "status": "generated",
+      "title": "Portal and API Flow Review"
+    },
+    {
+      "artifact_refs": [
+        "incident-decision-log.md"
+      ],
+      "id": "incident_decision_log",
+      "source_modules": [
+        "downtime",
+        "handoff_questions",
+        "packet_notice"
+      ],
+      "status": "generated",
+      "title": "Incident Decision Log"
     },
     {
       "artifact_refs": [

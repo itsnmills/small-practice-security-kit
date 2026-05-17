@@ -158,6 +158,149 @@ Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, bil
 """
 
 
+def connected_device_inventory(profile: dict) -> str:
+    device_like = []
+    device_keywords = ("imaging", "workstation", "phone", "device", "scanner", "lab", "x-ray", "sensor")
+    critical_systems = {str(system).lower() for system in profile.get("downtime", {}).get("critical_systems", [])}
+    for system in profile.get("systems", []):
+        haystack = " ".join(
+            str(system.get(key, "")).lower()
+            for key in ["name", "category", "ephi_role", "access_method", "evidence_needed"]
+        )
+        if any(keyword in haystack for keyword in device_keywords) or str(system.get("name", "")).lower() in critical_systems:
+            device_like.append(system)
+
+    if not device_like:
+        device_like = profile.get("systems", [])[:3]
+
+    rows = []
+    for system in device_like:
+        rows.append(
+            [
+                system.get("name", "System or device"),
+                system.get("vendor", "Unknown vendor"),
+                system.get("access_method", "Network location/access path to confirm"),
+                system.get("ephi_role", "PHI/ePHI role to confirm"),
+                system.get("owner", profile["practice"].get("technical_owner", "MSP Lead")),
+                "unknown - verify default credentials disabled",
+                "manual workflow or restore path to confirm",
+                "review vendor safety/security notices and patch advisories",
+            ]
+        )
+
+    return f"""# Connected Device Inventory
+
+This worksheet extends the ePHI flow map for small-practice IoMT and medical-device-adjacent systems. It is a readiness worksheet, not a live network scan, penetration test, FDA safety assessment, or compliance determination.
+
+## Connected Device Worksheet
+
+{table(['Device / system', 'Vendor', 'Network location or access path', 'PHI handled', 'Firmware / patch owner', 'Default credential status', 'Downtime fallback', 'Safety notice review'], rows)}
+
+## Evidence To Request
+
+- Current device or workstation inventory export, with owner and date observed.
+- Vendor support path, remote-access method, and account owner.
+- Firmware, patch, or managed endpoint status reference.
+- Default credential exception review and compensating-control note.
+- Backup/restore or downtime fallback for devices needed during patient care.
+- Vendor safety/security notice review cadence and owner.
+
+## Boundary
+
+Record only reference IDs, owners, and short status summaries here. Keep serial numbers, screenshots, network diagrams, private IPs, raw logs, credentials, and patient details in the private/offline evidence binder.
+"""
+
+
+def portal_api_flow_review(profile: dict) -> str:
+    portal_terms = ("portal", "api", "integration", "fhir", "messaging", "https", "app")
+    rows = []
+    for flow in profile.get("flows", []):
+        haystack = " ".join(str(flow.get(key, "")).lower() for key in ["source", "destination", "vendor", "transmission", "evidence_needed"])
+        if any(term in haystack for term in portal_terms):
+            rows.append(
+                [
+                    flow.get("id", "FLOW"),
+                    flow.get("source", "Source to confirm"),
+                    flow.get("destination", "Destination to confirm"),
+                    flow.get("vendor", "Vendor/app owner to confirm"),
+                    flow.get("transmission", "Connection type to confirm"),
+                    flow.get("ephi_type", "Data class to confirm"),
+                    yn(bool(flow.get("baa_needed"))),
+                    flow.get("evidence_needed", "Audit, access, retention, and export/delete evidence to request"),
+                ]
+            )
+
+    if not rows:
+        rows.append(["PORTAL-001", "Patient portal", "EHR or messaging vendor", "Vendor/app owner", "portal/API", "patient communication categories", "Yes", "Portal users, audit logs, secure messaging, retention, and export/delete evidence"])
+
+    checklist = [
+        "Portal users and role list, including inactive or shared-account exceptions.",
+        "Patient identity workflow: invitation, registration, reset, proxy/delegate access, and support verification.",
+        "FHIR/app/API connections: app name, vendor owner, scope, authorization path, and review date.",
+        "Audit logs for portal access, secure messages, exports, failed logins, admin changes, and support access.",
+        "Secure messaging settings, attachment rules, retention, and deletion/export workflow.",
+        "Vendor ownership, BAA status, incident notice, subcontractors, and data-use terms.",
+    ]
+
+    return f"""# Portal And API Flow Review
+
+This worksheet extends `ephi-flow-map.md` for portals, integrations, apps, and API/FHIR-style connections. It does not validate live APIs, prove identity controls, approve apps, or replace vendor/legal review.
+
+## Portal And API Flows
+
+{table(['Flow', 'Source', 'Destination', 'Vendor/app owner', 'Connection', 'Data category', 'BAA needed', 'Evidence needed'], rows)}
+
+## Evidence Checklist
+
+{chr(10).join(f'- [ ] {item}' for item in checklist)}
+
+## Patient Identity Workflow
+
+Document who can invite a patient, reset access, change contact details, approve proxy/delegate access, and handle portal support. Use reference IDs only; do not include patient examples.
+
+## FHIR/app/API connections
+
+For each app or integration, record owner, scope, vendor, authorization method, audit-log availability, export/delete path, and reviewer notes in the private binder.
+"""
+
+
+def incident_decision_log(profile: dict) -> str:
+    rows = [
+        ["Incident or concern", "What happened at a sanitized category level?", "Owner/MSP", "open", "Do not record patient names, screenshots, raw logs, or private URLs."],
+        ["Technical containment", "What system/account/vendor path was contained or isolated?", profile["practice"].get("technical_owner", "MSP Lead"), "open", "Track actions, timestamps, and evidence reference IDs only."],
+        ["Qualified legal/compliance decision", "Does this require breach-notification, contract, insurance, or regulatory analysis?", "Qualified reviewer", "parked for review", "The public packet does not decide reportability."],
+        ["Owner communication", "What plain-English operational update can the owner approve?", profile["practice"].get("security_owner", "Office Manager"), "draft", "Keep incident-sensitive details out of public artifacts."],
+    ]
+
+    return f"""# Incident Decision Log
+
+Use this as a handoff template when an outage, ransomware concern, lost device, vendor notice, misdirected message, or suspicious access question appears during the sprint. It separates technical response work from qualified breach-notification and legal/compliance decisions.
+
+## Decision Log Template
+
+{table(['Lane', 'Question to answer', 'Decision owner', 'Status', 'Evidence boundary'], rows)}
+
+## Technical Containment
+
+- Record system, account, vendor path, or workflow category affected.
+- Record owner, date/time observed, action taken, and private evidence reference ID.
+- Escalate to incident response if there is active compromise, ransomware, unauthorized access, lost device, or patient-care disruption.
+
+## Qualified Legal/compliance Decision
+
+- Park breach-notification, contractual notice, insurance, regulatory, and formal risk-analysis decisions for qualified reviewers.
+- Do not use this public packet to decide whether an incident is reportable.
+- Keep raw logs, patient details, screenshots, contracts, private URLs, and incident-sensitive facts outside generated public artifacts.
+
+## Handoff Questions
+
+- What was technically contained, by whom, and when?
+- What evidence reference supports containment without exposing PHI or secrets?
+- Which decisions require counsel, compliance, insurer, vendor, or incident-response review?
+- What can staff safely do now while the formal decision is pending?
+"""
+
+
 def evidence_index(profile: dict) -> str:
     rows = []
     for evidence in profile.get("evidence", []):
@@ -433,6 +576,9 @@ def build_packet(profile_path: Path, output_root: Path = OUT, *, generated_at: s
         "vendor-baa-review.md": vendor_review(profile),
         "ai-workflow-review.md": ai_review(profile),
         "downtime-ransomware-tabletop.md": downtime_packet(profile),
+        "connected-device-inventory.md": connected_device_inventory(profile),
+        "portal-api-flow-review.md": portal_api_flow_review(profile),
+        "incident-decision-log.md": incident_decision_log(profile),
         "evidence-binder-index.md": evidence_index(profile),
         "owner-msp-handoff.md": owner_msp_handoff(profile),
         "30-60-90-roadmap.md": roadmap(profile),

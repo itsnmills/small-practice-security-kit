@@ -120,6 +120,102 @@ Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, bil
 
 ---
 
+# Connected Device Inventory
+
+This worksheet extends the ePHI flow map for small-practice IoMT and medical-device-adjacent systems. It is a readiness worksheet, not a live network scan, penetration test, FDA safety assessment, or compliance determination.
+
+## Connected Device Worksheet
+
+| Device / system | Vendor | Network location or access path | PHI handled | Firmware / patch owner | Default credential status | Downtime fallback | Safety notice review |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Cloud EHR | Example EHR Vendor | browser | creates, receives, maintains, transmits | Practice Owner | unknown - verify default credentials disabled | manual workflow or restore path to confirm | review vendor safety/security notices and patch advisories |
+| Billing Portal | Example Billing Vendor | browser | receives, maintains, transmits | Billing Lead | unknown - verify default credentials disabled | manual workflow or restore path to confirm | review vendor safety/security notices and patch advisories |
+| Shared Drive | Workspace Provider | managed endpoint and browser | maintains | Office Manager | unknown - verify default credentials disabled | manual workflow or restore path to confirm | review vendor safety/security notices and patch advisories |
+| Dental Imaging Workstation | Example Imaging Vendor | local workstation and vendor support session | creates and maintains | Lead Dental Assistant | unknown - verify default credentials disabled | manual workflow or restore path to confirm | review vendor safety/security notices and patch advisories |
+
+## Evidence To Request
+
+- Current device or workstation inventory export, with owner and date observed.
+- Vendor support path, remote-access method, and account owner.
+- Firmware, patch, or managed endpoint status reference.
+- Default credential exception review and compensating-control note.
+- Backup/restore or downtime fallback for devices needed during patient care.
+- Vendor safety/security notice review cadence and owner.
+
+## Boundary
+
+Record only reference IDs, owners, and short status summaries here. Keep serial numbers, screenshots, network diagrams, private IPs, raw logs, credentials, and patient details in the private/offline evidence binder.
+
+
+---
+
+# Portal And API Flow Review
+
+This worksheet extends `ephi-flow-map.md` for portals, integrations, apps, and API/FHIR-style connections. It does not validate live APIs, prove identity controls, approve apps, or replace vendor/legal review.
+
+## Portal And API Flows
+
+| Flow | Source | Destination | Vendor/app owner | Connection | Data category | BAA needed | Evidence needed |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | HTTPS portal | demographic and insurance categories | Yes | BAA, portal access controls, intake workflow owner |
+| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | vendor integration | billing and payer-submission categories | Yes | BAA, integration owner, incident notification terms |
+| FLOW-006 | Provider conversation | AI Scribe Pilot | Example AI Scribe Vendor | vendor app | potential visit-summary categories if approved after vendor review | Yes | BAA, retention terms, model-training terms, human review approval |
+
+## Evidence Checklist
+
+- [ ] Portal users and role list, including inactive or shared-account exceptions.
+- [ ] Patient identity workflow: invitation, registration, reset, proxy/delegate access, and support verification.
+- [ ] FHIR/app/API connections: app name, vendor owner, scope, authorization path, and review date.
+- [ ] Audit logs for portal access, secure messages, exports, failed logins, admin changes, and support access.
+- [ ] Secure messaging settings, attachment rules, retention, and deletion/export workflow.
+- [ ] Vendor ownership, BAA status, incident notice, subcontractors, and data-use terms.
+
+## Patient Identity Workflow
+
+Document who can invite a patient, reset access, change contact details, approve proxy/delegate access, and handle portal support. Use reference IDs only; do not include patient examples.
+
+## FHIR/app/API connections
+
+For each app or integration, record owner, scope, vendor, authorization method, audit-log availability, export/delete path, and reviewer notes in the private binder.
+
+
+---
+
+# Incident Decision Log
+
+Use this as a handoff template when an outage, ransomware concern, lost device, vendor notice, misdirected message, or suspicious access question appears during the sprint. It separates technical response work from qualified breach-notification and legal/compliance decisions.
+
+## Decision Log Template
+
+| Lane | Question to answer | Decision owner | Status | Evidence boundary |
+| --- | --- | --- | --- | --- |
+| Incident or concern | What happened at a sanitized category level? | Owner/MSP | open | Do not record patient names, screenshots, raw logs, or private URLs. |
+| Technical containment | What system/account/vendor path was contained or isolated? | MSP Lead | open | Track actions, timestamps, and evidence reference IDs only. |
+| Qualified legal/compliance decision | Does this require breach-notification, contract, insurance, or regulatory analysis? | Qualified reviewer | parked for review | The public packet does not decide reportability. |
+| Owner communication | What plain-English operational update can the owner approve? | Office Manager | draft | Keep incident-sensitive details out of public artifacts. |
+
+## Technical Containment
+
+- Record system, account, vendor path, or workflow category affected.
+- Record owner, date/time observed, action taken, and private evidence reference ID.
+- Escalate to incident response if there is active compromise, ransomware, unauthorized access, lost device, or patient-care disruption.
+
+## Qualified Legal/compliance Decision
+
+- Park breach-notification, contractual notice, insurance, regulatory, and formal risk-analysis decisions for qualified reviewers.
+- Do not use this public packet to decide whether an incident is reportable.
+- Keep raw logs, patient details, screenshots, contracts, private URLs, and incident-sensitive facts outside generated public artifacts.
+
+## Handoff Questions
+
+- What was technically contained, by whom, and when?
+- What evidence reference supports containment without exposing PHI or secrets?
+- Which decisions require counsel, compliance, insurer, vendor, or incident-response review?
+- What can staff safely do now while the formal decision is pending?
+
+
+---
+
 # Evidence Binder Index
 
 | Evidence ID | Area | Evidence Needed | Module |
