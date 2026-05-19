@@ -932,7 +932,7 @@ Review period: **{practice['review_period']}**
 
 Readiness signal: **{summary['readiness_signal']['label']}**
 
-Target delivery signal: **{summary['target_delivery_signal']['status']}**
+Target delivery signal: **{_status_label(summary['target_delivery_signal']['status'])}**
 
 This readout is a local, reference-only planning artifact. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer or vendor acceptance, authorize AI production use, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 
@@ -1161,29 +1161,35 @@ def render_command_center(
     }}
     .shell {{ max-width: 1240px; margin: 0 auto; padding: 28px 22px 56px; }}
     .hero {{
+      background: var(--app-bg);
+      color: var(--text-on-dark);
       border-top: 6px solid var(--gold);
+      border-radius: 8px;
       display: grid;
       grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
       gap: 24px;
-      padding: 26px 0 22px;
+      padding: 26px;
+      box-shadow: var(--shadow);
     }}
-    .eyebrow {{ color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }}
+    .eyebrow {{ color: var(--gold-soft); font-size: 12px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }}
     h1, h2, h3, p {{ margin-top: 0; }}
-    h1 {{ font-size: clamp(34px, 5vw, 58px); line-height: 1.02; margin-bottom: 12px; letter-spacing: 0; }}
+    h1 {{ font-size: clamp(34px, 5vw, 54px); line-height: 1.05; margin-bottom: 12px; letter-spacing: 0; }}
     h2 {{ font-size: 22px; margin-bottom: 14px; letter-spacing: 0; }}
     h3 {{ font-size: 16px; margin-bottom: 6px; letter-spacing: 0; }}
-    .lead {{ color: var(--muted); max-width: 760px; font-size: 16px; }}
+    .lead {{ color: var(--muted-inverse); max-width: 760px; font-size: 16px; }}
     .metrics {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }}
     .metric, .boundary, .stage-card, .lane-card {{
       background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
-      box-shadow: 0 1px 0 rgba(23, 33, 27, 0.04);
+      box-shadow: var(--shadow);
     }}
+    .hero .metric {{ background: var(--elevated); color: var(--text-on-dark); border-color: var(--line-strong); }}
+    .hero .metric span {{ color: var(--muted-inverse); }}
     .metric {{ padding: 14px; }}
     .metric span {{ display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 6px; }}
-    .metric strong {{ font-size: 24px; }}
-    .boundary {{ padding: 14px; border-left: 4px solid var(--gold); background: var(--gold-soft); color: #4f3317; }}
+    .metric strong {{ display: block; font-size: 22px; overflow-wrap: anywhere; }}
+    .boundary {{ padding: 14px; border-left: 4px solid var(--gold); background: var(--elevated); color: var(--text-on-dark); border-color: var(--line-strong); }}
     .grid {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr); gap: 18px; align-items: start; }}
     section {{ margin-top: 22px; }}
     .stages {{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }}
@@ -1209,7 +1215,7 @@ def render_command_center(
     .stage-foot ul, .lane-card ul, .artifact-list {{ display: flex; flex-wrap: wrap; gap: 6px; padding-left: 0; list-style: none; }}
     .stage-foot li, .lane-card li, .artifact-list li {{
       border: 1px solid var(--line);
-      background: #ffffff;
+      background: var(--surface-strong);
       border-radius: 999px;
       padding: 3px 7px;
       color: var(--muted);
@@ -1220,7 +1226,7 @@ def render_command_center(
     th {{ background: var(--primary-soft); color: var(--primary); font-size: 12px; }}
     td span {{ display: block; color: var(--muted); margin-top: 4px; font-size: 12px; }}
     tr:last-child td {{ border-bottom: 0; }}
-    .pill {{ display: inline-block; border-radius: 999px; padding: 4px 8px; color: #fff; font-size: 12px; }}
+    .pill {{ display: inline-block; border-radius: 999px; padding: 4px 8px; color: var(--text-on-dark); font-size: 12px; }}
     .severity-critical, .severity-high {{ background: var(--danger); }}
     .severity-medium {{ background: var(--warn); }}
     .severity-low {{ background: var(--ok); }}
@@ -1236,7 +1242,7 @@ def render_command_center(
     .actions li {{ margin: 0 0 12px; font-size: 13px; }}
     .actions li span {{ display: block; color: var(--muted); font-size: 12px; margin: 2px 0; }}
     .offering {{
-      background: var(--primary-soft);
+      background: var(--panel);
       border: 1px solid var(--line);
       border-radius: 8px;
       padding: 18px;
@@ -1279,7 +1285,7 @@ def render_command_center(
       </div>
       <aside class="metrics" aria-label="Sprint metrics">
         <div class="metric"><span>Readiness signal</span><strong>{_h(summary['readiness_signal']['label'])}</strong></div>
-        <div class="metric"><span>Delivery signal</span><strong>{_h(summary['target_delivery_signal']['status'])}</strong></div>
+        <div class="metric"><span>Delivery signal</span><strong>{_h(_status_label(summary['target_delivery_signal']['status']))}</strong></div>
         <div class="metric"><span>High/critical findings</span><strong>{int(summary['counts']['high_or_critical_findings'])}</strong></div>
         <div class="metric"><span>Evidence needing attention</span><strong>{int(summary['evidence_gap_summary']['needs_attention'])}</strong></div>
       </aside>

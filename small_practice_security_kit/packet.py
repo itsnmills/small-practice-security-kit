@@ -591,25 +591,32 @@ def render_html(markdown: str, profile: dict) -> str:
     * {{ box-sizing: border-box; }}
     body {{ margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, Avenir Next, "Segoe UI", Arial, sans-serif; line-height: 1.55; }}
     .shell {{ max-width: 1120px; margin: 0 auto; padding: 32px 22px 56px; }}
-    .cover {{ border-top: 8px solid var(--gold); padding: 28px 0 22px; display: grid; gap: 8px; }}
-    .kicker {{ color: var(--accent); font-weight: 800; text-transform: uppercase; font-size: 12px; }}
+    .cover {{ background: var(--app-bg); color: var(--text-on-dark); border-top: 8px solid var(--gold); border-radius: var(--radius); padding: 34px; display: grid; gap: 8px; box-shadow: var(--shadow); }}
+    .kicker {{ color: var(--gold-soft); font-weight: 800; text-transform: uppercase; font-size: 12px; }}
     h1, h2 {{ line-height: 1.12; letter-spacing: 0; }}
-    .cover h1 {{ font-size: clamp(34px, 5vw, 60px); margin: 0; max-width: 900px; }}
+    .cover h1 {{ font-size: clamp(34px, 5vw, 54px); margin: 0; max-width: 900px; }}
     .meta {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }}
-    .meta div {{ border: 1px solid var(--line); padding: 10px; background: var(--surface); }}
-    .meta strong {{ display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }}
-    .notice {{ background: var(--warn-soft); border-left: 4px solid var(--gold); padding: 12px 14px; margin: 22px 0; font-size: 14px; }}
-    .packet-section {{ display: block; padding: 24px 0 12px; border-top: 1px solid var(--line); }}
+    .meta div {{ border: 1px solid var(--line-strong); padding: 10px; background: var(--elevated); }}
+    .meta strong {{ display: block; font-size: 12px; color: var(--muted-inverse); margin-bottom: 3px; }}
+    .notice {{ background: var(--surface); border-left: 4px solid var(--gold); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; margin: 18px 0; font-size: 14px; }}
+    .packet-section {{ display: block; padding: 24px; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }}
     .packet-section h1 {{ font-size: 30px; margin: 0 0 12px; }}
-    h2 {{ font-size: 20px; margin: 22px 0 10px; color: var(--accent); }}
+    h2 {{ font-size: 20px; margin: 22px 0 10px; color: var(--primary); }}
     p, li {{ font-size: 15px; }}
-    .table-wrap {{ overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: white; }}
+    .table-wrap {{ overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: var(--surface); }}
     table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }}
-    th {{ text-align: left; background: var(--accent-soft); color: var(--ink); }}
+    th {{ text-align: left; background: var(--accent-soft); color: var(--primary); }}
     th, td {{ border-bottom: 1px solid var(--line); padding: 9px 10px; vertical-align: top; }}
     tr:last-child td {{ border-bottom: 0; }}
     hr {{ border: 0; border-top: 1px solid var(--line); margin: 28px 0; }}
-    @media print {{ body {{ background: white; }} .shell {{ max-width: none; padding: 0.4in; }} .table-wrap {{ overflow: visible; }} table {{ min-width: 0; font-size: 10px; }} .packet-section {{ page-break-inside: avoid; }} }}
+    @media print {{
+      :root {{ --bg: #e9f0f7; --paper: #e9f0f7; --surface: #f8fafc; --surface-strong: #f8fafc; --panel: #f8fafc; --elevated: #e9f0f7; --ink: #050a10; --muted: #64748b; --line: #94a3b8; --primary-soft: #e9f0f7; --blue-soft: #e9f0f7; }}
+      body {{ background: var(--paper); color: var(--ink); }}
+      .shell {{ max-width: none; padding: 0.4in; }}
+      .table-wrap {{ overflow: visible; }}
+      table {{ min-width: 0; font-size: 10px; }}
+      .packet-section {{ page-break-inside: avoid; }}
+    }}
     @media (max-width: 760px) {{ .meta {{ grid-template-columns: 1fr; }} .cover h1 {{ font-size: 34px; }} }}
   </style>
 </head>

@@ -227,38 +227,43 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     body {{
       margin: 0;
       color: var(--ink);
-      background: linear-gradient(180deg, rgba(18, 57, 91, 0.09), transparent 280px), var(--bg);
+      background: linear-gradient(180deg, rgba(28, 59, 81, 0.08), transparent 280px), var(--bg);
       font-family: Avenir Next, "Segoe UI", Verdana, sans-serif;
       line-height: 1.5;
     }}
     a {{ color: inherit; }}
-    .skip-link {{ position: absolute; left: -999px; top: 12px; background: var(--ink); color: white; padding: 10px 12px; z-index: 20; }}
+    .skip-link {{ position: absolute; left: -999px; top: 12px; background: var(--primary); color: var(--text-on-light); padding: 10px 12px; z-index: 20; }}
     .skip-link:focus {{ left: 12px; }}
     .shell {{ min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0, 1fr); }}
-    .sidebar {{ position: sticky; top: 0; height: 100vh; padding: 22px; border-right: 1px solid var(--line); background: rgba(251, 253, 255, 0.9); backdrop-filter: blur(10px); }}
+    .sidebar {{ position: sticky; top: 0; height: 100vh; padding: 22px; border-right: 1px solid var(--line-strong); background: var(--app-bg); color: var(--text-on-dark); }}
     .brand {{ display: grid; gap: 6px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }}
     .brand span, .eyebrow {{ color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }}
+    .sidebar .brand span {{ color: var(--gold-soft); }}
     .brand strong {{ font-size: 22px; line-height: 1.15; }}
-    .brand small, .lede, .section-head p, .task-row small, .link-card small, .footer, .metric span, .metric small {{ color: var(--muted); }}
+    .brand small, .nav a {{ color: var(--muted-inverse); }}
+    .lede, .section-head p, .task-row small, .link-card small, .footer, .metric span, .metric small {{ color: var(--muted); }}
     .nav {{ display: grid; gap: 6px; margin: 18px 0; }}
-    .nav a {{ text-decoration: none; border-radius: var(--radius); padding: 10px 11px; color: var(--muted); font-weight: 700; }}
-    .nav a:hover, .nav a:focus, .task-row:hover, .task-row:focus, .link-card:hover, .link-card:focus {{ outline: 3px solid rgba(31, 93, 139, 0.22); border-color: rgba(18, 57, 91, 0.55); }}
+    .nav a {{ text-decoration: none; border-radius: var(--radius); padding: 10px 11px; font-weight: 700; }}
+    .nav a:hover, .nav a:focus, .task-row:hover, .task-row:focus, .link-card:hover, .link-card:focus {{ outline: 3px solid rgba(220, 192, 118, 0.36); border-color: var(--primary); }}
     .nav a:hover, .nav a:focus {{ color: var(--ink); background: var(--primary-soft); }}
-    .local-note, .callout {{ padding: 12px; background: var(--blue-soft); color: var(--primary); border: 1px solid var(--line); border-radius: var(--radius); font-size: 13px; }}
+    .local-note {{ padding: 12px; background: var(--surface); color: var(--ink); border: 1px solid var(--line-strong); border-radius: var(--radius); font-size: 13px; }}
+    .callout {{ padding: 12px; background: var(--primary-soft); color: var(--ink); border: 1px solid var(--line); border-radius: var(--radius); font-size: 13px; }}
     .main {{ padding: 28px clamp(18px, 4vw, 48px) 56px; }}
     .hero {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: 18px; align-items: stretch; margin-bottom: 18px; }}
     .panel {{ background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }}
     .intro {{ padding: clamp(20px, 4vw, 34px); }}
     h1, h2, h3 {{ margin: 0; line-height: 1.12; }}
-    h1 {{ max-width: 850px; margin-top: 8px; font-size: clamp(34px, 5vw, 62px); letter-spacing: -0.04em; }}
+    h1 {{ max-width: 820px; margin-top: 8px; font-size: clamp(32px, 4vw, 46px); letter-spacing: 0; }}
     .lede {{ max-width: 820px; font-size: 18px; margin: 16px 0 0; }}
-    .decision-card {{ padding: 22px; display: grid; gap: 16px; }}
+    .decision-card {{ padding: 22px; display: grid; gap: 16px; background: var(--primary); color: var(--text-on-dark); }}
+    .decision-card .eyebrow {{ color: var(--gold-soft); }}
+    .decision-card .action-list {{ color: var(--text-on-dark); }}
     .decision-card h2 {{ font-size: 22px; }}
     .action-list {{ margin: 0; padding-left: 20px; display: grid; gap: 9px; color: var(--ink); }}
     .metrics {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }}
     .metric {{ padding: 16px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: var(--radius); }}
     .metric span, .metric small {{ display: block; }}
-    .metric strong {{ display: block; margin: 5px 0; font-size: 30px; letter-spacing: -0.04em; }}
+    .metric strong {{ display: block; margin: 5px 0; font-size: 30px; letter-spacing: 0; overflow-wrap: anywhere; }}
     .section {{ scroll-margin-top: 24px; margin-top: 18px; padding: 22px; }}
     .section-head {{ display: flex; gap: 16px; justify-content: space-between; align-items: start; margin-bottom: 16px; }}
     .section-head p {{ margin: 8px 0 0; max-width: 760px; }}
@@ -279,7 +284,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .table-wrap {{ overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-strong); }}
     table {{ width: 100%; border-collapse: collapse; min-width: 760px; }}
     th, td {{ padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
-    th {{ font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--primary); background: var(--primary-soft); }}
+    th {{ font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold-soft); background: var(--primary-soft); }}
     tr:last-child td {{ border-bottom: 0; }}
     .links {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }}
     .link-card {{ padding: 14px; border: 1px solid var(--line); background: var(--surface-strong); border-radius: var(--radius); text-decoration: none; }}
@@ -301,10 +306,12 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
       .task-row .badge {{ grid-column: 2; justify-self: start; }}
     }}
     @media print {{
+      :root {{ --bg: #e9f0f7; --surface: #f8fafc; --surface-strong: #f8fafc; --panel: #f8fafc; --elevated: #e9f0f7; --ink: #050a10; --muted: #64748b; --line: #94a3b8; --primary-soft: #e9f0f7; --blue-soft: #e9f0f7; }}
       .sidebar {{ display: none; }}
       .shell {{ display: block; }}
       .main {{ padding: 0; }}
       .panel {{ box-shadow: none; break-inside: avoid; }}
+      body {{ background: var(--surface-light); color: var(--text-on-light); }}
     }}
   </style>
 </head>

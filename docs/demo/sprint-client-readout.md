@@ -6,7 +6,7 @@ Review period: **2026 Q2**
 
 Readiness signal: **high**
 
-Target delivery signal: **needs_evidence_before_closeout**
+Target delivery signal: **Needs Evidence Before Closeout**
 
 This readout is a local, reference-only planning artifact. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer or vendor acceptance, authorize AI production use, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 

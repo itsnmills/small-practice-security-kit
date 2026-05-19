@@ -23,9 +23,9 @@ def render_connector_wizard() -> str:
     p { line-height: 1.5; }
     .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
     .card { background: var(--surface-strong); border: 1px solid var(--line); border-radius: 8px; padding: 18px; box-shadow: var(--shadow); }
-    .tag { display: inline-flex; padding: 4px 8px; border-radius: 999px; background: var(--gold-soft); color: var(--primary); border: 1px solid #ecd8a6; font-size: 12px; font-weight: 800; }
-    code { display: block; white-space: pre-wrap; background: var(--primary-strong); color: #eef5fb; padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; }
-    button { border: 0; border-radius: 6px; background: var(--primary); color: white; padding: 10px 12px; font-weight: 700; cursor: pointer; }
+    .tag { display: inline-flex; padding: 4px 8px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); border: 1px solid var(--line); font-size: 12px; font-weight: 800; }
+    code { display: block; white-space: pre-wrap; background: var(--app-bg); color: var(--surface-white); border: 1px solid var(--line-strong); padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto; }
+    button { border: 0; border-radius: 6px; background: var(--primary); color: var(--text-on-dark); padding: 10px 12px; font-weight: 700; cursor: pointer; }
     small { color: var(--muted); display: block; margin-top: 8px; }
   </style>
 </head>
