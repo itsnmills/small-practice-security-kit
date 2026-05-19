@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Small Practice Security Kit Intake</title>
+  <title>Velari Security Kit Intake</title>
   <link rel="stylesheet" href="/static/intake.css">
 </head>
 <body>
   <a class="skip-link" href="#app">Skip to intake</a>
   <header class="topbar">
     <div>
-      <span class="eyebrow">Small Practice Security Kit</span>
+      <span class="eyebrow">Velari Security Kit</span>
       <h1>Local intake workspace</h1>
       <p>Pick a practice type, confirm common systems, collect evidence references, and generate the owner packet without storing PHI.</p>
     </div>
@@ -26,6 +26,7 @@
       <button data-section="start" class="active">Start</button>
       <button data-section="basics">Practice basics</button>
       <button data-section="systems">Systems used</button>
+      <button data-section="connectors">Connectors</button>
       <button data-section="vendors">Vendors / BAAs</button>
       <button data-section="flows">ePHI flows</button>
       <button data-section="readiness">Readiness</button>
@@ -72,6 +73,115 @@
         <div id="systems-list" class="check-grid"></div>
         <div class="actions">
           <button id="apply-systems" class="primary">Apply selected systems and rebuild suggestions</button>
+        </div>
+      </section>
+
+      <section id="section-connectors" class="panel intake-section">
+        <span class="eyebrow">Connector Center</span>
+        <h2>Collect safe evidence without patient data</h2>
+        <p class="safe-note">Metadata only. Do not enter PHI, credentials, private URLs, raw logs, patient screenshots, mailbox contents, or raw contracts.</p>
+
+        <div id="connector-summary" class="connector-summary" aria-live="polite"></div>
+
+        <div class="connector-action-bar">
+          <button id="write-connector-wizard" class="secondary" type="button">Create MSP connector checklist</button>
+          <button id="refresh-connectors" class="secondary" type="button">Check evidence freshness</button>
+          <button id="generate-views" class="secondary" type="button">Generate owner/MSP/vendor views</button>
+          <a id="connector-wizard-link" href="/connector-wizard.html" class="secondary">Open checklist</a>
+          <a id="evidence-refresh-link" href="/evidence-refresh.json" class="secondary">Open freshness report</a>
+        </div>
+
+        <div class="connector-grid">
+          <section class="connector-row">
+            <div>
+              <h3>Google Workspace</h3>
+              <p>Read-only admin metadata for users, MFA posture, suspended accounts, and admin-role review.</p>
+            </div>
+            <div class="connector-fields">
+              <label>OAuth client ID
+                <input id="google-client-id" autocomplete="off" placeholder="Client ID from Google Cloud">
+              </label>
+              <label>Domain filter
+                <input id="google-domain" autocomplete="off" placeholder="exampleclinic.com">
+              </label>
+              <div class="connector-actions">
+                <button id="connect-google-workspace" class="secondary" type="button">Connect</button>
+                <button id="collect-google-workspace" class="primary" type="button">Collect metadata</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="connector-row">
+            <div>
+              <h3>Microsoft 365</h3>
+              <p>Read-only Graph metadata for MFA registration, account posture, and admin follow-up.</p>
+            </div>
+            <div class="connector-fields">
+              <label>Application client ID
+                <input id="microsoft-client-id" autocomplete="off" placeholder="Client ID from Entra ID">
+              </label>
+              <label>Tenant
+                <input id="microsoft-tenant" autocomplete="off" value="organizations">
+              </label>
+              <div class="connector-actions">
+                <button id="connect-microsoft-365" class="secondary" type="button">Connect</button>
+                <button id="collect-microsoft-365" class="primary" type="button">Collect metadata</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="connector-row">
+            <div>
+              <h3>DNS and email authentication</h3>
+              <p>Public DNS checks for MX, SPF, DKIM selector hints, and DMARC posture.</p>
+            </div>
+            <div class="connector-fields">
+              <label>Practice domain
+                <input id="dns-domain" autocomplete="off" placeholder="exampleclinic.com">
+              </label>
+              <div class="connector-actions">
+                <button id="collect-dns" class="primary" type="button">Collect DNS evidence</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="connector-row">
+            <div>
+              <h3>Vendor public evidence</h3>
+              <p>Public vendor trust-page references for security, privacy, AI/data-use, and BAA follow-up.</p>
+            </div>
+            <div class="connector-fields">
+              <label>Vendor name
+                <input id="vendor-name" autocomplete="off" placeholder="Abridge">
+              </label>
+              <label>Vendor domain
+                <input id="vendor-domain" autocomplete="off" placeholder="abridge.com">
+              </label>
+              <div class="connector-actions">
+                <button id="collect-vendor-public" class="primary" type="button">Collect vendor evidence</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="connector-row">
+            <div>
+              <h3>MSP response import</h3>
+              <p>Structured MSP answers for evidence status, scope, dates, exceptions, and ticket references.</p>
+            </div>
+            <div class="connector-fields">
+              <label>Local response YAML path
+                <input id="msp-response-path" autocomplete="off" placeholder="/Users/you/Documents/msp-response.yaml">
+              </label>
+              <div class="connector-actions">
+                <button id="import-msp-response" class="primary" type="button">Import MSP response</button>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div class="connector-table-wrap">
+          <h3>Collected evidence bundles</h3>
+          <div id="connector-evidence-table" class="editor-table"></div>
         </div>
       </section>
 
@@ -149,6 +259,10 @@
           <button id="generate-packet" class="primary">Generate local packet</button>
           <a id="dashboard-link" href="/dashboard.html" class="secondary">Open dashboard</a>
           <a id="packet-link" href="/review-packet.html" class="secondary">Open review packet</a>
+          <a id="command-center-link" href="/sprint-command-center.html" class="secondary">Open command center</a>
+          <a id="connector-summary-link" href="/connector-evidence-summary.json" class="secondary">Open connector summary</a>
+          <a id="packet-refresh-link" href="/evidence-refresh.json" class="secondary">Open freshness report</a>
+          <a id="owner-view-link" href="/views/owner-view.md" class="secondary">Open owner view</a>
         </div>
       </section>
     </section>

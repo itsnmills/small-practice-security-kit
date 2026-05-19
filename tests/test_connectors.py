@@ -7,8 +7,18 @@ import unittest
 from pathlib import Path
 
 from small_practice_security_kit.cli import main as cli_main
-from small_practice_security_kit.connectors import collect_csv_import, collect_dns_email_auth, collect_vendor_public, write_connector_bundle
+from small_practice_security_kit.connectors import (
+    collect_csv_import,
+    collect_dns_email_auth,
+    collect_google_workspace,
+    collect_microsoft_365,
+    collect_msp_response,
+    collect_vendor_public,
+    write_connector_bundle,
+)
+from small_practice_security_kit.evidence_refresh import build_refresh_report
 from small_practice_security_kit.sprint import build_sprint
+from small_practice_security_kit.view_exports import export_practice_views
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,6 +47,7 @@ class ConnectorTests(unittest.TestCase):
         self.assertEqual(mfa["phi_expected"], False)
         self.assertEqual(mfa["recommended_action"], mfa["next_action"])
         self.assertEqual(mfa["unsafe_inputs_excluded"], mfa["unsafe_fields_excluded"])
+        self.assertGreater(mfa["confidence_score"], 0)
         self.assertEqual(mfa["owner_lane"], "msp")
 
     def test_users_csv_alias_infers_google_or_microsoft_exports(self) -> None:
@@ -129,6 +140,62 @@ class ConnectorTests(unittest.TestCase):
         self.assertTrue(item["observations"]["hipaa_baa_terms_found"])
         self.assertNotIn("Security program, SOC 2", payload)
 
+    def test_google_workspace_official_connector_aggregates_api_metadata(self) -> None:
+        def fetcher(url: str, token: str) -> dict[str, object]:
+            return {
+                "users": [
+                    {"primaryEmail": "owner@exampleclinic.test", "isAdmin": True, "suspended": False, "isEnrolledIn2Sv": True, "isEnforcedIn2Sv": True},
+                    {"primaryEmail": "staff@exampleclinic.test", "isAdmin": False, "suspended": False, "isEnrolledIn2Sv": False, "isEnforcedIn2Sv": False},
+                ]
+            }
+
+        bundle = collect_google_workspace(generated_at="2026-05-19T00:00:00Z", fetcher=fetcher)
+        payload = json.dumps(bundle, sort_keys=True)
+        mfa = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-GW-API-MFA-001")
+
+        self.assertEqual(bundle["run"]["connector"], "google_workspace_api")
+        self.assertEqual(mfa["confidence"], "observed_from_api")
+        self.assertEqual(mfa["counts"]["mfa_missing"], 1)
+        self.assertNotIn("@exampleclinic.test", payload)
+
+    def test_microsoft_365_official_connector_aggregates_graph_metadata(self) -> None:
+        def fetcher(url: str, token: str, headers: dict[str, str] | None = None) -> dict[str, object]:
+            if "/users?" in url:
+                return {
+                    "value": [
+                        {"id": "1", "userPrincipalName": "owner@exampleclinic.test", "accountEnabled": True, "userType": "Member"},
+                        {"id": "2", "userPrincipalName": "guest@exampleclinic.test", "accountEnabled": True, "userType": "Guest"},
+                    ]
+                }
+            return {"value": [{"isMfaRegistered": True, "isMfaCapable": True}, {"isMfaRegistered": False, "isMfaCapable": False}]}
+
+        bundle = collect_microsoft_365(generated_at="2026-05-19T00:00:00Z", fetcher=fetcher)
+        payload = json.dumps(bundle, sort_keys=True)
+        mfa = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-MFA-001")
+        users = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-USERS-001")
+
+        self.assertEqual(bundle["run"]["connector"], "microsoft_365_api")
+        self.assertEqual(mfa["counts"]["mfa_missing"], 1)
+        self.assertEqual(users["counts"]["guest_users"], 1)
+        self.assertNotIn("@exampleclinic.test", payload)
+
+    def test_msp_response_import_and_refresh_report_are_safe(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            temp_path = Path(temp)
+            bundle = collect_msp_response(
+                ROOT / "samples" / "connectors" / "msp_response.yaml",
+                generated_at="2026-05-19T00:00:00Z",
+            )
+            bundle_path = write_connector_bundle(bundle, temp_path / "msp-response.json")
+            report = build_refresh_report([bundle_path], generated_at="2026-05-19T00:00:00Z")
+
+        payload = json.dumps(bundle, sort_keys=True)
+        self.assertEqual(bundle["run"]["connector"], "msp_response_import")
+        self.assertEqual(bundle["evidence"][0]["confidence"], "imported_from_msp_response")
+        self.assertNotIn("password", payload.lower())
+        self.assertEqual(report["total_items"], 1)
+        self.assertEqual(report["new_items"], 1)
+
     def test_sprint_accepts_connector_evidence_and_generates_action_packets(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             temp_path = Path(temp)
@@ -216,6 +283,43 @@ class ConnectorTests(unittest.TestCase):
             self.assertIn("MSP Evidence Request", msp_request_path.read_text(encoding="utf-8"))
             self.assertEqual(summary["counts"]["connector_evidence_items"], 6)
 
+    def test_cli_generates_wizard_refresh_and_practice_views(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            temp_path = Path(temp)
+            evidence_dir = temp_path / "evidence"
+            views_dir = temp_path / "views"
+            evidence_dir.mkdir()
+            users_path = evidence_dir / "users.json"
+            refresh_path = temp_path / "refresh.json"
+            wizard_path = temp_path / "wizard.html"
+
+            self.assertEqual(
+                cli_main(["import", "csv", "users", str(ROOT / "samples" / "connectors" / "google_workspace_users.csv"), "--out", str(users_path)]),
+                0,
+            )
+            self.assertEqual(cli_main(["connect", "wizard", "--out", str(wizard_path)]), 0)
+            self.assertEqual(cli_main(["evidence", "refresh", "--current", str(users_path), "--out", str(refresh_path)]), 0)
+            self.assertEqual(cli_main(["generate", "views", "--profile", str(PROFILE), "--evidence", str(users_path), "--out", str(views_dir)]), 0)
+
+            refresh = json.loads(refresh_path.read_text(encoding="utf-8"))
+            self.assertIn("Google Workspace", wizard_path.read_text(encoding="utf-8"))
+            self.assertEqual(refresh["total_items"], 2)
+            self.assertTrue((views_dir / "owner-view.md").exists())
+
+    def test_export_practice_views_writes_lane_files(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            temp_path = Path(temp)
+            bundle = collect_csv_import(
+                "vendor-register",
+                ROOT / "samples" / "connectors" / "vendor_register.csv",
+                generated_at="2026-05-19T00:00:00Z",
+            )
+            evidence_path = write_connector_bundle(bundle, temp_path / "vendor.json")
+            paths = export_practice_views(PROFILE, temp_path / "views", evidence_paths=[evidence_path])
+
+        self.assertEqual(len(paths), 4)
+        self.assertTrue(any(path.name == "vendor-view.md" for path in paths))
+
     def test_connector_schemas_validate_when_jsonschema_available(self) -> None:
         try:
             import jsonschema
@@ -229,9 +333,14 @@ class ConnectorTests(unittest.TestCase):
         )
         bundle_schema = json.loads((ROOT / "schemas" / "connector-run.schema.json").read_text(encoding="utf-8"))
         evidence_schema = json.loads((ROOT / "schemas" / "normalized-evidence.schema.json").read_text(encoding="utf-8"))
-        jsonschema.validate(bundle, bundle_schema)
-        for item in bundle["evidence"]:
-            jsonschema.validate(item, evidence_schema)
+        msp_bundle = collect_msp_response(
+            ROOT / "samples" / "connectors" / "msp_response.yaml",
+            generated_at="2026-05-19T00:00:00Z",
+        )
+        for candidate in [bundle, msp_bundle]:
+            jsonschema.validate(candidate, bundle_schema)
+            for item in candidate["evidence"]:
+                jsonschema.validate(item, evidence_schema)
 
 
 if __name__ == "__main__":

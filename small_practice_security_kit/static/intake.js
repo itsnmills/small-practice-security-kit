@@ -1,6 +1,7 @@
 let csrfToken = "";
 let catalogs = null;
 let profile = null;
+let connectorState = null;
 let selectedPreset = "dental";
 
 const $ = (selector) => document.querySelector(selector);
@@ -287,12 +288,69 @@ function renderEvidence() {
 
 function renderSummary() {
   const ready = Object.values(profile.readiness).filter(Boolean).length;
+  const connectorItems = connectorState?.summary?.total_items || 0;
   $("#completion-summary").innerHTML = `
     <article class="summary-card"><strong>${profile.systems.length}</strong><small>systems selected</small></article>
     <article class="summary-card"><strong>${profile.vendors.length}</strong><small>vendors to review</small></article>
     <article class="summary-card"><strong>${profile.flows.length}</strong><small>ePHI flows mapped</small></article>
     <article class="summary-card"><strong>${ready}/11</strong><small>readiness items ready</small></article>
+    <article class="summary-card"><strong>${connectorItems}</strong><small>connector evidence items</small></article>
   `;
+}
+
+function formatCountMap(map) {
+  const entries = Object.entries(map || {});
+  if (!entries.length) return "None yet";
+  return entries.map(([key, count]) => `${key.replaceAll("_", " ")}: ${count}`).join(" | ");
+}
+
+function statusClass(status) {
+  const value = String(status || "unknown");
+  if (value.includes("warning") || value === "needs_review" || value === "requested") return "status-warn";
+  if (value === "missing" || value === "stale") return "status-danger";
+  return "status-ok";
+}
+
+function renderConnectors() {
+  if (!$("#connector-summary")) return;
+  const summary = connectorState?.summary || {};
+  const items = connectorState?.items || [];
+  const total = Number(summary.total_items || 0);
+  const needsAttention = Number(summary.needs_attention || 0);
+  const runCount = Number((summary.runs || []).length || items.length || 0);
+  const boundary = summary.data_boundary || "metadata_only_no_phi_expected";
+  $("#connector-summary").innerHTML = `
+    <div class="summary-grid connector-stat-grid">
+      <article class="summary-card"><strong>${total}</strong><small>evidence items</small></article>
+      <article class="summary-card"><strong>${runCount}</strong><small>connector runs</small></article>
+      <article class="summary-card"><strong>${needsAttention}</strong><small>needs follow-up</small></article>
+      <article class="summary-card"><strong>${connectorState?.build_uses_connectors ? "Yes" : "No"}</strong><small>included in next build</small></article>
+    </div>
+    <div class="connector-detail-strip">
+      <span><b>Boundary:</b> ${escapeHtml(boundary.replaceAll("_", " "))}</span>
+      <span><b>Owner lanes:</b> ${escapeHtml(formatCountMap(summary.by_owner_lane))}</span>
+      <span><b>Status:</b> ${escapeHtml(formatCountMap(summary.by_status))}</span>
+    </div>
+  `;
+
+  if (!items.length) {
+    $("#connector-evidence-table").innerHTML = `<div class="empty-state">No connector evidence collected yet.</div>`;
+    return;
+  }
+  $("#connector-evidence-table").innerHTML = `<table><thead><tr><th>Connector</th><th>Mode</th><th>Status</th><th>Evidence</th><th>PHI expected</th><th>Warnings</th><th>File</th></tr></thead><tbody>
+    ${items.map((item) => {
+      const warnings = (item.warnings || []).join("; ") || "None";
+      return `<tr>
+        <td>${escapeHtml(item.connector)}</td>
+        <td>${escapeHtml(item.mode || "metadata")}</td>
+        <td><span class="status-pill ${statusClass(item.status)}">${escapeHtml(item.status || "unknown")}</span></td>
+        <td>${escapeHtml(item.evidence_count)}</td>
+        <td>${item.phi_expected ? "Yes" : "No"}</td>
+        <td>${escapeHtml(warnings)}</td>
+        <td><span class="mono">${escapeHtml(item.file)}</span></td>
+      </tr>`;
+    }).join("")}
+  </tbody></table>`;
 }
 
 function renderAll() {
@@ -305,6 +363,7 @@ function renderAll() {
   renderDowntime();
   renderEvidence();
   renderSummary();
+  renderConnectors();
 }
 
 async function saveProfile() {
@@ -315,6 +374,39 @@ async function saveProfile() {
   showAlert("Saved locally. No data left this machine.", false);
 }
 
+async function loadConnectors() {
+  const data = await api("/api/connectors");
+  connectorState = data.connectors;
+  renderConnectors();
+  renderSummary();
+  return connectorState;
+}
+
+async function connectorAction(path, payload, successMessage, button) {
+  const originalText = button?.textContent;
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Working...";
+  }
+  try {
+    const data = await api(path, { method: "POST", body: JSON.stringify(payload || {}) });
+    if (data.connectors) {
+      connectorState = data.connectors;
+      renderConnectors();
+      renderSummary();
+    } else {
+      await loadConnectors();
+    }
+    showAlert(successMessage, false);
+    return data;
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  }
+}
+
 async function init() {
   $$(".rail button").forEach((button) => button.addEventListener("click", () => navTo(button.dataset.section)));
   const status = await api("/api/status");
@@ -322,6 +414,7 @@ async function init() {
   $("#network-status").textContent = status.network_status;
   catalogs = (await api("/api/catalogs")).catalogs;
   profile = (await api("/api/profile")).profile;
+  connectorState = (await api("/api/connectors")).connectors;
   renderPresets();
   renderAll();
 
@@ -336,6 +429,7 @@ async function init() {
         }),
       });
       profile = data.profile;
+      await loadConnectors();
       renderAll();
       navTo("systems");
       showAlert("Created a local profile from the selected healthcare preset.", false);
@@ -365,8 +459,8 @@ async function init() {
       const data = await api("/api/suggestions/rebuild", { method: "POST", body: JSON.stringify({ profile }) });
       profile = data.profile;
       renderAll();
-      navTo("flows");
-      showAlert("Systems applied and ePHI/vendor/evidence suggestions rebuilt.", false);
+      navTo("connectors");
+      showAlert("Systems applied. Connector evidence can now replace the slowest manual checks.", false);
     } catch (error) {
       showAlert(error.message);
     }
@@ -382,7 +476,134 @@ async function init() {
       const data = await api("/api/build", { method: "POST", body: JSON.stringify({}) });
       $("#dashboard-link").href = data.links.dashboard;
       $("#packet-link").href = data.links.packet;
-      showAlert("Built the local dashboard, review packet, roadmap, and evidence index.", false);
+      $("#command-center-link").href = data.links.command_center || "/sprint-command-center.html";
+      $("#connector-summary-link").href = data.links.connector_summary || "/connector-evidence-summary.json";
+      $("#packet-refresh-link").href = data.links.evidence_refresh || "/evidence-refresh.json";
+      $("#owner-view-link").href = data.links.views || "/views/owner-view.md";
+      await loadConnectors();
+      showAlert("Built the local packet and included connector evidence where available.", false);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#write-connector-wizard").addEventListener("click", async (event) => {
+    try {
+      const data = await connectorAction("/api/connectors/wizard", {}, "Created the local MSP connector checklist.", event.currentTarget);
+      $("#connector-wizard-link").href = data.href || "/connector-wizard.html";
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#collect-dns").addEventListener("click", async (event) => {
+    try {
+      const domain = $("#dns-domain").value.trim();
+      if (!domain) {
+        showAlert("Enter the practice domain first.");
+        return;
+      }
+      await connectorAction("/api/connectors/dns", { domain }, "Collected public DNS and email-authentication evidence.", event.currentTarget);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#collect-vendor-public").addEventListener("click", async (event) => {
+    try {
+      const vendor = $("#vendor-name").value.trim();
+      const domain = $("#vendor-domain").value.trim();
+      if (!vendor || !domain) {
+        showAlert("Enter the vendor name and public domain first.");
+        return;
+      }
+      await connectorAction("/api/connectors/vendor-public", { vendor, domain }, "Collected public vendor evidence references.", event.currentTarget);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#import-msp-response").addEventListener("click", async (event) => {
+    try {
+      const path = $("#msp-response-path").value.trim();
+      if (!path) {
+        showAlert("Enter the local MSP response YAML path first.");
+        return;
+      }
+      await connectorAction("/api/connectors/msp-response", { path }, "Imported the MSP response as metadata-only evidence.", event.currentTarget);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#connect-google-workspace").addEventListener("click", async (event) => {
+    try {
+      const client_id = $("#google-client-id").value.trim();
+      if (!client_id) {
+        showAlert("Enter the Google OAuth client ID first.");
+        return;
+      }
+      await connectorAction(
+        "/api/connectors/google-workspace/connect",
+        { client_id },
+        "Google Workspace OAuth tokens were stored in the local secret store.",
+        event.currentTarget,
+      );
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#collect-google-workspace").addEventListener("click", async (event) => {
+    try {
+      const domain = $("#google-domain").value.trim();
+      await connectorAction("/api/connectors/google-workspace/collect", { domain }, "Collected Google Workspace metadata evidence.", event.currentTarget);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#connect-microsoft-365").addEventListener("click", async (event) => {
+    try {
+      const client_id = $("#microsoft-client-id").value.trim();
+      const tenant = $("#microsoft-tenant").value.trim() || "organizations";
+      if (!client_id) {
+        showAlert("Enter the Microsoft application client ID first.");
+        return;
+      }
+      await connectorAction(
+        "/api/connectors/microsoft-365/connect",
+        { client_id, tenant },
+        "Microsoft 365 OAuth tokens were stored in the local secret store.",
+        event.currentTarget,
+      );
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#collect-microsoft-365").addEventListener("click", async (event) => {
+    try {
+      await connectorAction("/api/connectors/microsoft-365/collect", {}, "Collected Microsoft 365 metadata evidence.", event.currentTarget);
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#refresh-connectors").addEventListener("click", async (event) => {
+    try {
+      const data = await connectorAction("/api/connectors/refresh", {}, "Wrote the evidence freshness report.", event.currentTarget);
+      $("#evidence-refresh-link").href = data.href || "/evidence-refresh.json";
+      $("#packet-refresh-link").href = data.href || "/evidence-refresh.json";
+    } catch (error) {
+      showAlert(error.message);
+    }
+  });
+
+  $("#generate-views").addEventListener("click", async (event) => {
+    try {
+      const data = await connectorAction("/api/connectors/views", {}, "Generated owner, MSP, vendor, and legal/compliance views.", event.currentTarget);
+      $("#owner-view-link").href = (data.hrefs || ["/views/owner-view.md"])[0];
     } catch (error) {
       showAlert(error.message);
     }

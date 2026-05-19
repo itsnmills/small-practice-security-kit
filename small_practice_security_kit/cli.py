@@ -6,13 +6,26 @@ import tempfile
 from pathlib import Path
 
 from .adapters.evidence_binder import export_binder_index
-from .connectors import collect_csv_import, collect_dns_email_auth, collect_vendor_public, write_connector_bundle
+from .connectors import (
+    collect_csv_import,
+    collect_dns_email_auth,
+    collect_google_workspace,
+    collect_microsoft_365,
+    collect_msp_response,
+    collect_vendor_public,
+    connect_google_workspace,
+    connect_microsoft_365,
+    write_connector_bundle,
+    write_connector_wizard,
+)
 from .demo_export import export_demo
+from .evidence_refresh import build_refresh_report, write_refresh_report
 from .packet import OUT, build_packet
 from .profile import load_profile
 from .sensitive_data import blocking_findings
 from .sprint import build_sprint
 from .validation import ValidationError
+from .view_exports import export_practice_views
 
 
 def _path(value: str) -> Path:
@@ -74,10 +87,31 @@ def import_csv_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def import_msp_response_command(args: argparse.Namespace) -> int:
+    bundle = collect_msp_response(args.response_path)
+    write_connector_bundle(bundle, args.out)
+    print(f"Imported {len(bundle['evidence'])} MSP response evidence items to {args.out}")
+    return 0
+
+
 def collect_dns_command(args: argparse.Namespace) -> int:
     bundle = collect_dns_email_auth(args.domain)
     write_connector_bundle(bundle, args.out)
     print(f"Collected {len(bundle['evidence'])} DNS/email-auth evidence items to {args.out}")
+    return 0
+
+
+def collect_google_workspace_command(args: argparse.Namespace) -> int:
+    bundle = collect_google_workspace(customer=args.customer, domain=args.domain)
+    write_connector_bundle(bundle, args.out)
+    print(f"Collected {len(bundle['evidence'])} Google Workspace evidence items to {args.out}")
+    return 0
+
+
+def collect_microsoft_365_command(args: argparse.Namespace) -> int:
+    bundle = collect_microsoft_365()
+    write_connector_bundle(bundle, args.out)
+    print(f"Collected {len(bundle['evidence'])} Microsoft 365 evidence items to {args.out}")
     return 0
 
 
@@ -88,6 +122,26 @@ def collect_vendor_public_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def connect_google_workspace_command(args: argparse.Namespace) -> int:
+    result = connect_google_workspace(client_id=args.client_id, client_secret=args.client_secret, open_browser=not args.no_open)
+    print(f"Connected Google Workspace using {result['token_store_backend']}")
+    print("Scopes: " + ", ".join(result["scopes"]))
+    return 0
+
+
+def connect_microsoft_365_command(args: argparse.Namespace) -> int:
+    result = connect_microsoft_365(client_id=args.client_id, tenant=args.tenant, open_browser=not args.no_open)
+    print(f"Connected Microsoft 365 using {result['token_store_backend']}")
+    print("Scopes: " + ", ".join(result["scopes"]))
+    return 0
+
+
+def connect_wizard_command(args: argparse.Namespace) -> int:
+    path = write_connector_wizard(args.out)
+    print(f"Wrote connector wizard to {path}")
+    return 0
+
+
 def generate_msp_request_command(args: argparse.Namespace) -> int:
     with tempfile.TemporaryDirectory() as temp:
         result = build_sprint(args.profile, Path(temp), evidence_paths=args.evidence)
@@ -95,6 +149,19 @@ def generate_msp_request_command(args: argparse.Namespace) -> int:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(source.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
     print(f"Generated MSP evidence request in {args.out}")
+    return 0
+
+
+def generate_views_command(args: argparse.Namespace) -> int:
+    paths = export_practice_views(args.profile, args.out, evidence_paths=args.evidence)
+    print(f"Generated {len(paths)} practice-ready views in {args.out}")
+    return 0
+
+
+def evidence_refresh_command(args: argparse.Namespace) -> int:
+    report = build_refresh_report(args.current, previous_paths=args.previous, stale_after_days=args.stale_after_days)
+    write_refresh_report(report, args.out)
+    print(f"Wrote evidence refresh report with {report['total_items']} items to {args.out}")
     return 0
 
 
@@ -141,6 +208,10 @@ def build_parser() -> argparse.ArgumentParser:
     import_csv.add_argument("csv_path", type=_path)
     import_csv.add_argument("--out", type=_path, required=True)
     import_csv.set_defaults(func=import_csv_command)
+    import_msp = import_subcommands.add_parser("msp-response", help="Import an MSP response YAML into a normalized evidence bundle.")
+    import_msp.add_argument("response_path", type=_path)
+    import_msp.add_argument("--out", type=_path, required=True)
+    import_msp.set_defaults(func=import_msp_response_command)
 
     collect_parser = subcommands.add_parser("collect", help="Run local metadata-only collectors.")
     collect_subcommands = collect_parser.add_subparsers(dest="collect_command", required=True)
@@ -148,11 +219,35 @@ def build_parser() -> argparse.ArgumentParser:
     collect_dns.add_argument("--domain", required=True)
     collect_dns.add_argument("--out", type=_path, required=True)
     collect_dns.set_defaults(func=collect_dns_command)
+    collect_google = collect_subcommands.add_parser("google-workspace", help="Collect official Google Workspace metadata after OAuth connect.")
+    collect_google.add_argument("--customer", default="my_customer")
+    collect_google.add_argument("--domain")
+    collect_google.add_argument("--out", type=_path, required=True)
+    collect_google.set_defaults(func=collect_google_workspace_command)
+    collect_microsoft = collect_subcommands.add_parser("microsoft-365", help="Collect official Microsoft 365 metadata after OAuth connect.")
+    collect_microsoft.add_argument("--out", type=_path, required=True)
+    collect_microsoft.set_defaults(func=collect_microsoft_365_command)
     collect_vendor = collect_subcommands.add_parser("vendor-public", help="Collect public vendor evidence without storing raw pages.")
     collect_vendor.add_argument("--vendor", required=True)
     collect_vendor.add_argument("--domain", required=True)
     collect_vendor.add_argument("--out", type=_path, required=True)
     collect_vendor.set_defaults(func=collect_vendor_public_command)
+
+    connect_parser = subcommands.add_parser("connect", help="Connect official read-only metadata connectors.")
+    connect_subcommands = connect_parser.add_subparsers(dest="connect_command", required=True)
+    connect_google = connect_subcommands.add_parser("google-workspace", help="Open browser OAuth for Google Workspace metadata.")
+    connect_google.add_argument("--client-id", required=True)
+    connect_google.add_argument("--client-secret")
+    connect_google.add_argument("--no-open", action="store_true")
+    connect_google.set_defaults(func=connect_google_workspace_command)
+    connect_microsoft = connect_subcommands.add_parser("microsoft-365", help="Open browser OAuth for Microsoft 365 metadata.")
+    connect_microsoft.add_argument("--client-id", required=True)
+    connect_microsoft.add_argument("--tenant", default="organizations")
+    connect_microsoft.add_argument("--no-open", action="store_true")
+    connect_microsoft.set_defaults(func=connect_microsoft_365_command)
+    connect_wizard = connect_subcommands.add_parser("wizard", help="Write a local connector wizard HTML file.")
+    connect_wizard.add_argument("--out", type=_path, default=Path("out/connector-wizard.html"))
+    connect_wizard.set_defaults(func=connect_wizard_command)
 
     generate_parser = subcommands.add_parser("generate", help="Generate focused handoff artifacts from a profile and optional evidence.")
     generate_subcommands = generate_parser.add_subparsers(dest="generate_command", required=True)
@@ -167,6 +262,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Optional connector evidence bundle JSON files or directories of JSON bundles.",
     )
     generate_msp.set_defaults(func=generate_msp_request_command)
+    generate_views = generate_subcommands.add_parser("views", help="Generate owner, MSP, vendor, and reviewer views.")
+    generate_views.add_argument("--profile", type=_path, required=True)
+    generate_views.add_argument("--out", type=_path, required=True)
+    generate_views.add_argument("--evidence", type=_path, nargs="*", default=[])
+    generate_views.set_defaults(func=generate_views_command)
+
+    evidence_parser = subcommands.add_parser("evidence", help="Work with connector evidence bundles.")
+    evidence_subcommands = evidence_parser.add_subparsers(dest="evidence_command", required=True)
+    evidence_refresh = evidence_subcommands.add_parser("refresh", help="Compare current evidence to previous evidence and mark stale items.")
+    evidence_refresh.add_argument("--current", type=_path, nargs="+", required=True)
+    evidence_refresh.add_argument("--previous", type=_path, nargs="*", default=[])
+    evidence_refresh.add_argument("--stale-after-days", type=int, default=90)
+    evidence_refresh.add_argument("--out", type=_path, required=True)
+    evidence_refresh.set_defaults(func=evidence_refresh_command)
 
     export_binder = subcommands.add_parser("export-binder", help="Export binder-compatible evidence index files.")
     export_binder.add_argument("profile", type=_path)

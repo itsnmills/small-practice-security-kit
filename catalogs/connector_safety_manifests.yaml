@@ -147,3 +147,86 @@ connectors:
       - vendor outreach
       - legal/compliance review exports
       - insurance evidence packets
+  - connector: google_workspace_api
+    default_mode: oauth_read_only_metadata
+    phi_expected: false
+    allowed_data:
+      - aggregated user counts
+      - admin and suspended-user counts
+      - 2-Step Verification enrollment and enforcement counts
+      - collection timestamp and source reference
+    forbidden_data:
+      - user emails
+      - mailbox contents
+      - Drive file contents
+      - credentials
+      - MFA recovery codes
+      - private admin URLs
+      - raw logs
+      - patient screenshots
+    required_scopes:
+      - https://www.googleapis.com/auth/admin.directory.user.readonly
+    unsafe_scopes:
+      - https://www.googleapis.com/auth/gmail.readonly
+      - https://www.googleapis.com/auth/drive.readonly
+      - https://www.googleapis.com/auth/admin.reports.audit.readonly
+    human_approval_required_for:
+      - OAuth tenant consent
+      - sharing owner-facing reports
+      - sending MSP remediation requests
+      - legal/compliance or insurance exports
+  - connector: microsoft_365_api
+    default_mode: oauth_read_only_metadata
+    phi_expected: false
+    allowed_data:
+      - aggregated enabled-user counts
+      - guest-user counts
+      - MFA registration and capability counts when reports are available
+      - collection timestamp and source reference
+    forbidden_data:
+      - user principal names
+      - mailbox contents
+      - Teams chat contents
+      - SharePoint or OneDrive file contents
+      - credentials
+      - raw sign-in logs with user identifiers
+      - private admin URLs
+      - patient screenshots
+    required_scopes:
+      - https://graph.microsoft.com/User.Read.All
+      - https://graph.microsoft.com/AuditLog.Read.All
+      - offline_access
+    unsafe_scopes:
+      - Mail.Read
+      - Files.Read.All
+      - Sites.Read.All
+      - Chat.Read
+    human_approval_required_for:
+      - OAuth tenant consent
+      - sharing owner-facing reports
+      - sending MSP remediation requests
+      - legal/compliance or insurance exports
+  - connector: msp_response_import
+    default_mode: msp_response_metadata_import
+    phi_expected: false
+    allowed_data:
+      - evidence IDs
+      - ticket or reference IDs
+      - status labels
+      - scope covered
+      - date observed
+      - exception and next-action labels
+    forbidden_data:
+      - PHI
+      - credentials
+      - private admin URLs
+      - raw logs
+      - patient screenshots
+      - raw contracts
+      - incident-sensitive details
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - closing evidence gaps
+      - sharing client reports
+      - legal/compliance or insurance exports

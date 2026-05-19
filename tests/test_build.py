@@ -20,7 +20,10 @@ class BuildTests(unittest.TestCase):
         self.assertIn("AI Workflow Review", text)
         self.assertIn("30-60-90 Roadmap", text)
         html = (ROOT / "out" / "family_dental_clinic" / "review-packet.html").read_text(encoding="utf-8")
-        self.assertIn("Small Practice Security Kit", html)
+        self.assertIn("Velari Security Kit", html)
+        self.assertIn("#050a10", html.lower())
+        self.assertIn("#c9a84c", html.lower())
+        self.assertIn("#dcc076", html.lower())
         self.assertIn("<table>", html)
         self.assertIn("print", html)
 

@@ -18,6 +18,8 @@
     "summary",
     "status",
     "confidence",
+    "confidence_score",
+    "confidence_reason",
     "counts",
     "observations",
     "owner_lane",
@@ -55,6 +57,7 @@
         "dns_lookup",
         "public_lookup",
         "api_read_only",
+        "msp_response",
         "msp_export",
         "client_export"
       ]
@@ -97,12 +100,22 @@
         "observed_from_public_dns",
         "observed_from_public_web",
         "observed_from_api",
+        "imported_from_msp_response",
         "imported_from_client_export",
         "imported_from_msp_export",
         "self_attested",
         "derived_from_packet",
         "unknown"
       ]
+    },
+    "confidence_score": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100
+    },
+    "confidence_reason": {
+      "type": "string",
+      "minLength": 1
     },
     "counts": {
       "type": "object",
