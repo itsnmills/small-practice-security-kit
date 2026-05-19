@@ -137,7 +137,7 @@ out/family_dental_clinic/sprint-command-center.html
 
 Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, and `incident-decision-log.md`.
 
-The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping.
+The JSON contracts for private-app import are documented in `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping. The action-translation standard lives in [`docs/product/velari-answer-standard.md`](docs/product/velari-answer-standard.md), and Sprint Mode applies it to `risk-register.csv`, `handoff-actions.csv`, and `sprint-summary.json`.
 
 More details:
 

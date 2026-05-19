@@ -6,6 +6,9 @@
   "additionalProperties": false,
   "required": [
     "schema_version",
+    "product_standard",
+    "answer_standard",
+    "answer_standard_fields",
     "sprint_id",
     "generated_at",
     "generator",
@@ -28,6 +31,50 @@
   "properties": {
     "schema_version": {
       "const": "2026-05-16"
+    },
+    "product_standard": {
+      "const": "Velari Answer Standard"
+    },
+    "answer_standard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "purpose",
+        "fields",
+        "unsafe_inputs",
+        "claims_boundary"
+      ],
+      "properties": {
+        "name": {
+          "const": "Velari Answer Standard"
+        },
+        "purpose": {
+          "type": "string"
+        },
+        "fields": {
+          "type": "array",
+          "minItems": 14,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsafe_inputs": {
+          "type": "string",
+          "pattern": "PHI.*credentials.*private URLs.*raw logs.*patient screenshots"
+        },
+        "claims_boundary": {
+          "type": "string",
+          "pattern": "No legal compliance or HIPAA certification claim"
+        }
+      }
+    },
+    "answer_standard_fields": {
+      "type": "array",
+      "minItems": 14,
+      "items": {
+        "type": "string"
+      }
     },
     "sprint_id": {
       "type": "string",
@@ -384,7 +431,20 @@
         "evidence_refs",
         "recommended_action",
         "artifact_ref",
-        "roadmap_bucket"
+        "roadmap_bucket",
+        "plain_english_summary",
+        "why_it_matters",
+        "owner_lane",
+        "recommended_question",
+        "acceptable_evidence",
+        "unsafe_inputs",
+        "timeframe",
+        "reviewer_needed",
+        "next_action",
+        "owner_view",
+        "msp_view",
+        "vendor_view",
+        "legal_compliance_view"
       ],
       "properties": {
         "finding_id": {
@@ -444,6 +504,54 @@
             "60_days",
             "90_days"
           ]
+        },
+        "plain_english_summary": {
+          "type": "string"
+        },
+        "why_it_matters": {
+          "type": "string"
+        },
+        "owner_lane": {
+          "type": "string"
+        },
+        "recommended_question": {
+          "type": "string"
+        },
+        "acceptable_evidence": {
+          "type": "string"
+        },
+        "unsafe_inputs": {
+          "type": "string",
+          "pattern": "PHI.*credentials.*private URLs.*raw logs.*patient screenshots"
+        },
+        "timeframe": {
+          "enum": [
+            "0-30 days",
+            "31-60 days",
+            "61-90 days"
+          ]
+        },
+        "reviewer_needed": {
+          "enum": [
+            "yes",
+            "no"
+          ]
+        },
+        "next_action": {
+          "type": "string"
+        },
+        "owner_view": {
+          "type": "string"
+        },
+        "msp_view": {
+          "type": "string"
+        },
+        "vendor_view": {
+          "type": "string"
+        },
+        "legal_compliance_view": {
+          "type": "string",
+          "pattern": "does not determine legal compliance or HIPAA status"
         }
       }
     },

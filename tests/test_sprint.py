@@ -11,6 +11,7 @@ from pathlib import Path
 
 import yaml
 
+from small_practice_security_kit.answer_standard import ANSWER_STANDARD_FIELDS
 from small_practice_security_kit.profile import load_profile
 from small_practice_security_kit.sprint import STAGE_ORDER, build_sprint
 
@@ -87,6 +88,9 @@ class SprintModeTests(unittest.TestCase):
             summary = json.loads((out_dir / "sprint-summary.json").read_text(encoding="utf-8"))
 
         self.assertEqual(summary["schema_version"], "2026-05-16")
+        self.assertEqual(summary["product_standard"], "Velari Answer Standard")
+        self.assertEqual(summary["answer_standard"]["name"], "Velari Answer Standard")
+        self.assertEqual(summary["answer_standard_fields"], ANSWER_STANDARD_FIELDS)
         self.assertEqual(summary["generator"]["mode"], "velari_sprint_mode_public_runner")
         self.assertEqual(summary["practice"]["label"], "Family Dental Clinic")
         self.assertFalse(summary["data_boundary"]["phi_allowed"])
@@ -172,6 +176,13 @@ class SprintModeTests(unittest.TestCase):
             self.assertTrue(all(row[field] for row in handoff_rows), field)
         for field in ["audience", "recipient", "owner", "stage_id", "priority", "artifact_ref", "roadmap_bucket"]:
             self.assertTrue(all(row[field] for row in risk_rows), field)
+        for field in ANSWER_STANDARD_FIELDS:
+            self.assertTrue(all(row[field] for row in handoff_rows), field)
+            self.assertTrue(all(row[field] for row in risk_rows), field)
+        self.assertTrue(all(row["reviewer_needed"] in {"yes", "no"} for row in handoff_rows))
+        self.assertTrue(all(row["reviewer_needed"] in {"yes", "no"} for row in risk_rows))
+        self.assertTrue(all("PHI" in row["unsafe_inputs"] for row in handoff_rows + risk_rows))
+        self.assertTrue(all("does not determine legal compliance or HIPAA status" in row["legal_compliance_view"] for row in handoff_rows + risk_rows))
         for pattern in PHI_PLACEHOLDER_PATTERNS:
             self.assertIsNone(pattern.search(combined), pattern.pattern)
         for pattern in OVERCLAIM_PATTERNS:

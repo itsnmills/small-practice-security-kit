@@ -8,6 +8,13 @@ from pathlib import Path
 from typing import Any
 
 from .adapters.evidence_binder import export_binder_index
+from .answer_standard import (
+    ANSWER_STANDARD_FIELDS,
+    STANDARD_NAME,
+    answer_standard_contract,
+    answer_standard_fields,
+    fields_with_answer_standard,
+)
 from .manifest import utc_now
 from .offering import (
     build_offering_summary,
@@ -304,21 +311,35 @@ def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
     for finding in manifest.get("findings", []):
         stage_id = _stage_for_finding(finding)
         evidence_refs = [str(ref) for ref in finding.get("evidence_refs", [])]
+        priority = str(finding.get("severity", "medium"))
+        recipient = _recipient_for_stage(stage_id)
+        evidence_ref_text = ";".join(evidence_refs)
+        recommended_action = _recommended_action(str(finding.get("title", "")), stage_id)
+        roadmap_bucket = _roadmap_bucket_for_stage(stage_id, priority)
         rows.append(
             {
                 "finding_id": str(finding.get("finding_id", "")),
                 "stage_id": stage_id,
-                "severity": str(finding.get("severity", "medium")),
-                "priority": str(finding.get("severity", "medium")),
+                "severity": priority,
+                "priority": priority,
                 "title": str(finding.get("title", "")),
                 "owner": str(finding.get("owner", "Practice owner/MSP")),
                 "audience": _audience_for_stage(stage_id),
-                "recipient": _recipient_for_stage(stage_id),
+                "recipient": recipient,
                 "evidence_status": _evidence_status(evidence_refs, evidence_by_id),
-                "evidence_refs": ";".join(evidence_refs),
-                "recommended_action": _recommended_action(str(finding.get("title", "")), stage_id),
+                "evidence_refs": evidence_ref_text,
+                "recommended_action": recommended_action,
                 "artifact_ref": _artifact_for_stage(stage_id),
-                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(finding.get("severity", "medium"))),
+                "roadmap_bucket": roadmap_bucket,
+                **answer_standard_fields(
+                    title=str(finding.get("title", "")),
+                    stage_id=stage_id,
+                    priority=priority,
+                    next_action=recommended_action,
+                    recipient=recipient,
+                    roadmap_bucket=roadmap_bucket,
+                    evidence_refs=evidence_ref_text,
+                ),
             }
         )
     return rows
@@ -345,20 +366,30 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
     rows: list[dict[str, str]] = []
     for index, stage in enumerate(stages, start=1):
         if stage["status"] in {"needs_evidence", "ready_for_review"}:
+            priority = "high" if stage["status"] == "needs_evidence" else "medium"
+            stage_id = str(stage["id"])
+            recipient = _recipient_for_stage(stage_id)
+            action = str(stage["next_action"])
+            roadmap_bucket = _roadmap_bucket_for_stage(stage_id, priority)
             rows.append(
                 {
                     "action_id": f"HANDOFF-{index:03d}",
                     "audience": "owner_msp",
-                    "recipient": _recipient_for_stage(str(stage["id"])),
-                    "stage_id": str(stage["id"]),
-                    "priority": "high" if stage["status"] == "needs_evidence" else "medium",
+                    "recipient": recipient,
+                    "stage_id": stage_id,
+                    "priority": priority,
                     "owner": str(stage["owner"]),
-                    "action": str(stage["next_action"]),
+                    "action": action,
                     "evidence_ref": "",
                     "artifact_ref": str(stage["artifact_refs"][0]),
-                    "roadmap_bucket": _roadmap_bucket_for_stage(
-                        str(stage["id"]),
-                        "high" if stage["status"] == "needs_evidence" else "medium",
+                    "roadmap_bucket": roadmap_bucket,
+                    **answer_standard_fields(
+                        title=action,
+                        stage_id=stage_id,
+                        priority=priority,
+                        next_action=action,
+                        recipient=recipient,
+                        roadmap_bucket=roadmap_bucket,
                     ),
                 }
             )
@@ -366,18 +397,32 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
     for question_index, question in enumerate(profile.get("handoff_questions", []), start=1):
         stage_id = str(question.get("stage_id", "owner_msp_handoff"))
         audience = str(question.get("audience", "owner_msp")).lower().replace(" ", "_")
+        priority = str(question.get("priority", "medium"))
+        recipient = str(question.get("audience", _recipient_for_stage(stage_id)))
+        action = str(question.get("question", question.get("action", "")))
+        evidence_ref = str(question.get("evidence_ref", ""))
+        roadmap_bucket = _roadmap_bucket_for_stage(stage_id, priority)
         rows.append(
             {
                 "action_id": f"QUESTION-{question_index:03d}",
                 "audience": audience,
-                "recipient": str(question.get("audience", _recipient_for_stage(stage_id))),
+                "recipient": recipient,
                 "stage_id": stage_id,
-                "priority": str(question.get("priority", "medium")),
+                "priority": priority,
                 "owner": str(question.get("owner", _recipient_for_stage(stage_id))),
-                "action": str(question.get("question", question.get("action", ""))),
-                "evidence_ref": str(question.get("evidence_ref", "")),
+                "action": action,
+                "evidence_ref": evidence_ref,
                 "artifact_ref": str(question.get("artifact_ref", "owner-msp-handoff.md")),
-                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(question.get("priority", "medium"))),
+                "roadmap_bucket": roadmap_bucket,
+                **answer_standard_fields(
+                    title=action,
+                    stage_id=stage_id,
+                    priority=priority,
+                    next_action=action,
+                    recipient=recipient,
+                    roadmap_bucket=roadmap_bucket,
+                    evidence_refs=evidence_ref,
+                ),
             }
         )
 
@@ -394,6 +439,7 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
                 "evidence_ref": risk["evidence_refs"],
                 "artifact_ref": risk["artifact_ref"],
                 "roadmap_bucket": risk["roadmap_bucket"],
+                **{field: risk[field] for field in ANSWER_STANDARD_FIELDS},
             }
         )
     return rows
@@ -492,6 +538,9 @@ def build_summary(
     offering_summary = build_offering_summary(profile, stages)
     return {
         "schema_version": SPRINT_SCHEMA_VERSION,
+        "product_standard": STANDARD_NAME,
+        "answer_standard": answer_standard_contract(),
+        "answer_standard_fields": ANSWER_STANDARD_FIELDS,
         "sprint_id": f"sprint_{slugify(profile['practice']['name'])}_{slugify(str(profile['practice']['review_period']))}",
         "generated_at": generated_at,
         "generator": {
@@ -667,6 +716,8 @@ Readiness signal: **{summary['readiness_signal']['label']}**
 Target delivery signal: **{summary['target_delivery_signal']['status']}**
 
 This readout is a local, reference-only planning artifact. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer or vendor acceptance, authorize AI production use, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+
+Answer standard: **{summary['product_standard']}**. Every top risk and handoff action includes plain-English summary, why-it-matters, owner lane, recommended question, acceptable evidence, unsafe inputs, timeframe, reviewer-needed flag, next action, and owner/MSP/vendor/legal-review views in `risk-register.csv`, `handoff-actions.csv`, and `sprint-summary.json`.
 
 ## Executive Snapshot
 
@@ -1150,7 +1201,7 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     _write_csv(
         risk_path,
         risk_rows,
-        [
+        fields_with_answer_standard([
             "finding_id",
             "stage_id",
             "severity",
@@ -1164,12 +1215,12 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             "recommended_action",
             "artifact_ref",
             "roadmap_bucket",
-        ],
+        ]),
     )
     _write_csv(
         handoff_path,
         handoff_rows,
-        [
+        fields_with_answer_standard([
             "action_id",
             "audience",
             "recipient",
@@ -1180,7 +1231,7 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             "evidence_ref",
             "artifact_ref",
             "roadmap_bucket",
-        ],
+        ]),
     )
 
     return SprintBuildResult(
