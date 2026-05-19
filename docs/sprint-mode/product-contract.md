@@ -34,7 +34,8 @@ Sprint Mode writes contract-oriented outputs for later private app import:
 
 - `sprint-summary.json` validates against `schemas/sprint-summary.schema.json`.
 - `evidence-index.json` validates against `schemas/evidence-index.schema.json`.
-- `risk-register.csv` and `handoff-actions.csv` include audience, recipient, owner, stage, priority, evidence reference, artifact reference, and 30/60/90 bucket fields.
+- Finding/action packets follow `schemas/velari-answer-standard.schema.json` and the product language rules in `docs/product/velari-answer-standard.md`.
+- `risk-register.csv` and `handoff-actions.csv` include audience, recipient, owner, stage, priority, timeframe, plain-English summary, why-it-matters text, recommended question, acceptable evidence, unsafe inputs, reviewer needed, next action, output views, evidence reference, artifact reference, and 30/60/90 bucket fields.
 - `sprint-summary.json` includes `offering_summary` for private-app import of audience lanes, source anchors, first-week actions, artifact checklist, boundary statements, and stage-to-source mapping.
 
 ## Accepted Inputs

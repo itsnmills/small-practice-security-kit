@@ -6,10 +6,11 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from .answer_standard import build_action_packet, flattened_output_views
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
-SCHEMA_VERSION = "2026-05-15"
+SCHEMA_VERSION = "2026-05-19"
 ALLOWED_EVIDENCE_STATUSES = {"missing", "requested", "partial", "reviewed", "outdated", "not_applicable"}
 
 
@@ -222,41 +223,66 @@ def evidence_references(profile: dict[str, Any], generated_date: date) -> list[d
 
 
 def finding_entries(profile: dict[str, Any], risk: str, gaps: list[str]) -> list[dict[str, Any]]:
-    findings: list[dict[str, Any]] = [
-        {
-            "finding_id": f"READINESS-{index:03d}",
-            "section_id": "executive_scorecard",
-            "severity": "high" if risk == "High" else "medium" if risk == "Medium" else "low",
-            "title": gap.rstrip("."),
-            "owner": "Practice owner/MSP",
-            "evidence_refs": [],
-        }
-        for index, gap in enumerate(gaps, start=1)
-    ]
+    findings: list[dict[str, Any]] = []
+    readiness_severity = "high" if risk == "High" else "medium" if risk == "Medium" else "low"
+    for index, gap in enumerate(gaps, start=1):
+        packet = build_action_packet(
+            finding_id=f"READINESS-{index:03d}",
+            section_id="executive_scorecard",
+            severity=readiness_severity,
+            title=gap.rstrip("."),
+            owner="Practice owner/MSP",
+            evidence_refs=[],
+            service_context="Readiness review",
+        )
+        findings.append(
+            {
+                **packet,
+                **flattened_output_views(packet),
+                "section_id": "executive_scorecard",
+                "severity": readiness_severity,
+            }
+        )
 
     for workflow in profile.get("ai_workflows", []):
         if workflow.get("decision") != "allowed":
+            severity = "high" if workflow.get("decision") == "prohibited" else "medium"
+            packet = build_action_packet(
+                finding_id=f"AI-{slug(str(workflow['name'])).upper()}",
+                section_id="ai_findings",
+                severity=severity,
+                title=f"AI workflow requires action: {workflow['name']}",
+                owner="Practice owner",
+                evidence_refs=["AI-POLICY"],
+                service_context="AI workflow review",
+            )
             findings.append(
                 {
-                    "finding_id": f"AI-{slug(str(workflow['name'])).upper()}",
+                    **packet,
+                    **flattened_output_views(packet),
                     "section_id": "ai_findings",
-                    "severity": "high" if workflow.get("decision") == "prohibited" else "medium",
-                    "title": f"AI workflow requires action: {workflow['name']}",
-                    "owner": "Practice owner",
-                    "evidence_refs": ["AI-POLICY"],
+                    "severity": severity,
                 }
             )
 
     for vendor in profile.get("vendors", []):
         if vendor.get("touches_ephi") and vendor.get("baa_status") != "signed":
+            severity = str(vendor.get("risk", "medium"))
+            packet = build_action_packet(
+                finding_id=f"VENDOR-{slug(str(vendor['name'])).upper()}",
+                section_id="vendor_baa_exposure",
+                severity=severity,
+                title=f"BAA status needs review for {vendor['name']}",
+                owner="Practice manager",
+                evidence_refs=[f"VENDOR-{slug(str(vendor['name'])).upper()}"],
+                service_context="Vendor/BAA review",
+            )
             findings.append(
                 {
-                    "finding_id": f"VENDOR-{slug(str(vendor['name'])).upper()}",
+                    **packet,
+                    **flattened_output_views(packet),
                     "section_id": "vendor_baa_exposure",
-                    "severity": str(vendor.get("risk", "medium")),
-                    "title": f"BAA status needs review for {vendor['name']}",
-                    "owner": "Practice manager",
-                    "evidence_refs": [f"VENDOR-{slug(str(vendor['name'])).upper()}"],
+                    "severity": severity,
                 }
             )
 

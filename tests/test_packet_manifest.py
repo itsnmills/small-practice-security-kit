@@ -16,7 +16,7 @@ class PacketManifestTests(unittest.TestCase):
         manifest_path = ROOT / "out" / "family_dental_clinic" / "packet-manifest.json"
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-        self.assertEqual(manifest["schema_version"], "2026-05-15")
+        self.assertEqual(manifest["schema_version"], "2026-05-19")
         self.assertEqual(manifest["packet_id"], "pkt_family_dental_clinic_2026_q2")
         self.assertEqual(manifest["generator"]["name"], "small-practice-security-kit")
         self.assertFalse(manifest["data_boundary"]["phi_allowed"])
@@ -42,6 +42,22 @@ class PacketManifestTests(unittest.TestCase):
         self.assertIn("limitations-appendix.md", artifact_paths)
         self.assertTrue(all(len(artifact["sha256"]) == 64 for artifact in manifest["artifacts"]))
         self.assertTrue(manifest["evidence_references"])
+        self.assertTrue(manifest["findings"])
+        for finding in manifest["findings"]:
+            for field in [
+                "plain_english_summary",
+                "why_it_matters",
+                "owner_lane",
+                "recommended_question",
+                "acceptable_evidence",
+                "unsafe_inputs",
+                "priority",
+                "timeframe",
+                "reviewer_needed",
+                "next_action",
+                "output_views",
+            ]:
+                self.assertTrue(finding[field], field)
         self.assertTrue(manifest["roadmap_items"])
 
     def test_manifest_schema_is_valid_json(self) -> None:
@@ -51,6 +67,9 @@ class PacketManifestTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["generated_at"]["format"], "date-time")
         self.assertIn("allOf", schema["properties"]["sections"])
         self.assertIn("(?!/)", schema["$defs"]["artifact"]["properties"]["path"]["pattern"])
+        answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))
+        self.assertEqual(answer_schema["title"], "Velari Answer Standard Action Packet")
+        self.assertIn("plain_english_summary", answer_schema["required"])
 
     def test_generated_manifest_validates_against_schema_when_jsonschema_available(self) -> None:
         try:
@@ -60,8 +79,11 @@ class PacketManifestTests(unittest.TestCase):
 
         subprocess.run([sys.executable, "scripts/build.py", "samples/family_dental_clinic.yaml"], cwd=ROOT, check=True)
         schema = json.loads((ROOT / "schemas" / "packet-manifest.schema.json").read_text(encoding="utf-8"))
+        answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))
         manifest = json.loads((ROOT / "out" / "family_dental_clinic" / "packet-manifest.json").read_text(encoding="utf-8"))
         jsonschema.validate(manifest, schema)
+        for finding in manifest["findings"]:
+            jsonschema.validate(finding, answer_schema)
         self.assertFalse(manifest["source_profile"]["path"].startswith("/"))
         self.assertFalse(".." in Path(manifest["source_profile"]["path"]).parts)
 

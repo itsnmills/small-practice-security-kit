@@ -22,6 +22,9 @@ The sample intentionally includes realistic gaps:
 - Complete packet, Markdown: [`review-packet.md`](review-packet.md)
 - Complete packet, print-friendly HTML: [`review-packet.html`](review-packet.html)
 - Canonical manifest and hashes: [`packet-manifest.json`](packet-manifest.json)
+- Sprint client readout: [`sprint-client-readout.md`](sprint-client-readout.md)
+- Sprint summary JSON: [`sprint-summary.json`](sprint-summary.json)
+- Action CSVs: [`risk-register.csv`](risk-register.csv), [`handoff-actions.csv`](handoff-actions.csv)
 - Review packet screenshot: [`screenshots/review-packet.png`](screenshots/review-packet.png)
 
 ## Packet sections
@@ -38,6 +41,20 @@ The sample intentionally includes realistic gaps:
 - [`owner-msp-handoff.md`](owner-msp-handoff.md) — owner/MSP action handoff.
 - [`30-60-90-roadmap.md`](30-60-90-roadmap.md) — prioritized remediation plan.
 - [`limitations-appendix.md`](limitations-appendix.md) — what the packet does and does not prove.
+
+## Sprint action artifacts
+
+- [`sprint-index.md`](sprint-index.md) — entry point for generated Sprint Mode outputs.
+- [`sprint-client-readout.md`](sprint-client-readout.md) — owner-facing action packet summary.
+- [`sprint-command-center.html`](sprint-command-center.html) — self-contained HTML command center.
+- [`sprint-offering-readout.md`](sprint-offering-readout.md) — offering readout with owner/MSP/vendor/reviewer questions.
+- [`owner-action-plan.md`](owner-action-plan.md) — first-week owner plan.
+- [`msp-remediation-brief.md`](msp-remediation-brief.md) — MSP evidence support and remediation brief.
+- [`vendor-baa-ai-questionnaire.md`](vendor-baa-ai-questionnaire.md) — vendor, BAA, and AI data-use questionnaire.
+- [`evidence-collection-checklist.md`](evidence-collection-checklist.md) — reference-only evidence collection checklist.
+- [`sprint-summary.json`](sprint-summary.json) — structured Sprint summary with top action-packet risks.
+- [`evidence-index.json`](evidence-index.json) — structured evidence reference index.
+- [`risk-register.csv`](risk-register.csv) and [`handoff-actions.csv`](handoff-actions.csv) — sortable action rows with owner, MSP, vendor, legal/compliance, and technical reviewer views.
 
 ## Evidence boundary
 
@@ -64,7 +81,9 @@ The full data-boundary model lives in [`../security-model.md`](../security-model
 python3 -m venv .venv
 .venv/bin/python -m pip install -r requirements.txt
 .venv/bin/python scripts/build.py samples/family_dental_clinic.yaml
+.venv/bin/python -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out
 .venv/bin/python scripts/export_binder_index.py samples/family_dental_clinic.yaml
+.venv/bin/python -m small_practice_security_kit export-demo --profile samples/family_dental_clinic.yaml --output docs/demo
 .venv/bin/python scripts/validate_content.py
 .venv/bin/python -m unittest discover -s tests
 ```

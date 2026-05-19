@@ -26,9 +26,14 @@ PHI_PLACEHOLDER_PATTERNS = [
 ]
 OVERCLAIM_PATTERNS = [
     re.compile(r"\bHIPAA[- ]" + r"compliant\b", re.IGNORECASE),
+    re.compile(r"\bcertified " + r"HIPAA " + r"compliant\b", re.IGNORECASE),
     re.compile(r"\bguaranteed " + r"compliance\b", re.IGNORECASE),
+    re.compile(r"\bguaranteed " + r"HIPAA " + r"compliance\b", re.IGNORECASE),
     re.compile(r"\bcertifies " + r"compliance\b", re.IGNORECASE),
+    re.compile(r"\blegal " + r"determination\b", re.IGNORECASE),
     re.compile(r"\bapproved for " + r"PHI\b", re.IGNORECASE),
+    re.compile(r"\bAI tool " + r"approved for PHI\b", re.IGNORECASE),
+    re.compile(r"\bvendor " + r"approved\b", re.IGNORECASE),
     re.compile(r"\baudit-ready " + r"guarantee\b", re.IGNORECASE),
     re.compile(r"\bbreach " + r"determination\b", re.IGNORECASE),
 ]
@@ -86,7 +91,7 @@ class SprintModeTests(unittest.TestCase):
             out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
             summary = json.loads((out_dir / "sprint-summary.json").read_text(encoding="utf-8"))
 
-        self.assertEqual(summary["schema_version"], "2026-05-16")
+        self.assertEqual(summary["schema_version"], "2026-05-19")
         self.assertEqual(summary["generator"]["mode"], "velari_sprint_mode_public_runner")
         self.assertEqual(summary["practice"]["label"], "Family Dental Clinic")
         self.assertFalse(summary["data_boundary"]["phi_allowed"])
@@ -100,6 +105,7 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("offering_summary", summary)
         self.assertIn("top_risks", summary)
         self.assertIn("contract_artifacts", summary)
+        self.assertEqual(summary["contract_artifacts"]["answer_standard_schema"], "schemas/velari-answer-standard.schema.json")
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
         self.assertTrue(any(stage["status"] == "needs_evidence" for stage in summary["stage_statuses"]))
         self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "sprint-command-center.html")
@@ -119,6 +125,21 @@ class SprintModeTests(unittest.TestCase):
         for stage in summary["stage_statuses"]:
             self.assertIn("next_action", stage)
             self.assertTrue(stage["artifact_refs"])
+        for risk in summary["top_risks"]:
+            for field in [
+                "plain_english_summary",
+                "why_it_matters",
+                "owner_lane",
+                "recommended_question",
+                "acceptable_evidence",
+                "unsafe_inputs",
+                "priority",
+                "timeframe",
+                "reviewer_needed",
+                "next_action",
+                "output_views",
+            ]:
+                self.assertTrue(risk[field], field)
 
     def test_sprint_output_contracts_validate_against_schemas_when_jsonschema_available(self) -> None:
         try:
@@ -133,8 +154,11 @@ class SprintModeTests(unittest.TestCase):
 
         summary_schema = json.loads((ROOT / "schemas" / "sprint-summary.schema.json").read_text(encoding="utf-8"))
         evidence_schema = json.loads((ROOT / "schemas" / "evidence-index.schema.json").read_text(encoding="utf-8"))
+        answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))
         jsonschema.validate(summary, summary_schema)
         jsonschema.validate(evidence, evidence_schema)
+        for risk in summary["top_risks"]:
+            jsonschema.validate(risk, answer_schema)
 
     def test_risk_handoff_and_evidence_exports_are_reference_only(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
@@ -172,6 +196,25 @@ class SprintModeTests(unittest.TestCase):
             self.assertTrue(all(row[field] for row in handoff_rows), field)
         for field in ["audience", "recipient", "owner", "stage_id", "priority", "artifact_ref", "roadmap_bucket"]:
             self.assertTrue(all(row[field] for row in risk_rows), field)
+        action_packet_fields = [
+            "plain_english_summary",
+            "why_it_matters",
+            "owner_lane",
+            "recommended_question",
+            "acceptable_evidence",
+            "unsafe_inputs",
+            "priority",
+            "timeframe",
+            "reviewer_needed",
+            "next_action",
+            "owner_view",
+            "msp_view",
+            "vendor_view",
+            "legal_compliance_view",
+        ]
+        for field in action_packet_fields:
+            self.assertTrue(all(row[field] for row in risk_rows), field)
+            self.assertTrue(all(row[field] for row in handoff_rows), field)
         for pattern in PHI_PLACEHOLDER_PATTERNS:
             self.assertIsNone(pattern.search(combined), pattern.pattern)
         for pattern in OVERCLAIM_PATTERNS:

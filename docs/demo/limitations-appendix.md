@@ -10,7 +10,7 @@
 ## What This Packet Does Not Prove
 
 - It is not legal advice.
-- It is not HIPAA compliance certification.
+- It is not a HIPAA certification or legal opinion.
 - It is not a formal HIPAA Security Risk Analysis opinion.
 - It does not decide whether an incident is reportable.
 - It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.

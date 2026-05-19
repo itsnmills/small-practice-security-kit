@@ -27,7 +27,7 @@
   ],
   "properties": {
     "schema_version": {
-      "const": "2026-05-16"
+      "const": "2026-05-19"
     },
     "sprint_id": {
       "type": "string",
@@ -263,11 +263,15 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "answer_standard_schema",
         "sprint_summary_schema",
         "evidence_index_schema",
         "private_app_import_hint"
       ],
       "properties": {
+        "answer_standard_schema": {
+          "const": "schemas/velari-answer-standard.schema.json"
+        },
         "sprint_summary_schema": {
           "const": "schemas/sprint-summary.schema.json"
         },
@@ -288,6 +292,73 @@
     }
   },
   "$defs": {
+    "owner_lane": {
+      "enum": [
+        "owner",
+        "office_manager",
+        "msp",
+        "vendor",
+        "legal_compliance",
+        "insurer",
+        "clinical_lead",
+        "velari_reviewer",
+        "incident_responder"
+      ]
+    },
+    "timeframe": {
+      "enum": [
+        "this_week",
+        "30_days",
+        "60_days",
+        "90_days",
+        "quarterly_refresh"
+      ]
+    },
+    "reviewer_needed": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "owner",
+          "office_manager",
+          "msp",
+          "vendor_owner",
+          "legal_or_compliance_reviewer",
+          "technical_reviewer",
+          "clinical_lead",
+          "velari_reviewer",
+          "incident_responder"
+        ]
+      }
+    },
+    "output_views": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "owner_summary",
+        "msp_task",
+        "vendor_question",
+        "legal_compliance_note",
+        "technical_reviewer_note"
+      ],
+      "properties": {
+        "owner_summary": {
+          "type": "string"
+        },
+        "msp_task": {
+          "type": "string"
+        },
+        "vendor_question": {
+          "type": "string"
+        },
+        "legal_compliance_note": {
+          "type": "string"
+        },
+        "technical_reviewer_note": {
+          "type": "string"
+        }
+      }
+    },
     "data_boundary": {
       "type": "object",
       "additionalProperties": false,
@@ -382,7 +453,25 @@
         "recipient",
         "evidence_status",
         "evidence_refs",
+        "plain_english_summary",
+        "why_it_matters",
+        "risk_area",
+        "affected_workflows",
+        "owner_lane",
+        "secondary_owner_lane",
+        "recommended_question",
+        "acceptable_evidence",
+        "unsafe_inputs",
+        "timeframe",
+        "reviewer_needed",
+        "next_action",
         "recommended_action",
+        "owner_view",
+        "msp_view",
+        "vendor_view",
+        "legal_compliance_view",
+        "technical_reviewer_view",
+        "output_views",
         "artifact_ref",
         "roadmap_bucket"
       ],
@@ -432,8 +521,79 @@
         "evidence_refs": {
           "type": "string"
         },
+        "plain_english_summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "why_it_matters": {
+          "type": "string",
+          "minLength": 1
+        },
+        "risk_area": {
+          "type": "string",
+          "minLength": 1
+        },
+        "affected_workflows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "owner_lane": {
+          "$ref": "#/$defs/owner_lane"
+        },
+        "secondary_owner_lane": {
+          "$ref": "#/$defs/owner_lane"
+        },
+        "recommended_question": {
+          "type": "string",
+          "minLength": 1
+        },
+        "acceptable_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsafe_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeframe": {
+          "$ref": "#/$defs/timeframe"
+        },
+        "reviewer_needed": {
+          "$ref": "#/$defs/reviewer_needed"
+        },
+        "next_action": {
+          "type": "string",
+          "minLength": 1
+        },
         "recommended_action": {
           "type": "string"
+        },
+        "owner_view": {
+          "type": "string"
+        },
+        "msp_view": {
+          "type": "string"
+        },
+        "vendor_view": {
+          "type": "string"
+        },
+        "legal_compliance_view": {
+          "type": "string"
+        },
+        "technical_reviewer_view": {
+          "type": "string"
+        },
+        "output_views": {
+          "$ref": "#/$defs/output_views"
         },
         "artifact_ref": {
           "type": "string"

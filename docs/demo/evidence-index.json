@@ -1,0 +1,291 @@
+{
+  "binder_export": {
+    "artifacts": [
+      "evidence-binder-index.csv",
+      "evidence-binder-index.md",
+      "binder-import-notes.md",
+      "exchange-records.csv",
+      "exchange-records.md"
+    ],
+    "directory": "evidence-binder-export",
+    "share_safety": "reference_only_no_phi_no_secret"
+  },
+  "data_boundary": {
+    "classification": "synthetic_or_client_reference_metadata_only",
+    "phi_allowed": false,
+    "raw_evidence_allowed": false,
+    "secrets_allowed": false
+  },
+  "evidence_references": [
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-ACCESS-Q2",
+      "evidence_type": "Access",
+      "next_review_date": "2026-06-14",
+      "notes": "User list export exists for email, but EHR, imaging, billing, and remote support review are not reconciled.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/access/q2-access-review",
+      "status": "partial",
+      "title": "Quarterly access review export placeholder"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-BACKUP-RESTORE",
+      "evidence_type": "Backup",
+      "next_review_date": "2026-06-14",
+      "notes": "Restore test evidence is stale or missing for EHR exports, imaging workstation, and shared drive scope.",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/backups/restore-test-record",
+      "status": "outdated",
+      "title": "Backup restore test record placeholder"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-CYBER-INSURANCE",
+      "evidence_type": "Insurance",
+      "next_review_date": "2026-06-14",
+      "notes": "Prepare reference-only answers for MFA, backups, incident response, vendor access, and staff training.",
+      "owner": "Practice Owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/insurance/renewal-evidence-list",
+      "status": "requested",
+      "title": "Cyber insurance renewal evidence list"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-AI-GUIDANCE",
+      "evidence_type": "AI",
+      "next_review_date": "2026-06-14",
+      "notes": "No patient identifiers, chart content, billing details, credentials, or raw evidence may be entered into public AI tools.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/ai/staff-ai-guidance",
+      "status": "requested",
+      "title": "Staff AI acceptable-use acknowledgement"
+    },
+    {
+      "artifact_refs": [
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "EVID-VENDOR-BAA-GAPS",
+      "evidence_type": "Vendor",
+      "next_review_date": "2026-06-14",
+      "notes": "Billing, imaging, and AI scribe vendor terms need owner/MSP review.",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "restricted-evidence/vendors/baa-follow-up-list",
+      "status": "requested",
+      "title": "Vendor BAA and incident terms follow-up list"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-001",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Cloud EHR via Example EHR Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Patient intake form",
+      "status": "requested",
+      "title": "BAA, portal access controls, intake workflow owner"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-002",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Billing Portal via Example Billing Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Cloud EHR",
+      "status": "requested",
+      "title": "BAA, integration owner, incident notification terms"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-003",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to External specialist via Email provider",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Staff email",
+      "status": "requested",
+      "title": "secure email policy, forwarding review, staff training"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-004",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to Shared Drive via Workspace Provider",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Dental Imaging Workstation",
+      "status": "requested",
+      "title": "export procedure, shared-folder access review, backup scope reference"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-005",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to General AI Assistant via General AI Assistant Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Front desk notes",
+      "status": "requested",
+      "title": "AI acceptable-use guidance and staff acknowledgement"
+    },
+    {
+      "artifact_refs": [
+        "ephi-flow-map.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "FLOW-006",
+      "evidence_type": "ephi_flow",
+      "next_review_date": "2026-06-14",
+      "notes": "Flow to AI Scribe Pilot via Example AI Scribe Vendor",
+      "owner": "MSP or workflow owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Provider conversation",
+      "status": "requested",
+      "title": "BAA, retention terms, model-training terms, human review approval"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_EHR_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example EHR Vendor",
+      "status": "reviewed",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: missing review date; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example Billing Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-WORKSPACE_PROVIDER",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Workspace Provider",
+      "status": "reviewed",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: unknown; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example Imaging Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Imaging Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-GENERAL_AI_ASSISTANT_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: not needed for no-PHI demo workflow; SOC 2 status: not applicable; HITRUST status: not applicable",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "General AI Assistant Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for General AI Assistant Vendor"
+    },
+    {
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "evidence-binder-index.md"
+      ],
+      "date_observed": "2026-05-15",
+      "evidence_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "evidence_type": "vendor_baa",
+      "next_review_date": "2026-06-14",
+      "notes": "Current BAA status: requested; SOC 2 status: not provided; HITRUST status: not provided",
+      "owner": "Practice manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_system": "Example AI Scribe Vendor",
+      "status": "requested",
+      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example AI Scribe Vendor"
+    }
+  ],
+  "generated_at": "2026-05-15T00:00:00Z",
+  "schema_version": "2026-05-19",
+  "source_manifest": "packet-manifest.json"
+}

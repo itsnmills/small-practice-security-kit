@@ -64,39 +64,39 @@
       "sha256": "347be8bc6e2becfe0151f5714d85df8eec3815be5f2cfff25e830acc79d22f49"
     },
     {
-      "bytes": 2358,
+      "bytes": 10865,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "owner-msp-handoff.md",
-      "sha256": "9c1cb2068fcb623880427c8ee2d5049d08a6a16399cde079d04d83eef78b770f"
+      "sha256": "c9e75f44c6e89b6da54e7bce99092acc76762c5372bbefcf5a4d5697bdc8647e"
     },
     {
-      "bytes": 488,
+      "bytes": 8976,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "30-60-90-roadmap.md",
-      "sha256": "d413fef5eeb7b9266e9dca225d3a25195ef24f0ac301c24b0a2e121006754e12"
+      "sha256": "3892f2ee931e14606a402a4d8dbb0ea42fa047b06abbf064ab3bf68ea820b213"
     },
     {
-      "bytes": 1410,
+      "bytes": 1418,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "limitations-appendix.md",
-      "sha256": "2d7c029f7edd1cd0aa3aa5fb6815d88e7e3ee20aba63ffb4a7302de7d8a529ec"
+      "sha256": "33567261b7ea0f79aa076d7ae6ebe065b1832567571cd35422b563bfbb4732da"
     },
     {
-      "bytes": 20790,
+      "bytes": 37793,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "a2027510bc3a795db8586f4a3bc4e5080341fe8716f529aa2fcd52219c0de93a"
+      "sha256": "144c6ae705348f1c3ecc43fe7446edca6eed152cafb603aa0d04702c919602a9"
     },
     {
-      "bytes": 29046,
+      "bytes": 47619,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "73a6d300ec1cd1ceba27a45d0bf6ef60c5f71b838cf761ce2b4c0d6f89f697bc"
+      "sha256": "6d7c903455bbca199d5fa2e0422d9278883551a9b4197e0d2fb8f266327b2723"
     }
   ],
   "data_boundary": {
@@ -376,112 +376,701 @@
   ],
   "findings": [
     {
+      "acceptable_evidence": [
+        "MFA policy export",
+        "admin screenshot with date observed",
+        "covered groups",
+        "exception list",
+        "MSP attestation"
+      ],
+      "affected_workflows": [
+        "EHR access",
+        "billing access",
+        "email access",
+        "remote access"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-001",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows.",
+      "msp_view": "Support the Access / MFA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Request MFA proof, document exceptions, and assign an owner for any missing enforcement.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows.",
+        "msp_task": "Support the Access / MFA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "MFA evidence for an EHR or remote-access workflow is missing or not recorded. Next action: Request MFA proof, document exceptions, and assign an owner for any missing enforcement.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "msp",
+      "owner_view": "MFA evidence for an EHR or remote-access workflow is missing or not recorded. Next action: Request MFA proof, document exceptions, and assign an owner for any missing enforcement.",
+      "plain_english_summary": "MFA evidence for an EHR or remote-access workflow is missing or not recorded.",
+      "priority": "high",
+      "recommended_question": "Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager"
+      ],
+      "risk_area": "Access / MFA",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Enable MFA for EHR access"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Enable MFA for EHR access",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows."
     },
     {
+      "acceptable_evidence": [
+        "user list export",
+        "admin role list",
+        "owner access-review signoff",
+        "removed-account notes",
+        "exception sunset dates"
+      ],
+      "affected_workflows": [
+        "EHR access",
+        "billing access",
+        "email access",
+        "remote access"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-002",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows.",
+      "msp_view": "Support the Access review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Run the access review, remove or document exceptions, and store evidence references.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows.",
+        "msp_task": "Support the Access review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "The practice does not have current evidence that user access was reviewed. Next action: Run the access review, remove or document exceptions, and store evidence references.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "msp",
+      "owner_view": "The practice does not have current evidence that user access was reviewed. Next action: Run the access review, remove or document exceptions, and store evidence references.",
+      "plain_english_summary": "The practice does not have current evidence that user access was reviewed.",
+      "priority": "high",
+      "recommended_question": "Can you provide user list exports, admin role lists, shared-account exceptions, and owner signoff for access review?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager"
+      ],
+      "risk_area": "Access review",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Run and record a quarterly access review"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Run and record a quarterly access review",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows."
     },
     {
+      "acceptable_evidence": [
+        "backup scope summary",
+        "restore-test note",
+        "date observed",
+        "recovery owner",
+        "systems excluded from backup"
+      ],
+      "affected_workflows": [
+        "EHR outage",
+        "billing downtime",
+        "shared drive recovery",
+        "patient-care continuity"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-003",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime.",
+      "msp_view": "Support the Backup / downtime workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Run or schedule a restore test and record reference-only evidence.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime.",
+        "msp_task": "Support the Backup / downtime workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "Backup restore evidence is missing or stale for systems needed during patient care. Next action: Run or schedule a restore test and record reference-only evidence.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "msp",
+      "owner_view": "Backup restore evidence is missing or stale for systems needed during patient care. Next action: Run or schedule a restore test and record reference-only evidence.",
+      "plain_english_summary": "Backup restore evidence is missing or stale for systems needed during patient care.",
+      "priority": "high",
+      "recommended_question": "Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager"
+      ],
+      "risk_area": "Backup / downtime",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Run a restore test and record evidence"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Run a restore test and record evidence",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw backup data",
+        "private console links"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime."
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "vendor security page",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms"
+      ],
+      "affected_workflows": [
+        "vendor services",
+        "patient messaging",
+        "billing",
+        "AI documentation"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-004",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "vendor",
+      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
+      "priority": "high",
+      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "reviewer_needed": [
+        "vendor_owner",
+        "legal_or_compliance_reviewer"
+      ],
+      "risk_area": "Vendor / BAA",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Complete the BAA register and review dates"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Complete the BAA register and review dates",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts with sensitive details"
+      ],
+      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
     },
     {
+      "acceptable_evidence": [
+        "owner signoff",
+        "evidence reference ID",
+        "date observed",
+        "workflow owner",
+        "review note"
+      ],
+      "affected_workflows": [
+        "EHR outage",
+        "billing downtime",
+        "shared drive recovery",
+        "patient-care continuity"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-005",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime.",
+      "msp_view": "Support the Readiness / evidence support workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Assign an owner, collect reference-only evidence, and update the action packet.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime.",
+        "msp_task": "Support the Readiness / evidence support workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "Downtime workflow evidence is missing for a system the practice may need during patient care. Next action: Assign an owner, collect reference-only evidence, and update the action packet.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "msp",
+      "owner_view": "Downtime workflow evidence is missing for a system the practice may need during patient care. Next action: Assign an owner, collect reference-only evidence, and update the action packet.",
+      "plain_english_summary": "Downtime workflow evidence is missing for a system the practice may need during patient care.",
+      "priority": "high",
+      "recommended_question": "Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager"
+      ],
+      "risk_area": "Readiness / evidence support",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Document downtime procedures for critical systems"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Document downtime procedures for critical systems",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime."
     },
     {
+      "acceptable_evidence": [
+        "log source list",
+        "review cadence record",
+        "alert owner",
+        "escalation path",
+        "date observed"
+      ],
+      "affected_workflows": [
+        "EHR access",
+        "email access",
+        "remote access",
+        "vendor support"
+      ],
       "evidence_refs": [],
       "finding_id": "READINESS-006",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Missing log review evidence reduces risk visibility when suspicious access, vendor support, or account misuse questions arise.",
+      "msp_view": "Support the Monitoring workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Assign a log review owner, record cadence evidence, and define escalation for suspicious access.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Missing log review evidence reduces risk visibility when suspicious access, vendor support, or account misuse questions arise.",
+        "msp_task": "Support the Monitoring workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "Log review cadence evidence is missing or not recorded for systems that support patient-data workflows. Next action: Assign a log review owner, record cadence evidence, and define escalation for suspicious access.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner/MSP",
+      "owner_lane": "msp",
+      "owner_view": "Log review cadence evidence is missing or not recorded for systems that support patient-data workflows. Next action: Assign a log review owner, record cadence evidence, and define escalation for suspicious access.",
+      "plain_english_summary": "Log review cadence evidence is missing or not recorded for systems that support patient-data workflows.",
+      "priority": "high",
+      "recommended_question": "Can you provide the log sources, review cadence, alert owner, escalation path, and date last reviewed?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager"
+      ],
+      "risk_area": "Monitoring",
+      "secondary_owner_lane": "office_manager",
       "section_id": "executive_scorecard",
+      "service_context": "Readiness review",
       "severity": "high",
-      "title": "Set a monthly log review cadence"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Set a monthly log review cadence",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Missing log review evidence reduces risk visibility when suspicious access, vendor support, or account misuse questions arise."
     },
     {
+      "acceptable_evidence": [
+        "AI acceptable-use guidance",
+        "vendor terms summary",
+        "model-training setting",
+        "retention/deletion terms",
+        "staff acknowledgement"
+      ],
+      "affected_workflows": [
+        "AI drafting",
+        "billing appeal drafting",
+        "AI documentation",
+        "staff guidance"
+      ],
       "evidence_refs": [
         "AI-POLICY"
       ],
       "finding_id": "AI-BILLING_APPEAL_DRAFTER",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+      "msp_view": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+        "msp_task": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner",
+      "owner_lane": "office_manager",
+      "owner_view": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "plain_english_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.",
+      "priority": "medium",
+      "recommended_question": "Should this workflow remain no-PHI, restricted, or paused until vendor terms, retention, model-training use, and human-review controls are reviewed?",
+      "reviewer_needed": [
+        "office_manager",
+        "legal_or_compliance_reviewer",
+        "technical_reviewer"
+      ],
+      "risk_area": "AI workflow review",
+      "secondary_owner_lane": "legal_compliance",
       "section_id": "ai_findings",
+      "service_context": "AI workflow review",
       "severity": "medium",
-      "title": "AI workflow requires action: Billing appeal drafter"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "90_days",
+      "title": "AI workflow requires action: Billing appeal drafter",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "patient notes",
+        "claim narratives",
+        "raw contracts"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool."
     },
     {
+      "acceptable_evidence": [
+        "AI acceptable-use guidance",
+        "vendor terms summary",
+        "model-training setting",
+        "retention/deletion terms",
+        "staff acknowledgement"
+      ],
+      "affected_workflows": [
+        "AI drafting",
+        "billing appeal drafting",
+        "AI documentation",
+        "staff guidance"
+      ],
       "evidence_refs": [
         "AI-POLICY"
       ],
       "finding_id": "AI-AI_SCRIBE_PILOT",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+      "msp_view": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+        "msp_task": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner",
+      "owner_lane": "office_manager",
+      "owner_view": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "plain_english_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.",
+      "priority": "medium",
+      "recommended_question": "Should this workflow remain no-PHI, restricted, or paused until vendor terms, retention, model-training use, and human-review controls are reviewed?",
+      "reviewer_needed": [
+        "office_manager",
+        "legal_or_compliance_reviewer",
+        "technical_reviewer"
+      ],
+      "risk_area": "AI workflow review",
+      "secondary_owner_lane": "legal_compliance",
       "section_id": "ai_findings",
+      "service_context": "AI workflow review",
       "severity": "medium",
-      "title": "AI workflow requires action: AI scribe pilot"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "90_days",
+      "title": "AI workflow requires action: AI scribe pilot",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "patient notes",
+        "claim narratives",
+        "raw contracts"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool."
     },
     {
+      "acceptable_evidence": [
+        "AI acceptable-use guidance",
+        "vendor terms summary",
+        "model-training setting",
+        "retention/deletion terms",
+        "staff acknowledgement"
+      ],
+      "affected_workflows": [
+        "AI drafting",
+        "billing appeal drafting",
+        "AI documentation",
+        "staff guidance"
+      ],
       "evidence_refs": [
         "AI-POLICY"
       ],
       "finding_id": "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+      "msp_view": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool.",
+        "msp_task": "Support the AI workflow review workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
       "owner": "Practice owner",
+      "owner_lane": "office_manager",
+      "owner_view": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. Next action: Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.",
+      "plain_english_summary": "An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.",
+      "priority": "high",
+      "recommended_question": "Should this workflow remain no-PHI, restricted, or paused until vendor terms, retention, model-training use, and human-review controls are reviewed?",
+      "reviewer_needed": [
+        "office_manager",
+        "legal_or_compliance_reviewer",
+        "technical_reviewer"
+      ],
+      "risk_area": "AI workflow review",
+      "secondary_owner_lane": "legal_compliance",
       "section_id": "ai_findings",
+      "service_context": "AI workflow review",
       "severity": "high",
-      "title": "AI workflow requires action: Paste patient-level note into public chatbot"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "AI workflow requires action: Paste patient-level note into public chatbot",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "patient notes",
+        "claim narratives",
+        "raw contracts"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool."
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "vendor security page",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms"
+      ],
+      "affected_workflows": [
+        "vendor services",
+        "patient messaging",
+        "billing",
+        "AI documentation"
+      ],
       "evidence_refs": [
         "VENDOR-EXAMPLE_BILLING_VENDOR"
       ],
       "finding_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
+      },
       "owner": "Practice manager",
+      "owner_lane": "vendor",
+      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
+      "priority": "high",
+      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "reviewer_needed": [
+        "vendor_owner",
+        "legal_or_compliance_reviewer"
+      ],
+      "risk_area": "Vendor / BAA",
+      "secondary_owner_lane": "office_manager",
       "section_id": "vendor_baa_exposure",
+      "service_context": "Vendor/BAA review",
       "severity": "high",
-      "title": "BAA status needs review for Example Billing Vendor"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "BAA status needs review for Example Billing Vendor",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts with sensitive details"
+      ],
+      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "vendor security page",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms"
+      ],
+      "affected_workflows": [
+        "vendor services",
+        "patient messaging",
+        "billing",
+        "AI documentation"
+      ],
       "evidence_refs": [
         "VENDOR-EXAMPLE_IMAGING_VENDOR"
       ],
       "finding_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
+      },
       "owner": "Practice manager",
+      "owner_lane": "vendor",
+      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
+      "priority": "high",
+      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "reviewer_needed": [
+        "vendor_owner",
+        "legal_or_compliance_reviewer"
+      ],
+      "risk_area": "Vendor / BAA",
+      "secondary_owner_lane": "office_manager",
       "section_id": "vendor_baa_exposure",
+      "service_context": "Vendor/BAA review",
       "severity": "high",
-      "title": "BAA status needs review for Example Imaging Vendor"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "BAA status needs review for Example Imaging Vendor",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts with sensitive details"
+      ],
+      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "vendor security page",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms"
+      ],
+      "affected_workflows": [
+        "vendor services",
+        "patient messaging",
+        "billing",
+        "AI documentation"
+      ],
       "evidence_refs": [
         "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
       ],
       "finding_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
+      },
       "owner": "Practice manager",
+      "owner_lane": "vendor",
+      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
+      "priority": "high",
+      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "reviewer_needed": [
+        "vendor_owner",
+        "legal_or_compliance_reviewer"
+      ],
+      "risk_area": "Vendor / BAA",
+      "secondary_owner_lane": "office_manager",
       "section_id": "vendor_baa_exposure",
+      "service_context": "Vendor/BAA review",
       "severity": "high",
-      "title": "BAA status needs review for Example AI Scribe Vendor"
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "BAA status needs review for Example AI Scribe Vendor",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts with sensitive details",
+        "patient notes",
+        "claim narratives",
+        "raw contracts"
+      ],
+      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
     }
   ],
   "generated_at": "2026-05-15T00:00:00Z",
@@ -559,7 +1148,7 @@
       "priority": 3
     }
   ],
-  "schema_version": "2026-05-15",
+  "schema_version": "2026-05-19",
   "sections": [
     {
       "artifact_refs": [

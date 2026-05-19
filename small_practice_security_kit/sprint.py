@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from .answer_standard import build_action_packet, flattened_output_views, stage_for_finding as answer_stage_for_finding
 from .adapters.evidence_binder import export_binder_index
 from .manifest import utc_now
 from .offering import (
@@ -24,7 +25,7 @@ from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
 
 
-SPRINT_SCHEMA_VERSION = "2026-05-16"
+SPRINT_SCHEMA_VERSION = "2026-05-19"
 STAGE_ORDER = [
     "intake",
     "patient_data_outside_ehr_map",
@@ -70,11 +71,23 @@ class SprintBuildResult:
     artifacts: list[Path]
 
 
-def _write_csv(path: Path, rows: list[dict[str, str]], fieldnames: list[str]) -> None:
+def _csv_value(value: Any) -> str:
+    if isinstance(value, list):
+        return "; ".join(str(item) for item in value)
+    if isinstance(value, dict):
+        return json.dumps(value, sort_keys=True)
+    return str(value)
+
+
+def _write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
     with path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({field: _csv_value(row.get(field, "")) for field in fieldnames} for row in rows)
+
+
+def _strip_trailing_whitespace(text: str) -> str:
+    return "\n".join(line.rstrip() for line in text.splitlines()) + "\n"
 
 
 def _status(has_gaps: bool, *, generated: bool = True) -> str:
@@ -234,16 +247,7 @@ def _stage_by_section(section_id: str) -> str:
 
 
 def _stage_for_finding(finding: dict[str, Any]) -> str:
-    title = str(finding.get("title", "")).lower()
-    if "backup" in title or "restore" in title or "downtime" in title:
-        return "downtime_ransomware_review"
-    if "baa" in title or "vendor" in title:
-        return "vendor_baa_review"
-    if "ai workflow" in title or "chatbot" in title or "scribe" in title:
-        return "ai_phi_review"
-    if "mfa" in title or "access" in title or "account" in title:
-        return "access_offboarding_review"
-    return _stage_by_section(str(finding.get("section_id", "")))
+    return answer_stage_for_finding(finding)
 
 
 def _artifact_for_stage(stage_id: str) -> str:
@@ -300,25 +304,73 @@ def _evidence_status(evidence_refs: list[str], evidence_by_id: dict[str, dict[st
 
 def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
     evidence_by_id = {item["evidence_id"]: item for item in manifest.get("evidence_references", [])}
-    rows: list[dict[str, str]] = []
+    rows: list[dict[str, Any]] = []
     for finding in manifest.get("findings", []):
         stage_id = _stage_for_finding(finding)
         evidence_refs = [str(ref) for ref in finding.get("evidence_refs", [])]
+        packet = (
+            finding
+            if all(
+                finding.get(field)
+                for field in [
+                    "plain_english_summary",
+                    "why_it_matters",
+                    "owner_lane",
+                    "recommended_question",
+                    "acceptable_evidence",
+                    "unsafe_inputs",
+                    "priority",
+                    "timeframe",
+                    "reviewer_needed",
+                    "next_action",
+                ]
+            )
+            else build_action_packet(
+                finding_id=str(finding.get("finding_id", "")),
+                title=str(finding.get("title", "")),
+                section_id=str(finding.get("section_id", "")),
+                stage_id=stage_id,
+                severity=str(finding.get("severity", "medium")),
+                owner=str(finding.get("owner", "Practice owner/MSP")),
+                evidence_refs=evidence_refs,
+                recipient=_recipient_for_stage(stage_id),
+            )
+        )
+        views = flattened_output_views(packet)
+        next_action = str(packet.get("next_action") or _recommended_action(str(finding.get("title", "")), stage_id))
         rows.append(
             {
                 "finding_id": str(finding.get("finding_id", "")),
                 "stage_id": stage_id,
                 "severity": str(finding.get("severity", "medium")),
-                "priority": str(finding.get("severity", "medium")),
+                "priority": str(packet.get("priority", finding.get("severity", "medium"))),
                 "title": str(finding.get("title", "")),
                 "owner": str(finding.get("owner", "Practice owner/MSP")),
                 "audience": _audience_for_stage(stage_id),
                 "recipient": _recipient_for_stage(stage_id),
                 "evidence_status": _evidence_status(evidence_refs, evidence_by_id),
                 "evidence_refs": ";".join(evidence_refs),
-                "recommended_action": _recommended_action(str(finding.get("title", "")), stage_id),
+                "plain_english_summary": str(packet["plain_english_summary"]),
+                "why_it_matters": str(packet["why_it_matters"]),
+                "risk_area": str(packet.get("risk_area", "")),
+                "affected_workflows": list(packet.get("affected_workflows", [])),
+                "owner_lane": str(packet["owner_lane"]),
+                "secondary_owner_lane": str(packet.get("secondary_owner_lane", "")),
+                "recommended_question": str(packet["recommended_question"]),
+                "acceptable_evidence": list(packet["acceptable_evidence"]),
+                "unsafe_inputs": list(packet["unsafe_inputs"]),
+                "timeframe": str(packet["timeframe"]),
+                "reviewer_needed": list(packet["reviewer_needed"]),
+                "next_action": next_action,
+                "recommended_action": next_action,
+                "owner_view": views["owner_view"],
+                "msp_view": views["msp_view"],
+                "vendor_view": views["vendor_view"],
+                "legal_compliance_view": views["legal_compliance_view"],
+                "technical_reviewer_view": views["technical_reviewer_view"],
+                "output_views": dict(packet.get("output_views", {})),
                 "artifact_ref": _artifact_for_stage(stage_id),
-                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(finding.get("severity", "medium"))),
+                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(packet.get("priority", "medium"))),
             }
         )
     return rows
@@ -341,24 +393,79 @@ def _recommended_action(title: str, stage_id: str) -> str:
     return "Assign an owner, collect reference-only evidence, and update the 30/60/90 roadmap."
 
 
-def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], risk_rows: list[dict[str, str]]) -> list[dict[str, str]]:
-    rows: list[dict[str, str]] = []
+def _action_packet_row_fields(
+    *,
+    action_id: str,
+    title: str,
+    stage_id: str,
+    priority: str,
+    owner: str,
+    recipient: str,
+    next_action: str,
+    service_context: str,
+) -> dict[str, Any]:
+    packet = build_action_packet(
+        finding_id=action_id,
+        title=title,
+        stage_id=stage_id,
+        severity=priority,
+        owner=owner,
+        recipient=recipient,
+        next_action_override=next_action,
+        service_context=service_context,
+    )
+    views = flattened_output_views(packet)
+    return {
+        "action_packet_id": action_id,
+        "title": title,
+        "plain_english_summary": packet["plain_english_summary"],
+        "why_it_matters": packet["why_it_matters"],
+        "risk_area": packet.get("risk_area", ""),
+        "affected_workflows": packet.get("affected_workflows", []),
+        "owner_lane": packet["owner_lane"],
+        "secondary_owner_lane": packet.get("secondary_owner_lane", ""),
+        "recommended_question": packet["recommended_question"],
+        "acceptable_evidence": packet["acceptable_evidence"],
+        "unsafe_inputs": packet["unsafe_inputs"],
+        "timeframe": packet["timeframe"],
+        "reviewer_needed": packet["reviewer_needed"],
+        "next_action": packet["next_action"],
+        **views,
+    }
+
+
+def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], risk_rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
     for index, stage in enumerate(stages, start=1):
         if stage["status"] in {"needs_evidence", "ready_for_review"}:
+            action_id = f"HANDOFF-{index:03d}"
+            priority = "high" if stage["status"] == "needs_evidence" else "medium"
+            recipient = _recipient_for_stage(str(stage["id"]))
+            action = str(stage["next_action"])
             rows.append(
                 {
-                    "action_id": f"HANDOFF-{index:03d}",
+                    "action_id": action_id,
                     "audience": "owner_msp",
-                    "recipient": _recipient_for_stage(str(stage["id"])),
+                    "recipient": recipient,
                     "stage_id": str(stage["id"]),
-                    "priority": "high" if stage["status"] == "needs_evidence" else "medium",
+                    "priority": priority,
                     "owner": str(stage["owner"]),
-                    "action": str(stage["next_action"]),
+                    "action": action,
                     "evidence_ref": "",
                     "artifact_ref": str(stage["artifact_refs"][0]),
                     "roadmap_bucket": _roadmap_bucket_for_stage(
                         str(stage["id"]),
-                        "high" if stage["status"] == "needs_evidence" else "medium",
+                        priority,
+                    ),
+                    **_action_packet_row_fields(
+                        action_id=action_id,
+                        title=str(stage["name"]),
+                        stage_id=str(stage["id"]),
+                        priority=priority,
+                        owner=str(stage["owner"]),
+                        recipient=recipient,
+                        next_action=action,
+                        service_context=str(stage["name"]),
                     ),
                 }
             )
@@ -366,25 +473,40 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
     for question_index, question in enumerate(profile.get("handoff_questions", []), start=1):
         stage_id = str(question.get("stage_id", "owner_msp_handoff"))
         audience = str(question.get("audience", "owner_msp")).lower().replace(" ", "_")
+        action_id = f"QUESTION-{question_index:03d}"
+        recipient = str(question.get("audience", _recipient_for_stage(stage_id)))
+        priority = str(question.get("priority", "medium"))
+        action = str(question.get("question", question.get("action", "")))
         rows.append(
             {
-                "action_id": f"QUESTION-{question_index:03d}",
+                "action_id": action_id,
                 "audience": audience,
-                "recipient": str(question.get("audience", _recipient_for_stage(stage_id))),
+                "recipient": recipient,
                 "stage_id": stage_id,
-                "priority": str(question.get("priority", "medium")),
+                "priority": priority,
                 "owner": str(question.get("owner", _recipient_for_stage(stage_id))),
-                "action": str(question.get("question", question.get("action", ""))),
+                "action": action,
                 "evidence_ref": str(question.get("evidence_ref", "")),
                 "artifact_ref": str(question.get("artifact_ref", "owner-msp-handoff.md")),
-                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, str(question.get("priority", "medium"))),
+                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, priority),
+                **_action_packet_row_fields(
+                    action_id=action_id,
+                    title=action,
+                    stage_id=stage_id,
+                    priority=priority,
+                    owner=str(question.get("owner", _recipient_for_stage(stage_id))),
+                    recipient=recipient,
+                    next_action=action,
+                    service_context="Owner/MSP handoff question",
+                ),
             }
         )
 
     for risk in risk_rows[:5]:
+        action_id = f"RISK-{risk['finding_id']}"
         rows.append(
             {
-                "action_id": f"RISK-{risk['finding_id']}",
+                "action_id": action_id,
                 "audience": risk["audience"],
                 "recipient": risk["recipient"],
                 "stage_id": risk["stage_id"],
@@ -394,6 +516,25 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
                 "evidence_ref": risk["evidence_refs"],
                 "artifact_ref": risk["artifact_ref"],
                 "roadmap_bucket": risk["roadmap_bucket"],
+                "action_packet_id": action_id,
+                "title": risk["title"],
+                "plain_english_summary": risk["plain_english_summary"],
+                "why_it_matters": risk["why_it_matters"],
+                "risk_area": risk["risk_area"],
+                "affected_workflows": risk["affected_workflows"],
+                "owner_lane": risk["owner_lane"],
+                "secondary_owner_lane": risk["secondary_owner_lane"],
+                "recommended_question": risk["recommended_question"],
+                "acceptable_evidence": risk["acceptable_evidence"],
+                "unsafe_inputs": risk["unsafe_inputs"],
+                "timeframe": risk["timeframe"],
+                "reviewer_needed": risk["reviewer_needed"],
+                "next_action": risk["next_action"],
+                "owner_view": risk["owner_view"],
+                "msp_view": risk["msp_view"],
+                "vendor_view": risk["vendor_view"],
+                "legal_compliance_view": risk["legal_compliance_view"],
+                "technical_reviewer_view": risk["technical_reviewer_view"],
             }
         )
     return rows
@@ -532,6 +673,7 @@ def build_summary(
             "binder_export": "evidence-binder-export/",
         },
         "contract_artifacts": {
+            "answer_standard_schema": "schemas/velari-answer-standard.schema.json",
             "sprint_summary_schema": "schemas/sprint-summary.schema.json",
             "evidence_index_schema": "schemas/evidence-index.schema.json",
             "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary and evidence-index.json for reference-only evidence gaps.",
@@ -559,16 +701,17 @@ def render_sprint_index(summary: dict[str, Any], risk_rows: list[dict[str, str]]
         )
 
     risk_lines = [
-        "| Finding | Severity | Owner | Evidence status | Action |",
-        "|---|---|---|---|---|",
+        "| Finding | Priority | Plain-English summary | Why it matters | Owner lane | Evidence status | Recommended question | Next action |",
+        "|---|---|---|---|---|---|---|---|",
     ]
     for risk in top_risks:
         risk_lines.append(
-            f"| {risk['title']} | {risk['severity']} | {risk['owner']} | "
-            f"{risk['evidence_status']} | {risk['recommended_action']} |"
+            f"| {risk['title']} | {risk['priority']} | {risk['plain_english_summary']} | "
+            f"{risk['why_it_matters']} | {risk['owner_lane']} | {risk['evidence_status']} | "
+            f"{risk['recommended_question']} | {risk['next_action']} |"
         )
     if not top_risks:
-        risk_lines.append("| No generated findings | low | Practice owner/MSP | referenced | Review packet with owner and MSP. |")
+        risk_lines.append("| No generated findings | low | No high-priority finding generated. | Review evidence support before relying on the packet. | owner | referenced | Which evidence references should be refreshed first? | Review packet with owner and MSP. |")
 
     output_lines = []
     for name in summary["outputs"]["sprint"] + summary["outputs"]["packet"]:
@@ -616,16 +759,18 @@ def render_client_readout(summary: dict[str, Any], risk_rows: list[dict[str, str
     handoff_lanes = summary["handoff_lanes"]
 
     risk_lines = [
-        "| Finding | Priority | Owner | Recipient | 30/60/90 | Evidence |",
-        "|---|---|---|---|---|---|",
+        "| Finding | Priority | Plain-English summary | Owner lane | Question | Evidence to collect | Unsafe inputs | Timeframe | Reviewer needed | Next action |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for risk in top_risks:
         risk_lines.append(
-            f"| {risk['title']} | {risk['priority']} | {risk['owner']} | {risk['recipient']} | "
-            f"{risk['roadmap_bucket']} | {risk['evidence_status']} |"
+            f"| {risk['title']} | {risk['priority']} | {risk['plain_english_summary']} | {risk['owner_lane']} | "
+            f"{risk['recommended_question']} | {'; '.join(risk['acceptable_evidence'])} | "
+            f"{'; '.join(risk['unsafe_inputs'])} | {risk['timeframe']} | "
+            f"{'; '.join(risk['reviewer_needed'])} | {risk['next_action']} |"
         )
     if not top_risks:
-        risk_lines.append("| No generated findings | low | Practice owner/MSP | Owner/MSP | 90_days | referenced |")
+        risk_lines.append("| No generated findings | low | No high-priority finding generated. | owner | Which evidence references should be refreshed first? | evidence reference ID | PHI; credentials; private URLs | quarterly_refresh | owner | Review packet with owner and MSP. |")
 
     gap_lines = [
         "| Stage | Owner | Recipient | Gaps | Artifact |",
@@ -752,18 +897,18 @@ def render_command_center(
         risk_rows_html.append(
             f"""
             <tr>
-              <td><strong>{_h(risk['title'])}</strong><span>{_h(risk['stage_id'])}</span></td>
+              <td><strong>{_h(risk['title'])}</strong><span>{_h(risk['plain_english_summary'])}</span></td>
               <td><b class="pill severity-{_h(risk['severity'])}">{_h(risk['severity'])}</b></td>
-              <td>{_h(risk['owner'])}</td>
-              <td>{_h(risk['recipient'])}</td>
+              <td>{_h(risk['owner_lane'])}<span>{_h(risk['recipient'])}</span></td>
               <td>{_h(risk['evidence_status'])}</td>
-              <td>{_h(risk['roadmap_bucket'])}</td>
+              <td>{_h(risk['timeframe'])}</td>
+              <td>{_h(risk['next_action'])}</td>
             </tr>
             """
         )
     if not risk_rows_html:
         risk_rows_html.append(
-            "<tr><td><strong>No generated findings</strong><span>findings_risk_register</span></td><td><b class='pill severity-low'>low</b></td><td>Practice owner/MSP</td><td>Owner/MSP</td><td>referenced</td><td>90_days</td></tr>"
+            "<tr><td><strong>No generated findings</strong><span>Review evidence references before relying on the packet.</span></td><td><b class='pill severity-low'>low</b></td><td>owner<span>Owner/MSP</span></td><td>referenced</td><td>quarterly_refresh</td><td>Review packet with owner and MSP.</td></tr>"
         )
 
     attention_statuses = {"missing", "requested", "partial", "outdated"}
@@ -805,7 +950,8 @@ def render_command_center(
             <li>
               <strong>{_h(row['recipient'])}</strong>
               <span>{_h(row['priority'])} &middot; {_h(row['roadmap_bucket'])} &middot; {_h(row['artifact_ref'])}</span>
-              {_h(row['action'])}
+              {_h(row['plain_english_summary'])}
+              <span>{_h(row['recommended_question'])}</span>
             </li>
             """
         )
@@ -1038,7 +1184,7 @@ def render_command_center(
           <h2>Top Risks</h2>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Finding</th><th>Priority</th><th>Owner</th><th>Recipient</th><th>Evidence</th><th>Bucket</th></tr></thead>
+              <thead><tr><th>Finding</th><th>Priority</th><th>Owner lane</th><th>Evidence</th><th>Timeframe</th><th>Next action</th></tr></thead>
               <tbody>{''.join(risk_rows_html)}</tbody>
             </table>
           </div>
@@ -1141,7 +1287,7 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     workshop_agenda_path.write_text(render_day_one_workshop_agenda(summary, profile), encoding="utf-8", newline="\n")
     source_map_path.write_text(render_source_map(summary), encoding="utf-8", newline="\n")
     command_center_path.write_text(
-        render_command_center(summary, risk_rows, handoff_rows, evidence_index),
+        _strip_trailing_whitespace(render_command_center(summary, risk_rows, handoff_rows, evidence_index)),
         encoding="utf-8",
         newline="\n",
     )
@@ -1161,7 +1307,24 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             "recipient",
             "evidence_status",
             "evidence_refs",
+            "plain_english_summary",
+            "why_it_matters",
+            "risk_area",
+            "affected_workflows",
+            "owner_lane",
+            "secondary_owner_lane",
+            "recommended_question",
+            "acceptable_evidence",
+            "unsafe_inputs",
+            "timeframe",
+            "reviewer_needed",
+            "next_action",
             "recommended_action",
+            "owner_view",
+            "msp_view",
+            "vendor_view",
+            "legal_compliance_view",
+            "technical_reviewer_view",
             "artifact_ref",
             "roadmap_bucket",
         ],
@@ -1177,6 +1340,25 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             "priority",
             "owner",
             "action",
+            "action_packet_id",
+            "title",
+            "plain_english_summary",
+            "why_it_matters",
+            "risk_area",
+            "affected_workflows",
+            "owner_lane",
+            "secondary_owner_lane",
+            "recommended_question",
+            "acceptable_evidence",
+            "unsafe_inputs",
+            "timeframe",
+            "reviewer_needed",
+            "next_action",
+            "owner_view",
+            "msp_view",
+            "vendor_view",
+            "legal_compliance_view",
+            "technical_reviewer_view",
             "evidence_ref",
             "artifact_ref",
             "roadmap_bucket",

@@ -415,7 +415,13 @@ def _question_for_finding(title: str, stage_id: str, recipient: str) -> str:
     return "Does this item require legal/compliance review, owner signoff, or a private evidence review before action?"
 
 
-def _top_gap_rows(risk_rows: list[dict[str, str]]) -> list[list[str]]:
+def _joined(value: Any) -> str:
+    if isinstance(value, list):
+        return "; ".join(str(item) for item in value)
+    return str(value)
+
+
+def _top_gap_rows(risk_rows: list[dict[str, Any]]) -> list[list[str]]:
     rows = []
     for risk in risk_rows[:5]:
         stage_id = risk["stage_id"]
@@ -423,9 +429,15 @@ def _top_gap_rows(risk_rows: list[dict[str, str]]) -> list[list[str]]:
             [
                 risk["title"],
                 risk["priority"],
-                _why_finding_matters(risk["title"], stage_id),
-                risk["recommended_action"],
-                _question_for_finding(risk["title"], stage_id, risk["recipient"]),
+                risk.get("plain_english_summary", ""),
+                risk.get("why_it_matters") or _why_finding_matters(risk["title"], stage_id),
+                risk.get("owner_lane", ""),
+                risk.get("recommended_question") or _question_for_finding(risk["title"], stage_id, risk["recipient"]),
+                _joined(risk.get("acceptable_evidence", "")),
+                _joined(risk.get("unsafe_inputs", "")),
+                risk.get("timeframe", ""),
+                _joined(risk.get("reviewer_needed", "")),
+                risk.get("next_action") or risk["recommended_action"],
             ]
         )
     if not rows:
@@ -433,9 +445,15 @@ def _top_gap_rows(risk_rows: list[dict[str, str]]) -> list[list[str]]:
             [
                 "No generated high-priority finding",
                 "low",
+                "No major gap was generated.",
                 "The practice should still review evidence references and owners before relying on the packet.",
-                "Walk through the source map and evidence checklist with the owner and MSP.",
+                "owner",
                 "Which evidence references should be refreshed first?",
+                "evidence reference ID",
+                "PHI; credentials; private URLs",
+                "quarterly_refresh",
+                "owner",
+                "Walk through the source map and evidence checklist with the owner and MSP.",
             ]
         )
     return rows
@@ -450,13 +468,25 @@ def _questions_by_lane(summary: dict[str, Any]) -> dict[str, list[str]]:
 
 def render_sprint_offering_readout(
     summary: dict[str, Any],
-    risk_rows: list[dict[str, str]],
-    handoff_rows: list[dict[str, str]],
+    risk_rows: list[dict[str, Any]],
+    handoff_rows: list[dict[str, Any]],
 ) -> str:
     practice = summary["practice"]
     offering = summary["offering_summary"]
     top_gap_table = markdown_table(
-        ["Finding or gap", "Priority", "Why it matters", "What to do this week", "Question to ask"],
+        [
+            "Finding or gap",
+            "Priority",
+            "Plain-English summary",
+            "Why it matters",
+            "Owner lane",
+            "Question to ask",
+            "Evidence to collect",
+            "Unsafe inputs",
+            "Timeframe",
+            "Reviewer needed",
+            "Next action",
+        ],
         _top_gap_rows(risk_rows),
     )
     reviewed = [
@@ -525,7 +555,7 @@ HHS Cyber Gateway frames the work plainly: cyber safety is patient safety. For a
 """
 
 
-def render_owner_action_plan(summary: dict[str, Any], risk_rows: list[dict[str, str]]) -> str:
+def render_owner_action_plan(summary: dict[str, Any], risk_rows: list[dict[str, Any]]) -> str:
     practice = summary["practice"]
     offering = summary["offering_summary"]
     first_week = [
@@ -551,7 +581,9 @@ def render_owner_action_plan(summary: dict[str, Any], risk_rows: list[dict[str, 
         "Which evidence should stay in the private/offline binder instead of public artifacts?",
     ]
     priority_lines = [
-        f"- {risk['title']} ({risk['priority']}): {risk['recommended_action']}"
+        f"- {risk['title']} ({risk['priority']}, {risk.get('owner_lane', 'owner')}): "
+        f"{risk.get('plain_english_summary', '')} Question: {risk.get('recommended_question', '')} "
+        f"Evidence: {_joined(risk.get('acceptable_evidence', ''))}. Next action: {risk.get('next_action') or risk['recommended_action']}"
         for risk in risk_rows[:5]
     ]
     if not priority_lines:
@@ -592,7 +624,7 @@ Please review the attached reference-only packet. We are not sending PHI, passwo
 """
 
 
-def _technical_check_for_risk(risk: dict[str, str]) -> str:
+def _technical_check_for_risk(risk: dict[str, Any]) -> str:
     title = risk["title"].lower()
     stage_id = risk["stage_id"]
     if "mfa" in title:
@@ -612,7 +644,7 @@ def _technical_check_for_risk(risk: dict[str, str]) -> str:
     return "Provide current control status, owner, date observed, gap, remediation sequence, and private evidence reference ID."
 
 
-def _expected_proof_for_risk(risk: dict[str, str]) -> str:
+def _expected_proof_for_risk(risk: dict[str, Any]) -> str:
     title = risk["title"].lower()
     if "mfa" in title:
         return "Admin export or screenshot showing MFA policy status, covered groups, exception list, and date observed."
@@ -629,8 +661,8 @@ def _expected_proof_for_risk(risk: dict[str, str]) -> str:
 
 def render_msp_remediation_brief(
     summary: dict[str, Any],
-    risk_rows: list[dict[str, str]],
-    handoff_rows: list[dict[str, str]],
+    risk_rows: list[dict[str, Any]],
+    handoff_rows: list[dict[str, Any]],
 ) -> str:
     candidate_rows = risk_rows[:10]
     if not candidate_rows:
@@ -651,8 +683,15 @@ def render_msp_remediation_brief(
             [
                 risk["priority"],
                 risk["stage_id"],
+                risk.get("plain_english_summary", risk["title"]),
+                risk.get("why_it_matters", ""),
                 _technical_check_for_risk(risk),
                 _expected_proof_for_risk(risk),
+                risk.get("recommended_question", ""),
+                _joined(risk.get("acceptable_evidence", "")),
+                _joined(risk.get("unsafe_inputs", "")),
+                risk.get("timeframe", ""),
+                _joined(risk.get("reviewer_needed", "")),
                 risk["owner"],
                 risk.get("artifact_ref", "msp-remediation-brief.md"),
                 _source_titles_for_stage(risk["stage_id"]),
@@ -664,7 +703,7 @@ This is a handoff brief. It does not require real system access in the public ru
 
 ## Priority Technical Checks And Evidence Requests
 
-{markdown_table(['Priority', 'Stage reference', 'Technical check', 'Expected proof', 'Owner', 'Artifact', 'Source mapping'], rows)}
+{markdown_table(['Priority', 'Stage reference', 'Plain-English summary', 'Why it matters', 'Technical check', 'Expected proof', 'Recommended question', 'Acceptable evidence', 'Unsafe inputs', 'Timeframe', 'Reviewer needed', 'Owner', 'Artifact', 'Source mapping'], rows)}
 
 ## Proof Rules
 

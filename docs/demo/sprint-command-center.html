@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Dental Clinic Sprint Command Center</title>
+  <style>
+    :root {
+      --bg: #f8f7f2;
+      --panel: #fffdf8;
+      --ink: #17211b;
+      --muted: #5c665f;
+      --line: #d6d2c6;
+      --accent: #11614f;
+      --accent-2: #8a6a24;
+      --danger: #9b2f24;
+      --warn: #a05a15;
+      --ok: #2d6b43;
+      --soft: #e8f1ec;
+      --gold-soft: #f5ecd0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+    .shell { max-width: 1240px; margin: 0 auto; padding: 28px 22px 56px; }
+    .hero {
+      border-top: 6px solid var(--accent);
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.55fr);
+      gap: 24px;
+      padding: 26px 0 22px;
+    }
+    .eyebrow { color: var(--accent); font-size: 12px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { font-size: clamp(34px, 5vw, 58px); line-height: 1.02; margin-bottom: 12px; letter-spacing: 0; }
+    h2 { font-size: 22px; margin-bottom: 14px; letter-spacing: 0; }
+    h3 { font-size: 16px; margin-bottom: 6px; letter-spacing: 0; }
+    .lead { color: var(--muted); max-width: 760px; font-size: 16px; }
+    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .metric, .boundary, .stage-card, .lane-card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 1px 0 rgba(23, 33, 27, 0.04);
+    }
+    .metric { padding: 14px; }
+    .metric span { display: block; color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+    .metric strong { font-size: 24px; }
+    .boundary { padding: 14px; border-left: 4px solid var(--warn); background: #fff7e7; color: #4f3317; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr); gap: 18px; align-items: start; }
+    section { margin-top: 22px; }
+    .stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .stage-card { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; padding: 14px; min-height: 190px; }
+    .stage-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--soft);
+      color: var(--accent);
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .status-needs_evidence { border-left: 4px solid var(--warn); }
+    .status-ready_for_review { border-left: 4px solid var(--accent-2); }
+    .status-complete { border-left: 4px solid var(--ok); }
+    .stage-meta { color: var(--muted); font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+    .stage-card p { font-size: 13px; color: #26332b; }
+    .stage-foot { display: grid; gap: 8px; margin-top: 12px; color: var(--muted); font-size: 12px; }
+    ul { margin: 0; padding-left: 18px; }
+    .stage-foot ul, .lane-card ul, .artifact-list { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 0; list-style: none; }
+    .stage-foot li, .lane-card li, .artifact-list li {
+      border: 1px solid var(--line);
+      background: #ffffff;
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--muted);
+    }
+    .table-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }
+    th, td { text-align: left; padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    th { background: #eee8d9; color: #403928; font-size: 12px; }
+    td span { display: block; color: var(--muted); margin-top: 4px; font-size: 12px; }
+    tr:last-child td { border-bottom: 0; }
+    .pill { display: inline-block; border-radius: 999px; padding: 4px 8px; color: #fff; font-size: 12px; }
+    .severity-critical, .severity-high { background: var(--danger); }
+    .severity-medium { background: var(--warn); }
+    .severity-low { background: var(--ok); }
+    .lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .lane-card { padding: 14px; }
+    .lane-card p { color: var(--muted); font-size: 13px; }
+    .actions {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .actions li { margin: 0 0 12px; font-size: 13px; }
+    .actions li span { display: block; color: var(--muted); font-size: 12px; margin: 2px 0; }
+    .offering {
+      background: #f0f6f2;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+    }
+    .offering-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr); gap: 14px; }
+    .offering ul { margin: 0; padding-left: 18px; }
+    .offering li { margin-bottom: 8px; font-size: 13px; }
+    .offering li span { display: block; color: var(--muted); font-size: 12px; margin-top: 3px; }
+    .offering-lanes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+    .offering-lane {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+    }
+    .offering-lane p { color: var(--muted); font-size: 12px; margin: 0; }
+    .source-themes, .offering-artifacts { columns: 2; }
+    .footer-note { color: var(--muted); font-size: 12px; margin-top: 26px; }
+    @media (max-width: 980px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .offering-grid, .offering-lanes { grid-template-columns: 1fr; }
+      .source-themes, .offering-artifacts { columns: 1; }
+    }
+    @media (max-width: 640px) {
+      .shell { padding: 18px 14px 42px; }
+      .metrics, .stages, .lanes { grid-template-columns: 1fr; }
+      h1 { font-size: 34px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Velari Sprint Mode</div>
+        <h1>Family Dental Clinic Sprint Command Center</h1>
+        <p class="lead">One local readout for sprint status, top risks, evidence gaps, handoff lanes, and generated artifacts. This page is self-contained and makes no external network calls.</p>
+        <div class="boundary">Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details. This is not legal advice, does not establish legal or regulatory status, does not decide incident reporting duties, and does not replace a formal Security Risk Analysis.</div>
+      </div>
+      <aside class="metrics" aria-label="Sprint metrics">
+        <div class="metric"><span>Readiness signal</span><strong>high</strong></div>
+        <div class="metric"><span>Delivery signal</span><strong>needs_evidence_before_closeout</strong></div>
+        <div class="metric"><span>High/critical findings</span><strong>10</strong></div>
+        <div class="metric"><span>Evidence needing attention</span><strong>15</strong></div>
+      </aside>
+    </header>
+
+    <section class="offering">
+      <h2>Offering Mode</h2>
+      <div class="offering-grid">
+        <div>
+          <h3>Top Value Delivered</h3>
+          <ul><li>A plain-English map of where patient-data workflows create operational and trust risk outside the EHR.</li><li>A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.</li><li>A technical remediation brief that asks for specific proof instead of broad security promises.</li><li>A vendor/BAA/AI questionnaire that makes contract, SOC 2/HITRUST evidence status, retention, incident notice, subcontractor, and model-training questions visible.</li><li>A reference-only evidence checklist ready for a private/offline binder without moving PHI or raw restricted evidence into this repo.</li></ul>
+        </div>
+        <div>
+          <h3>First 7 Days</h3>
+          <ol>
+        <li>
+          <strong>Day 1 &middot; Owner</strong>
+          <span>owner-action-plan.md</span>
+          Confirm Office Manager owns the sprint, MSP Lead owns technical evidence, and all outputs stay reference-only.
+        </li>
+
+        <li>
+          <strong>Days 1-2 &middot; MSP</strong>
+          <span>msp-remediation-brief.md</span>
+          Request MFA enforcement status and user-list exports for EHR, billing, imaging, email, remote access, administrator, and vendor-support accounts.
+        </li>
+
+        <li>
+          <strong>Days 2-3 &middot; MSP</strong>
+          <span>evidence-collection-checklist.md</span>
+          Confirm backup scope and last restore-test evidence for Cloud EHR, Billing Portal, Phones, Shared Drive.
+        </li>
+
+        <li>
+          <strong>Days 3-4 &middot; Vendor</strong>
+          <span>vendor-baa-ai-questionnaire.md</span>
+          Send BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access control, audit-log, and export/delete questions to Example EHR Vendor, Example Billing Vendor, Workspace Provider, Example Imaging Vendor.
+        </li>
+
+        <li>
+          <strong>Days 4-5 &middot; Owner</strong>
+          <span>owner-action-plan.md</span>
+          Decide interim AI rules for Billing appeal drafter, AI scribe pilot, Paste patient-level note into public chatbot and issue no-PHI staff guidance before any rollout.
+        </li>
+
+        <li>
+          <strong>Days 5-7 &middot; Owner/MSP</strong>
+          <span>day-one-workshop-agenda.md</span>
+          Run a 30-minute downtime/ransomware tabletop for an EHR outage during patient care and record lessons learned.
+        </li>
+
+        <li>
+          <strong>Day 7 &middot; Legal/compliance reviewer</strong>
+          <span>sprint-offering-readout.md</span>
+          Escalate BAA, AI, incident, insurance, and formal risk-assessment questions that require qualified review.
+        </li>
+        </ol>
+        </div>
+      </div>
+      <div class="offering-lanes">
+        <article class="offering-lane">
+          <h3>Practice owner / office manager</h3>
+          <p>Plain-English priorities, first-week decisions, and scripts to send to the MSP, vendors, and reviewers.</p>
+        </article>
+
+        <article class="offering-lane">
+          <h3>MSP / IT partner</h3>
+          <p>Technical checks, proof requested, owner lane, stage reference, and remediation sequence without needing direct system access in the public runner.</p>
+        </article>
+
+        <article class="offering-lane">
+          <h3>Vendor / BAA / AI reviewer</h3>
+          <p>Answerable vendor questions for BAA scope, SOC 2/HITRUST evidence status, subcontractors, incident notice, retention/deletion, AI training-use, access controls, logs, and export/delete capability.</p>
+        </article>
+
+        <article class="offering-lane">
+          <h3>Legal / compliance reviewer</h3>
+          <p>Bounded review notes, escalation triggers, and clear separation between readiness prompts and professional determinations.</p>
+        </article>
+        </div>
+      <div class="offering-grid">
+        <div>
+          <h3>Source-Backed Themes</h3>
+          <ul class="source-themes"><li><strong>HHS Cyber Gateway</strong><span>Every finding is translated into patient-care continuity, trust, and owner/MSP action language.</span></li><li><strong>HHS 405(d) HICP</strong><span>The packet asks about social engineering, ransomware, lost equipment or data, insider data loss, connected devices, identity, endpoint, data protection, asset, network, vulnerability, response, and governance evidence.</span></li><li><strong>CISA Cybersecurity Performance Goals</strong><span>The packet turns asset inventory, accountable ownership, third-party notification, known exploited vulnerability handling, backups, MFA, incident response, and secure defaults into concrete evidence requests.</span></li><li><strong>ONC/OCR Security Risk Assessment Tool</strong><span>The public runner stays local-first and reference-only, and it points practices toward qualified review for formal risk assessment decisions.</span></li><li><strong>HHS HIPAA Security Rule NPRM Fact Sheet</strong><span>Modernization items such as asset inventory, network maps, MFA, encryption, vulnerability scanning, segmentation, backups, incident response, and BA verification are tracked as watchlist deltas, not guaranteed current obligations.</span></li><li><strong>FDA Medical Device Cybersecurity Guidance</strong><span>The packet adds a connected-device worksheet for device/vendor ownership, patch evidence, default credential status, downtime fallback, and safety/security notice review.</span></li></ul>
+        </div>
+        <div>
+          <h3>Artifact Checklist</h3>
+          <ul class="offering-artifacts"><li><strong>sprint-offering-readout.md</strong><span>Client-ready plain-English readout of what was reviewed, why it matters, top gaps, next questions, and boundaries.</span></li><li><strong>owner-action-plan.md</strong><span>First-week office-manager plan with scripts for MSP, vendor, and legal/compliance follow-up.</span></li><li><strong>msp-remediation-brief.md</strong><span>Technical handoff that converts gaps into checks, expected proof, owners, stages, and source mapping.</span></li><li><strong>vendor-baa-ai-questionnaire.md</strong><span>BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access, audit-log, and export/delete questions.</span></li><li><strong>evidence-collection-checklist.md</strong><span>Reference-only list of screenshots, exports, policy pages, and notes to gather in the private/offline evidence binder.</span></li><li><strong>day-one-workshop-agenda.md</strong><span>Consultative first-session agenda with discovery questions, evidence safety boundaries, lanes, and expected outputs.</span></li><li><strong>source-map.md</strong><span>Stage-to-source map showing how HHS, HICP, CISA, and ONC/OCR anchors change the packet questions.</span></li><li><strong>connected-device-inventory.md</strong><span>IoMT/medical-device worksheet for vendor, network/access path, PHI handled, patch owner, default credentials, downtime fallback, and safety notice review.</span></li><li><strong>portal-api-flow-review.md</strong><span>Portal, API, app, and FHIR-style flow worksheet covering patient identity workflow, audit logs, secure messaging, ownership, and export/delete evidence.</span></li><li><strong>incident-decision-log.md</strong><span>Decision-log template separating technical containment from qualified legal/compliance breach-notification decisions.</span></li></ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Stage Status</h2>
+      <div class="stages">
+            <article class="stage-card status-ready_for_review">
+              <div class="stage-number">1</div>
+              <div>
+                <h3>Intake</h3>
+                <p class="stage-meta">Ready for review &middot; Owner: Office Manager</p>
+                <p>Confirm the practice profile, owners, review period, and no-PHI evidence-reference boundary.</p>
+                <div class="stage-foot">
+                  <span>0 evidence gaps</span>
+                  <ul><li>packet-manifest.json</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">2</div>
+              <div>
+                <h3>Patient data outside the EHR map</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
+                <p>Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location.</p>
+                <div class="stage-foot">
+                  <span>4 evidence gaps</span>
+                  <ul><li>ephi-flow-map.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">3</div>
+              <div>
+                <h3>AI/PHI review</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: Office Manager</p>
+                <p>Separate no-PHI administrative AI use from restricted or prohibited PHI workflows before staff rollout.</p>
+                <div class="stage-foot">
+                  <span>3 evidence gaps</span>
+                  <ul><li>ai-workflow-review.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">4</div>
+              <div>
+                <h3>Vendor/BAA review</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: Office Manager</p>
+                <p>Collect BAA status, SOC 2/HITRUST evidence status, security contact, incident terms, subcontractor posture, and AI/data-use answers.</p>
+                <div class="stage-foot">
+                  <span>4 evidence gaps</span>
+                  <ul><li>vendor-baa-review.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">5</div>
+              <div>
+                <h3>Access/offboarding review</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
+                <p>Export user lists, verify MFA enforcement, and document owner signoff for access and offboarding review.</p>
+                <div class="stage-foot">
+                  <span>2 evidence gaps</span>
+                  <ul><li>readiness-review.md</li><li>owner-msp-handoff.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">6</div>
+              <div>
+                <h3>Downtime/ransomware review</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
+                <p>Run or schedule a restore test and tabletop, then record reference IDs and lessons learned.</p>
+                <div class="stage-foot">
+                  <span>4 evidence gaps</span>
+                  <ul><li>downtime-ransomware-tabletop.md</li><li>incident-decision-log.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-ready_for_review">
+              <div class="stage-number">7</div>
+              <div>
+                <h3>Findings/risk register</h3>
+                <p class="stage-meta">Ready for review &middot; Owner: Practice owner/MSP</p>
+                <p>Review top findings with the owner and assign 30-day remediation owners.</p>
+                <div class="stage-foot">
+                  <span>6 evidence gaps</span>
+                  <ul><li>risk-register.csv</li><li>30-60-90-roadmap.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-complete">
+              <div class="stage-number">8</div>
+              <div>
+                <h3>Evidence packet/export</h3>
+                <p class="stage-meta">Complete &middot; Owner: Office Manager</p>
+                <p>Share generated packet artifacts only after confirming they contain references, not PHI or secrets.</p>
+                <div class="stage-foot">
+                  <span>0 evidence gaps</span>
+                  <ul><li>review-packet.md</li><li>review-packet.html</li><li>packet-manifest.json</li><li>evidence-index.json</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-ready_for_review">
+              <div class="stage-number">9</div>
+              <div>
+                <h3>Owner/MSP handoff</h3>
+                <p class="stage-meta">Ready for review &middot; Owner: Practice owner/MSP</p>
+                <p>Use the handoff actions to collect MSP, vendor, owner, and legal/compliance reviewer responses.</p>
+                <div class="stage-foot">
+                  <span>9 evidence gaps</span>
+                  <ul><li>owner-msp-handoff.md</li><li>handoff-actions.csv</li></ul>
+                </div>
+              </div>
+            </article>
+            </div>
+    </section>
+
+    <div class="grid">
+      <div>
+        <section>
+          <h2>Top Risks</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Finding</th><th>Priority</th><th>Owner lane</th><th>Evidence</th><th>Timeframe</th><th>Next action</th></tr></thead>
+              <tbody>
+            <tr>
+              <td><strong>Enable MFA for EHR access</strong><span>MFA evidence for an EHR or remote-access workflow is missing or not recorded.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Request MFA proof, document exceptions, and assign an owner for any missing enforcement.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Run and record a quarterly access review</strong><span>The practice does not have current evidence that user access was reviewed.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Run the access review, remove or document exceptions, and store evidence references.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Run a restore test and record evidence</strong><span>Backup restore evidence is missing or stale for systems needed during patient care.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Run or schedule a restore test and record reference-only evidence.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Complete the BAA register and review dates</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>vendor<span>Vendor</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Document downtime procedures for critical systems</strong><span>Downtime workflow evidence is missing for a system the practice may need during patient care.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Assign an owner, collect reference-only evidence, and update the action packet.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Set a monthly log review cadence</strong><span>Log review cadence evidence is missing or not recorded for systems that support patient-data workflows.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Assign a log review owner, record cadence evidence, and define escalation for suspicious access.</td>
+            </tr>
+
+            <tr>
+              <td><strong>AI workflow requires action: Billing appeal drafter</strong><span>An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.</span></td>
+              <td><b class="pill severity-medium">medium</b></td>
+              <td>office_manager<span>Owner</span></td>
+              <td>requested</td>
+              <td>90_days</td>
+              <td>Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.</td>
+            </tr>
+
+            <tr>
+              <td><strong>AI workflow requires action: AI scribe pilot</strong><span>An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.</span></td>
+              <td><b class="pill severity-medium">medium</b></td>
+              <td>office_manager<span>Owner</span></td>
+              <td>requested</td>
+              <td>90_days</td>
+              <td>Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.</td>
+            </tr>
+            </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section>
+          <h2>Evidence Gaps</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Evidence</th><th>Status</th><th>Owner</th><th>Artifact</th></tr></thead>
+              <tbody>
+            <tr>
+              <td><strong>EVID-ACCESS-Q2</strong><span>Quarterly access review export placeholder</span></td>
+              <td>partial</td>
+              <td>Office Manager</td>
+              <td>evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EVID-BACKUP-RESTORE</strong><span>Backup restore test record placeholder</span></td>
+              <td>outdated</td>
+              <td>MSP Lead</td>
+              <td>evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EVID-CYBER-INSURANCE</strong><span>Cyber insurance renewal evidence list</span></td>
+              <td>requested</td>
+              <td>Practice Owner</td>
+              <td>evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EVID-AI-GUIDANCE</strong><span>Staff AI acceptable-use acknowledgement</span></td>
+              <td>requested</td>
+              <td>Office Manager</td>
+              <td>evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EVID-VENDOR-BAA-GAPS</strong><span>Vendor BAA and incident terms follow-up list</span></td>
+              <td>requested</td>
+              <td>Office Manager</td>
+              <td>evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>FLOW-001</strong><span>BAA, portal access controls, intake workflow owner</span></td>
+              <td>requested</td>
+              <td>MSP or workflow owner</td>
+              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>FLOW-002</strong><span>BAA, integration owner, incident notification terms</span></td>
+              <td>requested</td>
+              <td>MSP or workflow owner</td>
+              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>FLOW-003</strong><span>secure email policy, forwarding review, staff training</span></td>
+              <td>requested</td>
+              <td>MSP or workflow owner</td>
+              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+            </tr>
+            </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <section>
+          <h2>Handoff Lanes</h2>
+          <div class="lanes">
+            <article class="lane-card">
+              <h3>Owner/MSP</h3>
+              <p><strong>0</strong> high-priority actions &middot; 2 total</p>
+              <ul><li>packet-manifest.json</li><li>owner-msp-handoff.md</li></ul>
+            </article>
+
+            <article class="lane-card">
+              <h3>MSP</h3>
+              <p><strong>9</strong> high-priority actions &middot; 9 total</p>
+              <ul><li>ephi-flow-map.md</li><li>readiness-review.md</li><li>downtime-ransomware-tabletop.md</li><li>owner-msp-handoff.md</li></ul>
+            </article>
+
+            <article class="lane-card">
+              <h3>Owner</h3>
+              <p><strong>1</strong> high-priority actions &middot; 3 total</p>
+              <ul><li>ai-workflow-review.md</li><li>risk-register.csv</li><li>sprint-index.md</li></ul>
+            </article>
+
+            <article class="lane-card">
+              <h3>Vendor</h3>
+              <p><strong>3</strong> high-priority actions &middot; 3 total</p>
+              <ul><li>vendor-baa-review.md</li></ul>
+            </article>
+            </div>
+        </section>
+
+        <section>
+          <h2>Next Actions</h2>
+          <ol class="actions">
+            <li>
+              <strong>Owner/MSP</strong>
+              <span>medium &middot; 90_days &middot; packet-manifest.json</span>
+              This readiness item needs an owner, evidence support, and a next action before closeout.
+              <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>MSP</strong>
+              <span>high &middot; 30_days &middot; ephi-flow-map.md</span>
+              A patient-data workflow outside the EHR needs an owner, evidence support, and safe handling boundaries.
+              <span>Which email, shared-drive, portal, or export workflows handle patient data, who owns them, and what evidence shows access, retention, and secure sharing controls?</span>
+            </li>
+
+            <li>
+              <strong>Owner</strong>
+              <span>high &middot; 30_days &middot; ai-workflow-review.md</span>
+              An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.
+              <span>Should this workflow remain no-PHI, restricted, or paused until vendor terms, retention, model-training use, and human-review controls are reviewed?</span>
+            </li>
+
+            <li>
+              <strong>Vendor</strong>
+              <span>high &middot; 30_days &middot; vendor-baa-review.md</span>
+              A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.
+              <span>Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?</span>
+            </li>
+
+            <li>
+              <strong>MSP</strong>
+              <span>high &middot; 30_days &middot; readiness-review.md</span>
+              This readiness item needs an owner, evidence support, and a next action before closeout.
+              <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>MSP</strong>
+              <span>high &middot; 30_days &middot; downtime-ransomware-tabletop.md</span>
+              Downtime workflow evidence is missing for a system the practice may need during patient care.
+              <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>Owner</strong>
+              <span>medium &middot; 90_days &middot; risk-register.csv</span>
+              This readiness item needs an owner, evidence support, and a next action before closeout.
+              <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>Owner/MSP</strong>
+              <span>medium &middot; 90_days &middot; owner-msp-handoff.md</span>
+              This readiness item needs an owner, evidence support, and a next action before closeout.
+              <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>MSP</strong>
+              <span>high &middot; 30_days &middot; owner-msp-handoff.md</span>
+              MFA evidence for an EHR or remote-access workflow is missing or not recorded.
+              <span>Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?</span>
+            </li>
+
+            <li>
+              <strong>MSP</strong>
+              <span>high &middot; 30_days &middot; downtime-ransomware-tabletop.md</span>
+              Backup restore evidence is missing or stale for systems needed during patient care.
+              <span>Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?</span>
+            </li>
+            </ol>
+        </section>
+
+        <section>
+          <h2>Generated Artifacts</h2>
+          <ul class="artifact-list"><li>sprint-index.md</li><li>sprint-client-readout.md</li><li>sprint-command-center.html</li><li>sprint-offering-readout.md</li><li>owner-action-plan.md</li><li>msp-remediation-brief.md</li><li>vendor-baa-ai-questionnaire.md</li><li>evidence-collection-checklist.md</li><li>day-one-workshop-agenda.md</li><li>source-map.md</li><li>sprint-summary.json</li><li>risk-register.csv</li><li>evidence-index.json</li><li>handoff-actions.csv</li><li>readiness-review.md</li><li>ephi-flow-map.md</li><li>vendor-baa-review.md</li><li>ai-workflow-review.md</li><li>downtime-ransomware-tabletop.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li><li>incident-decision-log.md</li><li>evidence-binder-export/</li></ul>
+        </section>
+      </aside>
+    </div>
+
+    <p class="footer-note">Generated at 2026-05-15T00:00:00Z. Source profile hash is tracked in sprint-summary.json and packet-manifest.json for private app import review.</p>
+  </main>
+</body>
+</html>

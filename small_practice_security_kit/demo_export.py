@@ -7,8 +7,7 @@ import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
-from .adapters.evidence_binder import export_binder_index
-from .packet import build_packet
+from .sprint import build_sprint
 from .profile import load_profile
 from .safety import assert_safe_tree
 from .sensitive_data import blocking_findings
@@ -31,6 +30,22 @@ PACKET_ARTIFACTS = [
     "review-packet.md",
     "review-packet.html",
     "packet-manifest.json",
+]
+SPRINT_ARTIFACTS = [
+    "sprint-index.md",
+    "sprint-client-readout.md",
+    "sprint-command-center.html",
+    "sprint-offering-readout.md",
+    "owner-action-plan.md",
+    "msp-remediation-brief.md",
+    "vendor-baa-ai-questionnaire.md",
+    "evidence-collection-checklist.md",
+    "day-one-workshop-agenda.md",
+    "source-map.md",
+    "sprint-summary.json",
+    "risk-register.csv",
+    "evidence-index.json",
+    "handoff-actions.csv",
 ]
 BINDER_ARTIFACTS = [
     "evidence-binder-index.csv",
@@ -116,7 +131,7 @@ def _copy_file(source: Path, destination: Path, artifacts: list[Path]) -> None:
 
 
 def _remove_previous_outputs(output_dir: Path) -> None:
-    for name in PACKET_ARTIFACTS:
+    for name in PACKET_ARTIFACTS + SPRINT_ARTIFACTS:
         path = output_dir / name
         if path.exists():
             path.unlink()
@@ -156,10 +171,11 @@ def export_demo(
     warnings: list[str] = []
     with tempfile.TemporaryDirectory(prefix="spsk-demo-export-") as temp:
         temp_root = Path(temp)
-        packet_dir = build_packet(profile_path, temp_root / "packet", generated_at=DEMO_GENERATED_AT)
-        binder_dir = export_binder_index(profile_path, packet_dir / "evidence-binder-export")
+        sprint_result = build_sprint(profile_path, temp_root / "packet", generated_at=DEMO_GENERATED_AT)
+        packet_dir = sprint_result.packet_dir
+        binder_dir = sprint_result.binder_dir
 
-        for name in PACKET_ARTIFACTS:
+        for name in PACKET_ARTIFACTS + SPRINT_ARTIFACTS:
             _copy_file(packet_dir / name, output_dir / name, artifacts)
         for name in BINDER_ARTIFACTS:
             _copy_file(binder_dir / name, output_dir / "evidence-binder-export" / name, artifacts)

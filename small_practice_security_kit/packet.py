@@ -5,7 +5,7 @@ import json
 import re
 from pathlib import Path
 
-from .manifest import build_packet_manifest
+from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
@@ -46,6 +46,69 @@ def table(headers: list[str], rows: list[list[str]]) -> str:
     for row in rows:
         lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
     return "\n".join(lines)
+
+
+def _joined(value: object) -> str:
+    if isinstance(value, list):
+        return "; ".join(str(item) for item in value)
+    return str(value)
+
+
+def action_packet_rows(profile: dict) -> list[dict]:
+    risk, gaps = risk_level(profile)
+    return finding_entries(profile, risk, gaps)
+
+
+def action_packet_table(profile: dict) -> str:
+    rows = []
+    for packet in action_packet_rows(profile)[:10]:
+        rows.append(
+            [
+                packet["title"],
+                packet["priority"],
+                packet["plain_english_summary"],
+                packet["why_it_matters"],
+                packet["owner_lane"],
+                packet["recommended_question"],
+                _joined(packet["acceptable_evidence"]),
+                _joined(packet["unsafe_inputs"]),
+                packet["timeframe"],
+                _joined(packet["reviewer_needed"]),
+                packet["next_action"],
+            ]
+        )
+    if not rows:
+        rows.append(
+            [
+                "No generated major finding",
+                "low",
+                "No major action packet was generated.",
+                "The practice should still review evidence support before relying on the packet.",
+                "owner",
+                "Which evidence references should be refreshed first?",
+                "evidence reference ID",
+                "PHI; credentials; private URLs",
+                "quarterly_refresh",
+                "owner",
+                "Review the packet with the owner and MSP.",
+            ]
+        )
+    return table(
+        [
+            "Finding",
+            "Priority",
+            "Plain-English summary",
+            "Why it matters",
+            "Owner lane",
+            "Recommended question",
+            "Acceptable evidence",
+            "Unsafe inputs",
+            "Timeframe",
+            "Reviewer needed",
+            "Next action",
+        ],
+        rows,
+    )
 
 
 def readiness_review(profile: dict) -> str:
@@ -375,6 +438,10 @@ Initial risk level: **{risk}**
 
 {chr(10).join(f'- {gap}' for gap in gaps) if gaps else '- No immediate owner decision gaps generated from the synthetic profile.'}
 
+## Action Packet Summary
+
+{action_packet_table(profile)}
+
 ## MSP / Technical Follow-Up
 
 {chr(10).join(f'- {action}' for action in access_actions)}
@@ -388,7 +455,7 @@ Initial risk level: **{risk}**
 
 ## Handoff Boundary
 
-This handoff is a coordination aid for the practice owner, MSP, and qualified reviewers. It does not certify compliance, provide legal advice, determine breach status, or replace a formal Security Risk Analysis.
+This handoff is a coordination aid for the practice owner, MSP, and qualified reviewers. It does not issue compliance certification, provide legal advice, decide incident reporting duties, or replace a formal Security Risk Analysis.
 """
 
 
@@ -405,7 +472,7 @@ def limitations_appendix(profile: dict) -> str:
 ## What This Packet Does Not Prove
 
 - It is not legal advice.
-- It is not HIPAA compliance certification.
+- It is not a HIPAA certification or legal opinion.
 - It is not a formal HIPAA Security Risk Analysis opinion.
 - It does not decide whether an incident is reportable.
 - It is not penetration testing, vulnerability scanning, MDR, SOC, or incident response.
@@ -438,6 +505,10 @@ Initial risk level: **{risk}**
 ## First 30 Days
 
 {chr(10).join(f'- {item}' for item in thirty)}
+
+## Action Packets To Start
+
+{action_packet_table(profile)}
 
 ## Days 31-60
 
