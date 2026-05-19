@@ -595,13 +595,24 @@ def build_connector_risk_rows(connector_evidence: list[dict[str, Any]]) -> list[
             service_context=str(item.get("control_area", "Connector evidence")).replace("_", " ").title(),
         )
         packet["plain_english_summary"] = str(item.get("summary") or packet["plain_english_summary"])
+        if item.get("plain_english_summary"):
+            packet["plain_english_summary"] = str(item["plain_english_summary"])
+        if item.get("why_it_matters"):
+            packet["why_it_matters"] = str(item["why_it_matters"])
         packet["recommended_question"] = str(item.get("recommended_question") or packet["recommended_question"])
         packet["acceptable_evidence"] = list(item.get("acceptable_evidence") or packet["acceptable_evidence"])
         packet["unsafe_inputs"] = list(item.get("unsafe_inputs") or packet["unsafe_inputs"])
         packet["owner_lane"] = str(item.get("owner_lane") or packet["owner_lane"])
         packet["priority"] = priority
+        if item.get("timeframe"):
+            packet["timeframe"] = str(item["timeframe"])
+        if item.get("reviewer_needed"):
+            packet["reviewer_needed"] = list(item["reviewer_needed"])
         packet["next_action"] = next_action
         views = flattened_output_views(packet)
+        for view_key in ["owner_view", "msp_view", "vendor_view", "legal_compliance_view", "technical_reviewer_view"]:
+            if item.get(view_key):
+                views[view_key] = str(item[view_key])
         rows.append(
             {
                 "finding_id": finding_id,
@@ -1077,6 +1088,22 @@ def render_command_center(
         )
     if not connector_rows_html:
         connector_rows_html.append("<tr><td><strong>No connector evidence imported</strong><span>Use local imports or collectors to reduce manual entry.</span></td><td>0</td><td>not_run</td><td>No</td></tr>")
+    connector_attention_items = []
+    for item in connector_summary.get("attention_items", [])[:8]:
+        connector_attention_items.append(
+            f"""
+            <li>
+              <strong>{_h(item.get('title', 'Connector evidence item'))}</strong>
+              <span>{_h(item.get('priority', 'medium'))} &middot; {_h(item.get('status', 'requested'))} &middot; {_h(item.get('owner_lane', 'msp'))}</span>
+              {_h(item.get('next_action', 'Review connector evidence with the owner and MSP.'))}
+              <span>{_h(item.get('recommended_question', 'Which evidence should be refreshed next?'))}</span>
+            </li>
+            """
+        )
+    if not connector_attention_items:
+        connector_attention_items.append(
+            "<li><strong>No connector evidence needs attention</strong><span>low &middot; observed &middot; owner</span>Refresh connector evidence on the next review cycle.<span>Which evidence changed since the last sprint?</span></li>"
+        )
 
     lane_cards = []
     for lane in summary["handoff_lanes"]:
@@ -1351,6 +1378,7 @@ def render_command_center(
               <tbody>{''.join(connector_rows_html)}</tbody>
             </table>
           </div>
+          <ol class="actions connector-actions">{''.join(connector_attention_items)}</ol>
         </section>
       </div>
 

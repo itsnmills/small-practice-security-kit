@@ -7,6 +7,7 @@ from typing import Any
 
 import yaml
 
+from ..answer_standard import output_views_for_packet, reviewers_for_stage, timeframe_for_priority
 from ..manifest import slug
 from ..sensitive_data import blocking_findings
 
@@ -146,14 +147,40 @@ def make_evidence_item(
     unsafe_inputs: list[str] | None = None,
     source_refs: list[str] | None = None,
     notes: str = "",
+    plain_english_summary: str | None = None,
+    why_it_matters: str | None = None,
+    timeframe: str | None = None,
+    reviewer_needed: list[str] | None = None,
+    owner_view: str | None = None,
+    msp_view: str | None = None,
+    vendor_view: str | None = None,
+    legal_compliance_view: str | None = None,
+    technical_reviewer_view: str | None = None,
 ) -> dict[str, Any]:
     resolved_observations = observations if observations is not None else counts or {}
     resolved_unsafe_excluded = unsafe_fields_excluded or DEFAULT_UNSAFE_INPUTS
     confidence_score = CONFIDENCE_SCORE.get(confidence, 25)
+    resolved_plain_summary = plain_english_summary or summary
+    resolved_why = why_it_matters or (
+        f"This {control_area.replace('_', ' ')} evidence turns a {status} connector observation into a scoped owner, "
+        "MSP, vendor, or reviewer action without collecting PHI, credentials, raw logs, screenshots, or private URLs."
+    )
+    resolved_timeframe = timeframe or timeframe_for_priority(priority, stage_id)
+    resolved_reviewers = reviewer_needed or reviewers_for_stage(stage_id, title)
+    resolved_views = output_views_for_packet(
+        plain_english_summary=resolved_plain_summary,
+        why_it_matters=resolved_why,
+        recommended_question=recommended_question,
+        next_action=next_action,
+        owner_lane=owner_lane,
+        risk_area=control_area.replace("_", " ").title(),
+    )
     item = {
         "schema_version": CONNECTOR_SCHEMA_VERSION,
         "evidence_id": evidence_id,
         "title": title,
+        "plain_english_summary": resolved_plain_summary,
+        "why_it_matters": resolved_why,
         "source_system": source_system,
         "source_type": source_type,
         "collected_at": collected_at,
@@ -176,6 +203,14 @@ def make_evidence_item(
         "unsafe_inputs_excluded": resolved_unsafe_excluded,
         "next_action": next_action,
         "recommended_action": next_action,
+        "timeframe": resolved_timeframe,
+        "reviewer_needed": resolved_reviewers,
+        "owner_view": owner_view or resolved_views["owner_summary"],
+        "msp_view": msp_view or resolved_views["msp_task"],
+        "vendor_view": vendor_view or resolved_views["vendor_question"],
+        "legal_compliance_view": legal_compliance_view
+        or "No legal or compliance conclusion is made. Use this as readiness evidence and route formal legal, insurance, contract, or regulatory questions to a qualified reviewer.",
+        "technical_reviewer_view": technical_reviewer_view or resolved_views["technical_reviewer_note"],
         "stage_id": stage_id,
         "priority": priority,
         "source_refs": source_refs or [],
@@ -276,6 +311,8 @@ def summarize_connector_evidence(bundles: list[dict[str, Any]]) -> dict[str, Any
     by_confidence: dict[str, int] = {}
     by_owner_lane: dict[str, int] = {}
     by_control_area: dict[str, int] = {}
+    by_priority: dict[str, int] = {}
+    attention_items: list[dict[str, str]] = []
     runs: list[dict[str, Any]] = []
     for bundle in bundles:
         run = bundle.get("run", {})
@@ -298,10 +335,25 @@ def summarize_connector_evidence(bundles: list[dict[str, Any]]) -> dict[str, Any
         confidence = str(item.get("confidence", "unknown"))
         owner_lane = str(item.get("owner_lane", "unknown"))
         control_area = str(item.get("control_area", "general"))
+        priority = str(item.get("priority", "medium"))
         by_status[status] = by_status.get(status, 0) + 1
         by_confidence[confidence] = by_confidence.get(confidence, 0) + 1
         by_owner_lane[owner_lane] = by_owner_lane.get(owner_lane, 0) + 1
         by_control_area[control_area] = by_control_area.get(control_area, 0) + 1
+        by_priority[priority] = by_priority.get(priority, 0) + 1
+        if status in {"missing", "stale", "needs_review", "requested"} or priority in {"critical", "high"}:
+            attention_items.append(
+                {
+                    "evidence_id": str(item.get("evidence_id", "")),
+                    "title": str(item.get("title", "")),
+                    "source_system": str(item.get("source_system", "connector")),
+                    "status": status,
+                    "priority": priority,
+                    "owner_lane": owner_lane,
+                    "recommended_question": str(item.get("recommended_question", "")),
+                    "next_action": str(item.get("next_action", "")),
+                }
+            )
     return {
         "total_items": len(evidence),
         "runs": runs,
@@ -310,6 +362,8 @@ def summarize_connector_evidence(bundles: list[dict[str, Any]]) -> dict[str, Any
         "by_confidence": dict(sorted(by_confidence.items())),
         "by_owner_lane": dict(sorted(by_owner_lane.items())),
         "by_control_area": dict(sorted(by_control_area.items())),
+        "by_priority": dict(sorted(by_priority.items())),
+        "attention_items": attention_items[:12],
         "needs_attention": sum(by_status.get(status, 0) for status in ["missing", "stale", "needs_review", "requested"]),
         "data_boundary": "metadata_only_no_phi_expected",
     }

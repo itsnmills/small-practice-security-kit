@@ -154,6 +154,7 @@ connectors:
       - aggregated user counts
       - admin and suspended-user counts
       - 2-Step Verification enrollment and enforcement counts
+      - inactive, never-login, and newly created account counts
       - collection timestamp and source reference
     forbidden_data:
       - user emails
@@ -180,8 +181,11 @@ connectors:
     phi_expected: false
     allowed_data:
       - aggregated enabled-user counts
+      - disabled-user counts
       - guest-user counts
       - MFA registration and capability counts when reports are available
+      - self-service password reset registration counts when reports are available
+      - inactive, never-signed-in, and newly created account counts when sign-in metadata is available
       - collection timestamp and source reference
     forbidden_data:
       - user principal names

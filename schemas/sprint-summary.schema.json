@@ -384,6 +384,8 @@
         "by_confidence",
         "by_owner_lane",
         "by_control_area",
+        "by_priority",
+        "attention_items",
         "needs_attention",
         "data_boundary"
       ],
@@ -472,6 +474,56 @@
           "additionalProperties": {
             "type": "integer",
             "minimum": 0
+          }
+        },
+        "by_priority": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "attention_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "evidence_id",
+              "title",
+              "source_system",
+              "status",
+              "priority",
+              "owner_lane",
+              "recommended_question",
+              "next_action"
+            ],
+            "properties": {
+              "evidence_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "source_system": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "priority": {
+                "type": "string"
+              },
+              "owner_lane": {
+                "type": "string"
+              },
+              "recommended_question": {
+                "type": "string"
+              },
+              "next_action": {
+                "type": "string"
+              }
+            }
           }
         },
         "needs_attention": {

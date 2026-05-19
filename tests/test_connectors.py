@@ -141,42 +141,108 @@ class ConnectorTests(unittest.TestCase):
         self.assertNotIn("Security program, SOC 2", payload)
 
     def test_google_workspace_official_connector_aggregates_api_metadata(self) -> None:
+        requested_urls: list[str] = []
+
         def fetcher(url: str, token: str) -> dict[str, object]:
+            requested_urls.append(url)
             return {
                 "users": [
-                    {"primaryEmail": "owner@exampleclinic.test", "isAdmin": True, "suspended": False, "isEnrolledIn2Sv": True, "isEnforcedIn2Sv": True},
-                    {"primaryEmail": "staff@exampleclinic.test", "isAdmin": False, "suspended": False, "isEnrolledIn2Sv": False, "isEnforcedIn2Sv": False},
+                    {
+                        "primaryEmail": "owner@exampleclinic.test",
+                        "isAdmin": True,
+                        "suspended": False,
+                        "isEnrolledIn2Sv": True,
+                        "isEnforcedIn2Sv": True,
+                        "lastLoginTime": "2026-05-10T00:00:00.000Z",
+                        "creationTime": "2024-01-01T00:00:00.000Z",
+                    },
+                    {
+                        "primaryEmail": "staff@exampleclinic.test",
+                        "isAdmin": False,
+                        "suspended": False,
+                        "isEnrolledIn2Sv": False,
+                        "isEnforcedIn2Sv": False,
+                        "lastLoginTime": "2025-01-10T00:00:00.000Z",
+                        "creationTime": "2024-01-01T00:00:00.000Z",
+                    },
+                    {
+                        "primaryEmail": "former@exampleclinic.test",
+                        "isAdmin": False,
+                        "suspended": True,
+                        "isEnrolledIn2Sv": False,
+                        "isEnforcedIn2Sv": False,
+                        "lastLoginTime": "1970-01-01T00:00:00.000Z",
+                        "creationTime": "2023-01-01T00:00:00.000Z",
+                    },
                 ]
             }
 
         bundle = collect_google_workspace(generated_at="2026-05-19T00:00:00Z", fetcher=fetcher)
         payload = json.dumps(bundle, sort_keys=True)
         mfa = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-GW-API-MFA-001")
+        lifecycle = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-GW-API-LIFECYCLE-001")
 
         self.assertEqual(bundle["run"]["connector"], "google_workspace_api")
+        self.assertEqual(len(bundle["evidence"]), 3)
+        self.assertIn("lastLoginTime", requested_urls[0])
         self.assertEqual(mfa["confidence"], "observed_from_api")
         self.assertEqual(mfa["counts"]["mfa_missing"], 1)
+        self.assertEqual(mfa["counts"]["active_users"], 2)
+        self.assertEqual(lifecycle["counts"]["inactive_90_day_active_users"], 1)
+        self.assertEqual(lifecycle["counts"]["suspended_users"], 1)
+        self.assertIn("msp", lifecycle["reviewer_needed"])
         self.assertNotIn("@exampleclinic.test", payload)
 
     def test_microsoft_365_official_connector_aggregates_graph_metadata(self) -> None:
+        requested_urls: list[str] = []
+
         def fetcher(url: str, token: str, headers: dict[str, str] | None = None) -> dict[str, object]:
+            requested_urls.append(url)
             if "/users?" in url:
                 return {
                     "value": [
-                        {"id": "1", "userPrincipalName": "owner@exampleclinic.test", "accountEnabled": True, "userType": "Member"},
-                        {"id": "2", "userPrincipalName": "guest@exampleclinic.test", "accountEnabled": True, "userType": "Guest"},
+                        {
+                            "id": "1",
+                            "userPrincipalName": "owner@exampleclinic.test",
+                            "accountEnabled": True,
+                            "userType": "Member",
+                            "createdDateTime": "2024-01-01T00:00:00Z",
+                            "signInActivity": {"lastSuccessfulSignInDateTime": "2026-05-18T00:00:00Z"},
+                        },
+                        {
+                            "id": "2",
+                            "userPrincipalName": "guest@exampleclinic.test",
+                            "accountEnabled": True,
+                            "userType": "Guest",
+                            "createdDateTime": "2026-05-01T00:00:00Z",
+                            "signInActivity": {},
+                        },
                     ]
                 }
-            return {"value": [{"isMfaRegistered": True, "isMfaCapable": True}, {"isMfaRegistered": False, "isMfaCapable": False}]}
+            return {
+                "value": [
+                    {"isMfaRegistered": True, "isMfaCapable": True, "isSsprRegistered": True, "isSsprEnabled": True},
+                    {"isMfaRegistered": False, "isMfaCapable": False, "isSsprRegistered": False, "isSsprEnabled": False},
+                ]
+            }
 
         bundle = collect_microsoft_365(generated_at="2026-05-19T00:00:00Z", fetcher=fetcher)
         payload = json.dumps(bundle, sort_keys=True)
         mfa = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-MFA-001")
         users = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-USERS-001")
+        sspr = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-SSPR-001")
+        guests = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-GUESTS-001")
+        lifecycle = next(item for item in bundle["evidence"] if item["evidence_id"] == "CONN-M365-API-LIFECYCLE-001")
 
         self.assertEqual(bundle["run"]["connector"], "microsoft_365_api")
+        self.assertEqual(len(bundle["evidence"]), 5)
+        self.assertIn("signInActivity", requested_urls[0])
         self.assertEqual(mfa["counts"]["mfa_missing"], 1)
-        self.assertEqual(users["counts"]["guest_users"], 1)
+        self.assertEqual(users["counts"]["enabled_users"], 2)
+        self.assertEqual(sspr["counts"]["sspr_missing"], 1)
+        self.assertEqual(guests["counts"]["enabled_guest_users"], 1)
+        self.assertEqual(lifecycle["counts"]["never_signed_in_enabled_users"], 1)
+        self.assertIn("msp", guests["reviewer_needed"])
         self.assertNotIn("@exampleclinic.test", payload)
 
     def test_msp_response_import_and_refresh_report_are_safe(self) -> None:
@@ -227,6 +293,8 @@ class ConnectorTests(unittest.TestCase):
         self.assertEqual(summary["counts"]["connector_evidence_items"], 3)
         self.assertEqual(summary["connector_evidence_summary"]["total_items"], 3)
         self.assertEqual(connector_summary["by_connector"]["csv_google_users"], 2)
+        self.assertIn("by_priority", connector_summary)
+        self.assertGreaterEqual(len(connector_summary["attention_items"]), 1)
         self.assertEqual(len(evidence_index["connector_evidence"]), 3)
         self.assertTrue(any(row["finding_id"] == "CONN-GW-MFA-001" for row in risk_rows))
         self.assertTrue(any(row["finding_id"] == "CONN-VENDOR-BAA-001" for row in risk_rows))
@@ -337,7 +405,17 @@ class ConnectorTests(unittest.TestCase):
             ROOT / "samples" / "connectors" / "msp_response.yaml",
             generated_at="2026-05-19T00:00:00Z",
         )
-        for candidate in [bundle, msp_bundle]:
+        google_bundle = collect_google_workspace(
+            generated_at="2026-05-19T00:00:00Z",
+            fetcher=lambda url, token: {"users": [{"isAdmin": True, "suspended": False, "isEnrolledIn2Sv": True, "isEnforcedIn2Sv": True}]},
+        )
+        microsoft_bundle = collect_microsoft_365(
+            generated_at="2026-05-19T00:00:00Z",
+            fetcher=lambda url, token, headers=None: {
+                "value": [{"accountEnabled": True, "userType": "Member", "isMfaRegistered": True, "isMfaCapable": True, "isSsprRegistered": True, "isSsprEnabled": True}]
+            },
+        )
+        for candidate in [bundle, msp_bundle, google_bundle, microsoft_bundle]:
             jsonschema.validate(candidate, bundle_schema)
             for item in candidate["evidence"]:
                 jsonschema.validate(item, evidence_schema)

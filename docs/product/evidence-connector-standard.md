@@ -27,7 +27,7 @@ Manual input is only required when the system cannot observe the answer, an owne
 Every connector output is a JSON evidence bundle with:
 
 - `run`: connector name, version, mode, timestamps, input reference, warnings, and safety manifest.
-- `evidence`: normalized evidence items with source, status, confidence, observations, owner lane, recommended question, acceptable evidence, unsafe inputs, recommended action, next action, stage, and priority.
+- `evidence`: normalized evidence items with source, status, confidence, observations, owner lane, recommended question, acceptable evidence, unsafe inputs, recommended action, next action, timeframe, reviewer-needed, owner/MSP/vendor/reviewer views, stage, and priority.
 
 Normalized evidence shape:
 
@@ -42,6 +42,8 @@ Normalized evidence shape:
   "control_area": "email_authentication",
   "subject": "dmarc_policy",
   "summary": "DMARC policy for exampleclinic.test: none.",
+  "plain_english_summary": "The practice has DMARC monitoring, but enforcement still needs an MSP review.",
+  "why_it_matters": "Email-authentication evidence helps the owner and MSP reduce spoofing risk without collecting mailbox contents.",
   "observations": {
     "dmarc_record_count": 1,
     "dmarc_monitoring_only": 1
@@ -62,6 +64,12 @@ Normalized evidence shape:
     "MSP confirmation"
   ],
   "priority": "medium",
+  "timeframe": "60_days",
+  "reviewer_needed": ["msp", "office_manager"],
+  "owner_view": "Ask the MSP whether DMARC can safely move beyond monitoring.",
+  "msp_view": "Review sender alignment and return a dated DMARC evidence summary.",
+  "vendor_view": "No direct vendor ask unless a sender vendor must be validated.",
+  "legal_compliance_view": "No legal conclusion is made; route formal compliance questions to a qualified reviewer.",
   "next_action": "Review DMARC posture with the MSP and document whether monitoring-only is intentional."
 }
 ```
@@ -100,6 +108,8 @@ Each connector must declare:
 - human approval requirements.
 
 Default Velari connectors use official read-only APIs when the practice/MSP can authorize them, with CSV imports as a fallback. Official Google Workspace and Microsoft 365 connectors store OAuth tokens in the macOS Keychain when available, fall back to a local `0600` token file only when Keychain is unavailable, and collect only aggregated metadata.
+
+Official Google Workspace evidence currently translates API metadata into action-ready MFA, admin-role, and account-lifecycle evidence. Official Microsoft 365 evidence translates Graph metadata into MFA, account-status, self-service password reset, guest-access, and account-lifecycle evidence. These connectors store aggregate counts and evidence questions; they do not store user identities, mailbox contents, Drive/SharePoint/OneDrive contents, raw sign-in logs, screenshots, credentials, or private admin URLs.
 
 ## Practice-Owner Workflow
 
