@@ -16,6 +16,8 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - High or critical findings: 10
 - Evidence references: 17
 - Evidence references needing attention: 15
+- Control evidence rows: 30
+- Control evidence needing attention: 30
 - Handoff actions: 17
 
 ## Top Risks
@@ -73,6 +75,11 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - `evidence-index.json`
 - `risk-register.csv`
 - `handoff-actions.csv`
+- `control-evidence-matrix.csv`
+- `evidence-freshness-report.md`
+- `msp-evidence-request.md`
+- `vendor-evidence-request.md`
+- `insurance-evidence-packet.md`
 - `review-packet.md`
 - `review-packet.html`
 - `packet-manifest.json`

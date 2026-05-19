@@ -1,0 +1,1819 @@
+[
+  {
+    "acceptable_evidence": [
+      "named security owner role",
+      "dated owner acknowledgement",
+      "owner/MSP responsibility split"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-GOV-OWNER-001",
+    "control_name": "Security official and accountable owner designated",
+    "control_refs": [
+      "HIPAA Security Rule - assigned security responsibility",
+      "HHS HPH CPG - governance",
+      "CISA CPG - governance and cybersecurity leadership"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-GOV-OWNER-001",
+    "evidence_name": "Accountable security owner record",
+    "evidence_owner": "owner",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized owner role record or practice attestation",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm the named owner for security readiness decisions and where owner/MSP handoffs are recorded.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "owner",
+      "velari_reviewer"
+    ],
+    "risk_area": "Governance",
+    "source_systems": [
+      "practice profile",
+      "management signoff packet"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "formal risk analysis reference ID",
+      "dated reviewer note",
+      "management review date",
+      "scope statement"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-GOV-SRA-001",
+    "control_name": "Security risk analysis record",
+    "control_refs": [
+      "HIPAA Security Rule - risk analysis",
+      "ONC/OCR Security Risk Assessment Tool",
+      "HHS HPH CPG - risk management"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-GOV-SRA-001",
+    "evidence_name": "Risk analysis reference record",
+    "evidence_owner": "legal_compliance",
+    "evidence_provider": "owner",
+    "evidence_status": "needs_professional_review",
+    "evidence_type": "private risk analysis reference or reviewer note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Identify whether a current formal risk analysis exists and route gaps to qualified professional review.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "legal_compliance",
+      "velari_reviewer"
+    ],
+    "risk_area": "Risk Analysis",
+    "source_systems": [
+      "risk analysis worksheet",
+      "management signoff packet"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "action register with owner",
+      "due date and priority",
+      "remediation status",
+      "reviewer note for deferred items"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-GOV-RISK-001",
+    "control_name": "Risk treatment and corrective action register",
+    "control_refs": [
+      "HIPAA Security Rule - risk management",
+      "HHS HPH CPG - risk management",
+      "CISA CPG - vulnerability remediation planning"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-GOV-RISK-001",
+    "evidence_name": "Corrective action register",
+    "evidence_owner": "owner",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "risk register export or owner action plan",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Assign each open finding to an owner, due date, and evidence reference.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "owner",
+      "velari_reviewer"
+    ],
+    "risk_area": "Corrective Action",
+    "source_systems": [
+      "risk-register.csv",
+      "owner-action-plan.md"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "policy index",
+      "last review date",
+      "owner signoff",
+      "staff acknowledgement reference"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-GOV-POLICY-001",
+    "control_name": "Security policy set with last review date",
+    "control_refs": [
+      "HIPAA Security Rule - policies and procedures",
+      "HHS HPH CPG - policies and training"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-GOV-POLICY-001",
+    "evidence_name": "Security policy review record",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "owner",
+    "evidence_status": "missing",
+    "evidence_type": "policy index, review date, and owner signoff",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-005"
+    ],
+    "next_action": "Record the current policy set, last review date, owner, and staff acknowledgement reference.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "owner",
+      "legal_compliance"
+    ],
+    "risk_area": "Policy Review",
+    "source_systems": [
+      "policy binder",
+      "staff handbook"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "sanitized training roster",
+      "training date and topic list",
+      "acknowledgement reference",
+      "new-hire training checklist"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-WORKFORCE-TRAIN-001",
+    "control_name": "Workforce security training record",
+    "control_refs": [
+      "HIPAA Security Rule - security awareness and training",
+      "HHS HPH CPG - security awareness training",
+      "CISA CPG - foundational cybersecurity training"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-WORKFORCE-TRAIN-001",
+    "evidence_name": "Staff security training evidence",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "training roster, date, and topic summary",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Confirm current staff training completion and record the date and evidence reference.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "velari_reviewer"
+    ],
+    "risk_area": "Workforce Training",
+    "source_systems": [
+      "LMS or staff training file",
+      "onboarding checklist"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "incident roles list",
+      "MSP escalation path",
+      "insurer contact reference",
+      "counsel or compliance contact reference"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Operational Readiness",
+    "control_id": "VEL-IR-CONTACT-001",
+    "control_name": "Incident response plan and contact tree",
+    "control_refs": [
+      "HIPAA Security Rule - security incident procedures",
+      "HHS HPH CPG - incident response",
+      "CISA CPG - incident response planning"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-IR-CONTACT-001",
+    "evidence_name": "Incident response contact tree",
+    "evidence_owner": "owner",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized plan summary and contact owner list",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm the incident contact tree and separate technical response from qualified notice decisions.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "owner",
+      "incident_responder",
+      "legal_compliance"
+    ],
+    "risk_area": "Incident Response",
+    "source_systems": [
+      "incident-decision-log.md",
+      "contact tree"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "downtime workflow map",
+      "tabletop exercise note",
+      "critical system owner list",
+      "manual workaround checklist"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Operational Readiness",
+    "control_id": "VEL-DR-DOWNTIME-001",
+    "control_name": "Contingency, downtime, and disaster recovery plan",
+    "control_refs": [
+      "HIPAA Security Rule - contingency plan",
+      "HHS HPH CPG - backup and recovery",
+      "CISA CPG - data recovery"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-DR-DOWNTIME-001",
+    "evidence_name": "Downtime plan evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "downtime workflow worksheet and tabletop note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-003",
+      "READINESS-005"
+    ],
+    "next_action": "Run or schedule a downtime tabletop and record owner, MSP, and evidence references.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "incident_responder",
+      "office_manager"
+    ],
+    "risk_area": "Downtime / Ransomware",
+    "source_systems": [
+      "EHR",
+      "billing",
+      "shared drive",
+      "phone system"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "freshness counts by status",
+      "owner split",
+      "stale and missing list",
+      "dated generated report"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Operational Readiness",
+    "control_id": "VEL-EVID-FRESHNESS-001",
+    "control_name": "Evidence freshness report",
+    "control_refs": [
+      "HHS HPH CPG - asset and evidence management",
+      "CISA CPG - measurable security outcomes"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-EVID-FRESHNESS-001",
+    "evidence_name": "Evidence freshness summary",
+    "evidence_owner": "velari_reviewer",
+    "evidence_provider": "velari_reviewer",
+    "evidence_status": "missing",
+    "evidence_type": "generated freshness report",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Review missing and stale evidence weekly until owner, MSP, and vendor asks are assigned.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "owner",
+      "velari_reviewer"
+    ],
+    "risk_area": "Evidence Freshness",
+    "source_systems": [
+      "control-evidence-matrix.csv",
+      "evidence-freshness-report.md"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "sanitized MFA policy export",
+      "conditional access policy reference",
+      "admin account MFA coverage report",
+      "signed MSP attestation with date and scope"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-MFA-REMOTE-001",
+    "control_name": "MFA coverage for email, cloud, admin, and remote access",
+    "control_refs": [
+      "HIPAA Security Rule - access control",
+      "HIPAA Security Rule - person or entity authentication",
+      "HHS HPH CPG - multifactor authentication",
+      "CISA CPG - implement MFA"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-MFA-REMOTE-001",
+    "evidence_name": "Remote access MFA enforcement evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized configuration reference, policy reference, or admin attestation",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Ask the MSP to confirm MFA is enforced for EHR, email, administrator accounts, remote support, and remote access tools.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "velari_reviewer"
+    ],
+    "risk_area": "Access / MFA",
+    "source_systems": [
+      "Microsoft 365",
+      "VPN",
+      "RMM",
+      "EHR admin portal"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "user list export",
+      "admin role list",
+      "removed-account note",
+      "owner access-review signoff"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-ACCESS-REVIEW-001",
+    "control_name": "User access review for EHR, email, file shares, billing, VPN, and RMM",
+    "control_refs": [
+      "HIPAA Security Rule - access control",
+      "HHS HPH CPG - identity and access management",
+      "CISA CPG - account inventory"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-ACCESS-REVIEW-001",
+    "evidence_name": "Quarterly access review evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized user list export and owner signoff",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Export user and admin-role lists, reconcile owners, and record quarterly owner signoff.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "office_manager"
+    ],
+    "risk_area": "Access Review",
+    "source_systems": [
+      "EHR",
+      "billing",
+      "email",
+      "shared drive",
+      "RMM"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "dated offboarding checklist",
+      "account disablement reference",
+      "equipment return reference",
+      "exception owner and sunset date"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "event_driven",
+    "control_family": "Administrative Safeguards",
+    "control_id": "VEL-OFFBOARDING-001",
+    "control_name": "Termination and offboarding evidence",
+    "control_refs": [
+      "HIPAA Security Rule - workforce security",
+      "HIPAA Security Rule - access termination procedures",
+      "CISA CPG - account deprovisioning"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-OFFBOARDING-001",
+    "evidence_name": "Offboarding completion record",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "checklist and account removal reference",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm offboarding checklist ownership and evidence references for accounts, devices, and physical access.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "msp"
+    ],
+    "risk_area": "Offboarding",
+    "source_systems": [
+      "HR checklist",
+      "EHR",
+      "email",
+      "billing",
+      "keys or badges"
+    ],
+    "stale_after_days": 7,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "admin account list",
+      "named account owner",
+      "MFA status for admin accounts",
+      "shared-account exception register"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-PRIV-ACCOUNTS-001",
+    "control_name": "Privileged and administrator account inventory",
+    "control_refs": [
+      "HIPAA Security Rule - access control",
+      "HHS HPH CPG - privileged access management",
+      "CISA CPG - admin account separation"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-PRIV-ACCOUNTS-001",
+    "evidence_name": "Administrator account inventory",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized admin role list and owner review",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Inventory privileged accounts and document owner, MFA status, and shared-account exceptions.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Privileged Access",
+    "source_systems": [
+      "Microsoft 365",
+      "EHR admin portal",
+      "RMM",
+      "firewall or VPN"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "vendor remote access list",
+      "support account owner",
+      "MFA and approval workflow reference",
+      "remote access exception log"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-VENDOR-REMOTE-001",
+    "control_name": "Vendor and MSP remote access inventory",
+    "control_refs": [
+      "HIPAA Security Rule - access control",
+      "HIPAA Security Rule - business associate contracts",
+      "CISA CPG - third-party remote access"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-VENDOR-REMOTE-001",
+    "evidence_name": "Remote support access inventory",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "vendor support access list and MSP attestation",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Ask the MSP to list vendor support paths, named owners, MFA coverage, and disablement process.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "vendor",
+      "velari_reviewer"
+    ],
+    "risk_area": "Vendor Remote Access",
+    "source_systems": [
+      "RMM",
+      "VPN",
+      "vendor support tools",
+      "EHR support portal"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "account purpose and owner",
+      "last test date",
+      "storage or escrow process reference",
+      "access alerting reference"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-BREAKGLASS-001",
+    "control_name": "Break-glass account register and last test date",
+    "control_refs": [
+      "HIPAA Security Rule - emergency access procedure",
+      "HHS HPH CPG - account recovery",
+      "CISA CPG - resilience planning"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-BREAKGLASS-001",
+    "evidence_name": "Break-glass account record",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized register and test record",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Confirm break-glass accounts exist only where needed and have owners, test dates, and monitored use.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "owner"
+    ],
+    "risk_area": "Emergency Access",
+    "source_systems": [
+      "EHR",
+      "Microsoft 365",
+      "RMM",
+      "backup console"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "backup job summary",
+      "covered and excluded asset list",
+      "retention setting summary",
+      "backup owner attestation"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-BACKUP-SCOPE-001",
+    "control_name": "Backup configuration and asset coverage",
+    "control_refs": [
+      "HIPAA Security Rule - data backup plan",
+      "HHS HPH CPG - backup and recovery",
+      "CISA CPG - data backup"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-BACKUP-SCOPE-001",
+    "evidence_name": "Backup scope evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "backup policy summary and covered asset list",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-003",
+      "READINESS-005"
+    ],
+    "next_action": "Confirm backup coverage for critical systems and document exclusions with an owner.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "office_manager"
+    ],
+    "risk_area": "Backup / downtime",
+    "source_systems": [
+      "EHR export",
+      "shared drive",
+      "imaging workstation",
+      "billing files"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "restore-test date",
+      "system tested",
+      "recovery owner",
+      "limitations and exclusions",
+      "private binder reference ID"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Operational Readiness",
+    "control_id": "VEL-BACKUP-RESTORE-001",
+    "control_name": "Backup restore test report",
+    "control_refs": [
+      "HIPAA Security Rule - disaster recovery plan",
+      "HIPAA Security Rule - emergency mode operation plan",
+      "CISA CPG - test backups"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-BACKUP-RESTORE-001",
+    "evidence_name": "Restore test evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "restore-test note and date observed",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-003",
+      "READINESS-005"
+    ],
+    "next_action": "Run or schedule a restore test for critical systems and keep reference-only evidence.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "office_manager"
+    ],
+    "risk_area": "Backup / downtime",
+    "source_systems": [
+      "backup console",
+      "EHR export",
+      "shared drive",
+      "imaging workstation"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "patch compliance summary",
+      "exception list",
+      "unsupported asset note",
+      "remediation owner and date"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-PATCH-MGMT-001",
+    "control_name": "Patch management report",
+    "control_refs": [
+      "HHS HPH CPG - vulnerability management",
+      "CISA CPG - patch vulnerabilities",
+      "NIST Cybersecurity Framework - protect and detect"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-PATCH-MGMT-001",
+    "evidence_name": "Patch status report",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized endpoint or RMM patch summary",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Ask the MSP for patch status, unsupported assets, exceptions, and remediation owners.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Patch Management",
+    "source_systems": [
+      "RMM",
+      "endpoint management",
+      "imaging workstation",
+      "server or network devices"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "sanitized scan date and scope",
+      "high-risk finding count",
+      "remediation status",
+      "owner and due date"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-VULN-MGMT-001",
+    "control_name": "Vulnerability scan report and remediation status",
+    "control_refs": [
+      "HHS HPH CPG - vulnerability management",
+      "CISA CPG - vulnerability remediation",
+      "NIST Cybersecurity Framework - identify and protect"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-VULN-MGMT-001",
+    "evidence_name": "Vulnerability management evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized scan summary and remediation register",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm scan scope and track remediation status without exporting raw findings into public artifacts.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Vulnerability Management",
+    "source_systems": [
+      "vulnerability scanner",
+      "RMM",
+      "internet-facing asset review"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "protected endpoint count",
+      "missing agent list by asset category",
+      "alert owner",
+      "remediation notes"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-EDR-STATUS-001",
+    "control_name": "Endpoint protection or EDR status",
+    "control_refs": [
+      "HHS HPH CPG - endpoint security",
+      "CISA CPG - security monitoring",
+      "NIST Cybersecurity Framework - detect"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-EDR-STATUS-001",
+    "evidence_name": "Endpoint protection coverage evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized console coverage report or MSP attestation",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Request endpoint protection coverage for workstations, servers, and critical practice devices.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Endpoint Protection",
+    "source_systems": [
+      "endpoint protection console",
+      "RMM",
+      "workstation inventory"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "log source list",
+      "review cadence record",
+      "alert owner",
+      "escalation path",
+      "date last reviewed"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "monthly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-LOG-REVIEW-001",
+    "control_name": "Log source inventory and log review record",
+    "control_refs": [
+      "HIPAA Security Rule - audit controls",
+      "HIPAA Security Rule - information system activity review",
+      "CISA CPG - logging"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-LOG-REVIEW-001",
+    "evidence_name": "Log source and review cadence evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "log source inventory and review cadence note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-006"
+    ],
+    "next_action": "Define log sources, review cadence, alert owner, and escalation route.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Monitoring",
+    "source_systems": [
+      "EHR audit log",
+      "Microsoft 365 audit log",
+      "firewall or VPN logs",
+      "RMM alerts"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "encryption status summary",
+      "device lock policy",
+      "missing device exception list",
+      "owner remediation note"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-ENCRYPT-DEVICE-001",
+    "control_name": "Encryption and device protection status",
+    "control_refs": [
+      "HIPAA Security Rule - encryption addressable implementation specification",
+      "HHS HPH CPG - endpoint security",
+      "CISA CPG - data protection"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-ENCRYPT-DEVICE-001",
+    "evidence_name": "Device encryption and protection evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized device protection summary",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm encryption and device protection status for laptops, workstations, and portable media.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Device Protection",
+    "source_systems": [
+      "endpoint management",
+      "mobile device management",
+      "imaging workstation",
+      "laptops"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "device and system inventory",
+      "internet-facing service list",
+      "owner and support path",
+      "exposure remediation note"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Technical Safeguards",
+    "control_id": "VEL-ASSET-EXPOSURE-001",
+    "control_name": "Asset inventory and internet-facing exposure review",
+    "control_refs": [
+      "HHS HPH CPG - asset inventory",
+      "CISA CPG - asset inventory",
+      "CISA CPG - reduce exposure to common attacks"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-ASSET-EXPOSURE-001",
+    "evidence_name": "Asset inventory and exposure evidence",
+    "evidence_owner": "msp",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "asset inventory export and exposure review note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Confirm asset inventory and internet-facing exposure without publishing IP addresses or private diagrams.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "msp",
+      "technical_reviewer"
+    ],
+    "risk_area": "Asset Inventory",
+    "source_systems": [
+      "RMM",
+      "firewall",
+      "domain registrar",
+      "cloud admin portal"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "vendor list",
+      "ePHI access flag",
+      "service description",
+      "business owner",
+      "review date"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-VENDOR-INV-001",
+    "control_name": "Vendor inventory with ePHI access flag",
+    "control_refs": [
+      "HIPAA Security Rule - business associate contracts",
+      "HHS HPH CPG - third-party risk management",
+      "CISA CPG - supply chain risk management"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-VENDOR-INV-001",
+    "evidence_name": "Vendor inventory evidence",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "vendor register with ePHI access flag",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Update the vendor register with ePHI access, owner, and review date.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "legal_compliance"
+    ],
+    "risk_area": "Vendor / BAA",
+    "source_systems": [
+      "vendor register",
+      "ePHI flow map",
+      "accounts payable vendor list"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "BAA status",
+      "BAA review date",
+      "vendor service scope",
+      "private binder reference ID"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "contract_renewal",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-BAA-STATUS-001",
+    "control_name": "BAA status and review date",
+    "control_refs": [
+      "HIPAA Security Rule - business associate contracts",
+      "HHS HPH CPG - vendor management"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-BAA-STATUS-001",
+    "evidence_name": "BAA status evidence",
+    "evidence_owner": "legal_compliance",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "BAA status, review date, and private binder reference",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-004",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Confirm BAA status and review date for each vendor that stores, processes, transmits, or accesses ePHI.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "legal_compliance",
+      "vendor",
+      "velari_reviewer"
+    ],
+    "risk_area": "Vendor / BAA",
+    "source_systems": [
+      "vendor register",
+      "contract binder",
+      "vendor security portal"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "SOC 2 status label",
+      "HITRUST status label",
+      "vendor security page",
+      "gated proof request status",
+      "reviewer note"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-VENDOR-EVIDENCE-001",
+    "control_name": "Vendor security evidence status",
+    "control_refs": [
+      "HHS HPH CPG - third-party risk management",
+      "CISA CPG - supply chain risk management",
+      "NIST Cybersecurity Framework - supply chain risk management"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-VENDOR-EVIDENCE-001",
+    "evidence_name": "Vendor security evidence status",
+    "evidence_owner": "vendor",
+    "evidence_provider": "vendor",
+    "evidence_status": "gated",
+    "evidence_type": "public evidence or gated proof status label",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-004",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Request vendor security evidence status and route private proof to the appropriate reviewer.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "vendor",
+      "legal_compliance",
+      "technical_reviewer"
+    ],
+    "risk_area": "Vendor Security Evidence",
+    "source_systems": [
+      "vendor security page",
+      "vendor trust portal",
+      "contract binder"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "incident notice term summary",
+      "retention term summary",
+      "deletion or export capability note",
+      "subcontractor or subprocessor list status"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "contract_renewal",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-VENDOR-TERMS-001",
+    "control_name": "Vendor incident-notification and retention/deletion terms",
+    "control_refs": [
+      "HIPAA Security Rule - business associate contracts",
+      "HHS HPH CPG - incident response and vendor management",
+      "CISA CPG - supply chain risk management"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-VENDOR-TERMS-001",
+    "evidence_name": "Vendor incident and data lifecycle terms",
+    "evidence_owner": "legal_compliance",
+    "evidence_provider": "vendor",
+    "evidence_status": "gated",
+    "evidence_type": "contract term summary and reviewer note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-004",
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Request incident-notification, retention, deletion, export, and subcontractor term status from each relevant vendor.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "legal_compliance",
+      "vendor"
+    ],
+    "risk_area": "Vendor Terms",
+    "source_systems": [
+      "contract binder",
+      "vendor security portal",
+      "vendor questionnaire"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "AI tool list",
+      "workflow decision label",
+      "owner signoff",
+      "staff no-PHI guidance reference"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "quarterly",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-AI-INVENTORY-001",
+    "control_name": "AI tool inventory and allowed/restricted/prohibited workflow decision",
+    "control_refs": [
+      "HHS HPH CPG - data protection",
+      "NIST AI Risk Management Framework - governance",
+      "OCR HIPAA guidance on online tracking and regulated data handling"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-AI-INVENTORY-001",
+    "evidence_name": "AI workflow inventory evidence",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "AI workflow register and owner decision record",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Inventory AI workflows and record no-PHI, restricted, or prohibited handling decisions with reviewer routing.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "legal_compliance",
+      "technical_reviewer"
+    ],
+    "risk_area": "AI Workflow Review",
+    "source_systems": [
+      "AI workflow review",
+      "staff guidance",
+      "vendor register"
+    ],
+    "stale_after_days": 90,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "model-training setting",
+      "data retention term summary",
+      "deletion/export capability note",
+      "human review workflow",
+      "reviewer note"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "contract_renewal",
+    "control_family": "Vendor / BAA / AI",
+    "control_id": "VEL-AI-DATA-USE-001",
+    "control_name": "AI data-use and model-training evidence",
+    "control_refs": [
+      "HHS HPH CPG - data protection",
+      "NIST AI Risk Management Framework - data governance",
+      "CISA CPG - data protection"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-AI-DATA-USE-001",
+    "evidence_name": "AI data-use and model-training terms evidence",
+    "evidence_owner": "vendor",
+    "evidence_provider": "vendor",
+    "evidence_status": "gated",
+    "evidence_type": "vendor data-use setting, terms summary, or reviewer note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "AI-BILLING_APPEAL_DRAFTER",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Request AI data-use, retention, model-training, and human-review evidence before expanding restricted workflows.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "legal_compliance",
+      "vendor",
+      "technical_reviewer"
+    ],
+    "risk_area": "AI Data Use",
+    "source_systems": [
+      "AI vendor terms",
+      "AI workflow review",
+      "vendor trust portal"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "key or badge owner list",
+      "visitor procedure summary",
+      "workstation placement note",
+      "after-hours access owner"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "annual",
+    "control_family": "Physical Safeguards",
+    "control_id": "VEL-PHYSICAL-ACCESS-001",
+    "control_name": "Physical access basics",
+    "control_refs": [
+      "HIPAA Security Rule - facility access controls",
+      "HIPAA Security Rule - workstation security",
+      "HHS HPH CPG - physical security basics"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-PHYSICAL-ACCESS-001",
+    "evidence_name": "Physical access review evidence",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "office_manager",
+    "evidence_status": "missing",
+    "evidence_type": "facility access checklist and owner note",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [
+      "READINESS-001",
+      "READINESS-002",
+      "READINESS-004",
+      "READINESS-006",
+      "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+    ],
+    "next_action": "Review keys, badges, visitor handling, and workstation placement with the office manager.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "owner"
+    ],
+    "risk_area": "Physical Access",
+    "source_systems": [
+      "facility access checklist",
+      "key or badge log",
+      "workstation area review"
+    ],
+    "stale_after_days": 365,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  },
+  {
+    "acceptable_evidence": [
+      "disposal or transfer date",
+      "device category",
+      "wiping or destruction method reference",
+      "owner signoff"
+    ],
+    "accountable_owner": "owner",
+    "cadence": "event_driven",
+    "control_family": "Physical Safeguards",
+    "control_id": "VEL-MEDIA-DISPOSAL-001",
+    "control_name": "Device and media disposal or transfer evidence",
+    "control_refs": [
+      "HIPAA Security Rule - device and media controls",
+      "HHS HPH CPG - asset management",
+      "CISA CPG - asset disposal"
+    ],
+    "effective_date": null,
+    "evidence_id": "EV-MEDIA-DISPOSAL-001",
+    "evidence_name": "Media disposal or transfer record",
+    "evidence_owner": "office_manager",
+    "evidence_provider": "msp",
+    "evidence_status": "missing",
+    "evidence_type": "sanitized disposal certificate or transfer checklist",
+    "freshness_status": "missing",
+    "last_collected_at": null,
+    "last_reviewed_at": null,
+    "linked_answer_packet_ids": [],
+    "next_action": "Record disposal, transfer, wipe, or destruction evidence when devices or media leave service.",
+    "practice_applicability": [
+      "small_practice",
+      "msp_supported",
+      "covered_entity",
+      "public_demo"
+    ],
+    "retention_years": 6,
+    "reviewer_needed": [
+      "office_manager",
+      "msp"
+    ],
+    "risk_area": "Device / Media Handling",
+    "source_systems": [
+      "asset inventory",
+      "disposal vendor",
+      "MSP ticket"
+    ],
+    "stale_after_days": 30,
+    "unsafe_inputs": [
+      "PHI or patient identifiers",
+      "credentials",
+      "private admin URLs",
+      "raw logs",
+      "patient screenshots",
+      "full private contracts"
+    ]
+  }
+]

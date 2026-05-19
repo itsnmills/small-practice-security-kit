@@ -19,6 +19,7 @@
     "top_risks",
     "evidence_gap_summary",
     "handoff_lanes",
+    "control_evidence_summary",
     "offering_summary",
     "counts",
     "outputs",
@@ -202,7 +203,9 @@
         "findings",
         "high_or_critical_findings",
         "evidence_references",
-        "handoff_actions"
+        "handoff_actions",
+        "control_evidence_rows",
+        "control_evidence_needing_attention"
       ],
       "properties": {
         "stages": {
@@ -225,6 +228,14 @@
           "minimum": 0
         },
         "handoff_actions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "control_evidence_rows": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "control_evidence_needing_attention": {
           "type": "integer",
           "minimum": 0
         }
@@ -266,7 +277,8 @@
         "answer_standard_schema",
         "sprint_summary_schema",
         "evidence_index_schema",
-        "private_app_import_hint"
+        "private_app_import_hint",
+        "control_evidence_matrix_schema"
       ],
       "properties": {
         "answer_standard_schema": {
@@ -280,6 +292,9 @@
         },
         "private_app_import_hint": {
           "type": "string"
+        },
+        "control_evidence_matrix_schema": {
+          "const": "schemas/control-evidence-matrix.schema.json"
         }
       }
     },
@@ -288,6 +303,60 @@
       "minItems": 1,
       "items": {
         "type": "string"
+      }
+    },
+    "control_evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_controls",
+        "mapped_controls",
+        "linked_answer_packets",
+        "by_evidence_status",
+        "by_freshness_status",
+        "needs_attention",
+        "by_owner_needing_attention"
+      ],
+      "properties": {
+        "total_controls": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "mapped_controls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "linked_answer_packets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "by_evidence_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_freshness_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "needs_attention": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "by_owner_needing_attention": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
       }
     }
   },

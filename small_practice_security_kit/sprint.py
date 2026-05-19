@@ -8,6 +8,16 @@ from pathlib import Path
 from typing import Any
 
 from .answer_standard import build_action_packet, flattened_output_views, stage_for_finding as answer_stage_for_finding
+from .control_evidence import (
+    CONTROL_EVIDENCE_FIELDNAMES,
+    build_control_evidence_matrix,
+    render_evidence_freshness_report,
+    render_insurance_evidence_packet,
+    render_msp_evidence_request,
+    render_vendor_evidence_request,
+    summarize_evidence_freshness,
+    write_control_evidence_csv,
+)
 from .adapters.evidence_binder import export_binder_index
 from .manifest import utc_now
 from .offering import (
@@ -53,6 +63,12 @@ SPRINT_OUTPUTS = [
     "risk-register.csv",
     "evidence-index.json",
     "handoff-actions.csv",
+    "control-evidence-matrix.csv",
+    "control-evidence-matrix.json",
+    "evidence-freshness-report.md",
+    "msp-evidence-request.md",
+    "vendor-evidence-request.md",
+    "insurance-evidence-packet.md",
 ]
 
 STATUS_LABELS = {
@@ -625,11 +641,13 @@ def build_summary(
     risk_rows: list[dict[str, str]],
     handoff_rows: list[dict[str, str]],
     evidence_index: dict[str, Any],
+    control_evidence_rows: list[dict[str, Any]],
     generated_at: str,
 ) -> dict[str, Any]:
     high_or_critical = [risk for risk in risk_rows if risk["severity"] in {"high", "critical"}]
     stages_needing_evidence = [stage for stage in stages if stage["status"] == "needs_evidence"]
     evidence_gap_summary = build_evidence_gap_summary(evidence_index, stages)
+    control_evidence_summary = summarize_evidence_freshness(control_evidence_rows)
     offering_summary = build_offering_summary(profile, stages)
     return {
         "schema_version": SPRINT_SCHEMA_VERSION,
@@ -658,6 +676,7 @@ def build_summary(
         "top_risks": risk_rows[:8],
         "evidence_gap_summary": evidence_gap_summary,
         "handoff_lanes": build_handoff_lanes(handoff_rows),
+        "control_evidence_summary": control_evidence_summary,
         "offering_summary": offering_summary,
         "counts": {
             "stages": len(stages),
@@ -666,6 +685,8 @@ def build_summary(
             "high_or_critical_findings": len(high_or_critical),
             "evidence_references": len(manifest.get("evidence_references", [])),
             "handoff_actions": len(handoff_rows),
+            "control_evidence_rows": len(control_evidence_rows),
+            "control_evidence_needing_attention": control_evidence_summary["needs_attention"],
         },
         "outputs": {
             "sprint": SPRINT_OUTPUTS,
@@ -676,7 +697,8 @@ def build_summary(
             "answer_standard_schema": "schemas/velari-answer-standard.schema.json",
             "sprint_summary_schema": "schemas/sprint-summary.schema.json",
             "evidence_index_schema": "schemas/evidence-index.schema.json",
-            "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary and evidence-index.json for reference-only evidence gaps.",
+            "control_evidence_matrix_schema": "schemas/control-evidence-matrix.schema.json",
+            "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary, evidence-index.json for reference-only evidence gaps, and control-evidence-matrix.csv/json for control/evidence freshness mapping.",
         },
         "limitations": [
             "Public Sprint Mode uses synthetic or client-supplied reference metadata only.",
@@ -748,6 +770,7 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - Start with `sprint-summary.json` for stage status and counts.
 - Use `risk-register.csv` to assign owners and remediation priority.
 - Use `evidence-index.json` and `evidence-binder-export/` to collect reference-only evidence.
+- Use `control-evidence-matrix.csv`, `evidence-freshness-report.md`, `msp-evidence-request.md`, `vendor-evidence-request.md`, and `insurance-evidence-packet.md` to map actions to controls, owners, evidence cadence, and scoped handoffs.
 - Use `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `source-map.md`, `owner-msp-handoff.md`, and `handoff-actions.csv` to coordinate owner, MSP, vendor, and legal/compliance reviewer follow-up.
 """
 
@@ -819,6 +842,8 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - High or critical findings: {summary['counts']['high_or_critical_findings']}
 - Evidence references: {summary['counts']['evidence_references']}
 - Evidence references needing attention: {summary['evidence_gap_summary']['needs_attention']}
+- Control evidence rows: {summary['counts']['control_evidence_rows']}
+- Control evidence needing attention: {summary['counts']['control_evidence_needing_attention']}
 - Handoff actions: {summary['counts']['handoff_actions']}
 
 ## Top Risks
@@ -851,6 +876,11 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - `evidence-index.json`
 - `risk-register.csv`
 - `handoff-actions.csv`
+- `control-evidence-matrix.csv`
+- `evidence-freshness-report.md`
+- `msp-evidence-request.md`
+- `vendor-evidence-request.md`
+- `insurance-evidence-packet.md`
 - `review-packet.md`
 - `review-packet.html`
 - `packet-manifest.json`
@@ -1244,7 +1274,8 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     risk_rows = build_risk_register_rows(manifest)
     handoff_rows = build_handoff_rows(profile, stages, risk_rows)
     evidence_index = build_evidence_index(manifest, binder_dir)
-    summary = build_summary(profile, profile_path, manifest, stages, risk_rows, handoff_rows, evidence_index, generated_at)
+    control_evidence_rows = build_control_evidence_matrix(profile, risk_rows, generated_at=generated_at)
+    summary = build_summary(profile, profile_path, manifest, stages, risk_rows, handoff_rows, evidence_index, control_evidence_rows, generated_at)
 
     sprint_index_path = out_dir / "sprint-index.md"
     client_readout_path = out_dir / "sprint-client-readout.md"
@@ -1260,6 +1291,12 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     risk_path = out_dir / "risk-register.csv"
     evidence_path = out_dir / "evidence-index.json"
     handoff_path = out_dir / "handoff-actions.csv"
+    control_evidence_csv_path = out_dir / "control-evidence-matrix.csv"
+    control_evidence_json_path = out_dir / "control-evidence-matrix.json"
+    evidence_freshness_report_path = out_dir / "evidence-freshness-report.md"
+    msp_evidence_request_path = out_dir / "msp-evidence-request.md"
+    vendor_evidence_request_path = out_dir / "vendor-evidence-request.md"
+    insurance_evidence_packet_path = out_dir / "insurance-evidence-packet.md"
 
     sprint_index_path.write_text(render_sprint_index(summary, risk_rows), encoding="utf-8", newline="\n")
     client_readout_path.write_text(render_client_readout(summary, risk_rows, handoff_rows), encoding="utf-8", newline="\n")
@@ -1293,6 +1330,12 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     )
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     evidence_path.write_text(json.dumps(evidence_index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_control_evidence_csv(control_evidence_csv_path, control_evidence_rows)
+    control_evidence_json_path.write_text(json.dumps(control_evidence_rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    evidence_freshness_report_path.write_text(render_evidence_freshness_report(control_evidence_rows, summary), encoding="utf-8", newline="\n")
+    msp_evidence_request_path.write_text(render_msp_evidence_request(control_evidence_rows, summary), encoding="utf-8", newline="\n")
+    vendor_evidence_request_path.write_text(render_vendor_evidence_request(control_evidence_rows, summary), encoding="utf-8", newline="\n")
+    insurance_evidence_packet_path.write_text(render_insurance_evidence_packet(control_evidence_rows, summary), encoding="utf-8", newline="\n")
     _write_csv(
         risk_path,
         risk_rows,
@@ -1384,5 +1427,11 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             risk_path,
             evidence_path,
             handoff_path,
+            control_evidence_csv_path,
+            control_evidence_json_path,
+            evidence_freshness_report_path,
+            msp_evidence_request_path,
+            vendor_evidence_request_path,
+            insurance_evidence_packet_path,
         ],
     )

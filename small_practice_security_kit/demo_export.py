@@ -46,6 +46,12 @@ SPRINT_ARTIFACTS = [
     "risk-register.csv",
     "evidence-index.json",
     "handoff-actions.csv",
+    "control-evidence-matrix.csv",
+    "control-evidence-matrix.json",
+    "evidence-freshness-report.md",
+    "msp-evidence-request.md",
+    "vendor-evidence-request.md",
+    "insurance-evidence-packet.md",
 ]
 BINDER_ARTIFACTS = [
     "evidence-binder-index.csv",

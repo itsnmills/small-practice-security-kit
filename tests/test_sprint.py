@@ -72,6 +72,12 @@ class SprintModeTests(unittest.TestCase):
                 "risk-register.csv",
                 "evidence-index.json",
                 "handoff-actions.csv",
+                "control-evidence-matrix.csv",
+                "control-evidence-matrix.json",
+                "evidence-freshness-report.md",
+                "msp-evidence-request.md",
+                "vendor-evidence-request.md",
+                "insurance-evidence-packet.md",
                 "review-packet.md",
                 "review-packet.html",
                 "owner-msp-handoff.md",
@@ -103,9 +109,13 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("evidence_gap_summary", summary)
         self.assertIn("handoff_lanes", summary)
         self.assertIn("offering_summary", summary)
+        self.assertIn("control_evidence_summary", summary)
         self.assertIn("top_risks", summary)
         self.assertIn("contract_artifacts", summary)
         self.assertEqual(summary["contract_artifacts"]["answer_standard_schema"], "schemas/velari-answer-standard.schema.json")
+        self.assertEqual(summary["contract_artifacts"]["control_evidence_matrix_schema"], "schemas/control-evidence-matrix.schema.json")
+        self.assertGreaterEqual(summary["control_evidence_summary"]["total_controls"], 25)
+        self.assertGreater(summary["control_evidence_summary"]["mapped_controls"], 0)
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
         self.assertTrue(any(stage["status"] == "needs_evidence" for stage in summary["stage_statuses"]))
         self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "sprint-command-center.html")
@@ -184,6 +194,11 @@ class SprintModeTests(unittest.TestCase):
                     json.dumps(evidence, sort_keys=True),
                     json.dumps(risk_rows, sort_keys=True),
                     json.dumps(handoff_rows, sort_keys=True),
+                    (out_dir / "evidence-freshness-report.md").read_text(encoding="utf-8"),
+                    (out_dir / "msp-evidence-request.md").read_text(encoding="utf-8"),
+                    (out_dir / "vendor-evidence-request.md").read_text(encoding="utf-8"),
+                    (out_dir / "insurance-evidence-packet.md").read_text(encoding="utf-8"),
+                    (out_dir / "control-evidence-matrix.csv").read_text(encoding="utf-8"),
                 ]
             )
 
@@ -261,6 +276,26 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("## Decision Log Template", incident_log)
         self.assertIn("Technical containment", incident_log)
         self.assertIn("Qualified legal/compliance decision", incident_log)
+
+    def test_control_evidence_matrix_maps_packets_to_owner_scoped_requests(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
+            matrix = json.loads((out_dir / "control-evidence-matrix.json").read_text(encoding="utf-8"))
+            msp_request = (out_dir / "msp-evidence-request.md").read_text(encoding="utf-8")
+            vendor_request = (out_dir / "vendor-evidence-request.md").read_text(encoding="utf-8")
+            insurance_packet = (out_dir / "insurance-evidence-packet.md").read_text(encoding="utf-8")
+
+        self.assertGreaterEqual(len(matrix), 25)
+        self.assertTrue(any(row["linked_answer_packet_ids"] for row in matrix))
+        for row in matrix:
+            for field in ["control_id", "evidence_id", "evidence_owner", "evidence_status", "freshness_status", "cadence", "acceptable_evidence", "unsafe_inputs", "next_action"]:
+                self.assertTrue(row[field], field)
+            self.assertIn("PHI or patient identifiers", row["unsafe_inputs"])
+        self.assertIn("Do Not Send", msp_request)
+        self.assertIn("PHI", msp_request)
+        self.assertIn("Vendor Evidence Request", vendor_request)
+        self.assertIn("without treating any vendor as approved", vendor_request.lower())
+        self.assertIn("not insurance advice", insurance_packet.lower())
 
     def test_sprint_blocks_high_confidence_sensitive_profile_data(self) -> None:
         profile = load_profile(PROFILE)

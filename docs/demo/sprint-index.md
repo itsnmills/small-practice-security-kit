@@ -51,6 +51,12 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - `risk-register.csv`
 - `evidence-index.json`
 - `handoff-actions.csv`
+- `control-evidence-matrix.csv`
+- `control-evidence-matrix.json`
+- `evidence-freshness-report.md`
+- `msp-evidence-request.md`
+- `vendor-evidence-request.md`
+- `insurance-evidence-packet.md`
 - `readiness-review.md`
 - `ephi-flow-map.md`
 - `vendor-baa-review.md`
@@ -75,4 +81,5 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - Start with `sprint-summary.json` for stage status and counts.
 - Use `risk-register.csv` to assign owners and remediation priority.
 - Use `evidence-index.json` and `evidence-binder-export/` to collect reference-only evidence.
+- Use `control-evidence-matrix.csv`, `evidence-freshness-report.md`, `msp-evidence-request.md`, `vendor-evidence-request.md`, and `insurance-evidence-packet.md` to map actions to controls, owners, evidence cadence, and scoped handoffs.
 - Use `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `source-map.md`, `owner-msp-handoff.md`, and `handoff-actions.csv` to coordinate owner, MSP, vendor, and legal/compliance reviewer follow-up.
