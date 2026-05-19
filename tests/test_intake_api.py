@@ -5,6 +5,8 @@ import threading
 import unittest
 import urllib.error
 import urllib.request
+import uuid
+from pathlib import Path
 
 from small_practice_security_kit.local_api import AppState, LocalIntakeServer, make_handler
 from small_practice_security_kit.packet import build_packet
@@ -63,6 +65,44 @@ class IntakeApiTests(unittest.TestCase):
         self.assertEqual(built["links"]["dashboard"], "/dashboard.html")
         with urllib.request.urlopen(self.base + "/dashboard.html", timeout=5) as response:
             self.assertIn("Owner dashboard", response.read().decode("utf-8"))
+
+    def test_connector_center_collects_and_builds_from_evidence(self) -> None:
+        status = self.get_json("/api/status")
+        practice_name = f"API Connector Center Clinic {uuid.uuid4().hex[:8]}"
+        created = self.post_json(
+            "/api/workspaces",
+            {"practice_name": practice_name, "preset": "dental", "size_tier": "small"},
+            status["csrf_token"],
+        )
+        self.assertTrue(created["ok"])
+        empty = self.get_json("/api/connectors")
+        self.assertEqual(empty["connectors"]["summary"]["total_items"], 0)
+
+        wizard = self.post_json("/api/connectors/wizard", {}, status["csrf_token"])
+        self.assertEqual(wizard["href"], "/connector-wizard.html")
+
+        dns = self.post_json("/api/connectors/dns", {"domain": "exampleclinic.test"}, status["csrf_token"])
+        self.assertEqual(dns["connectors"]["summary"]["by_connector"]["dns_email_auth"], 4)
+        self.assertFalse(any(item["phi_expected"] for item in dns["connectors"]["items"]))
+
+        msp_path = Path("samples/connectors/msp_response.yaml").resolve()
+        msp = self.post_json("/api/connectors/msp-response", {"path": str(msp_path)}, status["csrf_token"])
+        self.assertEqual(msp["connectors"]["summary"]["total_items"], 5)
+        self.assertEqual(msp["connectors"]["summary"]["data_boundary"], "metadata_only_no_phi_expected")
+
+        refresh = self.post_json("/api/connectors/refresh", {}, status["csrf_token"])
+        self.assertEqual(refresh["href"], "/evidence-refresh.json")
+        views = self.post_json("/api/connectors/views", {}, status["csrf_token"])
+        self.assertIn("/views/owner-view.md", views["hrefs"])
+
+        built = self.post_json("/api/build", {}, status["csrf_token"])
+        self.assertEqual(built["links"]["command_center"], "/sprint-command-center.html")
+        self.assertEqual(built["links"]["connector_summary"], "/connector-evidence-summary.json")
+        with urllib.request.urlopen(self.base + "/connector-evidence-summary.json", timeout=5) as response:
+            connector_summary = json.loads(response.read().decode("utf-8"))
+        self.assertEqual(connector_summary["total_items"], 5)
+        with urllib.request.urlopen(self.base + "/sprint-command-center.html", timeout=5) as response:
+            self.assertIn("Command Center", response.read().decode("utf-8"))
 
     def test_sensitive_data_blocks_profile_save(self) -> None:
         profile = self.get_json("/api/profile")["profile"]
