@@ -10,6 +10,7 @@
     "directory": "evidence-binder-export",
     "share_safety": "reference_only_no_phi_no_secret"
   },
+  "connector_evidence": [],
   "data_boundary": {
     "classification": "synthetic_or_client_reference_metadata_only",
     "phi_allowed": false,

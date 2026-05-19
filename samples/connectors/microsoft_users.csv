@@ -1,0 +1,4 @@
+user_principal_name,display_name,account_enabled,mfa_status,admin_roles,user_type,last_sign_in
+owner@exampleclinic.test,Owner,TRUE,TRUE,Global Reader,Member,2026-05-01
+frontdesk@exampleclinic.test,Front desk,TRUE,FALSE,,Member,2026-05-02
+contractor@exampleclinic.test,Contractor,TRUE,FALSE,,Guest,2026-04-20

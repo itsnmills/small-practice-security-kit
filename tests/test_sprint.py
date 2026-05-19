@@ -72,6 +72,7 @@ class SprintModeTests(unittest.TestCase):
                 "risk-register.csv",
                 "evidence-index.json",
                 "handoff-actions.csv",
+                "connector-evidence-summary.json",
                 "control-evidence-matrix.csv",
                 "control-evidence-matrix.json",
                 "evidence-freshness-report.md",
@@ -108,12 +109,16 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("target_delivery_signal", summary)
         self.assertIn("evidence_gap_summary", summary)
         self.assertIn("handoff_lanes", summary)
+        self.assertIn("connector_evidence_summary", summary)
         self.assertIn("offering_summary", summary)
         self.assertIn("control_evidence_summary", summary)
         self.assertIn("top_risks", summary)
         self.assertIn("contract_artifacts", summary)
         self.assertEqual(summary["contract_artifacts"]["answer_standard_schema"], "schemas/velari-answer-standard.schema.json")
+        self.assertEqual(summary["contract_artifacts"]["normalized_evidence_schema"], "schemas/normalized-evidence.schema.json")
+        self.assertEqual(summary["contract_artifacts"]["connector_run_schema"], "schemas/connector-run.schema.json")
         self.assertEqual(summary["contract_artifacts"]["control_evidence_matrix_schema"], "schemas/control-evidence-matrix.schema.json")
+        self.assertEqual(summary["connector_evidence_summary"]["total_items"], 0)
         self.assertGreaterEqual(summary["control_evidence_summary"]["total_controls"], 25)
         self.assertGreater(summary["control_evidence_summary"]["mapped_controls"], 0)
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
@@ -198,12 +203,14 @@ class SprintModeTests(unittest.TestCase):
                     (out_dir / "msp-evidence-request.md").read_text(encoding="utf-8"),
                     (out_dir / "vendor-evidence-request.md").read_text(encoding="utf-8"),
                     (out_dir / "insurance-evidence-packet.md").read_text(encoding="utf-8"),
+                    (out_dir / "connector-evidence-summary.json").read_text(encoding="utf-8"),
                     (out_dir / "control-evidence-matrix.csv").read_text(encoding="utf-8"),
                 ]
             )
 
         self.assertTrue(risk_rows)
         self.assertTrue(evidence["evidence_references"])
+        self.assertIn("connector_evidence", evidence)
         self.assertTrue(handoff_rows)
         self.assertFalse(evidence["data_boundary"]["raw_evidence_allowed"])
         self.assertEqual(evidence["binder_export"]["share_safety"], "reference_only_no_phi_no_secret")

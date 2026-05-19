@@ -247,10 +247,10 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Confirm current staff training completion and record the date and evidence reference.",
     "practice_applicability": [
@@ -363,8 +363,8 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "READINESS-003",
-      "READINESS-005"
+      "READINESS-005",
+      "READINESS-003"
     ],
     "next_action": "Run or schedule a downtime tabletop and record owner, MSP, and evidence references.",
     "practice_applicability": [
@@ -479,16 +479,16 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Ask the MSP to confirm MFA is enforced for EHR, email, administrator accounts, remote support, and remote access tools.",
     "practice_applicability": [
@@ -547,16 +547,16 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Export user and admin-role lists, reconcile owners, and record quarterly owner signoff.",
     "practice_applicability": [
@@ -674,13 +674,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_IMAGING_VENDOR"
     ],
     "next_action": "Inventory privileged accounts and document owner, MFA status, and shared-account exceptions.",
     "practice_applicability": [
@@ -739,16 +739,16 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Ask the MSP to list vendor support paths, named owners, MFA coverage, and disablement process.",
     "practice_applicability": [
@@ -808,13 +808,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_IMAGING_VENDOR"
     ],
     "next_action": "Confirm break-glass accounts exist only where needed and have owners, test dates, and monitored use.",
     "practice_applicability": [
@@ -873,8 +873,8 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "READINESS-003",
-      "READINESS-005"
+      "READINESS-005",
+      "READINESS-003"
     ],
     "next_action": "Confirm backup coverage for critical systems and document exclusions with an owner.",
     "practice_applicability": [
@@ -934,8 +934,8 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "READINESS-003",
-      "READINESS-005"
+      "READINESS-005",
+      "READINESS-003"
     ],
     "next_action": "Run or schedule a restore test for critical systems and keep reference-only evidence.",
     "practice_applicability": [
@@ -1338,16 +1338,16 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Update the vendor register with ePHI access, owner, and review date.",
     "practice_applicability": [
@@ -1405,12 +1405,12 @@
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
       "READINESS-004",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Confirm BAA status and review date for each vendor that stores, processes, transmits, or accesses ePHI.",
     "practice_applicability": [
@@ -1471,12 +1471,12 @@
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
       "READINESS-004",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Request vendor security evidence status and route private proof to the appropriate reviewer.",
     "practice_applicability": [
@@ -1536,12 +1536,12 @@
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
       "READINESS-004",
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Request incident-notification, retention, deletion, export, and subcontractor term status from each relevant vendor.",
     "practice_applicability": [
@@ -1599,10 +1599,10 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Inventory AI workflows and record no-PHI, restricted, or prohibited handling decisions with reviewer routing.",
     "practice_applicability": [
@@ -1662,10 +1662,10 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
-      "AI-BILLING_APPEAL_DRAFTER",
-      "AI-AI_SCRIBE_PILOT",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "AI-AI_SCRIBE_PILOT",
+      "AI-BILLING_APPEAL_DRAFTER"
     ],
     "next_action": "Request AI data-use, retention, model-training, and human-review evidence before expanding restricted workflows.",
     "practice_applicability": [
@@ -1724,13 +1724,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "READINESS-004",
       "READINESS-001",
       "READINESS-002",
-      "READINESS-004",
       "READINESS-006",
+      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
-      "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR"
+      "VENDOR-EXAMPLE_IMAGING_VENDOR"
     ],
     "next_action": "Review keys, badges, visitor handling, and workstation placement with the office manager.",
     "practice_applicability": [

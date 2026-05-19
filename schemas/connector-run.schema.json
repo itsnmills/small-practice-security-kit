@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velari.local/schemas/connector-run.schema.json",
+  "title": "Velari Connector Evidence Bundle",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "run",
+    "evidence"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2026-05-19"
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_version",
+        "run_id",
+        "connector",
+        "connector_version",
+        "mode",
+        "started_at",
+        "completed_at",
+        "input_ref",
+        "status",
+        "warnings",
+        "safety_manifest",
+        "evidence_count"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "2026-05-19"
+        },
+        "run_id": {
+          "type": "string",
+          "pattern": "^run_[a-z0-9_]+_[0-9]{8}$"
+        },
+        "connector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "connector_version": {
+          "type": "string"
+        },
+        "mode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "started_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "completed_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "input_ref": {
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "completed_with_warnings"
+          ]
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "evidence_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "safety_manifest": {
+          "type": "object",
+          "additionalProperties": true,
+          "required": [
+            "connector",
+            "default_mode",
+            "phi_expected",
+            "forbidden_data",
+            "required_scopes",
+            "unsafe_scopes",
+            "human_approval_required_for"
+          ],
+          "properties": {
+            "connector": {
+              "type": "string"
+            },
+            "default_mode": {
+              "type": "string"
+            },
+            "phi_expected": {
+              "const": false
+            },
+            "forbidden_data": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            },
+            "required_scopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "unsafe_scopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "human_approval_required_for": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "schema_version",
+          "evidence_id",
+          "title",
+          "source_system",
+          "source_type",
+          "collected_at",
+          "phi_expected",
+          "phi_status",
+          "control_area",
+          "subject",
+          "summary",
+          "status",
+          "confidence",
+          "observations",
+          "owner_lane",
+          "recommended_question",
+          "acceptable_evidence",
+          "unsafe_inputs",
+          "unsafe_fields_excluded",
+          "unsafe_inputs_excluded",
+          "next_action",
+          "recommended_action",
+          "stage_id",
+          "priority"
+        ],
+        "properties": {
+          "schema_version": {
+            "const": "2026-05-19"
+          },
+          "evidence_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "source_system": {
+            "type": "string"
+          },
+          "source_type": {
+            "type": "string"
+          },
+          "collected_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "phi_expected": {
+            "const": false
+          },
+          "phi_status": {
+            "const": "metadata_only_no_phi_expected"
+          },
+          "control_area": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "string"
+          },
+          "observations": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "owner_lane": {
+            "type": "string"
+          },
+          "recommended_question": {
+            "type": "string"
+          },
+          "acceptable_evidence": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsafe_inputs": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsafe_fields_excluded": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "unsafe_inputs_excluded": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            }
+          },
+          "next_action": {
+            "type": "string"
+          },
+          "recommended_action": {
+            "type": "string"
+          },
+          "stage_id": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

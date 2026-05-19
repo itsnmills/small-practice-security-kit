@@ -1,0 +1,149 @@
+connectors:
+  - connector: csv_google_users
+    default_mode: client_export_import_metadata_only
+    phi_expected: false
+    allowed_data:
+      - counts of users, admins, suspended users, and MFA posture
+      - organization unit or policy-level labels when not patient-specific
+      - date observed and export source reference
+    forbidden_data:
+      - patient names
+      - patient records
+      - mailbox contents
+      - Drive file contents
+      - credentials
+      - MFA recovery codes
+      - private admin URLs
+      - raw logs
+      - screenshots with patient data
+    required_scopes: []
+    unsafe_scopes:
+      - gmail.readonly
+      - drive.readonly
+    human_approval_required_for:
+      - sharing owner-facing reports
+      - sending MSP remediation requests
+      - legal/compliance or insurance exports
+  - connector: csv_microsoft_users
+    default_mode: client_export_import_metadata_only
+    phi_expected: false
+    allowed_data:
+      - counts of enabled users, admins, guests, and MFA registration
+      - policy-level Conditional Access or MFA summaries
+      - date observed and export source reference
+    forbidden_data:
+      - mailbox contents
+      - Teams chat contents
+      - OneDrive or SharePoint file contents
+      - credentials
+      - private admin URLs
+      - raw sign-in logs with user identifiers
+      - patient screenshots
+    required_scopes: []
+    unsafe_scopes:
+      - Mail.Read
+      - Files.Read.All
+      - Sites.Read.All
+    human_approval_required_for:
+      - sharing owner-facing reports
+      - sending MSP remediation requests
+      - legal/compliance or insurance exports
+  - connector: csv_device_inventory
+    default_mode: msp_export_import_metadata_only
+    phi_expected: false
+    allowed_data:
+      - device counts
+      - encryption, EDR, and patch status summaries
+      - owner role and date observed
+    forbidden_data:
+      - raw endpoint logs
+      - patient files
+      - private console URLs
+      - credentials
+      - screenshots with sensitive data
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - client exports
+      - remediation tickets
+  - connector: csv_backup_report
+    default_mode: msp_export_import_metadata_only
+    phi_expected: false
+    allowed_data:
+      - backup scope summary
+      - restore-test date
+      - system category
+      - success or exception counts
+    forbidden_data:
+      - raw backup data
+      - patient records
+      - private backup console URLs
+      - credentials
+      - screenshots with sensitive data
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - client exports
+      - insurance evidence packets
+      - incident-sensitive reports
+  - connector: csv_vendor_register
+    default_mode: client_export_import_metadata_only
+    phi_expected: false
+    allowed_data:
+      - vendor name
+      - ePHI touch status
+      - BAA status label
+      - SOC 2 or HITRUST status label
+      - incident, retention, deletion, and AI/data-use summary labels
+    forbidden_data:
+      - raw contracts
+      - patient examples
+      - credentials
+      - private vendor portal URLs
+      - incident-sensitive details
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - vendor outreach
+      - legal/compliance review exports
+  - connector: dns_email_auth
+    default_mode: public_dns_metadata
+    phi_expected: false
+    allowed_data:
+      - public DNS record presence
+      - SPF presence
+      - DMARC policy summary
+      - common DKIM selector presence
+      - domain name
+    forbidden_data:
+      - mailbox contents
+      - message headers containing patient data
+      - private DNS provider credentials
+      - private admin URLs
+      - raw email logs
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - changing DNS records
+      - sending owner/MSP findings
+  - connector: vendor_public_web
+    default_mode: public_vendor_metadata
+    phi_expected: false
+    allowed_data:
+      - public vendor domain
+      - public page reachability counts
+      - presence of security, BAA, AI/data-use, incident, and subprocessor terms
+      - vendor owner follow-up questions
+    forbidden_data:
+      - raw contracts
+      - patient examples
+      - credentials
+      - private vendor portal URLs
+      - raw public page text
+      - incident-sensitive details
+    required_scopes: []
+    unsafe_scopes: []
+    human_approval_required_for:
+      - vendor outreach
+      - legal/compliance review exports
+      - insurance evidence packets

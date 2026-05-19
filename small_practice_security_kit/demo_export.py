@@ -46,6 +46,7 @@ SPRINT_ARTIFACTS = [
     "risk-register.csv",
     "evidence-index.json",
     "handoff-actions.csv",
+    "connector-evidence-summary.json",
     "control-evidence-matrix.csv",
     "control-evidence-matrix.json",
     "evidence-freshness-report.md",

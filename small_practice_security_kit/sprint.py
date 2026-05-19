@@ -8,6 +8,13 @@ from pathlib import Path
 from typing import Any
 
 from .answer_standard import build_action_packet, flattened_output_views, stage_for_finding as answer_stage_for_finding
+from .connectors.base import (
+    STATUS_TO_RISK_EVIDENCE,
+    evidence_reference,
+    flatten_evidence,
+    load_connector_bundles,
+    summarize_connector_evidence,
+)
 from .control_evidence import (
     CONTROL_EVIDENCE_FIELDNAMES,
     build_control_evidence_matrix,
@@ -63,6 +70,7 @@ SPRINT_OUTPUTS = [
     "risk-register.csv",
     "evidence-index.json",
     "handoff-actions.csv",
+    "connector-evidence-summary.json",
     "control-evidence-matrix.csv",
     "control-evidence-matrix.json",
     "evidence-freshness-report.md",
@@ -77,6 +85,8 @@ STATUS_LABELS = {
     "ready_for_review": "Ready for review",
     "complete": "Complete",
 }
+PRIORITY_SORT = {"critical": 0, "high": 1, "medium": 2, "low": 3}
+EVIDENCE_STATUS_SORT = {"missing": 0, "stale": 1, "requested": 2, "referenced": 3}
 
 
 @dataclass(frozen=True)
@@ -318,6 +328,14 @@ def _evidence_status(evidence_refs: list[str], evidence_by_id: dict[str, dict[st
     return "referenced"
 
 
+def _risk_sort_key(row: dict[str, Any]) -> tuple[int, int, str]:
+    return (
+        PRIORITY_SORT.get(str(row.get("priority", "medium")), 2),
+        EVIDENCE_STATUS_SORT.get(str(row.get("evidence_status", "requested")), 2),
+        str(row.get("title", "")),
+    )
+
+
 def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
     evidence_by_id = {item["evidence_id"]: item for item in manifest.get("evidence_references", [])}
     rows: list[dict[str, Any]] = []
@@ -556,6 +574,71 @@ def build_handoff_rows(profile: dict[str, Any], stages: list[dict[str, Any]], ri
     return rows
 
 
+def build_connector_risk_rows(connector_evidence: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for item in connector_evidence:
+        stage_id = str(item.get("stage_id", "findings_risk_register"))
+        priority = str(item.get("priority", "medium"))
+        finding_id = str(item.get("evidence_id", "CONN-EVIDENCE-001"))
+        title = str(item.get("title", "Connector evidence item"))
+        next_action = str(item.get("next_action", "Review connector evidence with the owner and MSP."))
+        packet = build_action_packet(
+            finding_id=finding_id,
+            title=title,
+            stage_id=stage_id,
+            severity=priority,
+            owner=str(item.get("owner_lane", "msp")),
+            evidence_refs=[finding_id],
+            recipient=_recipient_for_stage(stage_id),
+            next_action_override=next_action,
+            service_context=str(item.get("control_area", "Connector evidence")).replace("_", " ").title(),
+        )
+        packet["plain_english_summary"] = str(item.get("summary") or packet["plain_english_summary"])
+        packet["recommended_question"] = str(item.get("recommended_question") or packet["recommended_question"])
+        packet["acceptable_evidence"] = list(item.get("acceptable_evidence") or packet["acceptable_evidence"])
+        packet["unsafe_inputs"] = list(item.get("unsafe_inputs") or packet["unsafe_inputs"])
+        packet["owner_lane"] = str(item.get("owner_lane") or packet["owner_lane"])
+        packet["priority"] = priority
+        packet["next_action"] = next_action
+        views = flattened_output_views(packet)
+        rows.append(
+            {
+                "finding_id": finding_id,
+                "stage_id": stage_id,
+                "severity": priority,
+                "priority": priority,
+                "title": title,
+                "owner": str(item.get("owner_lane", "msp")),
+                "audience": _audience_for_stage(stage_id),
+                "recipient": _recipient_for_stage(stage_id),
+                "evidence_status": STATUS_TO_RISK_EVIDENCE.get(str(item.get("status", "requested")), "requested"),
+                "evidence_refs": finding_id,
+                "plain_english_summary": str(packet["plain_english_summary"]),
+                "why_it_matters": str(packet["why_it_matters"]),
+                "risk_area": str(packet.get("risk_area") or str(item.get("control_area", "")).replace("_", " ").title()),
+                "affected_workflows": list(packet.get("affected_workflows", [])),
+                "owner_lane": str(packet["owner_lane"]),
+                "secondary_owner_lane": str(packet.get("secondary_owner_lane", "")),
+                "recommended_question": str(packet["recommended_question"]),
+                "acceptable_evidence": list(packet["acceptable_evidence"]),
+                "unsafe_inputs": list(packet["unsafe_inputs"]),
+                "timeframe": str(packet["timeframe"]),
+                "reviewer_needed": list(packet["reviewer_needed"]),
+                "next_action": next_action,
+                "recommended_action": next_action,
+                "owner_view": views["owner_view"],
+                "msp_view": views["msp_view"],
+                "vendor_view": views["vendor_view"],
+                "legal_compliance_view": views["legal_compliance_view"],
+                "technical_reviewer_view": views["technical_reviewer_view"],
+                "output_views": dict(packet.get("output_views", {})),
+                "artifact_ref": "connector-evidence-summary.json",
+                "roadmap_bucket": _roadmap_bucket_for_stage(stage_id, priority),
+            }
+        )
+    return rows
+
+
 def build_evidence_gap_summary(evidence_index: dict[str, Any], stages: list[dict[str, Any]]) -> dict[str, Any]:
     references = evidence_index.get("evidence_references", [])
     status_counts: dict[str, int] = {}
@@ -612,7 +695,16 @@ def build_handoff_lanes(handoff_rows: list[dict[str, str]]) -> list[dict[str, An
     return list(lanes.values())
 
 
-def build_evidence_index(manifest: dict[str, Any], binder_dir: Path) -> dict[str, Any]:
+def build_evidence_index(
+    manifest: dict[str, Any],
+    binder_dir: Path,
+    connector_evidence: list[dict[str, Any]] | None = None,
+    generated_at: str | None = None,
+) -> dict[str, Any]:
+    connector_refs = [
+        evidence_reference(item, generated_at or manifest["generated_at"])
+        for item in connector_evidence or []
+    ]
     return {
         "schema_version": SPRINT_SCHEMA_VERSION,
         "generated_at": manifest["generated_at"],
@@ -629,7 +721,8 @@ def build_evidence_index(manifest: dict[str, Any], binder_dir: Path) -> dict[str
             ],
             "share_safety": "reference_only_no_phi_no_secret",
         },
-        "evidence_references": manifest.get("evidence_references", []),
+        "evidence_references": manifest.get("evidence_references", []) + connector_refs,
+        "connector_evidence": connector_evidence or [],
     }
 
 
@@ -642,6 +735,7 @@ def build_summary(
     handoff_rows: list[dict[str, str]],
     evidence_index: dict[str, Any],
     control_evidence_rows: list[dict[str, Any]],
+    connector_evidence_summary: dict[str, Any],
     generated_at: str,
 ) -> dict[str, Any]:
     high_or_critical = [risk for risk in risk_rows if risk["severity"] in {"high", "critical"}]
@@ -676,6 +770,7 @@ def build_summary(
         "top_risks": risk_rows[:8],
         "evidence_gap_summary": evidence_gap_summary,
         "handoff_lanes": build_handoff_lanes(handoff_rows),
+        "connector_evidence_summary": connector_evidence_summary,
         "control_evidence_summary": control_evidence_summary,
         "offering_summary": offering_summary,
         "counts": {
@@ -685,6 +780,7 @@ def build_summary(
             "high_or_critical_findings": len(high_or_critical),
             "evidence_references": len(manifest.get("evidence_references", [])),
             "handoff_actions": len(handoff_rows),
+            "connector_evidence_items": connector_evidence_summary["total_items"],
             "control_evidence_rows": len(control_evidence_rows),
             "control_evidence_needing_attention": control_evidence_summary["needs_attention"],
         },
@@ -695,10 +791,12 @@ def build_summary(
         },
         "contract_artifacts": {
             "answer_standard_schema": "schemas/velari-answer-standard.schema.json",
+            "normalized_evidence_schema": "schemas/normalized-evidence.schema.json",
+            "connector_run_schema": "schemas/connector-run.schema.json",
             "sprint_summary_schema": "schemas/sprint-summary.schema.json",
             "evidence_index_schema": "schemas/evidence-index.schema.json",
             "control_evidence_matrix_schema": "schemas/control-evidence-matrix.schema.json",
-            "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary, evidence-index.json for reference-only evidence gaps, and control-evidence-matrix.csv/json for control/evidence freshness mapping.",
+            "private_app_import_hint": "Import sprint-summary.json for stages/actions/offering_summary, connector-evidence-summary.json for local connector provenance, evidence-index.json for reference-only evidence gaps, and control-evidence-matrix.csv/json for control/evidence freshness mapping.",
         },
         "limitations": [
             "Public Sprint Mode uses synthetic or client-supplied reference metadata only.",
@@ -767,6 +865,7 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - Open `sprint-command-center.html` first for the one-page readout.
 - Use `sprint-offering-readout.md` and `owner-action-plan.md` for the real-offering walkthrough.
 - Use `sprint-client-readout.md` for a portable Markdown summary.
+- Use `connector-evidence-summary.json` to review local connector/import runs, confidence, and safety manifests before relying on automated evidence.
 - Start with `sprint-summary.json` for stage status and counts.
 - Use `risk-register.csv` to assign owners and remediation priority.
 - Use `evidence-index.json` and `evidence-binder-export/` to collect reference-only evidence.
@@ -844,6 +943,7 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - Evidence references needing attention: {summary['evidence_gap_summary']['needs_attention']}
 - Control evidence rows: {summary['counts']['control_evidence_rows']}
 - Control evidence needing attention: {summary['counts']['control_evidence_needing_attention']}
+- Connector evidence items: {summary['counts']['connector_evidence_items']}
 - Handoff actions: {summary['counts']['handoff_actions']}
 
 ## Top Risks
@@ -876,6 +976,7 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - `evidence-index.json`
 - `risk-register.csv`
 - `handoff-actions.csv`
+- `connector-evidence-summary.json`
 - `control-evidence-matrix.csv`
 - `evidence-freshness-report.md`
 - `msp-evidence-request.md`
@@ -959,6 +1060,22 @@ def render_command_center(
         )
     if not evidence_rows_html:
         evidence_rows_html.append("<tr><td><strong>No open evidence gaps</strong></td><td>reviewed</td><td>Practice owner/MSP</td><td>evidence-index.json</td></tr>")
+
+    connector_summary = summary["connector_evidence_summary"]
+    connector_rows_html = []
+    for run in connector_summary["runs"]:
+        connector_rows_html.append(
+            f"""
+            <tr>
+              <td><strong>{_h(run['connector'])}</strong><span>{_h(run['mode'])}</span></td>
+              <td>{int(run['evidence_count'])}</td>
+              <td>{_h(run['status'])}</td>
+              <td>{'No' if not run['phi_expected'] else 'Review required'}</td>
+            </tr>
+            """
+        )
+    if not connector_rows_html:
+        connector_rows_html.append("<tr><td><strong>No connector evidence imported</strong><span>Use local imports or collectors to reduce manual entry.</span></td><td>0</td><td>not_run</td><td>No</td></tr>")
 
     lane_cards = []
     for lane in summary["handoff_lanes"]:
@@ -1229,6 +1346,16 @@ def render_command_center(
             </table>
           </div>
         </section>
+
+        <section>
+          <h2>Connector Evidence</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Connector</th><th>Evidence</th><th>Status</th><th>PHI expected</th></tr></thead>
+              <tbody>{''.join(connector_rows_html)}</tbody>
+            </table>
+          </div>
+        </section>
       </div>
 
       <aside>
@@ -1256,7 +1383,13 @@ def render_command_center(
 """
 
 
-def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: str | None = None) -> SprintBuildResult:
+def build_sprint(
+    profile_path: Path,
+    output_root: Path = OUT,
+    *,
+    generated_at: str | None = None,
+    evidence_paths: list[Path] | None = None,
+) -> SprintBuildResult:
     generated_at = generated_at or utc_now()
     profile = load_profile(profile_path)
     sensitive_findings = blocking_findings(profile)
@@ -1270,12 +1403,26 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     del risk
 
     manifest = json.loads((out_dir / "packet-manifest.json").read_text(encoding="utf-8"))
+    connector_bundles = load_connector_bundles(evidence_paths)
+    connector_evidence = flatten_evidence(connector_bundles)
+    connector_evidence_summary = summarize_connector_evidence(connector_bundles)
     stages = build_stage_statuses(profile, out_dir, gaps)
-    risk_rows = build_risk_register_rows(manifest)
+    risk_rows = sorted(build_risk_register_rows(manifest) + build_connector_risk_rows(connector_evidence), key=_risk_sort_key)
     handoff_rows = build_handoff_rows(profile, stages, risk_rows)
-    evidence_index = build_evidence_index(manifest, binder_dir)
+    evidence_index = build_evidence_index(manifest, binder_dir, connector_evidence, generated_at)
     control_evidence_rows = build_control_evidence_matrix(profile, risk_rows, generated_at=generated_at)
-    summary = build_summary(profile, profile_path, manifest, stages, risk_rows, handoff_rows, evidence_index, control_evidence_rows, generated_at)
+    summary = build_summary(
+        profile,
+        profile_path,
+        manifest,
+        stages,
+        risk_rows,
+        handoff_rows,
+        evidence_index,
+        control_evidence_rows,
+        connector_evidence_summary,
+        generated_at,
+    )
 
     sprint_index_path = out_dir / "sprint-index.md"
     client_readout_path = out_dir / "sprint-client-readout.md"
@@ -1291,6 +1438,7 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     risk_path = out_dir / "risk-register.csv"
     evidence_path = out_dir / "evidence-index.json"
     handoff_path = out_dir / "handoff-actions.csv"
+    connector_summary_path = out_dir / "connector-evidence-summary.json"
     control_evidence_csv_path = out_dir / "control-evidence-matrix.csv"
     control_evidence_json_path = out_dir / "control-evidence-matrix.json"
     evidence_freshness_report_path = out_dir / "evidence-freshness-report.md"
@@ -1330,6 +1478,10 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
     )
     summary_path.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     evidence_path.write_text(json.dumps(evidence_index, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    connector_summary_path.write_text(
+        json.dumps(connector_evidence_summary, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
     write_control_evidence_csv(control_evidence_csv_path, control_evidence_rows)
     control_evidence_json_path.write_text(json.dumps(control_evidence_rows, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     evidence_freshness_report_path.write_text(render_evidence_freshness_report(control_evidence_rows, summary), encoding="utf-8", newline="\n")
@@ -1427,6 +1579,7 @@ def build_sprint(profile_path: Path, output_root: Path = OUT, *, generated_at: s
             risk_path,
             evidence_path,
             handoff_path,
+            connector_summary_path,
             control_evidence_csv_path,
             control_evidence_json_path,
             evidence_freshness_report_path,

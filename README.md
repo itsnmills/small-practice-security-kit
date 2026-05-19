@@ -92,6 +92,21 @@ python3 -m venv .venv
 
 The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, add evidence references, review AI workflows, and generate the local dashboard and review packet.
 
+### Evidence connector layer
+
+Use connector/import commands when the owner or MSP already has exports. Connectors create normalized, metadata-only evidence bundles and avoid row-level identities, PHI, credentials, mailbox contents, raw logs, patient screenshots, and raw contracts.
+
+```bash
+.venv/bin/python -m small_practice_security_kit import csv users samples/connectors/google_workspace_users.csv --out evidence/users.json
+.venv/bin/python -m small_practice_security_kit import csv vendor-register samples/connectors/vendor_register.csv --out evidence/vendor-register.json
+.venv/bin/python -m small_practice_security_kit collect dns --domain exampleclinic.test --out evidence/dns.json
+.venv/bin/python -m small_practice_security_kit collect vendor-public --vendor "Example AI Scribe Vendor" --domain example.com --out evidence/vendor-public.json
+.venv/bin/python -m small_practice_security_kit generate msp-request --profile samples/family_dental_clinic.yaml --evidence evidence/*.json --out out/msp-request.md
+.venv/bin/python -m small_practice_security_kit build samples/family_dental_clinic.yaml --evidence evidence/*.json --output-root out
+```
+
+Supported first-sprint imports: `users`, `google-users`, `microsoft-users`, `devices`, `backup-report`, and `vendor-register`. Supported collectors: `dns` and `vendor-public`. The product filter is security, simplicity, and time saving: default to safe metadata, make the owner command obvious, and turn imported evidence into MSP/vendor questions. Product rules live in [`docs/product/evidence-connector-standard.md`](docs/product/evidence-connector-standard.md), the build goal lives in [`docs/goals/evidence-connector-layer-goal.md`](docs/goals/evidence-connector-layer-goal.md), and connector safety manifests live in [`catalogs/connector_safety_manifests.yaml`](catalogs/connector_safety_manifests.yaml).
+
 More details:
 
 - [`docs/dashboard.md`](docs/dashboard.md)
@@ -135,9 +150,9 @@ Start with:
 out/family_dental_clinic/sprint-command-center.html
 ```
 
-Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, and `incident-decision-log.md`.
+Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, `connector-evidence-summary.json`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, and `incident-decision-log.md`.
 
-The JSON contracts for private-app import are documented in `schemas/velari-answer-standard.schema.json`, `schemas/sprint-summary.schema.json`, and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping. The product language standard lives in [`docs/product/velari-answer-standard.md`](docs/product/velari-answer-standard.md).
+The JSON contracts for private-app import are documented in `schemas/velari-answer-standard.schema.json`, `schemas/normalized-evidence.schema.json`, `schemas/connector-run.schema.json`, `schemas/sprint-summary.schema.json`, and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping. The product language standard lives in [`docs/product/velari-answer-standard.md`](docs/product/velari-answer-standard.md).
 
 More details:
 
@@ -211,7 +226,7 @@ Use it as a practical organizer and first-pass evidence workflow.
 
 ## Roadmap
 
-1. Expand imports from readiness checklist, AI governance auditor, and other companion repos.
+1. Add read-only Google Workspace and Microsoft 365 API collectors after CSV/import mode is stable.
 2. Add optional PDF rendering and richer scoring/priority explanations.
 3. Add more sample profiles and demo packets for different practice types.
 4. Add release workflow for demo artifacts across repos and improve compatibility for companion integrations.
