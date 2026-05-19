@@ -1,21 +1,26 @@
 :root {
-  --bg: #f7f4ed;
-  --surface: #fffdf8;
+  --bg: #f3f6f9;
+  --surface: #fbfdff;
+  --surface-strong: #ffffff;
   --white: #ffffff;
-  --ink: #18251f;
-  --muted: #637067;
-  --line: #d9ded6;
-  --primary: #116652;
-  --primary-soft: #e3f2eb;
-  --blue-soft: #e7f0f8;
-  --warning: #925715;
-  --warning-soft: #fff1dc;
+  --ink: #1f2937;
+  --muted: #52606d;
+  --line: #d9e2ec;
+  --primary: #12395b;
+  --primary-strong: #0b2944;
+  --primary-2: #1f5d8b;
+  --primary-soft: #eef5fb;
+  --blue-soft: #f6fbff;
+  --gold: #c9a55b;
+  --gold-soft: #fff8ec;
+  --warning: #8a5a14;
+  --warning-soft: #fff8ec;
   --danger: #a13d32;
   --danger-soft: #fde8e4;
   --success: #2f6f43;
   --success-soft: #e8f3e7;
   --radius: 8px;
-  --shadow: 0 18px 45px rgba(31, 44, 37, 0.08);
+  --shadow: 0 18px 45px rgba(18, 57, 91, 0.08);
 }
 
 * { box-sizing: border-box; }
@@ -23,7 +28,7 @@
 body {
   margin: 0;
   color: var(--ink);
-  background: linear-gradient(180deg, rgba(17, 102, 82, 0.08), transparent 320px), var(--bg);
+  background: linear-gradient(180deg, rgba(18, 57, 91, 0.09), transparent 320px), var(--bg);
   font-family: Avenir Next, "Segoe UI", Verdana, sans-serif;
   font-weight: 400;
   line-height: 1.5;
@@ -121,7 +126,7 @@ p { color: var(--muted); }
 }
 
 button:hover, button:focus, .secondary:hover, .secondary:focus, input:focus, select:focus, textarea:focus {
-  outline: 3px solid rgba(17, 102, 82, 0.22);
+  outline: 3px solid rgba(31, 93, 139, 0.22);
 }
 
 button:disabled {
@@ -137,8 +142,8 @@ button:disabled {
   padding: 12px 14px;
   border-radius: var(--radius);
   background: var(--warning-soft);
-  border: 1px solid #f2d1a2;
-  color: #66390d;
+  border: 1px solid #ecd8a6;
+  color: #5b3f12;
 }
 
 .inventory-box {
@@ -146,13 +151,13 @@ button:disabled {
   gap: 8px;
   margin-top: 16px;
   padding: 14px;
-  border: 1px solid #c8dced;
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--blue-soft);
 }
 
 .inventory-box small {
-  color: #183c60;
+  color: var(--primary);
 }
 
 .alert {
@@ -218,7 +223,7 @@ textarea { min-height: 86px; resize: vertical; }
 
 table { width: 100%; border-collapse: collapse; min-width: 820px; }
 th, td { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-th { font-size: 12px; font-weight: 650; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: #f8faf7; }
+th { font-size: 12px; font-weight: 650; letter-spacing: 0.05em; text-transform: uppercase; color: var(--primary); background: var(--primary-soft); }
 td input, td select, td textarea { min-width: 140px; }
 td.actions-cell { min-width: 92px; }
 tr:last-child td { border-bottom: 0; }

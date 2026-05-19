@@ -5,6 +5,7 @@ import json
 import re
 from pathlib import Path
 
+from .brand import VELARI_CSS_VARIABLES
 from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
@@ -586,24 +587,24 @@ def render_html(markdown: str, profile: dict) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{html.escape(title)}</title>
   <style>
-    :root {{ --ink: #17211b; --muted: #5b685f; --paper: #fbfaf6; --line: #cbd7cc; --accent: #0f6b57; --accent-soft: #e3f2eb; --warn: #9b4d13; --warn-soft: #fff0dd; }}
+    :root {{ {VELARI_CSS_VARIABLES} }}
     * {{ box-sizing: border-box; }}
-    body {{ margin: 0; background: var(--paper); color: var(--ink); font-family: Georgia, "Times New Roman", serif; line-height: 1.55; }}
+    body {{ margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, Avenir Next, "Segoe UI", Arial, sans-serif; line-height: 1.55; }}
     .shell {{ max-width: 1120px; margin: 0 auto; padding: 32px 22px 56px; }}
-    .cover {{ border-top: 8px solid var(--accent); padding: 28px 0 22px; display: grid; gap: 8px; }}
-    .kicker {{ color: var(--accent); font-family: Arial, sans-serif; font-weight: 700; text-transform: uppercase; font-size: 12px; }}
+    .cover {{ border-top: 8px solid var(--gold); padding: 28px 0 22px; display: grid; gap: 8px; }}
+    .kicker {{ color: var(--accent); font-weight: 800; text-transform: uppercase; font-size: 12px; }}
     h1, h2 {{ line-height: 1.12; letter-spacing: 0; }}
     .cover h1 {{ font-size: clamp(34px, 5vw, 60px); margin: 0; max-width: 900px; }}
-    .meta {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; font-family: Arial, sans-serif; }}
-    .meta div {{ border: 1px solid var(--line); padding: 10px; background: #fffdf8; }}
+    .meta {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }}
+    .meta div {{ border: 1px solid var(--line); padding: 10px; background: var(--surface); }}
     .meta strong {{ display: block; font-size: 12px; color: var(--muted); margin-bottom: 3px; }}
-    .notice {{ background: var(--warn-soft); border-left: 4px solid var(--warn); padding: 12px 14px; margin: 22px 0; font-family: Arial, sans-serif; font-size: 14px; }}
+    .notice {{ background: var(--warn-soft); border-left: 4px solid var(--gold); padding: 12px 14px; margin: 22px 0; font-size: 14px; }}
     .packet-section {{ display: block; padding: 24px 0 12px; border-top: 1px solid var(--line); }}
     .packet-section h1 {{ font-size: 30px; margin: 0 0 12px; }}
     h2 {{ font-size: 20px; margin: 22px 0 10px; color: var(--accent); }}
     p, li {{ font-size: 15px; }}
     .table-wrap {{ overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: white; }}
-    table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-family: Arial, sans-serif; font-size: 13px; }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }}
     th {{ text-align: left; background: var(--accent-soft); color: var(--ink); }}
     th, td {{ border-bottom: 1px solid var(--line); padding: 9px 10px; vertical-align: top; }}
     tr:last-child td {{ border-bottom: 0; }}
@@ -615,7 +616,7 @@ def render_html(markdown: str, profile: dict) -> str:
 <body>
   <main class="shell">
     <header class="cover">
-      <div class="kicker">Small Practice Security Kit</div>
+      <div class="kicker">Velari Security Kit</div>
       <h1>{html.escape(title)}</h1>
       <div class="meta">
         <div><strong>Practice Type</strong>{html.escape(str(practice['type']))}</div>

@@ -98,7 +98,7 @@ Use connector/import commands when the owner or MSP already has exports, or conn
 
 ```bash
 .venv/bin/python -m small_practice_security_kit connect wizard --out out/connector-wizard.html
-.venv/bin/python -m small_practice_security_kit connect google-workspace --client-id "$VELARI_GOOGLE_CLIENT_ID" --client-secret "$VELARI_GOOGLE_CLIENT_SECRET"
+.venv/bin/python -m small_practice_security_kit connect google-workspace --client-id "$VELARI_GOOGLE_CLIENT_ID"
 .venv/bin/python -m small_practice_security_kit collect google-workspace --out evidence/google-workspace.json
 .venv/bin/python -m small_practice_security_kit connect microsoft-365 --client-id "$VELARI_MICROSOFT_CLIENT_ID"
 .venv/bin/python -m small_practice_security_kit collect microsoft-365 --out evidence/microsoft-365.json

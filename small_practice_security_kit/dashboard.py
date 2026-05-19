@@ -4,6 +4,7 @@ import html
 from pathlib import Path
 from typing import Iterable
 
+from .brand import VELARI_CSS_VARIABLES
 from .packet import OUT, render_html, risk_level
 from .profile import load_profile, slugify
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
@@ -219,32 +220,14 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
   <title>{esc(practice['name'])} Local Security Dashboard</title>
   <style>
     :root {{
-      --bg: #f7f4ed;
-      --surface: #fffdf8;
-      --surface-strong: #ffffff;
-      --ink: #18251f;
-      --muted: #637067;
-      --line: #d9ded6;
-      --primary: #116652;
-      --primary-soft: #e3f2eb;
-      --blue-soft: #e7f0f8;
-      --success: #2f6f43;
-      --success-soft: #e8f3e7;
-      --warning: #925715;
-      --warning-soft: #fff1dc;
-      --danger: #a13d32;
-      --danger-soft: #fde8e4;
-      --unknown: #667085;
-      --unknown-soft: #eef0f2;
-      --radius: 8px;
-      --shadow: 0 18px 45px rgba(31, 44, 37, 0.08);
+      {VELARI_CSS_VARIABLES}
     }}
     * {{ box-sizing: border-box; }}
     html {{ scroll-behavior: smooth; }}
     body {{
       margin: 0;
       color: var(--ink);
-      background: linear-gradient(180deg, rgba(17, 102, 82, 0.08), transparent 280px), var(--bg);
+      background: linear-gradient(180deg, rgba(18, 57, 91, 0.09), transparent 280px), var(--bg);
       font-family: Avenir Next, "Segoe UI", Verdana, sans-serif;
       line-height: 1.5;
     }}
@@ -252,16 +235,16 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .skip-link {{ position: absolute; left: -999px; top: 12px; background: var(--ink); color: white; padding: 10px 12px; z-index: 20; }}
     .skip-link:focus {{ left: 12px; }}
     .shell {{ min-height: 100vh; display: grid; grid-template-columns: 280px minmax(0, 1fr); }}
-    .sidebar {{ position: sticky; top: 0; height: 100vh; padding: 22px; border-right: 1px solid var(--line); background: rgba(255, 253, 248, 0.88); backdrop-filter: blur(10px); }}
+    .sidebar {{ position: sticky; top: 0; height: 100vh; padding: 22px; border-right: 1px solid var(--line); background: rgba(251, 253, 255, 0.9); backdrop-filter: blur(10px); }}
     .brand {{ display: grid; gap: 6px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }}
     .brand span, .eyebrow {{ color: var(--primary); font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }}
     .brand strong {{ font-size: 22px; line-height: 1.15; }}
     .brand small, .lede, .section-head p, .task-row small, .link-card small, .footer, .metric span, .metric small {{ color: var(--muted); }}
     .nav {{ display: grid; gap: 6px; margin: 18px 0; }}
     .nav a {{ text-decoration: none; border-radius: var(--radius); padding: 10px 11px; color: var(--muted); font-weight: 700; }}
-    .nav a:hover, .nav a:focus, .task-row:hover, .task-row:focus, .link-card:hover, .link-card:focus {{ outline: 3px solid rgba(17, 102, 82, 0.22); border-color: rgba(17, 102, 82, 0.55); }}
+    .nav a:hover, .nav a:focus, .task-row:hover, .task-row:focus, .link-card:hover, .link-card:focus {{ outline: 3px solid rgba(31, 93, 139, 0.22); border-color: rgba(18, 57, 91, 0.55); }}
     .nav a:hover, .nav a:focus {{ color: var(--ink); background: var(--primary-soft); }}
-    .local-note, .callout {{ padding: 12px; background: var(--blue-soft); color: #183c60; border: 1px solid #c8dced; border-radius: var(--radius); font-size: 13px; }}
+    .local-note, .callout {{ padding: 12px; background: var(--blue-soft); color: var(--primary); border: 1px solid var(--line); border-radius: var(--radius); font-size: 13px; }}
     .main {{ padding: 28px clamp(18px, 4vw, 48px) 56px; }}
     .hero {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: 18px; align-items: stretch; margin-bottom: 18px; }}
     .panel {{ background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }}
@@ -271,7 +254,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .lede {{ max-width: 820px; font-size: 18px; margin: 16px 0 0; }}
     .decision-card {{ padding: 22px; display: grid; gap: 16px; }}
     .decision-card h2 {{ font-size: 22px; }}
-    .action-list {{ margin: 0; padding-left: 20px; display: grid; gap: 9px; color: #26362e; }}
+    .action-list {{ margin: 0; padding-left: 20px; display: grid; gap: 9px; color: var(--ink); }}
     .metrics {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }}
     .metric {{ padding: 16px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: var(--radius); }}
     .metric span, .metric small {{ display: block; }}
@@ -296,7 +279,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .table-wrap {{ overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface-strong); }}
     table {{ width: 100%; border-collapse: collapse; min-width: 760px; }}
     th, td {{ padding: 11px 12px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
-    th {{ font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); background: #f8faf7; }}
+    th {{ font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--primary); background: var(--primary-soft); }}
     tr:last-child td {{ border-bottom: 0; }}
     .links {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }}
     .link-card {{ padding: 14px; border: 1px solid var(--line); background: var(--surface-strong); border-radius: var(--radius); text-decoration: none; }}
@@ -330,7 +313,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
   <div class="shell">
     <aside class="sidebar" aria-label="Dashboard sections">
       <div class="brand">
-        <span>Small Practice Security Kit</span>
+        <span>Velari Security Kit</span>
         <strong>{esc(practice['name'])}</strong>
         <small>{esc(practice['review_period'])} local dashboard</small>
       </div>
@@ -413,7 +396,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
           <a class="link-card" href="review-packet.md"><strong>Markdown packet</strong><small>Portable source file</small></a>
         </div>
       </section>
-      <p class="footer">Generated locally by Small Practice Security Kit. This is not legal advice, does not certify any legal or regulatory requirement, does not decide incident reporting duties, and is not a substitute for qualified professional review.</p>
+      <p class="footer">Generated locally by Velari Security Kit. This is not legal advice, does not certify any legal or regulatory requirement, does not decide incident reporting duties, and is not a substitute for qualified professional review.</p>
     </main>
   </div>
 </body>
