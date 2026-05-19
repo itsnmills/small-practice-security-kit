@@ -168,6 +168,8 @@
         "summary",
         "status",
         "confidence",
+        "confidence_score",
+        "confidence_reason",
         "observations",
         "owner_lane",
         "recommended_question",
@@ -216,6 +218,14 @@
           "type": "string"
         },
         "confidence": {
+          "type": "string"
+        },
+        "confidence_score": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "confidence_reason": {
           "type": "string"
         },
         "observations": {

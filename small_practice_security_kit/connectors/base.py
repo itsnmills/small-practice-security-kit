@@ -47,6 +47,18 @@ STATUS_TO_RISK_EVIDENCE = {
     "not_applicable": "referenced",
 }
 
+CONFIDENCE_SCORE = {
+    "observed_from_api": 95,
+    "observed_from_public_dns": 85,
+    "observed_from_public_web": 70,
+    "imported_from_msp_response": 80,
+    "imported_from_msp_export": 75,
+    "imported_from_client_export": 65,
+    "derived_from_packet": 55,
+    "self_attested": 45,
+    "unknown": 25,
+}
+
 
 def utc_now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds").replace("+00:00", "Z")
@@ -137,6 +149,7 @@ def make_evidence_item(
 ) -> dict[str, Any]:
     resolved_observations = observations if observations is not None else counts or {}
     resolved_unsafe_excluded = unsafe_fields_excluded or DEFAULT_UNSAFE_INPUTS
+    confidence_score = CONFIDENCE_SCORE.get(confidence, 25)
     item = {
         "schema_version": CONNECTOR_SCHEMA_VERSION,
         "evidence_id": evidence_id,
@@ -151,6 +164,8 @@ def make_evidence_item(
         "summary": summary,
         "status": status,
         "confidence": confidence,
+        "confidence_score": confidence_score,
+        "confidence_reason": f"{confidence} evidence with {status} status; use as readiness evidence, not a compliance conclusion.",
         "counts": counts or {},
         "observations": resolved_observations,
         "owner_lane": owner_lane,

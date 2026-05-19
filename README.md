@@ -94,18 +94,26 @@ The intake workspace lets a practice or consultant create a local profile from h
 
 ### Evidence connector layer
 
-Use connector/import commands when the owner or MSP already has exports. Connectors create normalized, metadata-only evidence bundles and avoid row-level identities, PHI, credentials, mailbox contents, raw logs, patient screenshots, and raw contracts.
+Use connector/import commands when the owner or MSP already has exports, or connect official Google Workspace and Microsoft 365 metadata APIs when the tenant can authorize them. Connectors create normalized, metadata-only evidence bundles and avoid row-level identities, PHI, credentials, mailbox contents, raw logs, patient screenshots, and raw contracts.
 
 ```bash
+.venv/bin/python -m small_practice_security_kit connect wizard --out out/connector-wizard.html
+.venv/bin/python -m small_practice_security_kit connect google-workspace --client-id "$VELARI_GOOGLE_CLIENT_ID" --client-secret "$VELARI_GOOGLE_CLIENT_SECRET"
+.venv/bin/python -m small_practice_security_kit collect google-workspace --out evidence/google-workspace.json
+.venv/bin/python -m small_practice_security_kit connect microsoft-365 --client-id "$VELARI_MICROSOFT_CLIENT_ID"
+.venv/bin/python -m small_practice_security_kit collect microsoft-365 --out evidence/microsoft-365.json
 .venv/bin/python -m small_practice_security_kit import csv users samples/connectors/google_workspace_users.csv --out evidence/users.json
 .venv/bin/python -m small_practice_security_kit import csv vendor-register samples/connectors/vendor_register.csv --out evidence/vendor-register.json
 .venv/bin/python -m small_practice_security_kit collect dns --domain exampleclinic.test --out evidence/dns.json
 .venv/bin/python -m small_practice_security_kit collect vendor-public --vendor "Example AI Scribe Vendor" --domain example.com --out evidence/vendor-public.json
 .venv/bin/python -m small_practice_security_kit generate msp-request --profile samples/family_dental_clinic.yaml --evidence evidence/*.json --out out/msp-request.md
+.venv/bin/python -m small_practice_security_kit import msp-response samples/connectors/msp_response.yaml --out evidence/msp-response.json
+.venv/bin/python -m small_practice_security_kit evidence refresh --current evidence/*.json --out out/evidence-refresh.json
+.venv/bin/python -m small_practice_security_kit generate views --profile samples/family_dental_clinic.yaml --evidence evidence/*.json --out out/views
 .venv/bin/python -m small_practice_security_kit build samples/family_dental_clinic.yaml --evidence evidence/*.json --output-root out
 ```
 
-Supported first-sprint imports: `users`, `google-users`, `microsoft-users`, `devices`, `backup-report`, and `vendor-register`. Supported collectors: `dns` and `vendor-public`. The product filter is security, simplicity, and time saving: default to safe metadata, make the owner command obvious, and turn imported evidence into MSP/vendor questions. Product rules live in [`docs/product/evidence-connector-standard.md`](docs/product/evidence-connector-standard.md), the build goal lives in [`docs/goals/evidence-connector-layer-goal.md`](docs/goals/evidence-connector-layer-goal.md), and connector safety manifests live in [`catalogs/connector_safety_manifests.yaml`](catalogs/connector_safety_manifests.yaml).
+Supported official connectors: `google-workspace` and `microsoft-365`. Supported imports: `users`, `google-users`, `microsoft-users`, `devices`, `backup-report`, `vendor-register`, and `msp-response`. Supported collectors: `dns` and `vendor-public`. The product filter is security, simplicity, and time saving: default to safe metadata, make the owner command obvious, and turn imported evidence into MSP/vendor questions. Product rules live in [`docs/product/evidence-connector-standard.md`](docs/product/evidence-connector-standard.md), the build goals live in [`docs/goals/evidence-connector-layer-goal.md`](docs/goals/evidence-connector-layer-goal.md) and [`docs/goals/official-connectors-goal.md`](docs/goals/official-connectors-goal.md), and connector safety manifests live in [`catalogs/connector_safety_manifests.yaml`](catalogs/connector_safety_manifests.yaml).
 
 More details:
 

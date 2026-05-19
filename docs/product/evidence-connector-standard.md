@@ -99,11 +99,11 @@ Each connector must declare:
 - unsafe scopes,
 - human approval requirements.
 
-Default Velari connectors use CSV imports, public DNS metadata, and public vendor-page triage. Live API connectors should start read-only and metadata-first.
+Default Velari connectors use official read-only APIs when the practice/MSP can authorize them, with CSV imports as a fallback. Official Google Workspace and Microsoft 365 connectors store OAuth tokens in the macOS Keychain when available, fall back to a local `0600` token file only when Keychain is unavailable, and collect only aggregated metadata.
 
 ## Practice-Owner Workflow
 
-1. Export a safe admin CSV or run a local collector.
+1. Open the connector wizard or run a connect command.
 2. Generate a connector bundle.
 3. Run Sprint Mode with `--evidence`.
 4. Open `sprint-command-center.html`.
@@ -112,10 +112,18 @@ Default Velari connectors use CSV imports, public DNS metadata, and public vendo
 Example:
 
 ```bash
+python -m small_practice_security_kit connect wizard --out out/connector-wizard.html
+python -m small_practice_security_kit connect google-workspace --client-id "$VELARI_GOOGLE_CLIENT_ID" --client-secret "$VELARI_GOOGLE_CLIENT_SECRET"
+python -m small_practice_security_kit collect google-workspace --out evidence/google-workspace.json
+python -m small_practice_security_kit connect microsoft-365 --client-id "$VELARI_MICROSOFT_CLIENT_ID"
+python -m small_practice_security_kit collect microsoft-365 --out evidence/microsoft-365.json
 python -m small_practice_security_kit import csv users samples/connectors/google_workspace_users.csv --out evidence/users.json
 python -m small_practice_security_kit collect dns --domain exampleclinic.test --out evidence/dns.json
 python -m small_practice_security_kit collect vendor-public --vendor "Example AI Scribe Vendor" --domain example.com --out evidence/vendor-public.json
 python -m small_practice_security_kit generate msp-request --profile samples/family_dental_clinic.yaml --evidence evidence/*.json --out out/msp-request.md
+python -m small_practice_security_kit import msp-response samples/connectors/msp_response.yaml --out evidence/msp-response.json
+python -m small_practice_security_kit evidence refresh --current evidence/*.json --out out/evidence-refresh.json
+python -m small_practice_security_kit generate views --profile samples/family_dental_clinic.yaml --evidence evidence/*.json --out out/views
 python -m small_practice_security_kit build samples/family_dental_clinic.yaml --evidence evidence/*.json --output-root out
 ```
 

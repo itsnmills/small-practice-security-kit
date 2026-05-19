@@ -1,0 +1,18 @@
+responses:
+  - evidence_id: CONN-DNS-DMARC-001
+    title: MSP DMARC review response
+    status: provided
+    control_area: email_authentication
+    stage_id: access_offboarding_review
+    priority: low
+    reference: MSP-TICKET-1042
+    scope: primary email domain
+    date_observed: "2026-05-19"
+    owner: msp
+    recommended_question: Can the MSP confirm DMARC monitoring is intentional and sender alignment has been reviewed?
+    acceptable_evidence:
+      - ticket/reference ID
+      - DNS snapshot date
+      - authorized sender inventory
+      - MSP signoff
+    next_action: Record MSP signoff and schedule a 30-day DMARC policy review.
