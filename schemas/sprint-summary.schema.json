@@ -19,6 +19,7 @@
     "top_risks",
     "evidence_gap_summary",
     "handoff_lanes",
+    "connector_evidence_summary",
     "control_evidence_summary",
     "offering_summary",
     "counts",
@@ -204,6 +205,7 @@
         "high_or_critical_findings",
         "evidence_references",
         "handoff_actions",
+        "connector_evidence_items",
         "control_evidence_rows",
         "control_evidence_needing_attention"
       ],
@@ -228,6 +230,10 @@
           "minimum": 0
         },
         "handoff_actions": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "connector_evidence_items": {
           "type": "integer",
           "minimum": 0
         },
@@ -275,6 +281,8 @@
       "additionalProperties": false,
       "required": [
         "answer_standard_schema",
+        "normalized_evidence_schema",
+        "connector_run_schema",
         "sprint_summary_schema",
         "evidence_index_schema",
         "private_app_import_hint",
@@ -283,6 +291,12 @@
       "properties": {
         "answer_standard_schema": {
           "const": "schemas/velari-answer-standard.schema.json"
+        },
+        "normalized_evidence_schema": {
+          "const": "schemas/normalized-evidence.schema.json"
+        },
+        "connector_run_schema": {
+          "const": "schemas/connector-run.schema.json"
         },
         "sprint_summary_schema": {
           "const": "schemas/sprint-summary.schema.json"
@@ -356,6 +370,116 @@
             "type": "integer",
             "minimum": 0
           }
+        }
+      }
+    },
+    "connector_evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "total_items",
+        "runs",
+        "by_connector",
+        "by_status",
+        "by_confidence",
+        "by_owner_lane",
+        "by_control_area",
+        "needs_attention",
+        "data_boundary"
+      ],
+      "properties": {
+        "total_items": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "run_id",
+              "connector",
+              "mode",
+              "status",
+              "input_ref",
+              "evidence_count",
+              "phi_expected",
+              "warnings"
+            ],
+            "properties": {
+              "run_id": {
+                "type": "string"
+              },
+              "connector": {
+                "type": "string"
+              },
+              "mode": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "input_ref": {
+                "type": "string"
+              },
+              "evidence_count": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "phi_expected": {
+                "const": false
+              },
+              "warnings": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "by_connector": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_confidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_owner_lane": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "by_control_area": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "needs_attention": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "data_boundary": {
+          "const": "metadata_only_no_phi_expected"
         }
       }
     }

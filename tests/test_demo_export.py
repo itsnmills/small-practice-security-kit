@@ -23,6 +23,7 @@ class DemoExportTests(unittest.TestCase):
             self.assertIn("sprint-summary.json", names)
             self.assertIn("risk-register.csv", names)
             self.assertIn("handoff-actions.csv", names)
+            self.assertIn("connector-evidence-summary.json", names)
             self.assertIn("owner-action-plan.md", names)
             self.assertIn("msp-remediation-brief.md", names)
             self.assertIn("vendor-baa-ai-questionnaire.md", names)

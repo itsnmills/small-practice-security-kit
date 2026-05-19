@@ -11,11 +11,12 @@
 | How should a first client workshop run? | `day-one-workshop-agenda.md` | Consultative agenda with discovery questions, evidence safety boundaries, owner/MSP/vendor/legal lanes, and expected outputs. |
 | Which sources shaped each Sprint Mode question? | `source-map.md` | Stage-to-HHS/HICP/CISA/ONC-OCR map with a concise "how this source changes what we ask" line. |
 | What concise client readout can be shared as Markdown? | `sprint-client-readout.md` | Portable summary of readiness signal, top risks, evidence gaps, handoff lanes, and next actions. |
-| What did the runner generate and what is the data boundary? | `sprint-summary.json` | Machine-readable stage status, readiness signal, evidence gap summary, handoff lanes, `offering_summary`, counts, source profile hash, output list, and limitations. |
-| Which risks need owners and next actions? | `risk-register.csv` | CSV for sorting by severity, stage, owner, recipient, evidence status, 30/60/90 bucket, and action. |
-| What evidence should exist without storing raw evidence? | `evidence-index.json` | Reference-only evidence overlay tied to `packet-manifest.json` and binder export files. |
+| What did the runner generate and what is the data boundary? | `sprint-summary.json` | Machine-readable stage status, readiness signal, evidence gap summary, connector evidence summary, handoff lanes, `offering_summary`, counts, source profile hash, output list, and limitations. |
+| Which imported evidence did local connectors observe? | `connector-evidence-summary.json` | Run provenance, connector modes, safety manifests, confidence counts, status counts, and metadata-only boundary for local imports/collectors. |
+| Which risks need owners and next actions? | `risk-register.csv` | CSV for sorting by severity, stage, owner, recipient, evidence status, connector-derived findings, 30/60/90 bucket, and action. |
+| What evidence should exist without storing raw evidence? | `evidence-index.json` | Reference-only evidence overlay tied to `packet-manifest.json`, connector evidence, and binder export files. |
 | What should the owner, MSP, vendor, or reviewer answer next? | `handoff-actions.csv` | Action rows grouped by audience, recipient, owner, priority, stage, evidence reference, artifact, and 30/60/90 bucket. |
-| What schemas define the private app import contract? | `schemas/sprint-summary.schema.json` and `schemas/evidence-index.schema.json` | Validates generated JSON structure before a future reviewed import. |
+| What schemas define the private app import contract? | `schemas/sprint-summary.schema.json`, `schemas/evidence-index.schema.json`, `schemas/normalized-evidence.schema.json`, and `schemas/connector-run.schema.json` | Validates generated JSON structure before a future reviewed import. |
 | Where can I read the full packet? | `review-packet.md` and `review-packet.html` | Preserved complete Markdown and print-friendly packet. |
 | Where is the canonical generated manifest? | `packet-manifest.json` | Artifact hashes, evidence references, findings, roadmap items, and data boundary. |
 | Where is the patient-data-outside-EHR map? | `ephi-flow-map.md` | Systems and flows with evidence needs, BAA needs, and risk. |

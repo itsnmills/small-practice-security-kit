@@ -1,0 +1,4 @@
+primary_email,name,is_admin,suspended,is_2sv_enrolled,is_2sv_enforced,last_login_time
+user1@exampleclinic.test,Staff user,TRUE,FALSE,TRUE,TRUE,2026-05-01
+user2@exampleclinic.test,Staff user,FALSE,FALSE,TRUE,FALSE,2026-05-02
+user3@exampleclinic.test,Staff user,FALSE,FALSE,FALSE,FALSE,2026-05-03

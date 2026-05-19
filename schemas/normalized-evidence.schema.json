@@ -1,0 +1,210 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://velari.local/schemas/normalized-evidence.schema.json",
+  "title": "Velari Normalized Evidence Item",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "evidence_id",
+    "title",
+    "source_system",
+    "source_type",
+    "collected_at",
+    "phi_expected",
+    "phi_status",
+    "control_area",
+    "subject",
+    "summary",
+    "status",
+    "confidence",
+    "counts",
+    "observations",
+    "owner_lane",
+    "recommended_question",
+    "acceptable_evidence",
+    "unsafe_inputs",
+    "unsafe_fields_excluded",
+    "unsafe_inputs_excluded",
+    "next_action",
+    "recommended_action",
+    "stage_id",
+    "priority",
+    "source_refs",
+    "notes"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "2026-05-19"
+    },
+    "evidence_id": {
+      "type": "string",
+      "pattern": "^CONN-[A-Z0-9-]+-[0-9]{3}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_system": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_type": {
+      "enum": [
+        "csv_import",
+        "dns_lookup",
+        "public_lookup",
+        "api_read_only",
+        "msp_export",
+        "client_export"
+      ]
+    },
+    "collected_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "phi_expected": {
+      "const": false
+    },
+    "phi_status": {
+      "const": "metadata_only_no_phi_expected"
+    },
+    "control_area": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "observed",
+        "current",
+        "missing",
+        "stale",
+        "needs_review",
+        "requested",
+        "not_applicable"
+      ]
+    },
+    "confidence": {
+      "enum": [
+        "observed_from_public_dns",
+        "observed_from_public_web",
+        "observed_from_api",
+        "imported_from_client_export",
+        "imported_from_msp_export",
+        "self_attested",
+        "derived_from_packet",
+        "unknown"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": {
+        "type": [
+          "integer",
+          "number",
+          "string",
+          "boolean"
+        ]
+      }
+    },
+    "observations": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "owner_lane": {
+      "enum": [
+        "owner",
+        "office_manager",
+        "msp",
+        "vendor",
+        "legal_compliance",
+        "insurer",
+        "clinical_lead",
+        "velari_reviewer",
+        "incident_responder"
+      ]
+    },
+    "recommended_question": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptable_evidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "unsafe_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "unsafe_fields_excluded": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "unsafe_inputs_excluded": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "recommended_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "stage_id": {
+      "enum": [
+        "intake",
+        "patient_data_outside_ehr_map",
+        "ai_phi_review",
+        "vendor_baa_review",
+        "access_offboarding_review",
+        "downtime_ransomware_review",
+        "findings_risk_register",
+        "evidence_packet_export",
+        "owner_msp_handoff"
+      ]
+    },
+    "priority": {
+      "enum": [
+        "critical",
+        "high",
+        "medium",
+        "low"
+      ]
+    },
+    "source_refs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

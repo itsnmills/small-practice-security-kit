@@ -1,0 +1,4 @@
+vendor_name,touches_ephi,baa_status,soc2_status,hitrust_status,ai_data_use,retention_terms,deletion_terms
+Example EHR Vendor,TRUE,signed,provided,not_provided,not_applicable,provided,provided
+Example AI Scribe Vendor,TRUE,requested,not_provided,not_provided,needs_review,requested,requested
+General AI Assistant,FALSE,not_needed,not_provided,not_provided,no_phi_only,provided,provided

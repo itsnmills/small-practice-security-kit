@@ -1,0 +1,4 @@
+device_name,os,encrypted,edr_status,patch_status,last_seen,owner
+frontdesk-01,Windows 11,TRUE,TRUE,TRUE,2026-05-01,MSP
+imaging-01,Windows 10,FALSE,TRUE,FALSE,2026-04-29,MSP
+doctor-laptop,macOS,TRUE,FALSE,TRUE,2026-05-02,MSP

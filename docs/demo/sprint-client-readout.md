@@ -18,17 +18,18 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - Evidence references needing attention: 15
 - Control evidence rows: 30
 - Control evidence needing attention: 30
+- Connector evidence items: 0
 - Handoff actions: 17
 
 ## Top Risks
 
 | Finding | Priority | Plain-English summary | Owner lane | Question | Evidence to collect | Unsafe inputs | Timeframe | Reviewer needed | Next action |
 |---|---|---|---|---|---|---|---|---|---|
-| Enable MFA for EHR access | high | MFA evidence for an EHR or remote-access workflow is missing or not recorded. | msp | Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts? | MFA policy export; admin screenshot with date observed; covered groups; exception list; MSP attestation | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data | 30_days | msp; office_manager | Request MFA proof, document exceptions, and assign an owner for any missing enforcement. |
-| Run and record a quarterly access review | high | The practice does not have current evidence that user access was reviewed. | msp | Can you provide user list exports, admin role lists, shared-account exceptions, and owner signoff for access review? | user list export; admin role list; owner access-review signoff; removed-account notes; exception sunset dates | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data | 30_days | msp; office_manager | Run the access review, remove or document exceptions, and store evidence references. |
-| Run a restore test and record evidence | high | Backup restore evidence is missing or stale for systems needed during patient care. | msp | Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID? | backup scope summary; restore-test note; date observed; recovery owner; systems excluded from backup | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw backup data; private console links | 30_days | msp; office_manager | Run or schedule a restore test and record reference-only evidence. |
 | Complete the BAA register and review dates | high | A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. | vendor | Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed? | BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw contracts with sensitive details | 30_days | vendor_owner; legal_or_compliance_reviewer | Add the vendor to the register, confirm PHI access level, and request BAA/evidence status. |
 | Document downtime procedures for critical systems | high | Downtime workflow evidence is missing for a system the practice may need during patient care. | msp | Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action? | owner signoff; evidence reference ID; date observed; workflow owner; review note | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data | 30_days | msp; office_manager | Assign an owner, collect reference-only evidence, and update the action packet. |
+| Enable MFA for EHR access | high | MFA evidence for an EHR or remote-access workflow is missing or not recorded. | msp | Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts? | MFA policy export; admin screenshot with date observed; covered groups; exception list; MSP attestation | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data | 30_days | msp; office_manager | Request MFA proof, document exceptions, and assign an owner for any missing enforcement. |
+| Run a restore test and record evidence | high | Backup restore evidence is missing or stale for systems needed during patient care. | msp | Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID? | backup scope summary; restore-test note; date observed; recovery owner; systems excluded from backup | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw backup data; private console links | 30_days | msp; office_manager | Run or schedule a restore test and record reference-only evidence. |
+| Run and record a quarterly access review | high | The practice does not have current evidence that user access was reviewed. | msp | Can you provide user list exports, admin role lists, shared-account exceptions, and owner signoff for access review? | user list export; admin role list; owner access-review signoff; removed-account notes; exception sunset dates | patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data | 30_days | msp; office_manager | Run the access review, remove or document exceptions, and store evidence references. |
 
 ## Evidence Gaps By Stage
 
@@ -75,6 +76,7 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - `evidence-index.json`
 - `risk-register.csv`
 - `handoff-actions.csv`
+- `connector-evidence-summary.json`
 - `control-evidence-matrix.csv`
 - `evidence-freshness-report.md`
 - `msp-evidence-request.md`

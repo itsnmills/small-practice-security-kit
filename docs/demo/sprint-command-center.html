@@ -371,33 +371,6 @@
               <thead><tr><th>Finding</th><th>Priority</th><th>Owner lane</th><th>Evidence</th><th>Timeframe</th><th>Next action</th></tr></thead>
               <tbody>
             <tr>
-              <td><strong>Enable MFA for EHR access</strong><span>MFA evidence for an EHR or remote-access workflow is missing or not recorded.</span></td>
-              <td><b class="pill severity-high">high</b></td>
-              <td>msp<span>MSP</span></td>
-              <td>missing</td>
-              <td>30_days</td>
-              <td>Request MFA proof, document exceptions, and assign an owner for any missing enforcement.</td>
-            </tr>
-
-            <tr>
-              <td><strong>Run and record a quarterly access review</strong><span>The practice does not have current evidence that user access was reviewed.</span></td>
-              <td><b class="pill severity-high">high</b></td>
-              <td>msp<span>MSP</span></td>
-              <td>missing</td>
-              <td>30_days</td>
-              <td>Run the access review, remove or document exceptions, and store evidence references.</td>
-            </tr>
-
-            <tr>
-              <td><strong>Run a restore test and record evidence</strong><span>Backup restore evidence is missing or stale for systems needed during patient care.</span></td>
-              <td><b class="pill severity-high">high</b></td>
-              <td>msp<span>MSP</span></td>
-              <td>missing</td>
-              <td>30_days</td>
-              <td>Run or schedule a restore test and record reference-only evidence.</td>
-            </tr>
-
-            <tr>
               <td><strong>Complete the BAA register and review dates</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
               <td><b class="pill severity-high">high</b></td>
               <td>vendor<span>Vendor</span></td>
@@ -416,6 +389,33 @@
             </tr>
 
             <tr>
+              <td><strong>Enable MFA for EHR access</strong><span>MFA evidence for an EHR or remote-access workflow is missing or not recorded.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Request MFA proof, document exceptions, and assign an owner for any missing enforcement.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Run a restore test and record evidence</strong><span>Backup restore evidence is missing or stale for systems needed during patient care.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Run or schedule a restore test and record reference-only evidence.</td>
+            </tr>
+
+            <tr>
+              <td><strong>Run and record a quarterly access review</strong><span>The practice does not have current evidence that user access was reviewed.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>msp<span>MSP</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Run the access review, remove or document exceptions, and store evidence references.</td>
+            </tr>
+
+            <tr>
               <td><strong>Set a monthly log review cadence</strong><span>Log review cadence evidence is missing or not recorded for systems that support patient-data workflows.</span></td>
               <td><b class="pill severity-high">high</b></td>
               <td>msp<span>MSP</span></td>
@@ -425,21 +425,21 @@
             </tr>
 
             <tr>
-              <td><strong>AI workflow requires action: Billing appeal drafter</strong><span>An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.</span></td>
-              <td><b class="pill severity-medium">medium</b></td>
+              <td><strong>AI workflow requires action: Paste patient-level note into public chatbot</strong><span>An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.</span></td>
+              <td><b class="pill severity-high">high</b></td>
               <td>office_manager<span>Owner</span></td>
               <td>requested</td>
-              <td>90_days</td>
+              <td>30_days</td>
               <td>Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.</td>
             </tr>
 
             <tr>
-              <td><strong>AI workflow requires action: AI scribe pilot</strong><span>An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it.</span></td>
-              <td><b class="pill severity-medium">medium</b></td>
-              <td>office_manager<span>Owner</span></td>
+              <td><strong>BAA status needs review for Example AI Scribe Vendor</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>vendor<span>Vendor</span></td>
               <td>requested</td>
-              <td>90_days</td>
-              <td>Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.</td>
+              <td>30_days</td>
+              <td>Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.</td>
             </tr>
             </tbody>
             </table>
@@ -620,7 +620,7 @@
 
         <section>
           <h2>Generated Artifacts</h2>
-          <ul class="artifact-list"><li>sprint-index.md</li><li>sprint-client-readout.md</li><li>sprint-command-center.html</li><li>sprint-offering-readout.md</li><li>owner-action-plan.md</li><li>msp-remediation-brief.md</li><li>vendor-baa-ai-questionnaire.md</li><li>evidence-collection-checklist.md</li><li>day-one-workshop-agenda.md</li><li>source-map.md</li><li>sprint-summary.json</li><li>risk-register.csv</li><li>evidence-index.json</li><li>handoff-actions.csv</li><li>control-evidence-matrix.csv</li><li>control-evidence-matrix.json</li><li>evidence-freshness-report.md</li><li>msp-evidence-request.md</li><li>vendor-evidence-request.md</li><li>insurance-evidence-packet.md</li><li>readiness-review.md</li><li>ephi-flow-map.md</li><li>vendor-baa-review.md</li><li>ai-workflow-review.md</li><li>downtime-ransomware-tabletop.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li><li>incident-decision-log.md</li><li>evidence-binder-export/</li></ul>
+          <ul class="artifact-list"><li>sprint-index.md</li><li>sprint-client-readout.md</li><li>sprint-command-center.html</li><li>sprint-offering-readout.md</li><li>owner-action-plan.md</li><li>msp-remediation-brief.md</li><li>vendor-baa-ai-questionnaire.md</li><li>evidence-collection-checklist.md</li><li>day-one-workshop-agenda.md</li><li>source-map.md</li><li>sprint-summary.json</li><li>risk-register.csv</li><li>evidence-index.json</li><li>handoff-actions.csv</li><li>connector-evidence-summary.json</li><li>control-evidence-matrix.csv</li><li>control-evidence-matrix.json</li><li>evidence-freshness-report.md</li><li>msp-evidence-request.md</li><li>vendor-evidence-request.md</li><li>insurance-evidence-packet.md</li><li>readiness-review.md</li><li>ephi-flow-map.md</li><li>vendor-baa-review.md</li><li>ai-workflow-review.md</li><li>downtime-ransomware-tabletop.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li><li>incident-decision-log.md</li><li>evidence-binder-export/</li></ul>
         </section>
       </aside>
     </div>
