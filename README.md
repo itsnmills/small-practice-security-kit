@@ -60,7 +60,7 @@ Start here:
 | `connected-device-inventory.md` | IoMT/connected-device worksheet for patch owner, default credentials, downtime fallback, and safety notices |
 | `portal-api-flow-review.md` | Portal, app, API/FHIR-style flow worksheet for identity, audit logs, secure messaging, and export/delete evidence |
 | `incident-decision-log.md` | Decision-log template separating technical containment from legal/compliance breach-notification decisions |
-| `incident-evidence-timeline.md` | Sanitized incident/tabletop timeline with owner, evidence-reference, and decision-gate tracking |
+| `incident-evidence-timeline.md` | Sanitized incident/tabletop timeline with guided phase checklist, owner/MSP call sheet, evidence-reference, and decision-gate tracking |
 | `incident-after-action-report.md` | Owner/MSP after-action queue for access, backup, vendor, downtime, and qualified-review follow-up |
 | `evidence-binder-index.md` | Lifecycle-aware evidence references, closeout rules, owner lanes, and ePHI traceability |
 | `owner-msp-handoff.md` | Owner/MSP follow-up, vendor asks, access actions, and handoff boundary |
@@ -95,7 +95,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
 ```
 
-The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, run a sanitized incident/tabletop scenario, add evidence references, review AI workflows, and generate the local dashboard and review packet.
+The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, walk a sanitized incident/tabletop scenario one phase at a time, add evidence references, review AI workflows, and generate the local dashboard and review packet.
 
 ### Evidence connector layer
 

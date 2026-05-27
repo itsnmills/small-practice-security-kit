@@ -15,6 +15,7 @@ from .evidence_lifecycle import (
     summarize_lifecycle,
     trace_label,
 )
+from .incident_runner import phase_guidance_for
 from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
@@ -367,10 +368,39 @@ def _incident_profile(profile: dict) -> dict:
     }
 
 
+def _entry_guidance(entry: dict) -> dict:
+    guidance = phase_guidance_for(str(entry.get("phase") or "Detection"))
+    merged = dict(guidance)
+    for key in [
+        "owner_lane",
+        "source_alignment",
+        "plain_english_goal",
+        "owner_prompt",
+        "staff_script",
+        "do_now",
+        "ask_msp_or_vendor",
+        "allowed_inputs",
+        "blocked_inputs",
+        "evidence_required",
+        "completion_criteria",
+        "escalation_triggers",
+    ]:
+        if entry.get(key):
+            merged[key] = entry[key]
+    return merged
+
+
+def _check(value: object) -> str:
+    return "Yes" if bool(value) else "No"
+
+
 def incident_evidence_timeline(profile: dict) -> str:
     incident = _incident_profile(profile)
     rows = []
+    guided_rows = []
+    call_sheet_rows = []
     for entry in incident.get("timeline", []):
+        guidance = _entry_guidance(entry)
         rows.append(
             [
                 entry.get("time", "TBD"),
@@ -381,6 +411,28 @@ def incident_evidence_timeline(profile: dict) -> str:
                 entry.get("evidence_ref", "private evidence reference"),
                 entry.get("decision_gate", "Decision gate to confirm"),
                 entry.get("status", "open"),
+            ]
+        )
+        guided_rows.append(
+            [
+                entry.get("phase", "Timeline event"),
+                guidance.get("owner_lane", entry.get("owner", "Owner")),
+                _joined(guidance.get("source_alignment", [])),
+                guidance.get("plain_english_goal", "Confirm facts and next owner."),
+                _joined(guidance.get("do_now", [])),
+                _joined(guidance.get("evidence_required", [])),
+                _joined(guidance.get("completion_criteria", [])),
+                _joined(guidance.get("escalation_triggers", [])),
+                _check(entry.get("complete", False)),
+            ]
+        )
+        call_sheet_rows.append(
+            [
+                entry.get("phase", "Timeline event"),
+                guidance.get("owner_prompt", entry.get("decision_gate", "What decision is needed?")),
+                guidance.get("staff_script", "Keep details sanitized and route private evidence to the owner."),
+                _joined(guidance.get("ask_msp_or_vendor", [])),
+                _joined(guidance.get("blocked_inputs", [])),
             ]
         )
 
@@ -410,6 +462,14 @@ Type: **{incident.get('scenario_type', 'tabletop')}**
 
 {table(['Time', 'Phase', 'Sanitized event', 'System/workflow', 'Owner', 'Evidence ref', 'Decision gate', 'Status'], rows)}
 
+## Guided Phase Checklist
+
+{table(['Phase', 'Owner lane', 'Source alignment', 'Goal', 'Do now', 'Evidence required', 'Completion criteria', 'Escalation triggers', 'Complete?'], guided_rows)}
+
+## Owner/MSP Call Sheet
+
+{table(['Phase', 'Owner question', 'Staff script', 'Ask MSP/vendor', 'Do not record'], call_sheet_rows)}
+
 ## Decision Gates
 
 {table(['Gate', 'Owner', 'Trigger', 'Action'], gate_rows)}
@@ -420,6 +480,13 @@ Type: **{incident.get('scenario_type', 'tabletop')}**
 - Preserve private evidence references without copying raw evidence into the public packet.
 - Escalate active compromise, ransomware, unauthorized access, lost device, vendor breach notice, or patient-care disruption to qualified incident response.
 - Use this timeline to prepare the qualified-review conversation; do not use it to decide reportability.
+
+## Source Basis
+
+- NIST SP 800-61 Rev. 3: incident response should support preparation, detection, response, recovery, and continuous improvement across cybersecurity risk management.
+- HIPAA Security Rule 45 CFR 164.308(a)(6): security incident procedures should support response, mitigation where practicable, and incident documentation.
+- HHS HICP Technical Volume 1: small healthcare organizations often need practical, MSP-supported incident response workflows.
+- CISA ransomware and incident playbooks: isolate impacted systems when needed, preserve evidence, coordinate response roles, and document actions.
 """
 
 
@@ -447,6 +514,30 @@ def incident_after_action_report(profile: dict) -> str:
                 "30 days",
             ]
         )
+    phase_review_rows = []
+    for entry in incident.get("timeline", []):
+        guidance = _entry_guidance(entry)
+        phase_review_rows.append(
+            [
+                entry.get("phase", "Timeline event"),
+                guidance.get("owner_lane", entry.get("owner", "Owner")),
+                guidance.get("plain_english_goal", "Confirm facts and next owner."),
+                _joined(guidance.get("completion_criteria", [])),
+                entry.get("evidence_ref", "private evidence reference"),
+                "Closed" if entry.get("complete") else "Needs owner review",
+            ]
+        )
+    if not phase_review_rows:
+        phase_review_rows.append(
+            [
+                "Tabletop review",
+                "Practice owner/MSP",
+                "Confirm facts, owners, and evidence references.",
+                "owner assigned; evidence reference recorded; next action selected",
+                "private evidence reference",
+                "Needs owner review",
+            ]
+        )
 
     return f"""# Incident After-Action Report
 
@@ -459,6 +550,18 @@ This report turns the timeline into owner/MSP follow-up work. It is an operation
 - A single owner/MSP timeline can preserve the order of events without exposing PHI or secrets.
 - Evidence is tracked by reference ID, not by copying screenshots, logs, private URLs, contracts, or patient-level details into public artifacts.
 - Legal/compliance, insurance, regulatory, and contract-notice questions stay parked for qualified reviewers.
+
+## Phase Closeout Review
+
+{table(['Phase', 'Owner lane', 'Goal', 'Completion criteria', 'Evidence reference', 'Closeout'], phase_review_rows)}
+
+## Owner Review Agenda
+
+- Which phase is still open, and who owns it?
+- Which private evidence reference would a reviewer ask for first?
+- Which MSP/vendor question is still unanswered?
+- Which continuity workflow prevented unsafe data copies?
+- Which improvement should be funded or completed in the next 30 days?
 
 ## Improvement Actions
 

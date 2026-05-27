@@ -15,7 +15,7 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - Stages needing evidence: 5 of 9
 - High or critical findings: 10
 - Evidence references: 46
-- Evidence references needing attention: 32
+- Evidence references needing attention: 37
 - Control evidence rows: 30
 - Control evidence needing attention: 30
 - Connector evidence items: 0

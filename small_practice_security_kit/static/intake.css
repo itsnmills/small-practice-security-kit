@@ -30,11 +30,22 @@
   --danger-soft: #e9f0f7;
   --success: #1c3b51;
   --success-soft: #e9f0f7;
+  --sage: #4d6a57;
+  --sage-soft: #edf4ef;
+  --brick: #8f4a3c;
+  --brick-soft: #f7ece8;
+  --steel: #46667a;
+  --steel-soft: #edf3f7;
   --radius: 8px;
   --shadow: 0 16px 36px rgba(5, 10, 16, 0.08);
 }
 
 * { box-sizing: border-box; }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
 
 body {
   margin: 0;
@@ -65,6 +76,11 @@ body {
   align-items: end;
 }
 
+.topbar > *,
+.layout > * {
+  min-width: 0;
+}
+
 .eyebrow {
   color: var(--primary);
   font-size: 12px;
@@ -76,6 +92,9 @@ body {
 h1, h2, h3 { margin: 0; line-height: 1.12; }
 h1 { margin-top: 6px; font-size: clamp(34px, 4vw, 52px); font-weight: 750; letter-spacing: 0; max-width: 900px; }
 h2 { font-size: clamp(26px, 3vw, 36px); font-weight: 720; letter-spacing: 0; }
+h1, h2, h3, p, strong, small, span, label, button {
+  overflow-wrap: anywhere;
+}
 p { color: var(--muted); }
 
 .status-card, .panel {
@@ -105,6 +124,8 @@ p { color: var(--muted); }
 }
 
 .rail button, button, .secondary {
+  max-width: 100%;
+  min-width: 0;
   min-height: 42px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -145,7 +166,7 @@ button:disabled {
   cursor: wait;
 }
 
-.workspace { min-width: 0; }
+.workspace, .panel, .status-card { min-width: 0; max-width: 100%; }
 .intake-section { display: none; padding: clamp(20px, 4vw, 34px); }
 .intake-section.active { display: block; }
 .lede { max-width: 780px; font-size: 18px; }
@@ -155,6 +176,141 @@ button:disabled {
   background: var(--warning-soft);
   border: 1px solid var(--gold);
   color: var(--ink);
+}
+
+.section-playbook,
+.command-strip {
+  margin-top: 18px;
+}
+
+.service-brief,
+.owner-command {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-strong);
+  box-shadow: 0 10px 24px rgba(5, 10, 16, 0.05);
+}
+
+.service-brief {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border-left: 5px solid var(--sage);
+}
+
+.brief-head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+
+.brief-head strong,
+.command-copy strong {
+  display: block;
+  font-size: 20px;
+  line-height: 1.18;
+}
+
+.brief-head p,
+.command-copy p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.compact-guidance {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.compact-guidance .guidance-block {
+  grid-column: span 2;
+}
+
+.compact-guidance .guidance-block {
+  background: linear-gradient(180deg, var(--white), var(--steel-soft));
+}
+
+.compact-guidance .guidance-block:first-child {
+  background: var(--sage-soft);
+}
+
+.compact-guidance .guidance-block:nth-child(4) {
+  grid-column: span 3;
+  background: var(--brick-soft);
+  border-color: rgba(143, 74, 60, 0.48);
+}
+
+.compact-guidance .guidance-block:nth-child(5) {
+  grid-column: span 3;
+}
+
+.owner-command {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.95fr) minmax(0, 1.35fr);
+  gap: 14px;
+  padding: 16px;
+  align-items: start;
+  border-left: 5px solid var(--primary-2);
+}
+
+.command-copy {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.command-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.command-metric {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.command-metric.needs-work {
+  background: var(--brick-soft);
+  border-color: rgba(143, 74, 60, 0.42);
+}
+
+.command-metric small,
+.command-metric span {
+  display: block;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.command-metric strong {
+  display: block;
+  margin: 4px 0;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.05;
+}
+
+.command-list {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: 1px solid rgba(201, 168, 76, 0.56);
+  border-radius: var(--radius);
+  background: #fff9e8;
+}
+
+.command-list ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.command-list li + li {
+  margin-top: 5px;
 }
 
 .inventory-box {
@@ -190,6 +346,8 @@ button:disabled {
 
 label { display: grid; gap: 6px; font-weight: 650; }
 input, select, textarea {
+  min-width: 0;
+  max-width: 100%;
   width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius);
@@ -343,11 +501,57 @@ tr:last-child td { border-bottom: 0; }
   margin-top: 16px;
 }
 
+.phase-workflow {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.phase-nav {
+  display: grid;
+  gap: 8px;
+}
+
+.phase-step {
+  display: grid;
+  gap: 3px;
+  min-height: 70px;
+  border-color: var(--line);
+  background: var(--surface);
+}
+
+.phase-step span,
+.phase-step small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.phase-step strong {
+  color: var(--ink);
+  line-height: 1.15;
+}
+
+.phase-step.active {
+  border-color: var(--primary);
+  box-shadow: inset 4px 0 0 var(--primary);
+}
+
+.phase-step.done {
+  border-color: var(--success);
+  background: var(--success-soft);
+}
+
 .runner-card {
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--surface-strong);
+}
+
+.active-phase {
+  display: grid;
+  gap: 16px;
 }
 
 .runner-card-head {
@@ -356,6 +560,86 @@ tr:last-child td { border-bottom: 0; }
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+}
+
+.active-phase .runner-card-head {
+  align-items: flex-start;
+  margin-bottom: 0;
+}
+
+.active-phase .runner-card-head h3 {
+  margin-top: 8px;
+  font-size: 22px;
+}
+
+.active-phase .runner-card-head p {
+  max-width: 880px;
+  margin: 8px 0 0;
+}
+
+.phase-progress,
+.phase-question-strip,
+.phase-script {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.phase-progress {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.checkline {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.phase-question-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  color: var(--muted);
+}
+
+.guidance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.guidance-block {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+}
+
+.guidance-block strong,
+.phase-script strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.guidance-block ul {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+}
+
+.guidance-block li + li {
+  margin-top: 5px;
+}
+
+.phase-script p {
+  margin: 0;
 }
 
 .step-pill {
@@ -417,6 +701,72 @@ tr:last-child td { border-bottom: 0; }
 @media (max-width: 980px) {
   .topbar, .layout { grid-template-columns: 1fr; }
   .rail { position: relative; top: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .preset-grid, .check-grid, .form-grid, .summary-grid, .connector-stat-grid, .connector-row, .connector-fields, .runner-toolbar, .runner-grid { grid-template-columns: 1fr; }
+  .preset-grid, .check-grid, .form-grid, .summary-grid, .connector-stat-grid, .connector-row, .connector-fields, .runner-toolbar, .runner-grid, .phase-workflow, .guidance-grid, .compact-guidance, .owner-command, .command-metrics { grid-template-columns: 1fr; }
+  .compact-guidance .guidance-block,
+  .compact-guidance .guidance-block:nth-child(4),
+  .compact-guidance .guidance-block:nth-child(5) { grid-column: auto; }
   .runner-grid .wide { grid-column: auto; }
+}
+
+@media (max-width: 520px) {
+  .topbar {
+    width: 100vw;
+    max-width: 100vw;
+    padding: 26px 20px 18px;
+  }
+
+  .layout {
+    width: 100vw;
+    max-width: 100vw;
+    padding: 0 20px 40px;
+  }
+
+  .status-card,
+  .rail,
+  .panel {
+    width: min(calc(100vw - 40px), 350px);
+    max-width: min(calc(100vw - 40px), 350px);
+  }
+
+  h1 {
+    max-width: min(calc(100vw - 40px), 350px);
+    font-size: 27px;
+  }
+
+  h2 {
+    max-width: min(calc(100vw - 80px), 310px);
+    font-size: 23px;
+  }
+
+  .topbar p {
+    max-width: 350px;
+  }
+
+  .intake-section {
+    padding: 20px;
+  }
+
+  .runner-card {
+    padding: 14px;
+  }
+
+  .active-phase .runner-card-head {
+    display: grid;
+  }
+
+  .brief-head {
+    grid-template-columns: 1fr;
+  }
+
+  .service-brief,
+  .owner-command {
+    padding: 14px;
+  }
+
+  .runner-toolbar button,
+  .actions button {
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+  }
 }

@@ -44,6 +44,7 @@
         <span class="eyebrow">One-day setup</span>
         <h2>What kind of practice are we setting up?</h2>
         <p class="lede">Start from a healthcare preset instead of a blank form. You can edit everything before generating the packet.</p>
+        <div class="section-playbook" data-playbook="start"></div>
         <div class="form-grid">
           <label>Practice name
             <input id="practice-name" value="My Practice" autocomplete="organization">
@@ -63,6 +64,8 @@
         <span class="eyebrow">Practice basics</span>
         <h2>Confirm the owner-level details</h2>
         <p class="safe-note">Do not enter patient names, MRNs, DOBs, clinical notes, passwords, or real incident details.</p>
+        <div class="section-playbook" data-playbook="basics"></div>
+        <div id="basics-command" class="command-strip"></div>
         <div id="basics-form" class="form-grid"></div>
         <div class="actions"><button class="primary save-profile">Save basics</button></div>
       </section>
@@ -71,6 +74,8 @@
         <span class="eyebrow">Systems used</span>
         <h2>Select what the practice uses</h2>
         <p class="lede">The app suggests common systems for your preset. Confirm what applies; this drives vendor, BAA, evidence, and ePHI flow suggestions.</p>
+        <div class="section-playbook" data-playbook="systems"></div>
+        <div id="systems-command" class="command-strip"></div>
         <div id="systems-list" class="check-grid"></div>
         <div class="actions">
           <button id="apply-systems" class="primary">Apply selected systems and rebuild suggestions</button>
@@ -82,6 +87,7 @@
         <h2>Collect safe evidence without patient data</h2>
         <p class="safe-note">Metadata only. Do not enter PHI, credentials, private URLs, raw logs, patient screenshots, mailbox contents, or raw contracts.</p>
 
+        <div class="section-playbook" data-playbook="connectors"></div>
         <div id="connector-summary" class="connector-summary" aria-live="polite"></div>
 
         <div class="connector-action-bar">
@@ -190,6 +196,8 @@
         <span class="eyebrow">Vendor / BAA review</span>
         <h2>Confirm vendor evidence and BAA status</h2>
         <p class="safe-note">Use vendor and contract references. Do not paste contracts containing patient data.</p>
+        <div class="section-playbook" data-playbook="vendors"></div>
+        <div id="vendors-command" class="command-strip"></div>
         <div id="vendors-table" class="editor-table"></div>
         <div class="actions">
           <button id="add-vendor" class="secondary" type="button">Add vendor</button>
@@ -201,6 +209,8 @@
         <span class="eyebrow">ePHI flow map</span>
         <h2>Review suggested ePHI movement</h2>
         <p class="lede">Flows are suggested deterministically from selected systems. Confirm, edit, or remove them before generating the packet.</p>
+        <div class="section-playbook" data-playbook="flows"></div>
+        <div id="flows-command" class="command-strip"></div>
         <div id="flows-table" class="editor-table"></div>
         <div class="actions">
           <button id="add-flow" class="secondary" type="button">Add ePHI flow</button>
@@ -211,6 +221,8 @@
       <section id="section-readiness" class="panel intake-section">
         <span class="eyebrow">Readiness</span>
         <h2>Answer the short baseline checklist</h2>
+        <div class="section-playbook" data-playbook="readiness"></div>
+        <div id="readiness-command" class="command-strip"></div>
         <div id="readiness-list" class="task-list"></div>
         <div class="actions"><button class="primary save-profile">Save readiness</button></div>
       </section>
@@ -219,6 +231,8 @@
         <span class="eyebrow">AI workflow safety</span>
         <h2>Review what staff can and cannot send to AI</h2>
         <p class="safe-note">Prohibited by default: patient names, clinical notes, MRNs, DOBs, claim narratives, or any patient-level data in public AI tools.</p>
+        <div class="section-playbook" data-playbook="ai"></div>
+        <div id="ai-command" class="command-strip"></div>
         <div id="ai-table" class="editor-table"></div>
         <div class="actions">
           <button id="add-ai-workflow" class="secondary" type="button">Add AI workflow</button>
@@ -256,6 +270,8 @@
       <section id="section-downtime" class="panel intake-section">
         <span class="eyebrow">Downtime and incident prep</span>
         <h2>Confirm critical systems and readiness</h2>
+        <div class="section-playbook" data-playbook="downtime"></div>
+        <div id="downtime-command" class="command-strip"></div>
         <div id="downtime-form" class="form-grid"></div>
         <div class="actions"><button class="primary save-profile">Save downtime</button></div>
       </section>
@@ -264,6 +280,8 @@
         <span class="eyebrow">Evidence references</span>
         <h2>Track where proof lives without storing PHI</h2>
         <p class="safe-note">Use folder paths, ticket IDs, policy names, or vendor portal references. Do not upload or paste patient records.</p>
+        <div class="section-playbook" data-playbook="evidence"></div>
+        <div id="evidence-command" class="command-strip"></div>
         <div class="inventory-box">
           <label>Optional local evidence folder inventory
             <input id="inventory-path" placeholder="/Users/you/Documents/Practice Evidence">
@@ -282,6 +300,8 @@
         <span class="eyebrow">Generate packet</span>
         <h2>Build the dashboard and security review packet</h2>
         <p class="lede">This writes local output files from the saved profile. Nothing is sent anywhere.</p>
+        <div class="section-playbook" data-playbook="generate"></div>
+        <div id="packet-command" class="command-strip"></div>
         <div id="completion-summary" class="summary-grid"></div>
         <div class="actions">
           <button id="generate-packet" class="primary">Generate local packet</button>

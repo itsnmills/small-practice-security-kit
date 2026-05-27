@@ -19,6 +19,19 @@ practice preset -> common systems -> suggested vendors/flows/evidence -> local s
 - Includes AI workflow safety review.
 - Generates the dashboard, packet, roadmap, and evidence index.
 
+## Practice-owner workbench standard
+
+Each intake section now carries the same operating pattern as the incident runner:
+
+- the owner-level question,
+- what to do now,
+- what to ask the owner/MSP/vendor,
+- evidence required,
+- what not to enter,
+- source alignment.
+
+The higher-risk sections also show live command summaries so the user sees the next owner action before generating the packet. The detailed standard lives in `docs/product/local-intake-workspace-standard.md`.
+
 ## Who it is for
 
 - small healthcare MSPs,

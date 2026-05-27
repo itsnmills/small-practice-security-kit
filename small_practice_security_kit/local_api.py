@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from socketserver import ThreadingMixIn
 from typing import Any
+from urllib.parse import urlparse
 
 from .catalogs import load_catalogs
 from .connectors import (
@@ -26,7 +27,7 @@ from .connectors import (
 from .dashboard import build_dashboard
 from .evidence_refresh import build_refresh_report, write_refresh_report
 from .file_inventory import FileInventoryError, inventory_folder
-from .incident_runner import safety_findings, scenario_options, scenario_template
+from .incident_runner import enrich_incident_timeline, safety_findings, scenario_options, scenario_template
 from .packet import build_packet
 from .profile import load_profile
 from .sensitive_data import blocking_findings, find_sensitive_data
@@ -150,14 +151,15 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             return json.loads(raw.decode("utf-8") or "{}")
 
         def do_GET(self) -> None:
-            if self.path in {"/", "/intake.html"}:
+            request_path = urlparse(self.path).path
+            if request_path in {"/", "/intake.html"}:
                 self._serve_file(STATIC_DIR / "intake.html", "text/html; charset=utf-8")
                 return
-            if self.path.startswith("/static/"):
-                requested = STATIC_DIR / self.path.removeprefix("/static/")
+            if request_path.startswith("/static/"):
+                requested = STATIC_DIR / request_path.removeprefix("/static/")
                 self._serve_static(requested)
                 return
-            if self.path == "/api/status":
+            if request_path == "/api/status":
                 self._json(
                     HTTPStatus.OK,
                     {
@@ -169,30 +171,31 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     },
                 )
                 return
-            if self.path == "/api/catalogs":
+            if request_path == "/api/catalogs":
                 self._json(HTTPStatus.OK, {"ok": True, "catalogs": load_catalogs()})
                 return
-            if self.path == "/api/profile":
+            if request_path == "/api/profile":
                 self._json(HTTPStatus.OK, {"ok": True, "profile": load_profile(state.profile_path)})
                 return
-            if self.path == "/api/incident-runner":
+            if request_path == "/api/incident-runner":
                 profile = load_profile(state.profile_path)
+                incident = profile.get("incident_timeline") or scenario_template(profile, "suspicious_login")
                 self._json(
                     HTTPStatus.OK,
                     {
                         "ok": True,
                         "scenarios": scenario_options(),
-                        "incident_timeline": profile.get("incident_timeline") or scenario_template(profile, "suspicious_login"),
+                        "incident_timeline": enrich_incident_timeline(profile, incident),
                     },
                 )
                 return
-            if self.path == "/api/evidence":
+            if request_path == "/api/evidence":
                 self._json(HTTPStatus.OK, {"ok": True, "evidence": load_profile(state.profile_path).get("evidence", [])})
                 return
-            if self.path == "/api/connectors":
+            if request_path == "/api/connectors":
                 self._json(HTTPStatus.OK, {"ok": True, "connectors": _connector_status(state.out_dir)})
                 return
-            if self.path == "/api/packet-links":
+            if request_path == "/api/packet-links":
                 self._json(
                     HTTPStatus.OK,
                     {
@@ -208,7 +211,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     },
                 )
                 return
-            output_path = (state.out_dir / self.path.lstrip("/")).resolve()
+            output_path = (state.out_dir / request_path.lstrip("/")).resolve()
             if state.out_dir.resolve() in output_path.parents and output_path.exists() and output_path.is_file():
                 self._serve_file(output_path, self._content_type(output_path))
                 return
@@ -299,6 +302,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         )
                         return
                     profile = load_profile(state.profile_path)
+                    incident = enrich_incident_timeline(profile, incident)
                     profile["incident_timeline"] = incident
                     validate_profile(profile)
                     atomic_write_profile(profile, state.profile_path, action="incident-runner-save")

@@ -122,6 +122,14 @@ class IntakeApiTests(unittest.TestCase):
         incident = templated["incident_timeline"]
         self.assertEqual(incident["scenario_key"], "ransomware_concern")
         self.assertGreaterEqual(len(incident["timeline"]), 5)
+        first_phase = incident["timeline"][0]
+        self.assertIn("source_alignment", first_phase)
+        self.assertIn("plain_english_goal", first_phase)
+        self.assertIn("do_now", first_phase)
+        self.assertIn("ask_msp_or_vendor", first_phase)
+        self.assertIn("completion_criteria", first_phase)
+        self.assertIn("escalation_triggers", first_phase)
+        self.assertFalse(first_phase["complete"])
 
         saved = self.post_json("/api/incident-runner", {"incident_timeline": incident, "build": True}, status["csrf_token"])
         self.assertEqual(saved["incident_timeline"]["scenario_key"], "ransomware_concern")

@@ -7,6 +7,12 @@ It tracks:
 - event order,
 - affected system or workflow category,
 - owner,
+- source-aligned phase goal,
+- owner question,
+- MSP/vendor ask,
+- safe inputs and blocked inputs,
+- completion criteria,
+- escalation triggers,
 - private evidence reference,
 - decision gate,
 - current status,
@@ -26,7 +32,16 @@ The packet builder generates:
 - incident timeline entries in `packet-manifest.json`
 - incident timeline and after-action links in `dashboard.html`
 
-The local intake workspace also includes an Incident Runner. It lets the owner or MSP pick a scenario, walk through timeline phases, record private evidence references, assign after-action owners, and rebuild the local packet.
+The local intake workspace also includes an Incident Runner. It lets the owner or MSP pick a scenario, walk one phase at a time, record private evidence references, assign after-action owners, and rebuild the local packet.
+
+Each phase shows:
+
+- what to do now,
+- what staff can safely say,
+- what to ask the MSP or vendor,
+- what evidence reference is needed,
+- when to escalate,
+- what must be true before the phase is complete.
 
 ## What It Is Not
 

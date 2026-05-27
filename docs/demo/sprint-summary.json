@@ -75,11 +75,11 @@
   },
   "evidence_gap_summary": {
     "by_owner": {
-      "MSP Lead": 12,
+      "MSP Lead": 13,
       "MSP or workflow owner": 5,
-      "Office Manager": 9,
+      "Office Manager": 10,
       "Practice Owner": 3,
-      "Practice manager": 2,
+      "Practice manager": 5,
       "Qualified reviewer": 1
     },
     "by_stage": [
@@ -170,7 +170,7 @@
       "requested": 20,
       "stale": 2
     },
-    "needs_attention": 32,
+    "needs_attention": 37,
     "total_references": 46
   },
   "generated_at": "2026-05-15T00:00:00Z",
