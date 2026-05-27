@@ -2,6 +2,7 @@ let csrfToken = "";
 let catalogs = null;
 let profile = null;
 let connectorState = null;
+let incidentScenarios = [];
 let selectedPreset = "dental";
 
 const $ = (selector) => document.querySelector(selector);
@@ -46,6 +47,10 @@ function textInput(value, path, type = "text") {
   return `<input type="${type}" value="${escapeHtml(value ?? "")}" data-path="${path}">`;
 }
 
+function textareaInput(value, path, extra = "") {
+  return `<textarea data-path="${path}" ${extra}>${escapeHtml(value ?? "")}</textarea>`;
+}
+
 function selectInput(value, path, options) {
   return `<select data-path="${path}">${options.map((item) => `<option value="${escapeHtml(item)}" ${item === value ? "selected" : ""}>${escapeHtml(item)}</option>`).join("")}</select>`;
 }
@@ -78,9 +83,19 @@ function collectCriticalSystems() {
   }
 }
 
+function collectIncidentRunnerEdits() {
+  if (!profile?.incident_timeline) return;
+  $$("[data-incident-systems]").forEach((field) => {
+    const index = Number(field.dataset.incidentSystems);
+    if (!Number.isFinite(index) || !profile.incident_timeline.timeline?.[index]) return;
+    profile.incident_timeline.timeline[index].systems = field.value.split("\n").map((item) => item.trim()).filter(Boolean);
+  });
+}
+
 function collectCurrentEdits() {
   collectInputs();
   collectCriticalSystems();
+  collectIncidentRunnerEdits();
 }
 
 function nextNumberedId(prefix, rows) {
@@ -150,6 +165,32 @@ function newEvidence() {
   };
 }
 
+function newIncidentEvent() {
+  const index = (profile.incident_timeline?.timeline || []).length + 1;
+  return {
+    time: `T+${index * 15}`,
+    phase: "Custom event",
+    event: "Describe the sanitized event category.",
+    systems: ["System or workflow category"],
+    owner: profile.practice?.security_owner || "Practice owner",
+    evidence_ref: `restricted-evidence/incidents/manual-event-${index}`,
+    status: "requested",
+    decision_gate: "What decision must be made, and who owns it?",
+  };
+}
+
+function newIncidentAfterAction() {
+  const index = (profile.incident_timeline?.after_actions || []).length + 1;
+  return {
+    id: `INC-AA-${String(index).padStart(3, "0")}`,
+    priority: "medium",
+    owner: profile.practice?.technical_owner || "MSP Lead",
+    action: "Assign a concrete remediation or evidence-refresh action.",
+    evidence_needed: "Reference-only evidence needed to close this action.",
+    due: "30 days",
+  };
+}
+
 function renderPresets() {
   const sizeSelect = $("#size-tier");
   sizeSelect.innerHTML = Object.entries(catalogs.practice_presets.size_tiers)
@@ -168,6 +209,10 @@ function renderPresets() {
     selectedPreset = card.dataset.preset;
     renderPresets();
   }));
+}
+
+function scenarioByKey(key) {
+  return incidentScenarios.find((scenario) => scenario.key === key);
 }
 
 function renderBasics() {
@@ -261,6 +306,60 @@ function renderAI() {
   </tbody></table>`;
 }
 
+function renderIncidentRunner() {
+  if (!profile.incident_timeline) return;
+  const incident = profile.incident_timeline;
+  const selectedKey = incident.scenario_key || incidentScenarios[0]?.key || "suspicious_login";
+  $("#incident-scenario").innerHTML = incidentScenarios.map((scenario) => (
+    `<option value="${escapeHtml(scenario.key)}" ${scenario.key === selectedKey ? "selected" : ""}>${escapeHtml(scenario.label)}</option>`
+  )).join("");
+  const scenario = scenarioByKey(selectedKey);
+  $("#incident-summary").innerHTML = `
+    <article class="summary-card runner-scenario">
+      <strong>${escapeHtml(incident.scenario_name || scenario?.label || "Incident tabletop")}</strong>
+      <small>${escapeHtml(incident.summary || scenario?.summary || "Sanitized incident timeline for owner/MSP handoff.")}</small>
+      <small><b>Boundary:</b> ${escapeHtml(incident.sensitive_data_boundary || "Use categories and evidence references only.")}</small>
+    </article>
+  `;
+  const timeline = incident.timeline || [];
+  $("#incident-timeline").innerHTML = timeline.map((entry, index) => `
+    <article class="runner-card">
+      <div class="runner-card-head">
+        <span class="step-pill">${escapeHtml(entry.phase || `Event ${index + 1}`)}</span>
+        <button class="danger compact" type="button" data-incident-remove="timeline:${index}">Remove</button>
+      </div>
+      <div class="form-grid runner-grid">
+        <label>Time${textInput(entry.time, `incident_timeline.timeline.${index}.time`)}</label>
+        <label>Phase${textInput(entry.phase, `incident_timeline.timeline.${index}.phase`)}</label>
+        <label>Owner${textInput(entry.owner, `incident_timeline.timeline.${index}.owner`)}</label>
+        <label>Status${selectInput(entry.status, `incident_timeline.timeline.${index}.status`, ["requested", "open", "needs review", "in progress", "closed"])}</label>
+        <label>System or workflow category<textarea data-incident-systems="${index}">${escapeHtml((entry.systems || []).join("\n"))}</textarea></label>
+        <label>Private evidence reference${textInput(entry.evidence_ref, `incident_timeline.timeline.${index}.evidence_ref`)}</label>
+        <label class="wide">Sanitized event category${textareaInput(entry.event, `incident_timeline.timeline.${index}.event`)}</label>
+        <label class="wide">Decision gate${textareaInput(entry.decision_gate, `incident_timeline.timeline.${index}.decision_gate`)}</label>
+      </div>
+    </article>
+  `).join("");
+
+  const actions = incident.after_actions || [];
+  $("#incident-after-actions").innerHTML = actions.map((item, index) => `
+    <article class="runner-card">
+      <div class="runner-card-head">
+        <span class="step-pill">${escapeHtml(item.id || `INC-AA-${index + 1}`)}</span>
+        <button class="danger compact" type="button" data-incident-remove="after_actions:${index}">Remove</button>
+      </div>
+      <div class="form-grid runner-grid">
+        <label>ID${textInput(item.id, `incident_timeline.after_actions.${index}.id`)}</label>
+        <label>Priority${selectInput(item.priority, `incident_timeline.after_actions.${index}.priority`, ["low", "medium", "high", "critical"])}</label>
+        <label>Owner${textInput(item.owner, `incident_timeline.after_actions.${index}.owner`)}</label>
+        <label>Due${textInput(item.due, `incident_timeline.after_actions.${index}.due`)}</label>
+        <label class="wide">Action${textareaInput(item.action, `incident_timeline.after_actions.${index}.action`)}</label>
+        <label class="wide">Evidence needed${textareaInput(item.evidence_needed, `incident_timeline.after_actions.${index}.evidence_needed`)}</label>
+      </div>
+    </article>
+  `).join("");
+}
+
 function renderDowntime() {
   $("#downtime-form").innerHTML = `
     <label>Downtime plan status${selectInput(profile.downtime.downtime_plan_status, "downtime.downtime_plan_status", ["not documented", "draft", "documented", "tested"])}</label>
@@ -289,10 +388,12 @@ function renderEvidence() {
 function renderSummary() {
   const ready = Object.values(profile.readiness).filter(Boolean).length;
   const connectorItems = connectorState?.summary?.total_items || 0;
+  const incidentEvents = profile.incident_timeline?.timeline?.length || 0;
   $("#completion-summary").innerHTML = `
     <article class="summary-card"><strong>${profile.systems.length}</strong><small>systems selected</small></article>
     <article class="summary-card"><strong>${profile.vendors.length}</strong><small>vendors to review</small></article>
     <article class="summary-card"><strong>${profile.flows.length}</strong><small>ePHI flows mapped</small></article>
+    <article class="summary-card"><strong>${incidentEvents}</strong><small>incident runner events</small></article>
     <article class="summary-card"><strong>${ready}/11</strong><small>readiness items ready</small></article>
     <article class="summary-card"><strong>${connectorItems}</strong><small>connector evidence items</small></article>
   `;
@@ -360,10 +461,41 @@ function renderAll() {
   renderFlows();
   renderReadiness();
   renderAI();
+  renderIncidentRunner();
   renderDowntime();
   renderEvidence();
   renderSummary();
   renderConnectors();
+}
+
+const INCIDENT_UNSAFE_PATTERNS = [
+  /patient name\s*:/i,
+  /\bMRN\s*:/i,
+  /\bDOB\s*:/i,
+  /\bdiagnosis\s*:/i,
+  /\bpassword\s*[:=]/i,
+  /\b(token|secret|api[_ -]?key)\s*[:=]/i,
+  /https?:\/\/\S+(token=|secret=|signature=|X-Amz-Signature|sig=|key=|password=|private)/i,
+  /-----BEGIN [A-Z ]*PRIVATE KEY-----/,
+];
+
+function walkStrings(value, path = "incident_timeline") {
+  if (Array.isArray(value)) {
+    return value.flatMap((item, index) => walkStrings(item, `${path}[${index}]`));
+  }
+  if (value && typeof value === "object") {
+    return Object.entries(value).flatMap(([key, child]) => walkStrings(child, `${path}.${key}`));
+  }
+  if (typeof value === "string") return [{ path, value }];
+  return [];
+}
+
+function unsafeIncidentFields(incident) {
+  const findings = [];
+  for (const item of walkStrings(incident)) {
+    if (INCIDENT_UNSAFE_PATTERNS.some((pattern) => pattern.test(item.value))) findings.push(item.path);
+  }
+  return findings;
 }
 
 async function saveProfile() {
@@ -380,6 +512,29 @@ async function loadConnectors() {
   renderConnectors();
   renderSummary();
   return connectorState;
+}
+
+async function loadIncidentRunner() {
+  const data = await api("/api/incident-runner");
+  incidentScenarios = data.scenarios || [];
+  profile.incident_timeline = profile.incident_timeline || data.incident_timeline;
+  return data.incident_timeline;
+}
+
+async function saveIncidentRunner() {
+  collectCurrentEdits();
+  const unsafe = unsafeIncidentFields(profile.incident_timeline);
+  if (unsafe.length) {
+    showAlert(`Incident runner blocked unsafe detail. Replace with categories and private evidence refs: ${unsafe.slice(0, 4).join(", ")}`);
+    return;
+  }
+  const data = await api("/api/incident-runner", {
+    method: "POST",
+    body: JSON.stringify({ incident_timeline: profile.incident_timeline, build: true }),
+  });
+  profile = data.profile;
+  renderAll();
+  showAlert("Saved the incident runner and rebuilt the local packet.", false);
 }
 
 async function connectorAction(path, payload, successMessage, button) {
@@ -415,6 +570,7 @@ async function init() {
   catalogs = (await api("/api/catalogs")).catalogs;
   profile = (await api("/api/profile")).profile;
   connectorState = (await api("/api/connectors")).connectors;
+  await loadIncidentRunner();
   renderPresets();
   renderAll();
 
@@ -485,6 +641,31 @@ async function init() {
     } catch (error) {
       showAlert(error.message);
     }
+  });
+
+  $("#load-incident-template").addEventListener("click", async (event) => {
+    const button = event.currentTarget;
+    const originalText = button.textContent;
+    try {
+      collectCurrentEdits();
+      button.disabled = true;
+      button.textContent = "Loading...";
+      const scenario_key = $("#incident-scenario").value || "suspicious_login";
+      const data = await api("/api/incident-runner/template", { method: "POST", body: JSON.stringify({ scenario_key }) });
+      profile.incident_timeline = data.incident_timeline;
+      renderIncidentRunner();
+      renderSummary();
+      showAlert("Loaded the scenario template locally. Review and save when ready.", false);
+    } catch (error) {
+      showAlert(error.message);
+    } finally {
+      button.disabled = false;
+      button.textContent = originalText;
+    }
+  });
+
+  $("#save-incident-runner").addEventListener("click", async () => {
+    try { await saveIncidentRunner(); } catch (error) { showAlert(error.message); }
   });
 
   $("#write-connector-wizard").addEventListener("click", async (event) => {
@@ -613,6 +794,18 @@ async function init() {
     const target = event.target;
     if (!(target instanceof Element)) return;
     const remove = target.closest("[data-remove]");
+    const incidentRemove = target.closest("[data-incident-remove]");
+    if (incidentRemove) {
+      collectCurrentEdits();
+      const [collection, index] = incidentRemove.dataset.incidentRemove.split(":");
+      if (Array.isArray(profile.incident_timeline?.[collection])) {
+        profile.incident_timeline[collection].splice(Number(index), 1);
+        renderIncidentRunner();
+        renderSummary();
+        showAlert("Removed incident runner row locally. Save when ready.", false);
+      }
+      return;
+    }
     if (!remove) return;
     collectCurrentEdits();
     const [collection, index] = remove.dataset.remove.split(":");
@@ -642,6 +835,26 @@ async function init() {
     profile.ai_workflows.push(newAIWorkflow());
     renderAI();
     showAlert("Added an AI workflow row. Save when ready.", false);
+  });
+
+  $("#add-incident-event").addEventListener("click", () => {
+    collectCurrentEdits();
+    profile.incident_timeline = profile.incident_timeline || { timeline: [], after_actions: [] };
+    profile.incident_timeline.timeline = profile.incident_timeline.timeline || [];
+    profile.incident_timeline.timeline.push(newIncidentEvent());
+    renderIncidentRunner();
+    renderSummary();
+    showAlert("Added a timeline event. Save the runner when ready.", false);
+  });
+
+  $("#add-incident-after-action").addEventListener("click", () => {
+    collectCurrentEdits();
+    profile.incident_timeline = profile.incident_timeline || { timeline: [], after_actions: [] };
+    profile.incident_timeline.after_actions = profile.incident_timeline.after_actions || [];
+    profile.incident_timeline.after_actions.push(newIncidentAfterAction());
+    renderIncidentRunner();
+    renderSummary();
+    showAlert("Added an after-action item. Save the runner when ready.", false);
   });
 
   $("#add-evidence").addEventListener("click", () => {

@@ -3,9 +3,18 @@ from __future__ import annotations
 import html
 import json
 import re
+from datetime import date
 from pathlib import Path
 
 from .brand import VELARI_CSS_VARIABLES
+from .evidence_lifecycle import (
+    build_evidence_lifecycle,
+    closeout_label,
+    lifecycle_by_source,
+    lifecycle_label,
+    summarize_lifecycle,
+    trace_label,
+)
 from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
@@ -53,6 +62,10 @@ def _joined(value: object) -> str:
     if isinstance(value, list):
         return "; ".join(str(item) for item in value)
     return str(value)
+
+
+def lifecycle_records(profile: dict) -> list[dict]:
+    return build_evidence_lifecycle(profile, date.today())
 
 
 def action_packet_rows(profile: dict) -> list[dict]:
@@ -115,6 +128,7 @@ def action_packet_table(profile: dict) -> str:
 def readiness_review(profile: dict) -> str:
     risk, gaps = risk_level(profile)
     readiness = profile["readiness"]
+    readiness_lifecycle = lifecycle_by_source(lifecycle_records(profile), "readiness")
     rows = [
         ["Email MFA", yn(readiness["mfa_email"]), "Access"],
         ["EHR MFA", yn(readiness["mfa_ehr"]), "Access"],
@@ -128,6 +142,20 @@ def readiness_review(profile: dict) -> str:
         ["Training current", yn(readiness["security_training_current"]), "Workforce"],
         ["Log review cadence", yn(readiness["log_review_cadence"]), "Monitoring"],
     ]
+    closeout_rows = []
+    for key, record in readiness_lifecycle.items():
+        if key in {"mfa_email", "vendor_inventory", "incident_contact_list", "security_training_current"} and record["closeout_state"] == "closed":
+            continue
+        closeout_rows.append(
+            [
+                record["title"],
+                lifecycle_label(record["lifecycle_status"]),
+                closeout_label(record["closeout_state"]),
+                record["owner"],
+                _joined(record["acceptable_evidence"]),
+                record["closeout_rule"],
+            ]
+        )
     return f"""# Readiness Review
 
 Practice: {profile['practice']['name']}
@@ -139,14 +167,39 @@ Overall initial risk: **{risk}**
 ## Priority Gaps
 
 {chr(10).join(f'- {gap}' for gap in gaps) if gaps else '- No priority gaps found.'}
+
+## Evidence Closeout Queue
+
+{table(['Item', 'Lifecycle', 'Closeout', 'Owner', 'Acceptable evidence', 'Closeout rule'], closeout_rows)}
 """
 
 
 def ephi_flow_map(profile: dict) -> str:
+    flow_lifecycle = lifecycle_by_source(lifecycle_records(profile), "flow")
     system_rows = [[s["name"], s["category"], s["ephi_role"], s["vendor"], s["evidence_needed"]] for s in profile["systems"]]
     flow_rows = [
-        [f["id"], f["source"], f["destination"], f["vendor"], f["ephi_type"], yn(f["baa_needed"]), f["risk"], f["evidence_needed"]]
+        [
+            f["id"],
+            f["source"],
+            f["destination"],
+            f["vendor"],
+            f["ephi_type"],
+            yn(f["baa_needed"]),
+            f["risk"],
+            lifecycle_label(flow_lifecycle[f["id"]]["lifecycle_status"]),
+            closeout_label(flow_lifecycle[f["id"]]["closeout_state"]),
+            f["evidence_needed"],
+        ]
         for f in profile["flows"]
+    ]
+    trace_rows = [
+        [
+            record["source_ref"],
+            trace_label(record),
+            _joined(record["artifact_refs"]),
+            record["closeout_rule"],
+        ]
+        for record in flow_lifecycle.values()
     ]
     return f"""# ePHI Flow Map
 
@@ -156,11 +209,16 @@ def ephi_flow_map(profile: dict) -> str:
 
 ## Flows
 
-{table(['Flow', 'Source', 'Destination', 'Vendor', 'ePHI Type', 'BAA Needed', 'Risk', 'Evidence Needed'], flow_rows)}
+{table(['Flow', 'Source', 'Destination', 'Vendor', 'ePHI Type', 'BAA Needed', 'Risk', 'Lifecycle', 'Closeout', 'Evidence Needed'], flow_rows)}
+
+## Traceability Summary
+
+{table(['Flow', 'Trace', 'Downstream artifacts', 'Closeout rule'], trace_rows)}
 """
 
 
 def vendor_review(profile: dict) -> str:
+    vendor_lifecycle = lifecycle_by_source(lifecycle_records(profile), "vendor")
     rows = [
         [
             v["name"],
@@ -173,12 +231,15 @@ def vendor_review(profile: dict) -> str:
             v["subcontractors_known"],
             v["incident_notification_terms"],
             v["risk"],
+            lifecycle_label(vendor_lifecycle[v["name"]]["lifecycle_status"]),
+            closeout_label(vendor_lifecycle[v["name"]]["closeout_state"]),
+            trace_label(vendor_lifecycle[v["name"]]),
         ]
         for v in profile["vendors"]
     ]
     return f"""# Vendor and BAA Review
 
-{table(['Vendor', 'Service', 'Touches ePHI?', 'BAA Status', 'AI Training Use', 'SOC 2 Status', 'HITRUST Status', 'Subcontractors', 'Incident Terms', 'Risk'], rows)}
+{table(['Vendor', 'Service', 'Touches ePHI?', 'BAA Status', 'AI Training Use', 'SOC 2 Status', 'HITRUST Status', 'Subcontractors', 'Incident Terms', 'Risk', 'Lifecycle', 'Closeout', 'Trace'], rows)}
 
 ## Next Evidence
 
@@ -190,10 +251,24 @@ def vendor_review(profile: dict) -> str:
 
 
 def ai_review(profile: dict) -> str:
-    rows = [[w["name"], w["proposed_use"], w["data_used"], w["vendor"], w["decision"], w["evidence_needed"]] for w in profile["ai_workflows"]]
+    ai_lifecycle = lifecycle_by_source(lifecycle_records(profile), "ai_workflow")
+    rows = [
+        [
+            w["name"],
+            w["proposed_use"],
+            w["data_used"],
+            w["vendor"],
+            w["decision"],
+            lifecycle_label(ai_lifecycle[w["name"]]["lifecycle_status"]),
+            closeout_label(ai_lifecycle[w["name"]]["closeout_state"]),
+            trace_label(ai_lifecycle[w["name"]]),
+            w["evidence_needed"],
+        ]
+        for w in profile["ai_workflows"]
+    ]
     return f"""# AI Workflow Review
 
-{table(['Workflow', 'Use', 'Data Used', 'Vendor', 'Decision', 'Evidence Needed'], rows)}
+{table(['Workflow', 'Use', 'Data Used', 'Vendor', 'Decision', 'Lifecycle', 'Closeout', 'Trace', 'Evidence Needed'], rows)}
 
 ## Rules of Thumb
 
@@ -205,7 +280,18 @@ def ai_review(profile: dict) -> str:
 
 def downtime_packet(profile: dict) -> str:
     downtime = profile["downtime"]
-    rows = [[system, "Needs downtime owner", "Needs restore or manual workaround evidence"] for system in downtime["critical_systems"]]
+    downtime_lifecycle = lifecycle_by_source(lifecycle_records(profile), "downtime")
+    rows = [
+        [
+            system,
+            downtime_lifecycle[system]["owner"],
+            lifecycle_label(downtime_lifecycle[system]["lifecycle_status"]),
+            closeout_label(downtime_lifecycle[system]["closeout_state"]),
+            trace_label(downtime_lifecycle[system]),
+            downtime_lifecycle[system]["closeout_rule"],
+        ]
+        for system in downtime["critical_systems"]
+    ]
     return f"""# Downtime and Ransomware Tabletop
 
 Downtime plan status: **{downtime['downtime_plan_status']}**
@@ -214,11 +300,178 @@ Restore test status: **{downtime['last_restore_test'] or 'not recorded'}**
 
 Tabletop status: **{downtime['tabletop_status']}**
 
-{table(['Critical System', 'Downtime Owner', 'Evidence Needed'], rows)}
+{table(['Critical System', 'Downtime Owner', 'Lifecycle', 'Closeout', 'Trace', 'Closeout rule'], rows)}
 
 ## Tabletop Scenario
 
 Run a 30-minute walkthrough: EHR unavailable at 8:30 AM, phones are working, billing portal is delayed, and staff need to continue patient care safely.
+"""
+
+
+def _incident_profile(profile: dict) -> dict:
+    incident = profile.get("incident_timeline") or {}
+    if incident:
+        return incident
+    critical = ", ".join(profile.get("downtime", {}).get("critical_systems", [])[:3]) or "critical systems"
+    return {
+        "scenario_name": "Downtime or suspicious access tabletop",
+        "scenario_type": "tabletop",
+        "summary": f"Synthetic tabletop for a small practice where {critical} need containment, continuity, and evidence-reference decisions.",
+        "sensitive_data_boundary": "Record categories, owners, timestamps, and evidence reference IDs only. Do not record PHI, patient identifiers, screenshots, raw logs, private URLs, credentials, or real incident details.",
+        "timeline": [
+            {
+                "time": "T+00",
+                "phase": "Detection",
+                "event": "Staff report a suspicious access or downtime concern.",
+                "systems": profile.get("downtime", {}).get("critical_systems", [])[:2] or ["Critical system"],
+                "owner": profile["practice"].get("security_owner", "Practice owner"),
+                "evidence_ref": "INC-PRIVATE-REFERENCE",
+                "status": "needs review",
+                "decision_gate": "Is there active compromise, patient-care disruption, or vendor notice?",
+            },
+            {
+                "time": "T+30",
+                "phase": "Containment",
+                "event": "MSP confirms what account, device, vendor, or workflow category needs containment.",
+                "systems": profile.get("downtime", {}).get("critical_systems", [])[:2] or ["Critical system"],
+                "owner": profile["practice"].get("technical_owner", "MSP Lead"),
+                "evidence_ref": "INC-CONTAINMENT-REFERENCE",
+                "status": "open",
+                "decision_gate": "Which actions can be taken now while qualified review is pending?",
+            },
+        ],
+        "decision_gates": [
+            {
+                "gate": "Escalation needed?",
+                "owner": profile["practice"].get("technical_owner", "MSP Lead"),
+                "trigger": "Active compromise, ransomware, unauthorized access, lost device, vendor breach notice, or patient-care disruption.",
+                "action": "Escalate to qualified incident response and preserve private evidence references.",
+            },
+            {
+                "gate": "Qualified review needed?",
+                "owner": "Qualified reviewer",
+                "trigger": "Possible breach notification, insurance notice, contract notice, regulatory question, or formal risk-analysis decision.",
+                "action": "Park the decision for counsel, compliance, insurer, or qualified security reviewer.",
+            },
+        ],
+        "after_actions": [
+            {
+                "id": "INC-AA-001",
+                "priority": "high",
+                "owner": profile["practice"].get("technical_owner", "MSP Lead"),
+                "action": "Confirm MFA, access review, backup scope, and log review evidence for affected systems.",
+                "evidence_needed": "Admin settings export, access review reference, restore-test reference, and log-review cadence reference.",
+                "due": "30 days",
+            }
+        ],
+    }
+
+
+def incident_evidence_timeline(profile: dict) -> str:
+    incident = _incident_profile(profile)
+    rows = []
+    for entry in incident.get("timeline", []):
+        rows.append(
+            [
+                entry.get("time", "TBD"),
+                entry.get("phase", "Timeline event"),
+                entry.get("event", "Sanitized event category"),
+                _joined(entry.get("systems", [])),
+                entry.get("owner", profile["practice"].get("security_owner", "Practice owner")),
+                entry.get("evidence_ref", "private evidence reference"),
+                entry.get("decision_gate", "Decision gate to confirm"),
+                entry.get("status", "open"),
+            ]
+        )
+
+    gate_rows = [
+        [
+            gate.get("gate", "Decision gate"),
+            gate.get("owner", "Owner"),
+            gate.get("trigger", "Trigger to confirm"),
+            gate.get("action", "Action to take"),
+        ]
+        for gate in incident.get("decision_gates", [])
+    ]
+
+    return f"""# Incident Evidence Timeline
+
+Scenario: **{incident.get('scenario_name', 'Incident tabletop')}**
+
+Type: **{incident.get('scenario_type', 'tabletop')}**
+
+{incident.get('summary', 'Synthetic incident evidence timeline for owner, MSP, and qualified-review handoff.')}
+
+## Evidence Boundary
+
+{incident.get('sensitive_data_boundary', 'Use reference IDs only. Do not include PHI, patient identifiers, screenshots, raw logs, private URLs, credentials, or real incident details.')}
+
+## Timeline
+
+{table(['Time', 'Phase', 'Sanitized event', 'System/workflow', 'Owner', 'Evidence ref', 'Decision gate', 'Status'], rows)}
+
+## Decision Gates
+
+{table(['Gate', 'Owner', 'Trigger', 'Action'], gate_rows)}
+
+## Handoff Rules
+
+- Separate technical containment from breach-notification, insurance, contract, regulatory, and legal/compliance decisions.
+- Preserve private evidence references without copying raw evidence into the public packet.
+- Escalate active compromise, ransomware, unauthorized access, lost device, vendor breach notice, or patient-care disruption to qualified incident response.
+- Use this timeline to prepare the qualified-review conversation; do not use it to decide reportability.
+"""
+
+
+def incident_after_action_report(profile: dict) -> str:
+    incident = _incident_profile(profile)
+    rows = [
+        [
+            action.get("id", f"INC-AA-{index:03d}"),
+            action.get("priority", "medium"),
+            action.get("owner", "Practice owner/MSP"),
+            action.get("action", "Action to complete"),
+            action.get("evidence_needed", "Evidence reference needed"),
+            action.get("due", "30 days"),
+        ]
+        for index, action in enumerate(incident.get("after_actions", []), start=1)
+    ]
+    if not rows:
+        rows.append(
+            [
+                "INC-AA-001",
+                "medium",
+                profile["practice"].get("security_owner", "Practice owner"),
+                "Review the incident timeline and assign remediation owners.",
+                "Owner signoff and private evidence reference.",
+                "30 days",
+            ]
+        )
+
+    return f"""# Incident After-Action Report
+
+Scenario: **{incident.get('scenario_name', 'Incident tabletop')}**
+
+This report turns the timeline into owner/MSP follow-up work. It is an operational improvement packet, not a reportability conclusion, legal opinion, formal Security Risk Analysis, or incident-response substitute.
+
+## What Worked
+
+- A single owner/MSP timeline can preserve the order of events without exposing PHI or secrets.
+- Evidence is tracked by reference ID, not by copying screenshots, logs, private URLs, contracts, or patient-level details into public artifacts.
+- Legal/compliance, insurance, regulatory, and contract-notice questions stay parked for qualified reviewers.
+
+## Improvement Actions
+
+{table(['ID', 'Priority', 'Owner', 'Action', 'Evidence needed', 'Due'], rows)}
+
+## Reviewer Packet
+
+- Incident evidence timeline.
+- Private evidence reference list.
+- Owner/MSP containment summary.
+- Vendor notification or support-ticket reference, if applicable.
+- Backup/restore and access-review evidence references for affected systems.
+- List of decisions parked for counsel, compliance, insurer, vendor, or qualified incident responder.
 """
 
 
@@ -366,43 +619,56 @@ Use this as a handoff template when an outage, ransomware concern, lost device, 
 
 
 def evidence_index(profile: dict) -> str:
-    rows = []
-    for evidence in profile.get("evidence", []):
-        rows.append(
-            [
-                evidence.get("id", evidence.get("title", "Evidence")),
-                evidence.get("area", evidence.get("type", "Evidence")),
-                evidence.get("title", "Evidence reference") + (f" - {evidence.get('reference')}" if evidence.get("reference") else ""),
-                "03-hipaa-evidence-binder",
-            ]
-        )
-    for flow in profile["flows"]:
-        rows.append([flow["id"], "ePHI flow", flow["evidence_needed"], "03-hipaa-evidence-binder"])
-    for vendor in profile["vendors"]:
-        rows.append(
-            [
-                vendor["name"],
-                "Vendor/BAA",
-                f"BAA, SOC 2/HITRUST status, security contact, AI data-use review for {vendor['name']}",
-                "04-vendor-baa-review",
-            ]
-        )
-    rows.extend(
+    records = lifecycle_records(profile)
+    rows = [
         [
-            ["ACCESS-QTR", "Access", "Quarterly access review for EHR, billing, email, remote access", "03-hipaa-evidence-binder"],
-            ["BACKUP-RESTORE", "Backup", "Restore test record for EHR, billing, shared drive, key workstation", "06-downtime-ransomware-tabletop"],
-            ["AI-POLICY", "AI workflow", "Allowed/prohibited AI use guidance and staff acknowledgement", "05-ai-workflow-review"],
+            record["evidence_id"],
+            record["evidence_type"],
+            lifecycle_label(record["lifecycle_status"]),
+            closeout_label(record["closeout_state"]),
+            record["owner"],
+            trace_label(record),
+            _joined(record["acceptable_evidence"]),
+            record["next_action"],
+            _joined(record["artifact_refs"]),
         ]
-    )
+        for record in records
+    ]
+    summary = summarize_lifecycle(records)
     return f"""# Evidence Binder Index
 
-{table(['Evidence ID', 'Area', 'Evidence Needed', 'Module'], rows)}
+This is a lifecycle index for reference-only evidence. Store raw proof in the private/offline binder and keep this packet limited to owners, dates, status labels, trace context, and safe evidence references.
+
+## Lifecycle Summary
+
+- Total evidence rows: {summary['total']}
+- Blocked: {summary['blocked']}
+- Needs evidence: {summary['needs_evidence']}
+- Ready for review: {summary['ready_for_review']}
+- Closed: {summary['closed']}
+- Traceable to ePHI flows: {summary['traceable_to_ephi']}
+
+## Evidence Lifecycle
+
+{table(['Evidence ID', 'Area', 'Lifecycle', 'Closeout', 'Owner', 'Trace', 'Acceptable evidence', 'Next action', 'Artifacts'], rows)}
 """
 
 
 def owner_msp_handoff(profile: dict) -> str:
     risk, gaps = risk_level(profile)
     practice = profile["practice"]
+    records = lifecycle_records(profile)
+    closeout_rows = [
+        [
+            record["evidence_id"],
+            closeout_label(record["closeout_state"]),
+            record["owner"],
+            trace_label(record),
+            record["next_action"],
+        ]
+        for record in records
+        if record["closeout_state"] in {"blocked", "needs_evidence", "ready_for_review"}
+    ][:12]
     vendor_rows = []
     for vendor in profile["vendors"]:
         if vendor.get("touches_ephi") or vendor.get("risk") in {"high", "critical"}:
@@ -453,6 +719,10 @@ Initial risk level: **{risk}**
 ## Vendor Follow-Up
 
 {table(['Vendor', 'Service', 'BAA Status', 'SOC 2 Status', 'HITRUST Status', 'Risk', 'Owner', 'Ask'], vendor_rows) if vendor_rows else '- No vendor follow-up rows generated.'}
+
+## Closeout Gates
+
+{table(['Evidence', 'Closeout', 'Owner', 'Trace', 'Next action'], closeout_rows)}
 
 ## Handoff Boundary
 
@@ -658,6 +928,8 @@ def build_packet(profile_path: Path, output_root: Path = OUT, *, generated_at: s
         "connected-device-inventory.md": connected_device_inventory(profile),
         "portal-api-flow-review.md": portal_api_flow_review(profile),
         "incident-decision-log.md": incident_decision_log(profile),
+        "incident-evidence-timeline.md": incident_evidence_timeline(profile),
+        "incident-after-action-report.md": incident_after_action_report(profile),
         "evidence-binder-index.md": evidence_index(profile),
         "owner-msp-handoff.md": owner_msp_handoff(profile),
         "30-60-90-roadmap.md": roadmap(profile),

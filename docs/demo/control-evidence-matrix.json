@@ -479,6 +479,7 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
@@ -486,7 +487,6 @@
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -547,6 +547,7 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
@@ -554,7 +555,6 @@
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -674,13 +674,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
       "READINESS-006",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
-      "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR"
+      "VENDOR-EXAMPLE_BILLING_VENDOR"
     ],
     "next_action": "Inventory privileged accounts and document owner, MFA status, and shared-account exceptions.",
     "practice_applicability": [
@@ -739,6 +739,7 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
@@ -746,7 +747,6 @@
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -808,13 +808,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
       "READINESS-006",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
-      "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR"
+      "VENDOR-EXAMPLE_BILLING_VENDOR"
     ],
     "next_action": "Confirm break-glass accounts exist only where needed and have owners, test dates, and monitored use.",
     "practice_applicability": [
@@ -1338,6 +1338,7 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
@@ -1345,7 +1346,6 @@
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1404,11 +1404,11 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1470,11 +1470,11 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1535,11 +1535,11 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1724,13 +1724,13 @@
     "last_collected_at": null,
     "last_reviewed_at": null,
     "linked_answer_packet_ids": [
+      "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "READINESS-004",
       "READINESS-001",
       "READINESS-002",
       "READINESS-006",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
-      "VENDOR-EXAMPLE_BILLING_VENDOR",
-      "VENDOR-EXAMPLE_IMAGING_VENDOR"
+      "VENDOR-EXAMPLE_BILLING_VENDOR"
     ],
     "next_action": "Review keys, badges, visitor handling, and workstation placement with the office manager.",
     "practice_applicability": [

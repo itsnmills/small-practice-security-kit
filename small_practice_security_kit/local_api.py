@@ -26,6 +26,7 @@ from .connectors import (
 from .dashboard import build_dashboard
 from .evidence_refresh import build_refresh_report, write_refresh_report
 from .file_inventory import FileInventoryError, inventory_folder
+from .incident_runner import safety_findings, scenario_options, scenario_template
 from .packet import build_packet
 from .profile import load_profile
 from .sensitive_data import blocking_findings, find_sensitive_data
@@ -174,6 +175,17 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             if self.path == "/api/profile":
                 self._json(HTTPStatus.OK, {"ok": True, "profile": load_profile(state.profile_path)})
                 return
+            if self.path == "/api/incident-runner":
+                profile = load_profile(state.profile_path)
+                self._json(
+                    HTTPStatus.OK,
+                    {
+                        "ok": True,
+                        "scenarios": scenario_options(),
+                        "incident_timeline": profile.get("incident_timeline") or scenario_template(profile, "suspicious_login"),
+                    },
+                )
+                return
             if self.path == "/api/evidence":
                 self._json(HTTPStatus.OK, {"ok": True, "evidence": load_profile(state.profile_path).get("evidence", [])})
                 return
@@ -190,6 +202,8 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                             "packet": "/review-packet.html",
                             "roadmap": "/30-60-90-roadmap.html",
                             "evidence": "/evidence-binder-index.html",
+                            "incident_timeline": "/incident-evidence-timeline.html",
+                            "incident_after_action": "/incident-after-action-report.html",
                         },
                     },
                 )
@@ -263,6 +277,38 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         raise ValueError("path is required")
                     inventory = inventory_folder(Path(folder))
                     self._json(HTTPStatus.OK, {"ok": True, "inventory": inventory})
+                    return
+                if self.path == "/api/incident-runner/template":
+                    scenario_key = str(payload.get("scenario_key") or "suspicious_login")
+                    incident = scenario_template(load_profile(state.profile_path), scenario_key)
+                    self._json(HTTPStatus.OK, {"ok": True, "incident_timeline": incident})
+                    return
+                if self.path == "/api/incident-runner":
+                    incident = payload.get("incident_timeline")
+                    if not isinstance(incident, dict):
+                        raise ValueError("incident_timeline object required")
+                    findings = [finding.to_dict() for finding in safety_findings(incident)]
+                    if findings:
+                        self._json(
+                            HTTPStatus.UNPROCESSABLE_ENTITY,
+                            {
+                                "ok": False,
+                                "error": "Incident runner text must stay sanitized. Use categories and private evidence references only.",
+                                "findings": findings,
+                            },
+                        )
+                        return
+                    profile = load_profile(state.profile_path)
+                    profile["incident_timeline"] = incident
+                    validate_profile(profile)
+                    atomic_write_profile(profile, state.profile_path, action="incident-runner-save")
+                    if payload.get("build", True):
+                        state.out_dir = build_packet(state.profile_path)
+                        build_dashboard(state.profile_path, state.out_dir)
+                    self._json(
+                        HTTPStatus.OK,
+                        {"ok": True, "profile": profile, "incident_timeline": incident, "links": self._links()},
+                    )
                     return
                 if self.path == "/api/connectors/wizard":
                     path = write_connector_wizard(state.out_dir / "connector-wizard.html")
@@ -349,6 +395,8 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                 "views": "/views/owner-view.md",
                 "roadmap": "/30-60-90-roadmap.html",
                 "evidence": "/evidence-binder-index.html",
+                "incident_timeline": "/incident-evidence-timeline.html",
+                "incident_after_action": "/incident-after-action-report.html",
             }
 
         def _serve_static(self, path: Path) -> None:

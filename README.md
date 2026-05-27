@@ -2,10 +2,10 @@
 
 **Local-first healthcare security readiness packets for small practices.**
 
-This repo is the public front door for a Velari-style readiness workflow: take a non-PHI practice profile, map where patient data can move outside the EHR, review vendors/BAAs and AI usage, then generate an owner/MSP-ready evidence packet and 30/60/90 roadmap.
+This repo is the public front door for a Velari-style readiness workflow: take a non-PHI practice profile, map where patient data can move outside the EHR, review vendors/BAAs and AI usage, prepare downtime and incident evidence handoffs, then generate an owner/MSP-ready evidence packet, lifecycle-aware evidence index, local closeout dashboard, and 30/60/90 roadmap.
 
 ```text
-local intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> evidence index -> 30/60/90 roadmap
+local intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> downtime/tabletop -> incident timeline -> evidence index -> 30/60/90 roadmap
 ```
 
 The goal is not to replace attorneys, security assessors, incident responders, or enterprise GRC software. The goal is to give small healthcare practices a practical way to organize the first evidence-backed conversation before an audit, incident, renewal, AI rollout, or MSP handoff.
@@ -20,8 +20,11 @@ This kit helps answer:
 - Which systems and vendors touch ePHI?
 - Which AI workflows are allowed, restricted, or prohibited?
 - Which evidence references should be collected, refreshed, or handed to an MSP?
+- Which evidence is missing, requested, partial, provided, stale, blocked, ready for review, or closed?
+- Which ePHI flows, systems, vendors, AI workflows, downtime steps, and incident events does each evidence item support?
 - Which gaps should be handled in the next 30, 60, and 90 days?
 - What can the practice owner safely show a reviewer without uploading PHI?
+- What sequence of events, evidence references, decision gates, and after-action owners should be prepared after a suspicious access, downtime, vendor notice, or ransomware concern?
 
 ## Velari Cyber Readiness Sprint narrative
 
@@ -57,14 +60,16 @@ Start here:
 | `connected-device-inventory.md` | IoMT/connected-device worksheet for patch owner, default credentials, downtime fallback, and safety notices |
 | `portal-api-flow-review.md` | Portal, app, API/FHIR-style flow worksheet for identity, audit logs, secure messaging, and export/delete evidence |
 | `incident-decision-log.md` | Decision-log template separating technical containment from legal/compliance breach-notification decisions |
-| `evidence-binder-index.md` | Evidence references to collect in a binder |
+| `incident-evidence-timeline.md` | Sanitized incident/tabletop timeline with owner, evidence-reference, and decision-gate tracking |
+| `incident-after-action-report.md` | Owner/MSP after-action queue for access, backup, vendor, downtime, and qualified-review follow-up |
+| `evidence-binder-index.md` | Lifecycle-aware evidence references, closeout rules, owner lanes, and ePHI traceability |
 | `owner-msp-handoff.md` | Owner/MSP follow-up, vendor asks, access actions, and handoff boundary |
 | `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
 | `limitations-appendix.md` | Explicit statement of what the packet does and does not prove |
 | `review-packet.md` | Complete Markdown packet |
 | `review-packet.html` | Print-friendly HTML packet |
-| `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence references, roadmap items, findings, and artifact hashes |
-| `dashboard.html` | Owner-friendly local workflow dashboard |
+| `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence lifecycle rows, trace metadata, roadmap items, findings, and artifact hashes |
+| `dashboard.html` | Owner-friendly local workflow dashboard with closeout state, traceability, and blocked evidence queues |
 
 ## Quick start
 
@@ -90,7 +95,7 @@ python3 -m venv .venv
 .venv/bin/python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
 ```
 
-The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, add evidence references, review AI workflows, and generate the local dashboard and review packet.
+The intake workspace lets a practice or consultant create a local profile from healthcare presets, select common systems, review suggested ePHI flows, edit vendor/BAA status, answer the readiness checklist, run a sanitized incident/tabletop scenario, add evidence references, review AI workflows, and generate the local dashboard and review packet.
 
 ### Evidence connector layer
 
@@ -158,7 +163,7 @@ Start with:
 out/family_dental_clinic/sprint-command-center.html
 ```
 
-Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, `connector-evidence-summary.json`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, and `incident-decision-log.md`.
+Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, `connector-evidence-summary.json`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, `incident-decision-log.md`, `incident-evidence-timeline.md`, and `incident-after-action-report.md`.
 
 The JSON contracts for private-app import are documented in `schemas/velari-answer-standard.schema.json`, `schemas/normalized-evidence.schema.json`, `schemas/connector-run.schema.json`, `schemas/sprint-summary.schema.json`, and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping. The product language standard lives in [`docs/product/velari-answer-standard.md`](docs/product/velari-answer-standard.md).
 
@@ -180,6 +185,7 @@ More details:
 | `05-ai-workflow-review/` | Allowed/prohibited AI workflow review |
 | `06-downtime-ransomware-tabletop/` | Downtime, restore test, tabletop, and incident evidence |
 | `07-review-packet-builder/` | Packet builder scripts and output conventions |
+| `08-incident-evidence-timeline/` | Sanitized incident timeline, decision gates, private evidence references, and after-action remediation |
 
 ## Companion repo map
 

@@ -38,6 +38,7 @@ Sprint Mode writes contract-oriented outputs for later private app import:
 - `evidence-index.json` validates against `schemas/evidence-index.schema.json`.
 - Connector bundles validate against `schemas/connector-run.schema.json`, and individual connector evidence items validate against `schemas/normalized-evidence.schema.json`.
 - Finding/action packets follow `schemas/velari-answer-standard.schema.json` and the product language rules in `docs/product/velari-answer-standard.md`.
+- `packet-manifest.json` includes lifecycle-aware evidence references with source kind, source reference, lifecycle status, closeout state, acceptable evidence, unsafe inputs, next action, closeout rule, and trace metadata back to flows, systems, vendors, workflows, artifacts, and source modules.
 - `risk-register.csv` and `handoff-actions.csv` include audience, recipient, owner, stage, priority, timeframe, plain-English summary, why-it-matters text, recommended question, acceptable evidence, unsafe inputs, reviewer needed, next action, output views, evidence reference, artifact reference, and 30/60/90 bucket fields.
 - `sprint-summary.json` includes `offering_summary` for private-app import of audience lanes, source anchors, first-week actions, artifact checklist, boundary statements, and stage-to-source mapping.
 - `connector-evidence-summary.json` records connector run provenance, confidence, safety manifest status, and metadata-only boundaries.

@@ -27,6 +27,18 @@ Overall initial risk: **High**
 - Document downtime procedures for critical systems.
 - Set a monthly log review cadence.
 
+## Evidence Closeout Queue
+
+| Item | Lifecycle | Closeout | Owner | Acceptable evidence | Closeout rule |
+| --- | --- | --- | --- | --- | --- |
+| EHR MFA evidence | Missing | Blocked | MSP Lead | MFA enforcement export; admin screenshot with date observed; covered groups; exceptions; and MSP attestation | Close when mfa enforcement export, admin screenshot with date observed, covered groups, exceptions, and msp attestation are recorded as reference-only evidence. |
+| Unique account evidence | Provided | Closed | MSP Lead | User list export; shared-account exception list; owner signoff; and sunset dates | Close when user list export, shared-account exception list, owner signoff, and sunset dates are recorded as reference-only evidence. |
+| Quarterly access review evidence | Missing | Needs evidence | MSP Lead | User list export; admin role list; owner signoff; removed-account notes; and exception sunset dates | Close when user list export, admin role list, owner signoff, removed-account notes, and exception sunset dates are recorded as reference-only evidence. |
+| Backup restore evidence | Missing | Blocked | MSP Lead | Backup scope summary; restore-test note; date observed; recovery owner; and excluded systems | Close when backup scope summary, restore-test note, date observed, recovery owner, and excluded systems are recorded as reference-only evidence. |
+| BAA register evidence | Missing | Blocked | Office Manager | BAA status; review date; vendor security page; SOC 2/HITRUST status; and incident terms | Close when baa status, review date, vendor security page, soc 2/hitrust status, and incident terms are recorded as reference-only evidence. |
+| Downtime plan evidence | Missing | Blocked | MSP Lead | Downtime workflow; manual workaround owner; staff acknowledgement; and tabletop attendance | Close when downtime workflow, manual workaround owner, staff acknowledgement, and tabletop attendance are recorded as reference-only evidence. |
+| Log review cadence evidence | Missing | Blocked | MSP Lead | Log source list; review cadence record; alert owner; escalation path; and date observed | Close when log source list, review cadence record, alert owner, escalation path, and date observed are recorded as reference-only evidence. |
+
 
 ---
 
@@ -46,28 +58,39 @@ Overall initial risk: **High**
 
 ## Flows
 
-| Flow | Source | Destination | Vendor | ePHI Type | BAA Needed | Risk | Evidence Needed |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | demographic and insurance categories | Yes | medium | BAA, portal access controls, intake workflow owner |
-| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | billing and payer-submission categories | Yes | high | BAA, integration owner, incident notification terms |
-| FLOW-003 | Staff email | External specialist | Email provider | referral attachments | Yes | high | secure email policy, forwarding review, staff training |
-| FLOW-004 | Dental Imaging Workstation | Shared Drive | Workspace Provider | image export categories | Yes | high | export procedure, shared-folder access review, backup scope reference |
-| FLOW-005 | Front desk notes | General AI Assistant | General AI Assistant Vendor | no patient data approved; generic administrative drafting only | No | medium | AI acceptable-use guidance and staff acknowledgement |
-| FLOW-006 | Provider conversation | AI Scribe Pilot | Example AI Scribe Vendor | potential visit-summary categories if approved after vendor review | Yes | high | BAA, retention terms, model-training terms, human review approval |
+| Flow | Source | Destination | Vendor | ePHI Type | BAA Needed | Risk | Lifecycle | Closeout | Evidence Needed |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | demographic and insurance categories | Yes | medium | Requested | Needs evidence | BAA, portal access controls, intake workflow owner |
+| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | billing and payer-submission categories | Yes | high | Requested | Needs evidence | BAA, integration owner, incident notification terms |
+| FLOW-003 | Staff email | External specialist | Email provider | referral attachments | Yes | high | Requested | Needs evidence | secure email policy, forwarding review, staff training |
+| FLOW-004 | Dental Imaging Workstation | Shared Drive | Workspace Provider | image export categories | Yes | high | Requested | Needs evidence | export procedure, shared-folder access review, backup scope reference |
+| FLOW-005 | Front desk notes | General AI Assistant | General AI Assistant Vendor | no patient data approved; generic administrative drafting only | No | medium | Provided | Closed | AI acceptable-use guidance and staff acknowledgement |
+| FLOW-006 | Provider conversation | AI Scribe Pilot | Example AI Scribe Vendor | potential visit-summary categories if approved after vendor review | Yes | high | Requested | Needs evidence | BAA, retention terms, model-training terms, human review approval |
+
+## Traceability Summary
+
+| Flow | Trace | Downstream artifacts | Closeout rule |
+| --- | --- | --- | --- |
+| FLOW-001 | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+| FLOW-002 | flows FLOW-002; systems Cloud EHR, Billing Portal; vendors Example Billing Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+| FLOW-003 | flows FLOW-003; vendors Email provider | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+| FLOW-004 | flows FLOW-004; systems Dental Imaging Workstation, Shared Drive; vendors Workspace Provider | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+| FLOW-005 | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+| FLOW-006 | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
 
 
 ---
 
 # Vendor and BAA Review
 
-| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | SOC 2 Status | HITRUST Status | Subcontractors | Incident Terms | Risk |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | not provided | not provided | partial | 24 hours in contract | medium |
-| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | not provided | not provided | unknown | unknown | high |
-| Workspace Provider | Email, calendar, and shared drive | Yes | signed | not reviewed for add-on AI features | not provided | not provided | published list not reviewed | portal notice terms need review | medium |
-| Example Imaging Vendor | Dental imaging software and support | Yes | unknown | not applicable in current deployment | not provided | not provided | unknown | unknown | high |
-| General AI Assistant Vendor | Administrative drafting assistant | No | not needed for no-PHI demo workflow | consumer/default settings not approved for sensitive data | not applicable | not applicable | not reviewed | not reviewed | medium |
-| Example AI Scribe Vendor | AI scribe pilot | Yes | requested | unknown | not provided | not provided | unknown | unknown | high |
+| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | SOC 2 Status | HITRUST Status | Subcontractors | Incident Terms | Risk | Lifecycle | Closeout | Trace |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | not provided | not provided | partial | 24 hours in contract | medium | Provided | Ready for review | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor |
+| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | not provided | not provided | unknown | unknown | high | Stale | Blocked | flows FLOW-002; systems Billing Portal; vendors Example Billing Vendor |
+| Workspace Provider | Email, calendar, and shared drive | Yes | signed | not reviewed for add-on AI features | not provided | not provided | published list not reviewed | portal notice terms need review | medium | Provided | Ready for review | flows FLOW-004; systems Shared Drive; vendors Workspace Provider |
+| Example Imaging Vendor | Dental imaging software and support | Yes | unknown | not applicable in current deployment | not provided | not provided | unknown | unknown | high | Missing | Blocked | systems Dental Imaging Workstation; vendors Example Imaging Vendor |
+| General AI Assistant Vendor | Administrative drafting assistant | No | not needed for no-PHI demo workflow | consumer/default settings not approved for sensitive data | not applicable | not applicable | not reviewed | not reviewed | medium | Not applicable | Not applicable | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor |
+| Example AI Scribe Vendor | AI scribe pilot | Yes | requested | unknown | not provided | not provided | unknown | unknown | high | Requested | Needs evidence | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor |
 
 ## Next Evidence
 
@@ -81,13 +104,13 @@ Overall initial risk: **High**
 
 # AI Workflow Review
 
-| Workflow | Use | Data Used | Vendor | Decision | Evidence Needed |
-| --- | --- | --- | --- | --- | --- |
-| Marketing email drafting | Draft generic outreach copy | No patient data | General AI assistant | allowed | staff guidance and prohibited data examples |
-| Insurance renewal questionnaire drafting | Draft plain-language answers for cyber insurance renewal questions | Control status summaries and evidence reference IDs only | General AI assistant | allowed | owner review and no-PHI/no-secret prompt guidance |
-| Billing appeal drafter | Draft payer appeal language | billing scenario summary; real patient-level details are not approved | General AI assistant | restricted | BAA review, redaction workflow, owner approval |
-| AI scribe pilot | Draft visit summaries after provider review | potential PHI if enabled after vendor approval | Example AI Scribe Vendor | restricted | BAA, retention/model-training terms, human review workflow, pilot owner signoff |
-| Paste patient-level note into public chatbot | Summarize patient-level documentation | patient-level documentation category | Public chatbot | prohibited | training reminder and AI use policy |
+| Workflow | Use | Data Used | Vendor | Decision | Lifecycle | Closeout | Trace | Evidence Needed |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Marketing email drafting | Draft generic outreach copy | No patient data | General AI assistant | allowed | Closed | Closed | flows FLOW-005; vendors General AI assistant; workflows Marketing email drafting | staff guidance and prohibited data examples |
+| Insurance renewal questionnaire drafting | Draft plain-language answers for cyber insurance renewal questions | Control status summaries and evidence reference IDs only | General AI assistant | allowed | Closed | Closed | flows FLOW-005; vendors General AI assistant; workflows Insurance renewal questionnaire drafting | owner review and no-PHI/no-secret prompt guidance |
+| Billing appeal drafter | Draft payer appeal language | billing scenario summary; real patient-level details are not approved | General AI assistant | restricted | Requested | Needs evidence | flows FLOW-005; vendors General AI assistant; workflows Billing appeal drafter | BAA review, redaction workflow, owner approval |
+| AI scribe pilot | Draft visit summaries after provider review | potential PHI if enabled after vendor approval | Example AI Scribe Vendor | restricted | Requested | Needs evidence | flows FLOW-006; vendors Example AI Scribe Vendor; workflows AI scribe pilot | BAA, retention/model-training terms, human review workflow, pilot owner signoff |
+| Paste patient-level note into public chatbot | Summarize patient-level documentation | patient-level documentation category | Public chatbot | prohibited | Blocked | Blocked | vendors Public chatbot; workflows Paste patient-level note into public chatbot | training reminder and AI use policy |
 
 ## Rules of Thumb
 
@@ -106,12 +129,12 @@ Restore test status: **not recorded**
 
 Tabletop status: **not run**
 
-| Critical System | Downtime Owner | Evidence Needed |
-| --- | --- | --- |
-| Cloud EHR | Needs downtime owner | Needs restore or manual workaround evidence |
-| Billing Portal | Needs downtime owner | Needs restore or manual workaround evidence |
-| Phones | Needs downtime owner | Needs restore or manual workaround evidence |
-| Shared Drive | Needs downtime owner | Needs restore or manual workaround evidence |
+| Critical System | Downtime Owner | Lifecycle | Closeout | Trace | Closeout rule |
+| --- | --- | --- | --- | --- | --- |
+| Cloud EHR | MSP Lead | Missing | Blocked | flows FLOW-001, FLOW-002; systems Cloud EHR | Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded. |
+| Billing Portal | MSP Lead | Missing | Blocked | flows FLOW-002; systems Billing Portal | Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded. |
+| Phones | MSP Lead | Missing | Blocked | systems Phones | Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded. |
+| Shared Drive | MSP Lead | Missing | Blocked | flows FLOW-004; systems Shared Drive | Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded. |
 
 ## Tabletop Scenario
 
@@ -216,30 +239,142 @@ Use this as a handoff template when an outage, ransomware concern, lost device, 
 
 ---
 
+# Incident Evidence Timeline
+
+Scenario: **Suspicious login and EHR downtime tabletop**
+
+Type: **tabletop**
+
+Synthetic scenario: staff notice an unusual admin login alert shortly before the Cloud EHR becomes unavailable. The practice needs to keep care moving, preserve evidence references, and separate technical containment from qualified breach, insurance, contract, and regulatory decisions.
+
+## Evidence Boundary
+
+Use categories, owners, timestamps, and evidence reference IDs only. Do not include PHI, patient identifiers, screenshots, raw logs, private URLs, credentials, vendor contracts, or real incident details.
+
+## Timeline
+
+| Time | Phase | Sanitized event | System/workflow | Owner | Evidence ref | Decision gate | Status |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| T+00 | Detection | Front desk reports the Cloud EHR is unavailable and the owner sees a suspicious admin-login alert category. | Cloud EHR; Email | Office Manager | restricted-evidence/incidents/tabletop-detection-note | Is there active compromise, patient-care disruption, or vendor notice? | requested |
+| T+15 | Continuity | Practice switches to downtime workflow while the MSP checks whether the issue affects EHR, email, billing, or shared drive access. | Cloud EHR; Billing Portal; Shared Drive | Office Manager | restricted-evidence/incidents/downtime-workflow-reference | Which manual workflow keeps care moving without creating new unsafe data copies? | requested |
+| T+30 | Containment | MSP confirms account, device, vendor-support, and remote-access categories that need review or containment. | Cloud EHR; Workspace Provider | MSP Lead | restricted-evidence/incidents/containment-action-reference | Which accounts, tokens, sessions, or vendor paths should be disabled or reviewed first? | requested |
+| T+60 | Qualified review | Owner parks breach-notification, insurance, contract notice, and regulatory questions for qualified reviewers. | Cloud EHR; Example EHR Vendor | Qualified reviewer | restricted-evidence/incidents/qualified-review-queue | Which facts and private evidence references must be prepared for counsel, insurer, vendor, or incident responder? | requested |
+| T+1 business day | After-action | Practice assigns remediation owners for access review, MFA evidence, restore-test proof, vendor incident terms, and staff communication. | Cloud EHR; Billing Portal; Shared Drive | Practice Owner | restricted-evidence/incidents/after-action-items | Which improvements must be completed in the next 30 days before the tabletop can be closed? | requested |
+
+## Decision Gates
+
+| Gate | Owner | Trigger | Action |
+| --- | --- | --- | --- |
+| Active compromise escalation | MSP Lead | Ransomware indicator, active unauthorized access, lost device, vendor breach notice, or patient-care disruption. | Escalate to qualified incident response and preserve private evidence references. |
+| Breach or notice review | Qualified reviewer | Possible impermissible access, disclosure, contract notice, insurance notice, or regulatory reporting question. | Park for qualified legal, compliance, insurer, vendor, or incident-response review. |
+| Operational continuity | Office Manager | EHR, billing, phones, shared drive, or messaging portal unavailable during patient-care operations. | Use documented downtime workflow and record reference-only evidence of decisions and owner approvals. |
+
+## Handoff Rules
+
+- Separate technical containment from breach-notification, insurance, contract, regulatory, and legal/compliance decisions.
+- Preserve private evidence references without copying raw evidence into the public packet.
+- Escalate active compromise, ransomware, unauthorized access, lost device, vendor breach notice, or patient-care disruption to qualified incident response.
+- Use this timeline to prepare the qualified-review conversation; do not use it to decide reportability.
+
+
+---
+
+# Incident After-Action Report
+
+Scenario: **Suspicious login and EHR downtime tabletop**
+
+This report turns the timeline into owner/MSP follow-up work. It is an operational improvement packet, not a reportability conclusion, legal opinion, formal Security Risk Analysis, or incident-response substitute.
+
+## What Worked
+
+- A single owner/MSP timeline can preserve the order of events without exposing PHI or secrets.
+- Evidence is tracked by reference ID, not by copying screenshots, logs, private URLs, contracts, or patient-level details into public artifacts.
+- Legal/compliance, insurance, regulatory, and contract-notice questions stay parked for qualified reviewers.
+
+## Improvement Actions
+
+| ID | Priority | Owner | Action | Evidence needed | Due |
+| --- | --- | --- | --- | --- | --- |
+| INC-AA-001 | high | MSP Lead | Confirm MFA enforcement, session reset, administrator list, and access-review evidence for EHR and workspace accounts. | Admin settings export reference, access review reference, session reset reference, and owner signoff. | 30 days |
+| INC-AA-002 | high | Office Manager | Update downtime workflow for Cloud EHR, Billing Portal, Phones, and Shared Drive. | Downtime workflow reference, staff acknowledgement reference, and tabletop attendance reference. | 30 days |
+| INC-AA-003 | medium | Practice Owner | Review vendor incident terms and support contacts for EHR, billing, imaging, workspace, and AI scribe vendors. | Vendor terms reference, security contact reference, BAA review date, and qualified-review notes. | 60 days |
+| INC-AA-004 | medium | MSP Lead | Run a restore-test evidence refresh for systems needed during patient-care continuity. | Restore-test record reference, backup-scope reference, and exception list. | 60 days |
+
+## Reviewer Packet
+
+- Incident evidence timeline.
+- Private evidence reference list.
+- Owner/MSP containment summary.
+- Vendor notification or support-ticket reference, if applicable.
+- Backup/restore and access-review evidence references for affected systems.
+- List of decisions parked for counsel, compliance, insurer, vendor, or qualified incident responder.
+
+
+---
+
 # Evidence Binder Index
 
-| Evidence ID | Area | Evidence Needed | Module |
-| --- | --- | --- | --- |
-| EVID-ACCESS-Q2 | Access | Quarterly access review export placeholder - restricted-evidence/access/q2-access-review | 03-hipaa-evidence-binder |
-| EVID-BACKUP-RESTORE | Backup | Backup restore test record placeholder - restricted-evidence/backups/restore-test-record | 03-hipaa-evidence-binder |
-| EVID-CYBER-INSURANCE | Insurance | Cyber insurance renewal evidence list - restricted-evidence/insurance/renewal-evidence-list | 03-hipaa-evidence-binder |
-| EVID-AI-GUIDANCE | AI | Staff AI acceptable-use acknowledgement - restricted-evidence/ai/staff-ai-guidance | 03-hipaa-evidence-binder |
-| EVID-VENDOR-BAA-GAPS | Vendor | Vendor BAA and incident terms follow-up list - restricted-evidence/vendors/baa-follow-up-list | 03-hipaa-evidence-binder |
-| FLOW-001 | ePHI flow | BAA, portal access controls, intake workflow owner | 03-hipaa-evidence-binder |
-| FLOW-002 | ePHI flow | BAA, integration owner, incident notification terms | 03-hipaa-evidence-binder |
-| FLOW-003 | ePHI flow | secure email policy, forwarding review, staff training | 03-hipaa-evidence-binder |
-| FLOW-004 | ePHI flow | export procedure, shared-folder access review, backup scope reference | 03-hipaa-evidence-binder |
-| FLOW-005 | ePHI flow | AI acceptable-use guidance and staff acknowledgement | 03-hipaa-evidence-binder |
-| FLOW-006 | ePHI flow | BAA, retention terms, model-training terms, human review approval | 03-hipaa-evidence-binder |
-| Example EHR Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor | 04-vendor-baa-review |
-| Example Billing Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor | 04-vendor-baa-review |
-| Workspace Provider | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider | 04-vendor-baa-review |
-| Example Imaging Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Imaging Vendor | 04-vendor-baa-review |
-| General AI Assistant Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for General AI Assistant Vendor | 04-vendor-baa-review |
-| Example AI Scribe Vendor | Vendor/BAA | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example AI Scribe Vendor | 04-vendor-baa-review |
-| ACCESS-QTR | Access | Quarterly access review for EHR, billing, email, remote access | 03-hipaa-evidence-binder |
-| BACKUP-RESTORE | Backup | Restore test record for EHR, billing, shared drive, key workstation | 06-downtime-ransomware-tabletop |
-| AI-POLICY | AI workflow | Allowed/prohibited AI use guidance and staff acknowledgement | 05-ai-workflow-review |
+This is a lifecycle index for reference-only evidence. Store raw proof in the private/offline binder and keep this packet limited to owners, dates, status labels, trace context, and safe evidence references.
+
+## Lifecycle Summary
+
+- Total evidence rows: 46
+- Blocked: 13
+- Needs evidence: 22
+- Ready for review: 2
+- Closed: 8
+- Traceable to ePHI flows: 23
+
+## Evidence Lifecycle
+
+| Evidence ID | Area | Lifecycle | Closeout | Owner | Trace | Acceptable evidence | Next action | Artifacts |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| EVID-ACCESS-Q2 | access | Partial | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Quarterly access review export placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
+| EVID-BACKUP-RESTORE | backup | Stale | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Backup restore test record placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
+| EVID-CYBER-INSURANCE | insurance | Requested | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Cyber insurance renewal evidence list; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
+| EVID-AI-GUIDANCE | ai | Requested | Needs evidence | Office Manager | EVID-AI-GUIDANCE | Staff AI acceptable-use acknowledgement; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
+| EVID-VENDOR-BAA-GAPS | vendor | Requested | Needs evidence | Office Manager | EVID-VENDOR-BAA-GAPS | Vendor BAA and incident terms follow-up list; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
+| READINESS-MFA-EMAIL | access___mfa | Provided | Closed | Office Manager | mfa_email | MFA policy export; covered groups; exceptions; and date observed | Keep this evidence on a quarterly refresh cadence. | readiness-review.md |
+| READINESS-MFA-EHR | access___mfa | Missing | Blocked | MSP Lead | mfa_ehr | MFA enforcement export; admin screenshot with date observed; covered groups; exceptions; and MSP attestation | Request proof, document exceptions, and assign an owner before closeout. | owner-msp-handoff.md; readiness-review.md |
+| READINESS-UNIQUE-ACCOUNTS | access_review | Provided | Closed | MSP Lead | unique_accounts | User list export; shared-account exception list; owner signoff; and sunset dates | Keep this evidence on a quarterly refresh cadence. | owner-msp-handoff.md; readiness-review.md |
+| READINESS-ACCESS-REVIEW | access_review | Missing | Needs evidence | MSP Lead | quarterly_access_review | User list export; admin role list; owner signoff; removed-account notes; and exception sunset dates | Request proof, document exceptions, and assign an owner before closeout. | owner-msp-handoff.md; readiness-review.md |
+| READINESS-BACKUP-RESTORE | backup___downtime | Missing | Blocked | MSP Lead | tested_backups | Backup scope summary; restore-test note; date observed; recovery owner; and excluded systems | Request proof, document exceptions, and assign an owner before closeout. | downtime-ransomware-tabletop.md; readiness-review.md |
+| READINESS-VENDOR-INVENTORY | vendor___baa | Provided | Closed | Office Manager | vendor_inventory | Vendor register; owner; service; ePHI touch status; BAA status; and review date | Keep this evidence on a quarterly refresh cadence. | vendor-baa-review.md; readiness-review.md |
+| READINESS-BAA-REGISTER | vendor___baa | Missing | Blocked | Office Manager | baa_register | BAA status; review date; vendor security page; SOC 2/HITRUST status; and incident terms | Request proof, document exceptions, and assign an owner before closeout. | vendor-baa-review.md; readiness-review.md |
+| READINESS-INCIDENT-CONTACTS | incident_readiness | Provided | Closed | Office Manager | incident_contact_list | Incident contact list; MSP contact; vendor contact; qualified-review contact; and review date | Keep this evidence on a quarterly refresh cadence. | incident-decision-log.md; readiness-review.md |
+| READINESS-DOWNTIME-PLAN | downtime | Missing | Blocked | MSP Lead | downtime_plan | Downtime workflow; manual workaround owner; staff acknowledgement; and tabletop attendance | Request proof, document exceptions, and assign an owner before closeout. | downtime-ransomware-tabletop.md; readiness-review.md |
+| READINESS-TRAINING | workforce | Provided | Closed | Office Manager | security_training_current | Training roster; acknowledgement date; no-PHI AI guidance; and exception list | Keep this evidence on a quarterly refresh cadence. | readiness-review.md |
+| READINESS-LOG-REVIEW | monitoring | Missing | Blocked | MSP Lead | log_review_cadence | Log source list; review cadence record; alert owner; escalation path; and date observed | Request proof, document exceptions, and assign an owner before closeout. | owner-msp-handoff.md; readiness-review.md |
+| FLOW-001 | ephi_flow | Requested | Needs evidence | MSP or workflow owner | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | BAA; portal access controls; intake workflow owner | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| FLOW-002 | ephi_flow | Requested | Needs evidence | MSP or workflow owner | flows FLOW-002; systems Cloud EHR, Billing Portal; vendors Example Billing Vendor | BAA; integration owner; incident notification terms | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| FLOW-003 | ephi_flow | Requested | Needs evidence | MSP or workflow owner | flows FLOW-003; vendors Email provider | secure email policy; forwarding review; staff training | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| FLOW-004 | ephi_flow | Requested | Needs evidence | MSP or workflow owner | flows FLOW-004; systems Dental Imaging Workstation, Shared Drive; vendors Workspace Provider | export procedure; shared-folder access review; backup scope reference | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| FLOW-005 | ephi_flow | Provided | Closed | MSP or workflow owner | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor | AI acceptable-use guidance and staff acknowledgement | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| FLOW-006 | ephi_flow | Requested | Needs evidence | MSP or workflow owner | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor | BAA; retention terms; model-training terms; human review approval | Confirm the flow owner, channel, BAA need, and private evidence reference. | ephi-flow-map.md; evidence-binder-index.md |
+| VENDOR-EXAMPLE_EHR_VENDOR | vendor_baa | Provided | Ready for review | Practice manager | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| VENDOR-EXAMPLE_BILLING_VENDOR | vendor_baa | Stale | Blocked | Practice manager | flows FLOW-002; systems Billing Portal; vendors Example Billing Vendor | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| VENDOR-WORKSPACE_PROVIDER | vendor_baa | Provided | Ready for review | Practice manager | flows FLOW-004; systems Shared Drive; vendors Workspace Provider | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| VENDOR-EXAMPLE_IMAGING_VENDOR | vendor_baa | Missing | Blocked | Practice manager | systems Dental Imaging Workstation; vendors Example Imaging Vendor | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| VENDOR-GENERAL_AI_ASSISTANT_VENDOR | vendor_baa | Not applicable | Not applicable | Practice manager | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| VENDOR-EXAMPLE_AI_SCRIBE_VENDOR | vendor_baa | Requested | Needs evidence | Practice manager | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor | BAA status; BAA review date; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms; AI/data-use response | Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts. | vendor-baa-review.md; evidence-binder-index.md |
+| AI-MARKETING_EMAIL_DRAFTING | ai_workflow | Closed | Closed | Office Manager | flows FLOW-005; vendors General AI assistant; workflows Marketing email drafting | staff guidance and prohibited data examples | Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented. | ai-workflow-review.md; evidence-binder-index.md |
+| AI-INSURANCE_RENEWAL_QUESTIONNAIRE_DRAFTING | ai_workflow | Closed | Closed | Office Manager | flows FLOW-005; vendors General AI assistant; workflows Insurance renewal questionnaire drafting | owner review and no-PHI/no-secret prompt guidance | Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented. | ai-workflow-review.md; evidence-binder-index.md |
+| AI-BILLING_APPEAL_DRAFTER | ai_workflow | Requested | Needs evidence | Office Manager | flows FLOW-005; vendors General AI assistant; workflows Billing appeal drafter | BAA review; redaction workflow; owner approval | Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented. | ai-workflow-review.md; evidence-binder-index.md |
+| AI-AI_SCRIBE_PILOT | ai_workflow | Requested | Needs evidence | Office Manager | flows FLOW-006; vendors Example AI Scribe Vendor; workflows AI scribe pilot | BAA; retention/model-training terms; human review workflow; pilot owner signoff | Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented. | ai-workflow-review.md; evidence-binder-index.md |
+| AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT | ai_workflow | Blocked | Blocked | Office Manager | vendors Public chatbot; workflows Paste patient-level note into public chatbot | training reminder and AI use policy | Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented. | ai-workflow-review.md; evidence-binder-index.md |
+| DOWNTIME-CLOUD_EHR | downtime | Missing | Blocked | MSP Lead | flows FLOW-001, FLOW-002; systems Cloud EHR | downtime workflow; manual workaround owner; backup scope; restore-test note; tabletop attendance | Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references. | downtime-ransomware-tabletop.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| DOWNTIME-BILLING_PORTAL | downtime | Missing | Blocked | MSP Lead | flows FLOW-002; systems Billing Portal | downtime workflow; manual workaround owner; backup scope; restore-test note; tabletop attendance | Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references. | downtime-ransomware-tabletop.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| DOWNTIME-PHONES | downtime | Missing | Blocked | MSP Lead | systems Phones | downtime workflow; manual workaround owner; backup scope; restore-test note; tabletop attendance | Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references. | downtime-ransomware-tabletop.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| DOWNTIME-SHARED_DRIVE | downtime | Missing | Blocked | MSP Lead | flows FLOW-004; systems Shared Drive | downtime workflow; manual workaround owner; backup scope; restore-test note; tabletop attendance | Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references. | downtime-ransomware-tabletop.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| INC-TIMELINE-001 | incident_timeline | Requested | Needs evidence | Office Manager | flows FLOW-001, FLOW-002; systems Cloud EHR, Email | timeline event category; owner; timestamp or sequence marker; private evidence reference; decision gate | Preserve reference-only event order and route qualified decisions to the right reviewer. | incident-evidence-timeline.md; incident-after-action-report.md; evidence-binder-index.md |
+| INC-TIMELINE-002 | incident_timeline | Requested | Needs evidence | Office Manager | flows FLOW-001, FLOW-002, FLOW-004; systems Cloud EHR, Billing Portal, Shared Drive | timeline event category; owner; timestamp or sequence marker; private evidence reference; decision gate | Preserve reference-only event order and route qualified decisions to the right reviewer. | incident-evidence-timeline.md; incident-after-action-report.md; evidence-binder-index.md |
+| INC-TIMELINE-003 | incident_timeline | Requested | Needs evidence | MSP Lead | flows FLOW-001, FLOW-002; systems Cloud EHR, Workspace Provider | timeline event category; owner; timestamp or sequence marker; private evidence reference; decision gate | Preserve reference-only event order and route qualified decisions to the right reviewer. | incident-evidence-timeline.md; incident-after-action-report.md; evidence-binder-index.md |
+| INC-TIMELINE-004 | incident_timeline | Requested | Needs evidence | Qualified reviewer | flows FLOW-001, FLOW-002; systems Cloud EHR, Example EHR Vendor | timeline event category; owner; timestamp or sequence marker; private evidence reference; decision gate | Preserve reference-only event order and route qualified decisions to the right reviewer. | incident-evidence-timeline.md; incident-after-action-report.md; evidence-binder-index.md |
+| INC-TIMELINE-005 | incident_timeline | Requested | Needs evidence | Practice Owner | flows FLOW-001, FLOW-002, FLOW-004; systems Cloud EHR, Billing Portal, Shared Drive | timeline event category; owner; timestamp or sequence marker; private evidence reference; decision gate | Preserve reference-only event order and route qualified decisions to the right reviewer. | incident-evidence-timeline.md; incident-after-action-report.md; evidence-binder-index.md |
+| INC-AA-001 | incident_after_action | Requested | Needs evidence | MSP Lead | INC-AA-001 | Admin settings export reference; access review reference; session reset reference; and owner signoff. | Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item. | incident-after-action-report.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| INC-AA-002 | incident_after_action | Requested | Needs evidence | Office Manager | INC-AA-002 | Downtime workflow reference; staff acknowledgement reference; and tabletop attendance reference. | Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item. | incident-after-action-report.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| INC-AA-003 | incident_after_action | Requested | Needs evidence | Practice Owner | INC-AA-003 | Vendor terms reference; security contact reference; BAA review date; and qualified-review notes. | Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item. | incident-after-action-report.md; incident-evidence-timeline.md; evidence-binder-index.md |
+| INC-AA-004 | incident_after_action | Requested | Needs evidence | MSP Lead | INC-AA-004 | Restore-test record reference; backup-scope reference; and exception list. | Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item. | incident-after-action-report.md; incident-evidence-timeline.md; evidence-binder-index.md |
 
 
 ---
@@ -291,6 +426,23 @@ Initial risk level: **High**
 | Workspace Provider | Email, calendar, and shared drive | signed | not provided | not provided | medium | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
 | Example Imaging Vendor | Dental imaging software and support | unknown | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
 | Example AI Scribe Vendor | AI scribe pilot | requested | not provided | not provided | high | Practice manager | Confirm BAA scope, SOC 2/HITRUST evidence status, incident terms, subcontractors, and AI/data-use posture. |
+
+## Closeout Gates
+
+| Evidence | Closeout | Owner | Trace | Next action |
+| --- | --- | --- | --- | --- |
+| EVID-ACCESS-Q2 | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
+| EVID-BACKUP-RESTORE | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
+| EVID-CYBER-INSURANCE | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
+| EVID-AI-GUIDANCE | Needs evidence | Office Manager | EVID-AI-GUIDANCE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
+| EVID-VENDOR-BAA-GAPS | Needs evidence | Office Manager | EVID-VENDOR-BAA-GAPS | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
+| READINESS-MFA-EHR | Blocked | MSP Lead | mfa_ehr | Request proof, document exceptions, and assign an owner before closeout. |
+| READINESS-ACCESS-REVIEW | Needs evidence | MSP Lead | quarterly_access_review | Request proof, document exceptions, and assign an owner before closeout. |
+| READINESS-BACKUP-RESTORE | Blocked | MSP Lead | tested_backups | Request proof, document exceptions, and assign an owner before closeout. |
+| READINESS-BAA-REGISTER | Blocked | Office Manager | baa_register | Request proof, document exceptions, and assign an owner before closeout. |
+| READINESS-DOWNTIME-PLAN | Blocked | MSP Lead | downtime_plan | Request proof, document exceptions, and assign an owner before closeout. |
+| READINESS-LOG-REVIEW | Blocked | MSP Lead | log_review_cadence | Request proof, document exceptions, and assign an owner before closeout. |
+| FLOW-001 | Needs evidence | MSP or workflow owner | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | Confirm the flow owner, channel, BAA need, and private evidence reference. |
 
 ## Handoff Boundary
 

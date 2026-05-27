@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import html
+from datetime import date
 from pathlib import Path
 from typing import Iterable
 
 from .brand import VELARI_CSS_VARIABLES
-from .packet import OUT, render_html, risk_level
+from .evidence_lifecycle import build_evidence_lifecycle, closeout_label, lifecycle_label, summarize_lifecycle, trace_label
+from .packet import OUT, _incident_profile, render_html, risk_level
 from .profile import load_profile, slugify
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
@@ -15,6 +17,10 @@ STATUS_LABELS = {
     "review": "Needs review",
     "blocked": "Needs action",
     "unknown": "Unknown",
+    "needs_evidence": "Needs evidence",
+    "ready_for_review": "Ready for review",
+    "closed": "Closed",
+    "not_applicable": "Not applicable",
 }
 
 
@@ -32,11 +38,11 @@ def title_case(value: str) -> str:
 
 def status_class(value: str) -> str:
     normalized = str(value or "").lower()
-    if normalized in {"high", "missing", "prohibited", "false", "not documented", "not run"}:
+    if normalized in {"high", "missing", "stale", "outdated", "blocked", "prohibited", "false", "not documented", "not run"}:
         return "blocked"
-    if normalized in {"medium", "restricted", "unknown", "partial", "missing review date", "not reviewed", "not provided", "absent", ""}:
+    if normalized in {"medium", "restricted", "unknown", "partial", "requested", "needs review", "needs_evidence", "ready_for_review", "missing review date", "not reviewed", "not provided", "absent", ""}:
         return "review"
-    if normalized in {"low", "signed", "allowed", "true", "ready", "complete", "completed"}:
+    if normalized in {"low", "signed", "provided", "reviewed", "allowed", "true", "ready", "complete", "completed", "closed", "not_applicable"}:
         return "done"
     return "unknown"
 
@@ -115,29 +121,27 @@ def next_actions(profile: dict) -> list[str]:
 
 
 def evidence_rows(profile: dict) -> list[list[object]]:
+    records = build_evidence_lifecycle(profile, date.today())
+    ranked = sorted(
+        records,
+        key=lambda record: (
+            {"blocked": 0, "needs_evidence": 1, "ready_for_review": 2, "closed": 3, "not_applicable": 4}.get(record["closeout_state"], 5),
+            record["evidence_id"],
+        ),
+    )
     rows: list[list[object]] = []
-    for evidence in profile.get("evidence", []):
+    for record in ranked:
         rows.append(
             [
-                esc(evidence.get("id", evidence.get("title", "Evidence"))),
-                esc(evidence.get("area", evidence.get("type", "Evidence"))),
-                esc(evidence.get("title", "Evidence reference")),
-                badge(evidence.get("status", "needed"), kind="review" if evidence.get("status") in {"needed", "requested", ""} else "done"),
+                esc(record["evidence_id"]),
+                esc(record["evidence_type"]),
+                badge(lifecycle_label(record["lifecycle_status"]), kind=status_class(record["lifecycle_status"])),
+                badge(closeout_label(record["closeout_state"]), kind=status_class(record["closeout_state"])),
+                esc(record["owner"]),
+                esc(trace_label(record)),
+                esc(record["next_action"]),
             ]
         )
-    for flow in profile["flows"]:
-        rows.append([esc(flow["id"]), esc("ePHI flow"), esc(flow["evidence_needed"]), badge(flow["risk"])])
-    for vendor in profile["vendors"]:
-        rows.append(
-            [
-                esc(vendor["name"]),
-                esc("Vendor/BAA"),
-                esc(f"BAA, SOC 2/HITRUST status, incident terms, security contact, AI data-use review for {vendor['name']}"),
-                badge(vendor["risk"]),
-            ]
-        )
-    rows.append([esc("BACKUP-RESTORE"), esc("Resilience"), esc("Restore test record and owner signoff"), badge("review", kind="review")])
-    rows.append([esc("AI-POLICY"), esc("AI workflow"), esc("Allowed, restricted, and prohibited AI use guidance"), badge("review", kind="review")])
     return rows
 
 
@@ -154,6 +158,12 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     signed_baas = sum(1 for vendor in profile["vendors"] if vendor["touches_ephi"] and vendor["baa_status"] == "signed")
     high_flows = sum(1 for flow in profile["flows"] if flow["risk"] == "high")
     restricted_ai = sum(1 for workflow in profile["ai_workflows"] if workflow["decision"] != "allowed")
+    incident = _incident_profile(profile)
+    incident_events = len(incident.get("timeline", []))
+    incident_actions = len(incident.get("after_actions", []))
+    lifecycle_records = build_evidence_lifecycle(profile, date.today())
+    lifecycle_summary = summarize_lifecycle(lifecycle_records)
+    evidence_task_state = "blocked" if lifecycle_summary["blocked"] else "review" if lifecycle_summary["needs_evidence"] or lifecycle_summary["ready_for_review"] else "done"
 
     actions = "".join(f"<li>{esc(action)}</li>" for action in next_actions(profile))
     task_list = "".join(
@@ -163,7 +173,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
             task_row("Vendor and BAA review", "BAA status, SOC 2/HITRUST status, subcontractors, incident terms, and AI data use.", "review" if signed_baas < vendors_touching_ephi else "done", "#vendors"),
             task_row("AI workflow review", "Allowed, restricted, and prohibited AI uses.", "review" if restricted_ai else "done", "#ai"),
             task_row("Downtime packet", "Critical systems, restore tests, tabletop, and manual workarounds.", "blocked" if profile["downtime"]["downtime_plan_status"] != "documented" else "done", "#downtime"),
-            task_row("Evidence queue", "The packet of evidence references to collect before review.", "review", "#evidence"),
+            task_row("Incident evidence timeline", "Sanitized event order, decision gates, evidence refs, and after-action owners.", "review" if incident_events else "unknown", "#incident"),
+            task_row("Evidence lifecycle", "Evidence status, traceability, closeout rules, and owner/MSP next actions.", evidence_task_state, "#evidence"),
         ]
     )
 
@@ -202,9 +213,33 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         for workflow in profile["ai_workflows"]
     ]
     downtime_rows = [[esc(system), esc("Assign owner"), esc("Manual workaround and restore evidence")] for system in profile["downtime"]["critical_systems"]]
+    incident_rows = [
+        [
+            esc(entry.get("time", "TBD")),
+            esc(entry.get("phase", "Timeline event")),
+            esc(entry.get("event", "Sanitized event category")),
+            esc("; ".join(str(system) for system in entry.get("systems", []))),
+            esc(entry.get("owner", "Practice owner/MSP")),
+            esc(entry.get("evidence_ref", "private evidence reference")),
+            badge(entry.get("status", "requested")),
+        ]
+        for entry in incident.get("timeline", [])
+    ]
+    after_action_rows = [
+        [
+            esc(item.get("id", "INC-AA")),
+            badge(item.get("priority", "medium")),
+            esc(item.get("owner", "Practice owner/MSP")),
+            esc(item.get("action", "Action to complete")),
+            esc(item.get("due", "30 days")),
+        ]
+        for item in incident.get("after_actions", [])
+    ]
     companion_pages = {
         "30-60-90-roadmap.md": "30-60-90-roadmap.html",
         "evidence-binder-index.md": "evidence-binder-index.html",
+        "incident-evidence-timeline.md": "incident-evidence-timeline.html",
+        "incident-after-action-report.md": "incident-after-action-report.html",
     }
     for source_name, html_name in companion_pages.items():
         source_path = out_dir / source_name
@@ -230,6 +265,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
       background: linear-gradient(180deg, rgba(28, 59, 81, 0.08), transparent 280px), var(--bg);
       font-family: Avenir Next, "Segoe UI", Verdana, sans-serif;
       line-height: 1.5;
+      overflow-x: hidden;
     }}
     a {{ color: inherit; }}
     .skip-link {{ position: absolute; left: -999px; top: 12px; background: var(--primary); color: var(--text-on-light); padding: 10px 12px; z-index: 20; }}
@@ -251,16 +287,18 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .main {{ padding: 28px clamp(18px, 4vw, 48px) 56px; }}
     .hero {{ display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: 18px; align-items: stretch; margin-bottom: 18px; }}
     .panel {{ background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }}
+    .panel, .metric, .task-row, .link-card, .local-note, .callout {{ min-width: 0; }}
     .intro {{ padding: clamp(20px, 4vw, 34px); }}
     h1, h2, h3 {{ margin: 0; line-height: 1.12; }}
-    h1 {{ max-width: 820px; margin-top: 8px; font-size: clamp(32px, 4vw, 46px); letter-spacing: 0; }}
+    h1 {{ max-width: 820px; margin-top: 8px; font-size: 44px; letter-spacing: 0; }}
+    h1, h2, h3, p, li, td, th, small, strong {{ overflow-wrap: anywhere; }}
     .lede {{ max-width: 820px; font-size: 18px; margin: 16px 0 0; }}
     .decision-card {{ padding: 22px; display: grid; gap: 16px; background: var(--primary); color: var(--text-on-dark); }}
     .decision-card .eyebrow {{ color: var(--gold-soft); }}
     .decision-card .action-list {{ color: var(--text-on-dark); }}
     .decision-card h2 {{ font-size: 22px; }}
     .action-list {{ margin: 0; padding-left: 20px; display: grid; gap: 9px; color: var(--ink); }}
-    .metrics {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0; }}
+    .metrics {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin: 18px 0; }}
     .metric {{ padding: 16px; background: var(--surface-strong); border: 1px solid var(--line); border-radius: var(--radius); }}
     .metric span, .metric small {{ display: block; }}
     .metric strong {{ display: block; margin: 5px 0; font-size: 30px; letter-spacing: 0; overflow-wrap: anywhere; }}
@@ -292,18 +330,24 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     .link-card small {{ margin-top: 4px; }}
     .footer {{ margin-top: 20px; font-size: 13px; }}
     @media (max-width: 960px) {{
-      .shell {{ display: block; }}
+      .shell {{ display: block; width: 100vw; max-width: 100vw; overflow-x: hidden; }}
       .sidebar {{ position: relative; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }}
       .nav {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
       .hero, .split {{ grid-template-columns: 1fr; }}
       .metrics, .links {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      h1 {{ font-size: 38px; }}
     }}
     @media (max-width: 620px) {{
-      .main {{ padding-inline: 14px; }}
+      .shell, .sidebar, .main {{ width: 100%; max-width: 390px; margin-inline: 0; overflow-x: hidden; }}
+      .hero, .panel, .section {{ width: 100%; max-width: 100%; overflow-x: hidden; }}
+      .sidebar {{ padding: 22px 14px; }}
+      .main {{ padding: 28px 14px 56px; }}
       .metrics, .links {{ grid-template-columns: 1fr; }}
       .section, .intro, .decision-card {{ padding: 16px; }}
       .task-row {{ grid-template-columns: 12px minmax(0, 1fr); }}
       .task-row .badge {{ grid-column: 2; justify-self: start; }}
+      h1 {{ max-width: calc(100vw - 60px); font-size: 29px; line-height: 1.08; }}
+      .lede {{ font-size: 16px; }}
     }}
     @media print {{
       :root {{ --bg: #e9f0f7; --surface: #f8fafc; --surface-strong: #f8fafc; --panel: #f8fafc; --elevated: #e9f0f7; --ink: #050a10; --muted: #64748b; --line: #94a3b8; --primary-soft: #e9f0f7; --blue-soft: #e9f0f7; }}
@@ -331,7 +375,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         <a href="#flows">ePHI flows</a>
         <a href="#vendors">Vendors</a>
         <a href="#ai">AI workflows</a>
-        <a href="#evidence">Evidence</a>
+        <a href="#incident">Incident</a>
+        <a href="#evidence">Closeout</a>
         <a href="#downtime">Downtime</a>
         <a href="#packet">Packet</a>
       </nav>
@@ -359,6 +404,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         {metric("Readiness", f"{ready_count}/{readiness_total}", "baseline items ready")}
         {metric("Vendor BAAs", f"{signed_baas}/{vendors_touching_ephi}", "ePHI vendors signed")}
         {metric("AI workflows", restricted_ai, "restricted or prohibited")}
+        {metric("Incident actions", incident_actions, f"{incident_events} timeline events")}
+        {metric("Evidence closeout", f"{lifecycle_summary['closed']}/{lifecycle_summary['total']}", f"{lifecycle_summary['blocked']} blocked, {lifecycle_summary['needs_evidence']} need evidence")}
       </section>
       <section class="panel section">
         <div class="section-head">
@@ -384,8 +431,14 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         {table(["Workflow", "Use", "Data", "Vendor", "Decision"], ai_rows)}
       </section>
       <section id="evidence" class="panel section">
-        <div class="section-head"><div><h2>Evidence queue</h2><p>The dashboard does not need PHI. It points to evidence references, owner decisions, and exports that should live in a binder.</p></div></div>
-        {table(["Evidence ID", "Area", "Evidence needed", "Priority"], evidence_rows(profile))}
+        <div class="section-head"><div><h2>Evidence lifecycle and closeout</h2><p>The dashboard does not need PHI. It points to evidence references, owner decisions, trace context, closeout rules, and exports that should live in a binder.</p></div>{badge(f"{lifecycle_summary['blocked']} blocked", kind='blocked' if lifecycle_summary['blocked'] else 'done')}</div>
+        {table(["Evidence ID", "Area", "Lifecycle", "Closeout", "Owner", "Trace", "Next action"], evidence_rows(profile))}
+      </section>
+      <section id="incident" class="panel section">
+        <div class="section-head"><div><h2>Incident evidence timeline</h2><p>A sanitized event sequence for tabletop, suspicious-access, downtime, vendor-notice, or ransomware concern handoffs. It tracks evidence references and decision gates without copying raw evidence.</p></div>{badge(incident.get('scenario_type', 'tabletop'))}</div>
+        {table(["Time", "Phase", "Event category", "System/workflow", "Owner", "Evidence ref", "Status"], incident_rows)}
+        <h3>After-action queue</h3>
+        {table(["ID", "Priority", "Owner", "Action", "Due"], after_action_rows)}
       </section>
       <section id="downtime" class="panel section">
         <div class="section-head"><div><h2>Downtime and ransomware tabletop</h2><p>Critical systems that need an owner, manual workaround, restore-test evidence, and tabletop notes.</p></div>{badge(profile['downtime']['downtime_plan_status'])}</div>
@@ -399,6 +452,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         <div class="links">
           <a class="link-card" href="review-packet.html"><strong>Review packet</strong><small>Full HTML packet</small></a>
           <a class="link-card" href="30-60-90-roadmap.html"><strong>30/60/90 roadmap</strong><small>Prioritized next steps</small></a>
+          <a class="link-card" href="incident-evidence-timeline.html"><strong>Incident timeline</strong><small>Decision gates and evidence refs</small></a>
+          <a class="link-card" href="incident-after-action-report.html"><strong>After-action report</strong><small>Remediation owners</small></a>
           <a class="link-card" href="evidence-binder-index.html"><strong>Evidence index</strong><small>Binder queue</small></a>
           <a class="link-card" href="review-packet.md"><strong>Markdown packet</strong><small>Portable source file</small></a>
         </div>

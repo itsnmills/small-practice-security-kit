@@ -655,16 +655,18 @@ def build_evidence_gap_summary(evidence_index: dict[str, Any], stages: list[dict
     references = evidence_index.get("evidence_references", [])
     status_counts: dict[str, int] = {}
     owner_counts: dict[str, int] = {}
+    attention_closeouts = {"blocked", "needs_evidence", "ready_for_review"}
     for item in references:
-        status = str(item.get("status", "requested"))
+        status = str(item.get("lifecycle_status") or item.get("status", "requested"))
+        closeout = str(item.get("closeout_state") or "")
         status_counts[status] = status_counts.get(status, 0) + 1
-        if status in {"missing", "requested", "partial", "outdated"}:
+        if closeout in attention_closeouts or status in {"missing", "requested", "partial", "outdated", "stale", "blocked"}:
             owner = str(item.get("owner", "Practice owner/MSP"))
             owner_counts[owner] = owner_counts.get(owner, 0) + 1
 
     return {
         "total_references": len(references),
-        "needs_attention": sum(status_counts.get(status, 0) for status in ["missing", "requested", "partial", "outdated"]),
+        "needs_attention": sum(owner_counts.values()),
         "by_status": status_counts,
         "by_owner": owner_counts,
         "by_stage": [
@@ -1054,19 +1056,30 @@ def render_command_center(
             "<tr><td><strong>No generated findings</strong><span>Review evidence references before relying on the packet.</span></td><td><b class='pill severity-low'>low</b></td><td>owner<span>Owner/MSP</span></td><td>referenced</td><td>quarterly_refresh</td><td>Review packet with owner and MSP.</td></tr>"
         )
 
-    attention_statuses = {"missing", "requested", "partial", "outdated"}
+    attention_statuses = {"missing", "requested", "partial", "outdated", "stale", "blocked"}
+    attention_closeouts = {"blocked", "needs_evidence", "ready_for_review"}
     evidence_refs = [
-        item for item in evidence_index.get("evidence_references", []) if str(item.get("status")) in attention_statuses
+        item
+        for item in evidence_index.get("evidence_references", [])
+        if str(item.get("closeout_state", "")) in attention_closeouts or str(item.get("status")) in attention_statuses
     ][:8]
     evidence_rows_html = []
     for item in evidence_refs:
+        trace = item.get("trace") or {}
+        trace_parts = []
+        if trace.get("flow_ids"):
+            trace_parts.append("flows " + ", ".join(trace["flow_ids"]))
+        if trace.get("system_refs"):
+            trace_parts.append("systems " + ", ".join(trace["system_refs"]))
+        if trace.get("vendor_refs"):
+            trace_parts.append("vendors " + ", ".join(trace["vendor_refs"]))
         evidence_rows_html.append(
             f"""
             <tr>
               <td><strong>{_h(item.get('evidence_id', ''))}</strong><span>{_h(item.get('title', ''))}</span></td>
-              <td>{_h(item.get('status', 'requested'))}</td>
+              <td>{_h(item.get('closeout_state', item.get('status', 'requested')))}</td>
               <td>{_h(item.get('owner', 'Practice owner/MSP'))}</td>
-              <td>{_h(', '.join(item.get('artifact_refs', [])))}</td>
+              <td>{_h('; '.join(trace_parts) or ', '.join(item.get('artifact_refs', [])))}</td>
             </tr>
             """
         )

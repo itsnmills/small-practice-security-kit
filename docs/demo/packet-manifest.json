@@ -1,39 +1,39 @@
 {
   "artifacts": [
     {
-      "bytes": 795,
+      "bytes": 3061,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "readiness-review.md",
-      "sha256": "70ff6b26db495a43a56e6cc55c71f654decdda5a146bfbf619be3fd1d6250ed2"
+      "sha256": "9381513db2fabfa05eeeafd2860fa5b08b9d5b038cb2c90dedc613f4e0916595"
     },
     {
-      "bytes": 2479,
+      "bytes": 4263,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ephi-flow-map.md",
-      "sha256": "5185bb45f8676e730d4117156904006555af08744d8589ede8eaab59a394b9da"
+      "sha256": "4947830d1bebff03dd155b735132c18c9b08ca59a16cb4a2c1f1198d1bf71dc8"
     },
     {
-      "bytes": 1628,
+      "bytes": 2271,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "vendor-baa-review.md",
-      "sha256": "6db37917c4638854fe3c313f32ff216ab2b64732323c5f36da42d95413ab28f1"
+      "sha256": "baba96d6f41883161cbe62b7b75f970c5899c31fd46812a49cbff85889f43d13"
     },
     {
-      "bytes": 1516,
+      "bytes": 2101,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ai-workflow-review.md",
-      "sha256": "0eb06c9805adf487ec693479d3f249b76718a408c0a4c93b0aabd8993472192f"
+      "sha256": "533e6e200f30bc88beabbf115ed89e7acc66a7b24b818144e49f852b74cb702e"
     },
     {
-      "bytes": 734,
+      "bytes": 1244,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "downtime-ransomware-tabletop.md",
-      "sha256": "534b13863ca06e1cdd3804498bedeb3fbcdd30df626caddf91cbafb6d1ab7107"
+      "sha256": "9fe30c073e4b5ff96fb5e37b66f0e727eeb162fcff43ee804b0a31d05c3f637f"
     },
     {
       "bytes": 2243,
@@ -57,18 +57,32 @@
       "sha256": "d0ae8d44223e47df92901d0a24fbbd6e8c7cd535967e20cb6f34dee87dcc326f"
     },
     {
-      "bytes": 2819,
+      "bytes": 3892,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "incident-evidence-timeline.md",
+      "sha256": "0b9719f171df4df96ef2a61c3d3d8612b6a622ce6f5b3f48f364bcdf3fd81754"
+    },
+    {
+      "bytes": 2133,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "incident-after-action-report.md",
+      "sha256": "b5bf08de34b62f909eb67ad96e48307dd05908f93fff0a50b4bcb889d0d64383"
+    },
+    {
+      "bytes": 17619,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "evidence-binder-index.md",
-      "sha256": "347be8bc6e2becfe0151f5714d85df8eec3815be5f2cfff25e830acc79d22f49"
+      "sha256": "c4f582958da8276d6ae5ab92f42aec8471a4818371645b4f450a50cbf94a67db"
     },
     {
-      "bytes": 10865,
+      "bytes": 12939,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "owner-msp-handoff.md",
-      "sha256": "c9e75f44c6e89b6da54e7bce99092acc76762c5372bbefcf5a4d5697bdc8647e"
+      "sha256": "0a014b6dfcdc429ee6f8772711ad1b22fd12b96f24ee756c9de46aaac78c80f1"
     },
     {
       "bytes": 8976,
@@ -85,18 +99,18 @@
       "sha256": "33567261b7ea0f79aa076d7ae6ebe065b1832567571cd35422b563bfbb4732da"
     },
     {
-      "bytes": 37793,
+      "bytes": 66494,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "144c6ae705348f1c3ecc43fe7446edca6eed152cafb603aa0d04702c919602a9"
+      "sha256": "6cefa123ee1b4ea78c76950054cb1b4d9a9d8d681491f2656c9c822f3d2ba98b"
     },
     {
-      "bytes": 49268,
+      "bytes": 82633,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "25308f2beda91009688be6035ea0821b07b0d16a11a5c01132f2e0c911a508c7"
+      "sha256": "2d4d61320a6283404b2462ee31879ed27154d6b4ec297f7a269266ef1a2d2bba"
     }
   ],
   "data_boundary": {
@@ -107,271 +121,2642 @@
   },
   "evidence_references": [
     {
+      "acceptable_evidence": [
+        "Quarterly access review export placeholder",
+        "date observed",
+        "owner signoff",
+        "scope covered",
+        "exception note"
+      ],
       "artifact_refs": [
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when the private evidence reference has owner, date observed, scope covered, and exception handling.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "EVID-ACCESS-Q2",
-      "evidence_type": "Access",
+      "evidence_type": "access",
+      "lifecycle_status": "partial",
+      "next_action": "Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence.",
       "next_review_date": "2026-06-14",
       "notes": "User list export exists for email, but EHR, imaging, billing, and remote support review are not reconciled.",
       "owner": "Office Manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "evidence",
+      "source_ref": "EVID-ACCESS-Q2",
       "source_system": "restricted-evidence/access/q2-access-review",
       "status": "partial",
-      "title": "Quarterly access review export placeholder"
+      "title": "Quarterly access review export placeholder",
+      "trace": {
+        "artifact_refs": [
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "evidence",
+        "source_modules": [
+          "evidence"
+        ],
+        "source_ref": "EVID-ACCESS-Q2",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "Backup restore test record placeholder",
+        "date observed",
+        "owner signoff",
+        "scope covered",
+        "exception note"
+      ],
       "artifact_refs": [
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when the private evidence reference has owner, date observed, scope covered, and exception handling.",
+      "closeout_state": "blocked",
       "date_observed": "2026-05-15",
       "evidence_id": "EVID-BACKUP-RESTORE",
-      "evidence_type": "Backup",
-      "next_review_date": "2026-06-14",
+      "evidence_type": "backup",
+      "lifecycle_status": "stale",
+      "next_action": "Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence.",
+      "next_review_date": "2026-05-29",
       "notes": "Restore test evidence is stale or missing for EHR exports, imaging workstation, and shared drive scope.",
       "owner": "MSP Lead",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "evidence",
+      "source_ref": "EVID-BACKUP-RESTORE",
       "source_system": "restricted-evidence/backups/restore-test-record",
-      "status": "outdated",
-      "title": "Backup restore test record placeholder"
+      "status": "stale",
+      "title": "Backup restore test record placeholder",
+      "trace": {
+        "artifact_refs": [
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "evidence",
+        "source_modules": [
+          "evidence"
+        ],
+        "source_ref": "EVID-BACKUP-RESTORE",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "Cyber insurance renewal evidence list",
+        "date observed",
+        "owner signoff",
+        "scope covered",
+        "exception note"
+      ],
       "artifact_refs": [
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when the private evidence reference has owner, date observed, scope covered, and exception handling.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "EVID-CYBER-INSURANCE",
-      "evidence_type": "Insurance",
+      "evidence_type": "insurance",
+      "lifecycle_status": "requested",
+      "next_action": "Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence.",
       "next_review_date": "2026-06-14",
       "notes": "Prepare reference-only answers for MFA, backups, incident response, vendor access, and staff training.",
       "owner": "Practice Owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "evidence",
+      "source_ref": "EVID-CYBER-INSURANCE",
       "source_system": "restricted-evidence/insurance/renewal-evidence-list",
       "status": "requested",
-      "title": "Cyber insurance renewal evidence list"
+      "title": "Cyber insurance renewal evidence list",
+      "trace": {
+        "artifact_refs": [
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "evidence",
+        "source_modules": [
+          "evidence"
+        ],
+        "source_ref": "EVID-CYBER-INSURANCE",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "Staff AI acceptable-use acknowledgement",
+        "date observed",
+        "owner signoff",
+        "scope covered",
+        "exception note"
+      ],
       "artifact_refs": [
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when the private evidence reference has owner, date observed, scope covered, and exception handling.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "EVID-AI-GUIDANCE",
-      "evidence_type": "AI",
+      "evidence_type": "ai",
+      "lifecycle_status": "requested",
+      "next_action": "Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence.",
       "next_review_date": "2026-06-14",
       "notes": "No patient identifiers, chart content, billing details, credentials, or raw evidence may be entered into public AI tools.",
       "owner": "Office Manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "evidence",
+      "source_ref": "EVID-AI-GUIDANCE",
       "source_system": "restricted-evidence/ai/staff-ai-guidance",
       "status": "requested",
-      "title": "Staff AI acceptable-use acknowledgement"
+      "title": "Staff AI acceptable-use acknowledgement",
+      "trace": {
+        "artifact_refs": [
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "evidence",
+        "source_modules": [
+          "evidence"
+        ],
+        "source_ref": "EVID-AI-GUIDANCE",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "Vendor BAA and incident terms follow-up list",
+        "date observed",
+        "owner signoff",
+        "scope covered",
+        "exception note"
+      ],
       "artifact_refs": [
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when the private evidence reference has owner, date observed, scope covered, and exception handling.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "EVID-VENDOR-BAA-GAPS",
-      "evidence_type": "Vendor",
+      "evidence_type": "vendor",
+      "lifecycle_status": "requested",
+      "next_action": "Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence.",
       "next_review_date": "2026-06-14",
       "notes": "Billing, imaging, and AI scribe vendor terms need owner/MSP review.",
       "owner": "Office Manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "evidence",
+      "source_ref": "EVID-VENDOR-BAA-GAPS",
       "source_system": "restricted-evidence/vendors/baa-follow-up-list",
       "status": "requested",
-      "title": "Vendor BAA and incident terms follow-up list"
+      "title": "Vendor BAA and incident terms follow-up list",
+      "trace": {
+        "artifact_refs": [
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "evidence",
+        "source_modules": [
+          "evidence"
+        ],
+        "source_ref": "EVID-VENDOR-BAA-GAPS",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "MFA policy export",
+        "covered groups",
+        "exceptions",
+        "and date observed"
+      ],
+      "artifact_refs": [
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when mfa policy export, covered groups, exceptions, and date observed are recorded as reference-only evidence.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-MFA-EMAIL",
+      "evidence_type": "access___mfa",
+      "lifecycle_status": "provided",
+      "next_action": "Keep this evidence on a quarterly refresh cadence.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "mfa_email",
+      "source_system": "email access",
+      "status": "provided",
+      "title": "Email MFA evidence",
+      "trace": {
+        "artifact_refs": [
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "mfa_email",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "MFA enforcement export",
+        "admin screenshot with date observed",
+        "covered groups",
+        "exceptions",
+        "and MSP attestation"
+      ],
+      "artifact_refs": [
+        "owner-msp-handoff.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when mfa enforcement export, admin screenshot with date observed, covered groups, exceptions, and msp attestation are recorded as reference-only evidence.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-MFA-EHR",
+      "evidence_type": "access___mfa",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "mfa_ehr",
+      "source_system": "EHR access",
+      "status": "missing",
+      "title": "EHR MFA evidence",
+      "trace": {
+        "artifact_refs": [
+          "owner-msp-handoff.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "mfa_ehr",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "User list export",
+        "shared-account exception list",
+        "owner signoff",
+        "and sunset dates"
+      ],
+      "artifact_refs": [
+        "owner-msp-handoff.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when user list export, shared-account exception list, owner signoff, and sunset dates are recorded as reference-only evidence.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-UNIQUE-ACCOUNTS",
+      "evidence_type": "access_review",
+      "lifecycle_status": "provided",
+      "next_action": "Keep this evidence on a quarterly refresh cadence.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "unique_accounts",
+      "source_system": "account lifecycle",
+      "status": "provided",
+      "title": "Unique account evidence",
+      "trace": {
+        "artifact_refs": [
+          "owner-msp-handoff.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "unique_accounts",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "User list export",
+        "admin role list",
+        "owner signoff",
+        "removed-account notes",
+        "and exception sunset dates"
+      ],
+      "artifact_refs": [
+        "owner-msp-handoff.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when user list export, admin role list, owner signoff, removed-account notes, and exception sunset dates are recorded as reference-only evidence.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-ACCESS-REVIEW",
+      "evidence_type": "access_review",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "quarterly_access_review",
+      "source_system": "access review",
+      "status": "missing",
+      "title": "Quarterly access review evidence",
+      "trace": {
+        "artifact_refs": [
+          "owner-msp-handoff.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "quarterly_access_review",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Backup scope summary",
+        "restore-test note",
+        "date observed",
+        "recovery owner",
+        "and excluded systems"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when backup scope summary, restore-test note, date observed, recovery owner, and excluded systems are recorded as reference-only evidence.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-BACKUP-RESTORE",
+      "evidence_type": "backup___downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "tested_backups",
+      "source_system": "backup and restore",
+      "status": "missing",
+      "title": "Backup restore evidence",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "tested_backups",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Vendor register",
+        "owner",
+        "service",
+        "ePHI touch status",
+        "BAA status",
+        "and review date"
+      ],
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when vendor register, owner, service, ephi touch status, baa status, and review date are recorded as reference-only evidence.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-VENDOR-INVENTORY",
+      "evidence_type": "vendor___baa",
+      "lifecycle_status": "provided",
+      "next_action": "Keep this evidence on a quarterly refresh cadence.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "vendor_inventory",
+      "source_system": "vendor register",
+      "status": "provided",
+      "title": "Vendor inventory evidence",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "vendor_inventory",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "BAA status",
+        "review date",
+        "vendor security page",
+        "SOC 2/HITRUST status",
+        "and incident terms"
+      ],
+      "artifact_refs": [
+        "vendor-baa-review.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when baa status, review date, vendor security page, soc 2/hitrust status, and incident terms are recorded as reference-only evidence.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-BAA-REGISTER",
+      "evidence_type": "vendor___baa",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "baa_register",
+      "source_system": "BAA register",
+      "status": "missing",
+      "title": "BAA register evidence",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "baa_register",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Incident contact list",
+        "MSP contact",
+        "vendor contact",
+        "qualified-review contact",
+        "and review date"
+      ],
+      "artifact_refs": [
+        "incident-decision-log.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when incident contact list, msp contact, vendor contact, qualified-review contact, and review date are recorded as reference-only evidence.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-INCIDENT-CONTACTS",
+      "evidence_type": "incident_readiness",
+      "lifecycle_status": "provided",
+      "next_action": "Keep this evidence on a quarterly refresh cadence.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "incident_contact_list",
+      "source_system": "incident contacts",
+      "status": "provided",
+      "title": "Incident contact evidence",
+      "trace": {
+        "artifact_refs": [
+          "incident-decision-log.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "incident_contact_list",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Downtime workflow",
+        "manual workaround owner",
+        "staff acknowledgement",
+        "and tabletop attendance"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when downtime workflow, manual workaround owner, staff acknowledgement, and tabletop attendance are recorded as reference-only evidence.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-DOWNTIME-PLAN",
+      "evidence_type": "downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "downtime_plan",
+      "source_system": "downtime workflow",
+      "status": "missing",
+      "title": "Downtime plan evidence",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "downtime_plan",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Training roster",
+        "acknowledgement date",
+        "no-PHI AI guidance",
+        "and exception list"
+      ],
+      "artifact_refs": [
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when training roster, acknowledgement date, no-phi ai guidance, and exception list are recorded as reference-only evidence.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-TRAINING",
+      "evidence_type": "workforce",
+      "lifecycle_status": "provided",
+      "next_action": "Keep this evidence on a quarterly refresh cadence.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "security_training_current",
+      "source_system": "staff training",
+      "status": "provided",
+      "title": "Security training evidence",
+      "trace": {
+        "artifact_refs": [
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "security_training_current",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Log source list",
+        "review cadence record",
+        "alert owner",
+        "escalation path",
+        "and date observed"
+      ],
+      "artifact_refs": [
+        "owner-msp-handoff.md",
+        "readiness-review.md"
+      ],
+      "closeout_rule": "Close when log source list, review cadence record, alert owner, escalation path, and date observed are recorded as reference-only evidence.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "READINESS-LOG-REVIEW",
+      "evidence_type": "monitoring",
+      "lifecycle_status": "missing",
+      "next_action": "Request proof, document exceptions, and assign an owner before closeout.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "readiness",
+      "source_ref": "log_review_cadence",
+      "source_system": "log review",
+      "status": "missing",
+      "title": "Log review cadence evidence",
+      "trace": {
+        "artifact_refs": [
+          "owner-msp-handoff.md",
+          "readiness-review.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "readiness",
+        "source_modules": [
+          "readiness"
+        ],
+        "source_ref": "log_review_cadence",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "BAA",
+        "portal access controls",
+        "intake workflow owner"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-001",
       "evidence_type": "ephi_flow",
+      "lifecycle_status": "requested",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
       "next_review_date": "2026-06-14",
-      "notes": "Flow to Cloud EHR via Example EHR Vendor",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-001",
       "source_system": "Patient intake form",
       "status": "requested",
-      "title": "BAA, portal access controls, intake workflow owner"
+      "title": "BAA, portal access controls, intake workflow owner",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-001",
+        "system_refs": [
+          "Cloud EHR"
+        ],
+        "vendor_refs": [
+          "Example EHR Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA",
+        "integration owner",
+        "incident notification terms"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-002",
       "evidence_type": "ephi_flow",
+      "lifecycle_status": "requested",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
       "next_review_date": "2026-06-14",
-      "notes": "Flow to Billing Portal via Example Billing Vendor",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-002",
       "source_system": "Cloud EHR",
       "status": "requested",
-      "title": "BAA, integration owner, incident notification terms"
+      "title": "BAA, integration owner, incident notification terms",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-002"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-002",
+        "system_refs": [
+          "Cloud EHR",
+          "Billing Portal"
+        ],
+        "vendor_refs": [
+          "Example Billing Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "secure email policy",
+        "forwarding review",
+        "staff training"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-003",
       "evidence_type": "ephi_flow",
+      "lifecycle_status": "requested",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
       "next_review_date": "2026-06-14",
-      "notes": "Flow to External specialist via Email provider",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-003",
       "source_system": "Staff email",
       "status": "requested",
-      "title": "secure email policy, forwarding review, staff training"
+      "title": "secure email policy, forwarding review, staff training",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-003"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-003",
+        "system_refs": [],
+        "vendor_refs": [
+          "Email provider"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "export procedure",
+        "shared-folder access review",
+        "backup scope reference"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-004",
       "evidence_type": "ephi_flow",
+      "lifecycle_status": "requested",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
       "next_review_date": "2026-06-14",
-      "notes": "Flow to Shared Drive via Workspace Provider",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-004",
       "source_system": "Dental Imaging Workstation",
       "status": "requested",
-      "title": "export procedure, shared-folder access review, backup scope reference"
+      "title": "export procedure, shared-folder access review, backup scope reference",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-004"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-004",
+        "system_refs": [
+          "Dental Imaging Workstation",
+          "Shared Drive"
+        ],
+        "vendor_refs": [
+          "Workspace Provider"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "AI acceptable-use guidance and staff acknowledgement"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "closed",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-005",
       "evidence_type": "ephi_flow",
-      "next_review_date": "2026-06-14",
-      "notes": "Flow to General AI Assistant via General AI Assistant Vendor",
+      "lifecycle_status": "provided",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-005",
       "source_system": "Front desk notes",
-      "status": "requested",
-      "title": "AI acceptable-use guidance and staff acknowledgement"
+      "status": "provided",
+      "title": "AI acceptable-use guidance and staff acknowledgement",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-005"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-005",
+        "system_refs": [
+          "General AI Assistant"
+        ],
+        "vendor_refs": [
+          "General AI Assistant Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA",
+        "retention terms",
+        "model-training terms",
+        "human review approval"
+      ],
       "artifact_refs": [
         "ephi-flow-map.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "FLOW-006",
       "evidence_type": "ephi_flow",
+      "lifecycle_status": "requested",
+      "next_action": "Confirm the flow owner, channel, BAA need, and private evidence reference.",
       "next_review_date": "2026-06-14",
-      "notes": "Flow to AI Scribe Pilot via Example AI Scribe Vendor",
+      "notes": "",
       "owner": "MSP or workflow owner",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "flow",
+      "source_ref": "FLOW-006",
       "source_system": "Provider conversation",
       "status": "requested",
-      "title": "BAA, retention terms, model-training terms, human review approval"
+      "title": "BAA, retention terms, model-training terms, human review approval",
+      "trace": {
+        "artifact_refs": [
+          "ephi-flow-map.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-006"
+        ],
+        "source_kind": "flow",
+        "source_modules": [
+          "flows",
+          "systems"
+        ],
+        "source_ref": "FLOW-006",
+        "system_refs": [
+          "AI Scribe Pilot"
+        ],
+        "vendor_refs": [
+          "Example AI Scribe Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "ready_for_review",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-EXAMPLE_EHR_VENDOR",
       "evidence_type": "vendor_baa",
-      "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
+      "lifecycle_status": "provided",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
+      "next_review_date": "2026-08-13",
+      "notes": "BAA status: signed; incident terms: 24 hours in contract",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "Example EHR Vendor",
       "source_system": "Example EHR Vendor",
-      "status": "reviewed",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor"
+      "status": "provided",
+      "title": "Vendor evidence for Example EHR Vendor",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001"
+        ],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "Example EHR Vendor",
+        "system_refs": [
+          "Cloud EHR"
+        ],
+        "vendor_refs": [
+          "Example EHR Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "blocked",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-EXAMPLE_BILLING_VENDOR",
       "evidence_type": "vendor_baa",
-      "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: missing review date; SOC 2 status: not provided; HITRUST status: not provided",
+      "lifecycle_status": "stale",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
+      "next_review_date": "2026-05-29",
+      "notes": "BAA status: missing review date; incident terms: unknown",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "Example Billing Vendor",
       "source_system": "Example Billing Vendor",
-      "status": "requested",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor"
+      "status": "stale",
+      "title": "Vendor evidence for Example Billing Vendor",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-002"
+        ],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "Example Billing Vendor",
+        "system_refs": [
+          "Billing Portal"
+        ],
+        "vendor_refs": [
+          "Example Billing Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "ready_for_review",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-WORKSPACE_PROVIDER",
       "evidence_type": "vendor_baa",
-      "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: signed; SOC 2 status: not provided; HITRUST status: not provided",
+      "lifecycle_status": "provided",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
+      "next_review_date": "2026-08-13",
+      "notes": "BAA status: signed; incident terms: portal notice terms need review",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "Workspace Provider",
       "source_system": "Workspace Provider",
-      "status": "reviewed",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider"
+      "status": "provided",
+      "title": "Vendor evidence for Workspace Provider",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-004"
+        ],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "Workspace Provider",
+        "system_refs": [
+          "Shared Drive"
+        ],
+        "vendor_refs": [
+          "Workspace Provider"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "blocked",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
       "evidence_type": "vendor_baa",
-      "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: unknown; SOC 2 status: not provided; HITRUST status: not provided",
+      "lifecycle_status": "missing",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
+      "next_review_date": "2026-05-29",
+      "notes": "BAA status: unknown; incident terms: unknown",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "Example Imaging Vendor",
       "source_system": "Example Imaging Vendor",
-      "status": "requested",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Imaging Vendor"
+      "status": "missing",
+      "title": "Vendor evidence for Example Imaging Vendor",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "Example Imaging Vendor",
+        "system_refs": [
+          "Dental Imaging Workstation"
+        ],
+        "vendor_refs": [
+          "Example Imaging Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "not_applicable",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-GENERAL_AI_ASSISTANT_VENDOR",
       "evidence_type": "vendor_baa",
-      "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: not needed for no-PHI demo workflow; SOC 2 status: not applicable; HITRUST status: not applicable",
+      "lifecycle_status": "not_applicable",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
+      "next_review_date": "2026-08-13",
+      "notes": "BAA status: not needed for no-PHI demo workflow; incident terms: not reviewed",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "General AI Assistant Vendor",
       "source_system": "General AI Assistant Vendor",
-      "status": "requested",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for General AI Assistant Vendor"
+      "status": "not_applicable",
+      "title": "Vendor evidence for General AI Assistant Vendor",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-005"
+        ],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "General AI Assistant Vendor",
+        "system_refs": [
+          "General AI Assistant"
+        ],
+        "vendor_refs": [
+          "General AI Assistant Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     },
     {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms",
+        "AI/data-use response"
+      ],
       "artifact_refs": [
         "vendor-baa-review.md",
         "evidence-binder-index.md"
       ],
+      "closeout_rule": "Close when BAA status, review date, security evidence status, incident terms, data-use posture, and reviewer boundary are recorded.",
+      "closeout_state": "needs_evidence",
       "date_observed": "2026-05-15",
       "evidence_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
       "evidence_type": "vendor_baa",
+      "lifecycle_status": "requested",
+      "next_action": "Request vendor BAA, incident, subcontractor, retention/deletion, and AI/data-use answers without uploading raw contracts.",
       "next_review_date": "2026-06-14",
-      "notes": "Current BAA status: requested; SOC 2 status: not provided; HITRUST status: not provided",
+      "notes": "BAA status: requested; incident terms: unknown",
       "owner": "Practice manager",
       "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "vendor",
+      "source_ref": "Example AI Scribe Vendor",
       "source_system": "Example AI Scribe Vendor",
       "status": "requested",
-      "title": "BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example AI Scribe Vendor"
+      "title": "Vendor evidence for Example AI Scribe Vendor",
+      "trace": {
+        "artifact_refs": [
+          "vendor-baa-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-006"
+        ],
+        "source_kind": "vendor",
+        "source_modules": [
+          "vendors",
+          "flows"
+        ],
+        "source_ref": "Example AI Scribe Vendor",
+        "system_refs": [
+          "AI Scribe Pilot"
+        ],
+        "vendor_refs": [
+          "Example AI Scribe Vendor"
+        ],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "staff guidance and prohibited data examples"
+      ],
+      "artifact_refs": [
+        "ai-workflow-review.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when staff guidance, allowed data classes, prohibited examples, owner approval, and vendor terms are recorded.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "AI-MARKETING_EMAIL_DRAFTING",
+      "evidence_type": "ai_workflow",
+      "lifecycle_status": "closed",
+      "next_action": "Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "ai_workflow",
+      "source_ref": "Marketing email drafting",
+      "source_system": "General AI assistant",
+      "status": "closed",
+      "title": "AI workflow evidence for Marketing email drafting",
+      "trace": {
+        "artifact_refs": [
+          "ai-workflow-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-005"
+        ],
+        "source_kind": "ai_workflow",
+        "source_modules": [
+          "ai_workflows",
+          "flows"
+        ],
+        "source_ref": "Marketing email drafting",
+        "system_refs": [],
+        "vendor_refs": [
+          "General AI assistant"
+        ],
+        "workflow_refs": [
+          "Marketing email drafting"
+        ]
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "owner review and no-PHI/no-secret prompt guidance"
+      ],
+      "artifact_refs": [
+        "ai-workflow-review.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when staff guidance, allowed data classes, prohibited examples, owner approval, and vendor terms are recorded.",
+      "closeout_state": "closed",
+      "date_observed": "2026-05-15",
+      "evidence_id": "AI-INSURANCE_RENEWAL_QUESTIONNAIRE_DRAFTING",
+      "evidence_type": "ai_workflow",
+      "lifecycle_status": "closed",
+      "next_action": "Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented.",
+      "next_review_date": "2026-08-13",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "ai_workflow",
+      "source_ref": "Insurance renewal questionnaire drafting",
+      "source_system": "General AI assistant",
+      "status": "closed",
+      "title": "AI workflow evidence for Insurance renewal questionnaire drafting",
+      "trace": {
+        "artifact_refs": [
+          "ai-workflow-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-005"
+        ],
+        "source_kind": "ai_workflow",
+        "source_modules": [
+          "ai_workflows",
+          "flows"
+        ],
+        "source_ref": "Insurance renewal questionnaire drafting",
+        "system_refs": [],
+        "vendor_refs": [
+          "General AI assistant"
+        ],
+        "workflow_refs": [
+          "Insurance renewal questionnaire drafting"
+        ]
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "BAA review",
+        "redaction workflow",
+        "owner approval"
+      ],
+      "artifact_refs": [
+        "ai-workflow-review.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when staff guidance, allowed data classes, prohibited examples, owner approval, and vendor terms are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "AI-BILLING_APPEAL_DRAFTER",
+      "evidence_type": "ai_workflow",
+      "lifecycle_status": "requested",
+      "next_action": "Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "ai_workflow",
+      "source_ref": "Billing appeal drafter",
+      "source_system": "General AI assistant",
+      "status": "requested",
+      "title": "AI workflow evidence for Billing appeal drafter",
+      "trace": {
+        "artifact_refs": [
+          "ai-workflow-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-005"
+        ],
+        "source_kind": "ai_workflow",
+        "source_modules": [
+          "ai_workflows",
+          "flows"
+        ],
+        "source_ref": "Billing appeal drafter",
+        "system_refs": [],
+        "vendor_refs": [
+          "General AI assistant"
+        ],
+        "workflow_refs": [
+          "Billing appeal drafter"
+        ]
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "BAA",
+        "retention/model-training terms",
+        "human review workflow",
+        "pilot owner signoff"
+      ],
+      "artifact_refs": [
+        "ai-workflow-review.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when staff guidance, allowed data classes, prohibited examples, owner approval, and vendor terms are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "AI-AI_SCRIBE_PILOT",
+      "evidence_type": "ai_workflow",
+      "lifecycle_status": "requested",
+      "next_action": "Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "ai_workflow",
+      "source_ref": "AI scribe pilot",
+      "source_system": "Example AI Scribe Vendor",
+      "status": "requested",
+      "title": "AI workflow evidence for AI scribe pilot",
+      "trace": {
+        "artifact_refs": [
+          "ai-workflow-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-006"
+        ],
+        "source_kind": "ai_workflow",
+        "source_modules": [
+          "ai_workflows",
+          "flows"
+        ],
+        "source_ref": "AI scribe pilot",
+        "system_refs": [],
+        "vendor_refs": [
+          "Example AI Scribe Vendor"
+        ],
+        "workflow_refs": [
+          "AI scribe pilot"
+        ]
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "training reminder and AI use policy"
+      ],
+      "artifact_refs": [
+        "ai-workflow-review.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when staff guidance, allowed data classes, prohibited examples, owner approval, and vendor terms are recorded.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "evidence_type": "ai_workflow",
+      "lifecycle_status": "blocked",
+      "next_action": "Keep the workflow no-PHI or restricted until terms, retention, model-training use, and human review are documented.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "ai_workflow",
+      "source_ref": "Paste patient-level note into public chatbot",
+      "source_system": "Public chatbot",
+      "status": "blocked",
+      "title": "AI workflow evidence for Paste patient-level note into public chatbot",
+      "trace": {
+        "artifact_refs": [
+          "ai-workflow-review.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "ai_workflow",
+        "source_modules": [
+          "ai_workflows",
+          "flows"
+        ],
+        "source_ref": "Paste patient-level note into public chatbot",
+        "system_refs": [],
+        "vendor_refs": [
+          "Public chatbot"
+        ],
+        "workflow_refs": [
+          "Paste patient-level note into public chatbot"
+        ]
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "downtime workflow",
+        "manual workaround owner",
+        "backup scope",
+        "restore-test note",
+        "tabletop attendance"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "DOWNTIME-CLOUD_EHR",
+      "evidence_type": "downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "downtime",
+      "source_ref": "Cloud EHR",
+      "source_system": "Cloud EHR",
+      "status": "missing",
+      "title": "Downtime and restore evidence for Cloud EHR",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002"
+        ],
+        "source_kind": "downtime",
+        "source_modules": [
+          "downtime",
+          "flows"
+        ],
+        "source_ref": "Cloud EHR",
+        "system_refs": [
+          "Cloud EHR"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "downtime workflow",
+        "manual workaround owner",
+        "backup scope",
+        "restore-test note",
+        "tabletop attendance"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "DOWNTIME-BILLING_PORTAL",
+      "evidence_type": "downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "downtime",
+      "source_ref": "Billing Portal",
+      "source_system": "Billing Portal",
+      "status": "missing",
+      "title": "Downtime and restore evidence for Billing Portal",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-002"
+        ],
+        "source_kind": "downtime",
+        "source_modules": [
+          "downtime",
+          "flows"
+        ],
+        "source_ref": "Billing Portal",
+        "system_refs": [
+          "Billing Portal"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "downtime workflow",
+        "manual workaround owner",
+        "backup scope",
+        "restore-test note",
+        "tabletop attendance"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "DOWNTIME-PHONES",
+      "evidence_type": "downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "downtime",
+      "source_ref": "Phones",
+      "source_system": "Phones",
+      "status": "missing",
+      "title": "Downtime and restore evidence for Phones",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "downtime",
+        "source_modules": [
+          "downtime",
+          "flows"
+        ],
+        "source_ref": "Phones",
+        "system_refs": [
+          "Phones"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "downtime workflow",
+        "manual workaround owner",
+        "backup scope",
+        "restore-test note",
+        "tabletop attendance"
+      ],
+      "artifact_refs": [
+        "downtime-ransomware-tabletop.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when downtime owner, manual workaround, backup scope, restore-test evidence, and tabletop notes are recorded.",
+      "closeout_state": "blocked",
+      "date_observed": "2026-05-15",
+      "evidence_id": "DOWNTIME-SHARED_DRIVE",
+      "evidence_type": "downtime",
+      "lifecycle_status": "missing",
+      "next_action": "Assign downtime owner, document manual workaround, and record restore-test/tabletop evidence references.",
+      "next_review_date": "2026-05-29",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "downtime",
+      "source_ref": "Shared Drive",
+      "source_system": "Shared Drive",
+      "status": "missing",
+      "title": "Downtime and restore evidence for Shared Drive",
+      "trace": {
+        "artifact_refs": [
+          "downtime-ransomware-tabletop.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-004"
+        ],
+        "source_kind": "downtime",
+        "source_modules": [
+          "downtime",
+          "flows"
+        ],
+        "source_ref": "Shared Drive",
+        "system_refs": [
+          "Shared Drive"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "timeline event category",
+        "owner",
+        "timestamp or sequence marker",
+        "private evidence reference",
+        "decision gate"
+      ],
+      "artifact_refs": [
+        "incident-evidence-timeline.md",
+        "incident-after-action-report.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the event category, owner, private evidence reference, decision gate, and next reviewer are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-TIMELINE-001",
+      "evidence_type": "incident_timeline",
+      "lifecycle_status": "requested",
+      "next_action": "Preserve reference-only event order and route qualified decisions to the right reviewer.",
+      "next_review_date": "2026-06-14",
+      "notes": "Private evidence reference: restricted-evidence/incidents/tabletop-detection-note",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_timeline",
+      "source_ref": "T+00",
+      "source_system": "Cloud EHR; Email",
+      "status": "requested",
+      "title": "Incident timeline evidence for Detection",
+      "trace": {
+        "artifact_refs": [
+          "incident-evidence-timeline.md",
+          "incident-after-action-report.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002"
+        ],
+        "source_kind": "incident_timeline",
+        "source_modules": [
+          "incident_timeline",
+          "downtime"
+        ],
+        "source_ref": "T+00",
+        "system_refs": [
+          "Cloud EHR",
+          "Email"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "timeline event category",
+        "owner",
+        "timestamp or sequence marker",
+        "private evidence reference",
+        "decision gate"
+      ],
+      "artifact_refs": [
+        "incident-evidence-timeline.md",
+        "incident-after-action-report.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the event category, owner, private evidence reference, decision gate, and next reviewer are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-TIMELINE-002",
+      "evidence_type": "incident_timeline",
+      "lifecycle_status": "requested",
+      "next_action": "Preserve reference-only event order and route qualified decisions to the right reviewer.",
+      "next_review_date": "2026-06-14",
+      "notes": "Private evidence reference: restricted-evidence/incidents/downtime-workflow-reference",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_timeline",
+      "source_ref": "T+15",
+      "source_system": "Cloud EHR; Billing Portal; Shared Drive",
+      "status": "requested",
+      "title": "Incident timeline evidence for Continuity",
+      "trace": {
+        "artifact_refs": [
+          "incident-evidence-timeline.md",
+          "incident-after-action-report.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002",
+          "FLOW-004"
+        ],
+        "source_kind": "incident_timeline",
+        "source_modules": [
+          "incident_timeline",
+          "downtime"
+        ],
+        "source_ref": "T+15",
+        "system_refs": [
+          "Cloud EHR",
+          "Billing Portal",
+          "Shared Drive"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "timeline event category",
+        "owner",
+        "timestamp or sequence marker",
+        "private evidence reference",
+        "decision gate"
+      ],
+      "artifact_refs": [
+        "incident-evidence-timeline.md",
+        "incident-after-action-report.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the event category, owner, private evidence reference, decision gate, and next reviewer are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-TIMELINE-003",
+      "evidence_type": "incident_timeline",
+      "lifecycle_status": "requested",
+      "next_action": "Preserve reference-only event order and route qualified decisions to the right reviewer.",
+      "next_review_date": "2026-06-14",
+      "notes": "Private evidence reference: restricted-evidence/incidents/containment-action-reference",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_timeline",
+      "source_ref": "T+30",
+      "source_system": "Cloud EHR; Workspace Provider",
+      "status": "requested",
+      "title": "Incident timeline evidence for Containment",
+      "trace": {
+        "artifact_refs": [
+          "incident-evidence-timeline.md",
+          "incident-after-action-report.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002"
+        ],
+        "source_kind": "incident_timeline",
+        "source_modules": [
+          "incident_timeline",
+          "downtime"
+        ],
+        "source_ref": "T+30",
+        "system_refs": [
+          "Cloud EHR",
+          "Workspace Provider"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "timeline event category",
+        "owner",
+        "timestamp or sequence marker",
+        "private evidence reference",
+        "decision gate"
+      ],
+      "artifact_refs": [
+        "incident-evidence-timeline.md",
+        "incident-after-action-report.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the event category, owner, private evidence reference, decision gate, and next reviewer are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-TIMELINE-004",
+      "evidence_type": "incident_timeline",
+      "lifecycle_status": "requested",
+      "next_action": "Preserve reference-only event order and route qualified decisions to the right reviewer.",
+      "next_review_date": "2026-06-14",
+      "notes": "Private evidence reference: restricted-evidence/incidents/qualified-review-queue",
+      "owner": "Qualified reviewer",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_timeline",
+      "source_ref": "T+60",
+      "source_system": "Cloud EHR; Example EHR Vendor",
+      "status": "requested",
+      "title": "Incident timeline evidence for Qualified review",
+      "trace": {
+        "artifact_refs": [
+          "incident-evidence-timeline.md",
+          "incident-after-action-report.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002"
+        ],
+        "source_kind": "incident_timeline",
+        "source_modules": [
+          "incident_timeline",
+          "downtime"
+        ],
+        "source_ref": "T+60",
+        "system_refs": [
+          "Cloud EHR",
+          "Example EHR Vendor"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "timeline event category",
+        "owner",
+        "timestamp or sequence marker",
+        "private evidence reference",
+        "decision gate"
+      ],
+      "artifact_refs": [
+        "incident-evidence-timeline.md",
+        "incident-after-action-report.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the event category, owner, private evidence reference, decision gate, and next reviewer are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-TIMELINE-005",
+      "evidence_type": "incident_timeline",
+      "lifecycle_status": "requested",
+      "next_action": "Preserve reference-only event order and route qualified decisions to the right reviewer.",
+      "next_review_date": "2026-06-14",
+      "notes": "Private evidence reference: restricted-evidence/incidents/after-action-items",
+      "owner": "Practice Owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_timeline",
+      "source_ref": "T+1 business day",
+      "source_system": "Cloud EHR; Billing Portal; Shared Drive",
+      "status": "requested",
+      "title": "Incident timeline evidence for After-action",
+      "trace": {
+        "artifact_refs": [
+          "incident-evidence-timeline.md",
+          "incident-after-action-report.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [
+          "FLOW-001",
+          "FLOW-002",
+          "FLOW-004"
+        ],
+        "source_kind": "incident_timeline",
+        "source_modules": [
+          "incident_timeline",
+          "downtime"
+        ],
+        "source_ref": "T+1 business day",
+        "system_refs": [
+          "Cloud EHR",
+          "Billing Portal",
+          "Shared Drive"
+        ],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Admin settings export reference",
+        "access review reference",
+        "session reset reference",
+        "and owner signoff."
+      ],
+      "artifact_refs": [
+        "incident-after-action-report.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the after-action owner, due date, evidence reference, and reviewer lane are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-AA-001",
+      "evidence_type": "incident_after_action",
+      "lifecycle_status": "requested",
+      "next_action": "Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_after_action",
+      "source_ref": "INC-AA-001",
+      "source_system": "incident after-action queue",
+      "status": "requested",
+      "title": "Incident after-action evidence: Confirm MFA enforcement, session reset, administrator list, and access-review evidence for EHR and workspace accounts.",
+      "trace": {
+        "artifact_refs": [
+          "incident-after-action-report.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "incident_after_action",
+        "source_modules": [
+          "incident_timeline"
+        ],
+        "source_ref": "INC-AA-001",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Downtime workflow reference",
+        "staff acknowledgement reference",
+        "and tabletop attendance reference."
+      ],
+      "artifact_refs": [
+        "incident-after-action-report.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the after-action owner, due date, evidence reference, and reviewer lane are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-AA-002",
+      "evidence_type": "incident_after_action",
+      "lifecycle_status": "requested",
+      "next_action": "Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_after_action",
+      "source_ref": "INC-AA-002",
+      "source_system": "incident after-action queue",
+      "status": "requested",
+      "title": "Incident after-action evidence: Update downtime workflow for Cloud EHR, Billing Portal, Phones, and Shared Drive.",
+      "trace": {
+        "artifact_refs": [
+          "incident-after-action-report.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "incident_after_action",
+        "source_modules": [
+          "incident_timeline"
+        ],
+        "source_ref": "INC-AA-002",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Vendor terms reference",
+        "security contact reference",
+        "BAA review date",
+        "and qualified-review notes."
+      ],
+      "artifact_refs": [
+        "incident-after-action-report.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the after-action owner, due date, evidence reference, and reviewer lane are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-AA-003",
+      "evidence_type": "incident_after_action",
+      "lifecycle_status": "requested",
+      "next_action": "Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "Practice Owner",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_after_action",
+      "source_ref": "INC-AA-003",
+      "source_system": "incident after-action queue",
+      "status": "requested",
+      "title": "Incident after-action evidence: Review vendor incident terms and support contacts for EHR, billing, imaging, workspace, and AI scribe vendors.",
+      "trace": {
+        "artifact_refs": [
+          "incident-after-action-report.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "incident_after_action",
+        "source_modules": [
+          "incident_timeline"
+        ],
+        "source_ref": "INC-AA-003",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "Restore-test record reference",
+        "backup-scope reference",
+        "and exception list."
+      ],
+      "artifact_refs": [
+        "incident-after-action-report.md",
+        "incident-evidence-timeline.md",
+        "evidence-binder-index.md"
+      ],
+      "closeout_rule": "Close when the after-action owner, due date, evidence reference, and reviewer lane are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "INC-AA-004",
+      "evidence_type": "incident_after_action",
+      "lifecycle_status": "requested",
+      "next_action": "Assign owner, due date, evidence reference, and reviewer lane before closing the after-action item.",
+      "next_review_date": "2026-06-14",
+      "notes": "",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "incident_after_action",
+      "source_ref": "INC-AA-004",
+      "source_system": "incident after-action queue",
+      "status": "requested",
+      "title": "Incident after-action evidence: Run a restore-test evidence refresh for systems needed during patient-care continuity.",
+      "trace": {
+        "artifact_refs": [
+          "incident-after-action-report.md",
+          "incident-evidence-timeline.md",
+          "evidence-binder-index.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "incident_after_action",
+        "source_modules": [
+          "incident_timeline"
+        ],
+        "source_ref": "INC-AA-004",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details"
+      ]
     }
   ],
   "findings": [
@@ -1257,6 +3642,32 @@
     },
     {
       "artifact_refs": [
+        "incident-evidence-timeline.md"
+      ],
+      "id": "incident_evidence_timeline",
+      "source_modules": [
+        "incident_timeline",
+        "downtime",
+        "evidence"
+      ],
+      "status": "generated",
+      "title": "Incident Evidence Timeline"
+    },
+    {
+      "artifact_refs": [
+        "incident-after-action-report.md"
+      ],
+      "id": "incident_after_action",
+      "source_modules": [
+        "incident_timeline",
+        "downtime",
+        "readiness"
+      ],
+      "status": "generated",
+      "title": "Incident After-Action Report"
+    },
+    {
+      "artifact_refs": [
         "evidence-binder-index.md"
       ],
       "id": "evidence_index",
@@ -1306,6 +3717,6 @@
   ],
   "source_profile": {
     "path": "samples/family_dental_clinic.yaml",
-    "sha256": "14dc25a10a39e4aa4a564a81411c802f265b086360c129537d3a3c971bfe72f5"
+    "sha256": "cb63afa820ffadc2f215a5c0e39934ed00196952662f5376e27ec6222480ebf7"
   }
 }

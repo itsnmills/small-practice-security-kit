@@ -65,6 +65,12 @@ class ProfileValidationTests(unittest.TestCase):
         with self.assertRaisesRegex(ValidationError, "decision"):
             validate_profile(profile)
 
+    def test_invalid_incident_timeline_item_fails(self) -> None:
+        profile = copy.deepcopy(self.profile)
+        del profile["incident_timeline"]["timeline"][0]["evidence_ref"]
+        with self.assertRaisesRegex(ValidationError, "evidence_ref"):
+            validate_profile(profile)
+
     def test_cli_exits_nonzero_on_invalid_profile(self) -> None:
         profile = copy.deepcopy(self.profile)
         del profile["practice"]

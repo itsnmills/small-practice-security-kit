@@ -27,6 +27,8 @@ class PacketManifestTests(unittest.TestCase):
         self.assertIn("executive_scorecard", section_ids)
         self.assertIn("ai_findings", section_ids)
         self.assertIn("vendor_baa_exposure", section_ids)
+        self.assertIn("incident_evidence_timeline", section_ids)
+        self.assertIn("incident_after_action", section_ids)
         self.assertIn("evidence_index", section_ids)
         self.assertIn("limitations_appendix", section_ids)
         for section in manifest["sections"]:
@@ -38,10 +40,33 @@ class PacketManifestTests(unittest.TestCase):
         self.assertIn("review-packet.md", artifact_paths)
         self.assertIn("review-packet.html", artifact_paths)
         self.assertIn("evidence-binder-index.md", artifact_paths)
+        self.assertIn("incident-evidence-timeline.md", artifact_paths)
+        self.assertIn("incident-after-action-report.md", artifact_paths)
         self.assertIn("owner-msp-handoff.md", artifact_paths)
         self.assertIn("limitations-appendix.md", artifact_paths)
         self.assertTrue(all(len(artifact["sha256"]) == 64 for artifact in manifest["artifacts"]))
         self.assertTrue(manifest["evidence_references"])
+        evidence_types = {item["evidence_type"] for item in manifest["evidence_references"]}
+        self.assertIn("incident_timeline", evidence_types)
+        self.assertIn("ephi_flow", evidence_types)
+        closeout_states = {item["closeout_state"] for item in manifest["evidence_references"]}
+        self.assertIn("blocked", closeout_states)
+        self.assertIn("needs_evidence", closeout_states)
+        self.assertTrue(any(item["trace"]["flow_ids"] for item in manifest["evidence_references"]))
+        for item in manifest["evidence_references"]:
+            for field in [
+                "lifecycle_status",
+                "closeout_state",
+                "source_kind",
+                "source_ref",
+                "acceptable_evidence",
+                "unsafe_inputs",
+                "next_action",
+                "closeout_rule",
+                "trace",
+            ]:
+                self.assertTrue(item[field], field)
+            self.assertEqual(item["sensitivity_boundary"], "reference_only_no_phi_no_secret")
         self.assertTrue(manifest["findings"])
         for finding in manifest["findings"]:
             for field in [
@@ -67,6 +92,9 @@ class PacketManifestTests(unittest.TestCase):
         self.assertEqual(schema["properties"]["generated_at"]["format"], "date-time")
         self.assertIn("allOf", schema["properties"]["sections"])
         self.assertIn("(?!/)", schema["$defs"]["artifact"]["properties"]["path"]["pattern"])
+        self.assertIn("lifecycle_status", schema["$defs"])
+        self.assertIn("closeout_state", schema["$defs"])
+        self.assertIn("evidence_trace", schema["$defs"])
         answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))
         self.assertEqual(answer_schema["title"], "Velari Answer Standard Action Packet")
         self.assertIn("plain_english_summary", answer_schema["required"])

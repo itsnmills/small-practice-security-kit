@@ -115,6 +115,12 @@
         "evidence_type": {
           "type": "string"
         },
+        "source_kind": {
+          "type": "string"
+        },
+        "source_ref": {
+          "type": "string"
+        },
         "source_system": {
           "type": "string"
         },
@@ -126,8 +132,35 @@
             "missing",
             "requested",
             "partial",
+            "provided",
             "reviewed",
+            "stale",
             "outdated",
+            "blocked",
+            "closed",
+            "not_applicable"
+          ]
+        },
+        "lifecycle_status": {
+          "enum": [
+            "missing",
+            "requested",
+            "partial",
+            "provided",
+            "reviewed",
+            "stale",
+            "outdated",
+            "blocked",
+            "closed",
+            "not_applicable"
+          ]
+        },
+        "closeout_state": {
+          "enum": [
+            "blocked",
+            "needs_evidence",
+            "ready_for_review",
+            "closed",
             "not_applicable"
           ]
         },
@@ -144,6 +177,82 @@
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "acceptable_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsafe_inputs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_action": {
+          "type": "string"
+        },
+        "closeout_rule": {
+          "type": "string"
+        },
+        "trace": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "source_kind",
+            "source_ref",
+            "flow_ids",
+            "system_refs",
+            "vendor_refs",
+            "workflow_refs",
+            "artifact_refs",
+            "source_modules"
+          ],
+          "properties": {
+            "source_kind": {
+              "type": "string"
+            },
+            "source_ref": {
+              "type": "string"
+            },
+            "flow_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "system_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "vendor_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "workflow_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "artifact_refs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "source_modules": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
           }
         },
         "notes": {

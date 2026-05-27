@@ -7,19 +7,19 @@ Reference-only rule: do not gather or store raw evidence in this public repo. Co
 | Evidence ID | Evidence needed | Owner | Status | Artifact refs |
 | --- | --- | --- | --- | --- |
 | EVID-ACCESS-Q2 | Quarterly access review export placeholder | Office Manager | partial | evidence-binder-index.md |
-| EVID-BACKUP-RESTORE | Backup restore test record placeholder | MSP Lead | outdated | evidence-binder-index.md |
+| EVID-BACKUP-RESTORE | Backup restore test record placeholder | MSP Lead | stale | evidence-binder-index.md |
 | EVID-CYBER-INSURANCE | Cyber insurance renewal evidence list | Practice Owner | requested | evidence-binder-index.md |
 | EVID-AI-GUIDANCE | Staff AI acceptable-use acknowledgement | Office Manager | requested | evidence-binder-index.md |
 | EVID-VENDOR-BAA-GAPS | Vendor BAA and incident terms follow-up list | Office Manager | requested | evidence-binder-index.md |
-| FLOW-001 | BAA, portal access controls, intake workflow owner | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| FLOW-002 | BAA, integration owner, incident notification terms | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| FLOW-003 | secure email policy, forwarding review, staff training | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| FLOW-004 | export procedure, shared-folder access review, backup scope reference | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| FLOW-005 | AI acceptable-use guidance and staff acknowledgement | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| FLOW-006 | BAA, retention terms, model-training terms, human review approval | MSP or workflow owner | requested | ephi-flow-map.md, evidence-binder-index.md |
-| VENDOR-EXAMPLE_EHR_VENDOR | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example EHR Vendor | Practice manager | reviewed | vendor-baa-review.md, evidence-binder-index.md |
-| VENDOR-EXAMPLE_BILLING_VENDOR | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Example Billing Vendor | Practice manager | requested | vendor-baa-review.md, evidence-binder-index.md |
-| VENDOR-WORKSPACE_PROVIDER | BAA, SOC 2/HITRUST status, security contact, AI data-use review for Workspace Provider | Practice manager | reviewed | vendor-baa-review.md, evidence-binder-index.md |
+| READINESS-MFA-EMAIL | Email MFA evidence | Office Manager | provided | readiness-review.md |
+| READINESS-MFA-EHR | EHR MFA evidence | MSP Lead | missing | owner-msp-handoff.md, readiness-review.md |
+| READINESS-UNIQUE-ACCOUNTS | Unique account evidence | MSP Lead | provided | owner-msp-handoff.md, readiness-review.md |
+| READINESS-ACCESS-REVIEW | Quarterly access review evidence | MSP Lead | missing | owner-msp-handoff.md, readiness-review.md |
+| READINESS-BACKUP-RESTORE | Backup restore evidence | MSP Lead | missing | downtime-ransomware-tabletop.md, readiness-review.md |
+| READINESS-VENDOR-INVENTORY | Vendor inventory evidence | Office Manager | provided | vendor-baa-review.md, readiness-review.md |
+| READINESS-BAA-REGISTER | BAA register evidence | Office Manager | missing | vendor-baa-review.md, readiness-review.md |
+| READINESS-INCIDENT-CONTACTS | Incident contact evidence | Office Manager | provided | incident-decision-log.md, readiness-review.md |
+| READINESS-DOWNTIME-PLAN | Downtime plan evidence | MSP Lead | missing | downtime-ransomware-tabletop.md, readiness-review.md |
 
 ## Exact Checklist For The Private Binder
 

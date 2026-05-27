@@ -125,6 +125,8 @@ class SprintModeTests(unittest.TestCase):
         self.assertTrue(any(stage["status"] == "needs_evidence" for stage in summary["stage_statuses"]))
         self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "sprint-command-center.html")
         self.assertGreater(summary["evidence_gap_summary"]["needs_attention"], 0)
+        self.assertIn("stale", summary["evidence_gap_summary"]["by_status"])
+        self.assertIn("blocked", summary["evidence_gap_summary"]["by_status"])
         self.assertTrue(summary["handoff_lanes"])
         self.assertTrue(summary["top_risks"])
         self.assertEqual(

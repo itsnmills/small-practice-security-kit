@@ -26,6 +26,7 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 
 | Finding | Priority | Plain-English summary | Why it matters | Owner lane | Evidence status | Recommended question | Next action |
 |---|---|---|---|---|---|---|---|
+| BAA status needs review for Example Imaging Vendor | high | A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. | Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers. | vendor | missing | Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed? | Add the vendor to the register, confirm PHI access level, and request BAA/evidence status. |
 | Complete the BAA register and review dates | high | A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. | Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers. | vendor | missing | Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed? | Add the vendor to the register, confirm PHI access level, and request BAA/evidence status. |
 | Document downtime procedures for critical systems | high | Downtime workflow evidence is missing for a system the practice may need during patient care. | Unproven recovery can turn a ransomware or outage event into patient-care disruption and billing downtime. | msp | missing | Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action? | Assign an owner, collect reference-only evidence, and update the action packet. |
 | Enable MFA for EHR access | high | MFA evidence for an EHR or remote-access workflow is missing or not recorded. | Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows. | msp | missing | Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts? | Request MFA proof, document exceptions, and assign an owner for any missing enforcement. |
@@ -33,7 +34,6 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 | Run and record a quarterly access review | high | The practice does not have current evidence that user access was reviewed. | Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows. | msp | missing | Can you provide user list exports, admin role lists, shared-account exceptions, and owner signoff for access review? | Run the access review, remove or document exceptions, and store evidence references. |
 | Set a monthly log review cadence | high | Log review cadence evidence is missing or not recorded for systems that support patient-data workflows. | Missing log review evidence reduces risk visibility when suspicious access, vendor support, or account misuse questions arise. | msp | missing | Can you provide the log sources, review cadence, alert owner, escalation path, and date last reviewed? | Assign a log review owner, record cadence evidence, and define escalation for suspicious access. |
 | AI workflow requires action: Paste patient-level note into public chatbot | high | An AI workflow needs clearer data-use, vendor, and human-review boundaries before staff rely on it. | AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool. | office_manager | requested | Should this workflow remain no-PHI, restricted, or paused until vendor terms, retention, model-training use, and human-review controls are reviewed? | Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed. |
-| BAA status needs review for Example AI Scribe Vendor | high | A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. | Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers. | vendor | requested | Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed? | Add the vendor to the register, confirm PHI access level, and request BAA/evidence status. |
 
 ## Generated Outputs
 
@@ -66,6 +66,8 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - `connected-device-inventory.md`
 - `portal-api-flow-review.md`
 - `incident-decision-log.md`
+- `incident-evidence-timeline.md`
+- `incident-after-action-report.md`
 - `evidence-binder-index.md`
 - `owner-msp-handoff.md`
 - `30-60-90-roadmap.md`

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import json
 import threading
 import unittest
@@ -103,6 +104,36 @@ class IntakeApiTests(unittest.TestCase):
         self.assertEqual(connector_summary["total_items"], 5)
         with urllib.request.urlopen(self.base + "/sprint-command-center.html", timeout=5) as response:
             self.assertIn("Command Center", response.read().decode("utf-8"))
+
+    def test_incident_runner_template_save_and_safety_block(self) -> None:
+        status = self.get_json("/api/status")
+        created = self.post_json(
+            "/api/workspaces",
+            {"practice_name": f"API Incident Runner Clinic {uuid.uuid4().hex[:8]}", "preset": "dental", "size_tier": "small"},
+            status["csrf_token"],
+        )
+        self.assertTrue(created["ok"])
+
+        runner = self.get_json("/api/incident-runner")
+        scenario_keys = {scenario["key"] for scenario in runner["scenarios"]}
+        self.assertIn("ransomware_concern", scenario_keys)
+
+        templated = self.post_json("/api/incident-runner/template", {"scenario_key": "ransomware_concern"}, status["csrf_token"])
+        incident = templated["incident_timeline"]
+        self.assertEqual(incident["scenario_key"], "ransomware_concern")
+        self.assertGreaterEqual(len(incident["timeline"]), 5)
+
+        saved = self.post_json("/api/incident-runner", {"incident_timeline": incident, "build": True}, status["csrf_token"])
+        self.assertEqual(saved["incident_timeline"]["scenario_key"], "ransomware_concern")
+        with urllib.request.urlopen(self.base + "/incident-evidence-timeline.md", timeout=5) as response:
+            self.assertIn("Ransomware concern", response.read().decode("utf-8"))
+
+        unsafe = copy.deepcopy(incident)
+        unsafe["timeline"][0]["event"] = "Patient Name: Jane Example"
+        with self.assertRaises(urllib.error.HTTPError) as raised:
+            self.post_json("/api/incident-runner", {"incident_timeline": unsafe}, status["csrf_token"])
+        self.assertEqual(raised.exception.code, 422)
+        raised.exception.close()
 
     def test_sensitive_data_blocks_profile_save(self) -> None:
         profile = self.get_json("/api/profile")["profile"]

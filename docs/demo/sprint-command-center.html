@@ -189,7 +189,7 @@
         <div class="metric"><span>Readiness signal</span><strong>high</strong></div>
         <div class="metric"><span>Delivery signal</span><strong>Needs Evidence Before Closeout</strong></div>
         <div class="metric"><span>High/critical findings</span><strong>10</strong></div>
-        <div class="metric"><span>Evidence needing attention</span><strong>15</strong></div>
+        <div class="metric"><span>Evidence needing attention</span><strong>32</strong></div>
       </aside>
     </header>
 
@@ -411,6 +411,15 @@
               <thead><tr><th>Finding</th><th>Priority</th><th>Owner lane</th><th>Evidence</th><th>Timeframe</th><th>Next action</th></tr></thead>
               <tbody>
             <tr>
+              <td><strong>BAA status needs review for Example Imaging Vendor</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
+              <td><b class="pill severity-high">high</b></td>
+              <td>vendor<span>Vendor</span></td>
+              <td>missing</td>
+              <td>30_days</td>
+              <td>Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.</td>
+            </tr>
+
+            <tr>
               <td><strong>Complete the BAA register and review dates</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
               <td><b class="pill severity-high">high</b></td>
               <td>vendor<span>Vendor</span></td>
@@ -472,15 +481,6 @@
               <td>30_days</td>
               <td>Keep the workflow no-PHI or restricted, collect gated proof, and route terms to professional review if needed.</td>
             </tr>
-
-            <tr>
-              <td><strong>BAA status needs review for Example AI Scribe Vendor</strong><span>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</span></td>
-              <td><b class="pill severity-high">high</b></td>
-              <td>vendor<span>Vendor</span></td>
-              <td>requested</td>
-              <td>30_days</td>
-              <td>Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.</td>
-            </tr>
             </tbody>
             </table>
           </div>
@@ -496,13 +496,6 @@
               <td><strong>EVID-ACCESS-Q2</strong><span>Quarterly access review export placeholder</span></td>
               <td>partial</td>
               <td>Office Manager</td>
-              <td>evidence-binder-index.md</td>
-            </tr>
-
-            <tr>
-              <td><strong>EVID-BACKUP-RESTORE</strong><span>Backup restore test record placeholder</span></td>
-              <td>outdated</td>
-              <td>MSP Lead</td>
               <td>evidence-binder-index.md</td>
             </tr>
 
@@ -528,24 +521,31 @@
             </tr>
 
             <tr>
-              <td><strong>FLOW-001</strong><span>BAA, portal access controls, intake workflow owner</span></td>
-              <td>requested</td>
-              <td>MSP or workflow owner</td>
-              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+              <td><strong>READINESS-MFA-EHR</strong><span>EHR MFA evidence</span></td>
+              <td>missing</td>
+              <td>MSP Lead</td>
+              <td>owner-msp-handoff.md, readiness-review.md</td>
             </tr>
 
             <tr>
-              <td><strong>FLOW-002</strong><span>BAA, integration owner, incident notification terms</span></td>
-              <td>requested</td>
-              <td>MSP or workflow owner</td>
-              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+              <td><strong>READINESS-ACCESS-REVIEW</strong><span>Quarterly access review evidence</span></td>
+              <td>missing</td>
+              <td>MSP Lead</td>
+              <td>owner-msp-handoff.md, readiness-review.md</td>
             </tr>
 
             <tr>
-              <td><strong>FLOW-003</strong><span>secure email policy, forwarding review, staff training</span></td>
-              <td>requested</td>
-              <td>MSP or workflow owner</td>
-              <td>ephi-flow-map.md, evidence-binder-index.md</td>
+              <td><strong>READINESS-BACKUP-RESTORE</strong><span>Backup restore evidence</span></td>
+              <td>missing</td>
+              <td>MSP Lead</td>
+              <td>downtime-ransomware-tabletop.md, readiness-review.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>READINESS-BAA-REGISTER</strong><span>BAA register evidence</span></td>
+              <td>missing</td>
+              <td>Office Manager</td>
+              <td>vendor-baa-review.md, readiness-review.md</td>
             </tr>
             </tbody>
             </table>
@@ -560,6 +560,7 @@
               <tbody><tr><td><strong>No connector evidence imported</strong><span>Use local imports or collectors to reduce manual entry.</span></td><td>0</td><td>not_run</td><td>No</td></tr></tbody>
             </table>
           </div>
+          <ol class="actions connector-actions"><li><strong>No connector evidence needs attention</strong><span>low &middot; observed &middot; owner</span>Refresh connector evidence on the next review cycle.<span>Which evidence changed since the last sprint?</span></li></ol>
         </section>
       </div>
 
@@ -575,7 +576,7 @@
 
             <article class="lane-card">
               <h3>MSP</h3>
-              <p><strong>9</strong> high-priority actions &middot; 9 total</p>
+              <p><strong>8</strong> high-priority actions &middot; 8 total</p>
               <ul><li>ephi-flow-map.md</li><li>readiness-review.md</li><li>downtime-ransomware-tabletop.md</li><li>owner-msp-handoff.md</li></ul>
             </article>
 
@@ -587,7 +588,7 @@
 
             <article class="lane-card">
               <h3>Vendor</h3>
-              <p><strong>3</strong> high-priority actions &middot; 3 total</p>
+              <p><strong>4</strong> high-priority actions &middot; 4 total</p>
               <ul><li>vendor-baa-review.md</li></ul>
             </article>
             </div>

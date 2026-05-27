@@ -150,6 +150,8 @@
               "connected_device_inventory",
               "portal_api_flow_review",
               "incident_decision_log",
+              "incident_evidence_timeline",
+              "incident_after_action",
               "evidence_index",
               "owner_msp_handoff",
               "roadmap_30_60_90",
@@ -258,6 +260,34 @@
             "properties": {
               "id": {
                 "const": "downtime_ransomware"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "incident_evidence_timeline"
+              }
+            },
+            "required": [
+              "id"
+            ]
+          },
+          "minContains": 1
+        },
+        {
+          "contains": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "const": "incident_after_action"
               }
             },
             "required": [
@@ -463,6 +493,87 @@
         }
       }
     },
+    "lifecycle_status": {
+      "enum": [
+        "missing",
+        "requested",
+        "partial",
+        "provided",
+        "reviewed",
+        "stale",
+        "outdated",
+        "blocked",
+        "closed",
+        "not_applicable"
+      ]
+    },
+    "closeout_state": {
+      "enum": [
+        "blocked",
+        "needs_evidence",
+        "ready_for_review",
+        "closed",
+        "not_applicable"
+      ]
+    },
+    "evidence_trace": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_kind",
+        "source_ref",
+        "flow_ids",
+        "system_refs",
+        "vendor_refs",
+        "workflow_refs",
+        "artifact_refs",
+        "source_modules"
+      ],
+      "properties": {
+        "source_kind": {
+          "type": "string"
+        },
+        "source_ref": {
+          "type": "string"
+        },
+        "flow_ids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "system_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "vendor_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workflow_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "artifact_refs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "source_modules": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "evidence_reference": {
       "type": "object",
       "additionalProperties": false,
@@ -470,13 +581,22 @@
         "evidence_id",
         "title",
         "evidence_type",
+        "source_kind",
+        "source_ref",
         "source_system",
         "owner",
         "status",
+        "lifecycle_status",
+        "closeout_state",
         "date_observed",
         "next_review_date",
         "sensitivity_boundary",
         "artifact_refs",
+        "acceptable_evidence",
+        "unsafe_inputs",
+        "next_action",
+        "closeout_rule",
+        "trace",
         "notes"
       ],
       "properties": {
@@ -489,6 +609,12 @@
         "evidence_type": {
           "type": "string"
         },
+        "source_kind": {
+          "type": "string"
+        },
+        "source_ref": {
+          "type": "string"
+        },
         "source_system": {
           "type": "string"
         },
@@ -496,14 +622,13 @@
           "type": "string"
         },
         "status": {
-          "enum": [
-            "missing",
-            "requested",
-            "partial",
-            "reviewed",
-            "outdated",
-            "not_applicable"
-          ]
+          "$ref": "#/$defs/lifecycle_status"
+        },
+        "lifecycle_status": {
+          "$ref": "#/$defs/lifecycle_status"
+        },
+        "closeout_state": {
+          "$ref": "#/$defs/closeout_state"
         },
         "date_observed": {
           "type": "string"
@@ -519,6 +644,31 @@
           "items": {
             "type": "string"
           }
+        },
+        "acceptable_evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "unsafe_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_action": {
+          "type": "string",
+          "minLength": 1
+        },
+        "closeout_rule": {
+          "type": "string",
+          "minLength": 1
+        },
+        "trace": {
+          "$ref": "#/$defs/evidence_trace"
         },
         "notes": {
           "type": "string"

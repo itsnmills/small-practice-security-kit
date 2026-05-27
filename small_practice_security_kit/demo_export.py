@@ -23,6 +23,8 @@ PACKET_ARTIFACTS = [
     "connected-device-inventory.md",
     "portal-api-flow-review.md",
     "incident-decision-log.md",
+    "incident-evidence-timeline.md",
+    "incident-after-action-report.md",
     "evidence-binder-index.md",
     "owner-msp-handoff.md",
     "30-60-90-roadmap.md",

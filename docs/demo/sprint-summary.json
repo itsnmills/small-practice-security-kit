@@ -1,9 +1,11 @@
 {
   "connector_evidence_summary": {
+    "attention_items": [],
     "by_confidence": {},
     "by_connector": {},
     "by_control_area": {},
     "by_owner_lane": {},
+    "by_priority": {},
     "by_status": {},
     "data_boundary": "metadata_only_no_phi_expected",
     "needs_attention": 0,
@@ -58,7 +60,7 @@
     "connector_evidence_items": 0,
     "control_evidence_needing_attention": 30,
     "control_evidence_rows": 30,
-    "evidence_references": 17,
+    "evidence_references": 46,
     "findings": 12,
     "handoff_actions": 17,
     "high_or_critical_findings": 10,
@@ -73,11 +75,12 @@
   },
   "evidence_gap_summary": {
     "by_owner": {
-      "MSP Lead": 1,
-      "MSP or workflow owner": 6,
-      "Office Manager": 3,
-      "Practice Owner": 1,
-      "Practice manager": 4
+      "MSP Lead": 12,
+      "MSP or workflow owner": 5,
+      "Office Manager": 9,
+      "Practice Owner": 3,
+      "Practice manager": 2,
+      "Qualified reviewer": 1
     },
     "by_stage": [
       {
@@ -158,13 +161,17 @@
       }
     ],
     "by_status": {
-      "outdated": 1,
+      "blocked": 1,
+      "closed": 2,
+      "missing": 11,
+      "not_applicable": 1,
       "partial": 1,
-      "requested": 13,
-      "reviewed": 2
+      "provided": 8,
+      "requested": 20,
+      "stale": 2
     },
-    "needs_attention": 15,
-    "total_references": 17
+    "needs_attention": 32,
+    "total_references": 46
   },
   "generated_at": "2026-05-15T00:00:00Z",
   "generator": {
@@ -187,7 +194,7 @@
       ]
     },
     {
-      "actions": 9,
+      "actions": 8,
       "artifact_refs": [
         "ephi-flow-map.md",
         "readiness-review.md",
@@ -195,7 +202,7 @@
         "owner-msp-handoff.md"
       ],
       "audience": "owner_msp",
-      "high_priority_actions": 9,
+      "high_priority_actions": 8,
       "recipient": "MSP",
       "stage_ids": [
         "patient_data_outside_ehr_map",
@@ -220,12 +227,12 @@
       ]
     },
     {
-      "actions": 3,
+      "actions": 4,
       "artifact_refs": [
         "vendor-baa-review.md"
       ],
       "audience": "owner_msp",
-      "high_priority_actions": 3,
+      "high_priority_actions": 4,
       "recipient": "Vendor",
       "stage_ids": [
         "vendor_baa_review"
@@ -693,6 +700,8 @@
       "connected-device-inventory.md",
       "portal-api-flow-review.md",
       "incident-decision-log.md",
+      "incident-evidence-timeline.md",
+      "incident-after-action-report.md",
       "evidence-binder-index.md",
       "owner-msp-handoff.md",
       "30-60-90-roadmap.md",
@@ -742,7 +751,7 @@
   "source_profile": {
     "input_path": "family_dental_clinic.yaml",
     "path": "samples/family_dental_clinic.yaml",
-    "sha256": "14dc25a10a39e4aa4a564a81411c802f265b086360c129537d3a3c971bfe72f5"
+    "sha256": "cb63afa820ffadc2f215a5c0e39934ed00196952662f5376e27ec6222480ebf7"
   },
   "sprint_id": "sprint_family_dental_clinic_2026_q2",
   "stage_statuses": [
@@ -861,6 +870,68 @@
     "status": "needs_evidence_before_closeout"
   },
   "top_risks": [
+    {
+      "acceptable_evidence": [
+        "BAA status",
+        "BAA review date",
+        "vendor security page",
+        "SOC 2 or HITRUST status",
+        "incident notification terms",
+        "retention/deletion terms"
+      ],
+      "affected_workflows": [
+        "vendor services",
+        "patient messaging",
+        "billing",
+        "AI documentation"
+      ],
+      "artifact_ref": "vendor-baa-review.md",
+      "audience": "vendor",
+      "evidence_refs": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "evidence_status": "missing",
+      "finding_id": "VENDOR-EXAMPLE_IMAGING_VENDOR",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
+        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
+      },
+      "owner": "Practice manager",
+      "owner_lane": "vendor",
+      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
+      "priority": "high",
+      "recipient": "Vendor",
+      "recommended_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
+      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "reviewer_needed": [
+        "vendor_owner",
+        "legal_or_compliance_reviewer"
+      ],
+      "risk_area": "Vendor / BAA",
+      "roadmap_bucket": "30_days",
+      "secondary_owner_lane": "office_manager",
+      "severity": "high",
+      "stage_id": "vendor_baa_review",
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "BAA status needs review for Example Imaging Vendor",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts with sensitive details"
+      ],
+      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
+      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
+    },
     {
       "acceptable_evidence": [
         "BAA status",
@@ -1288,71 +1359,6 @@
       ],
       "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
       "why_it_matters": "AI workflows need explicit data boundaries so staff do not enter patient, billing, clinical, credential, or raw evidence details into the wrong tool."
-    },
-    {
-      "acceptable_evidence": [
-        "BAA status",
-        "BAA review date",
-        "vendor security page",
-        "SOC 2 or HITRUST status",
-        "incident notification terms",
-        "retention/deletion terms"
-      ],
-      "affected_workflows": [
-        "vendor services",
-        "patient messaging",
-        "billing",
-        "AI documentation"
-      ],
-      "artifact_ref": "vendor-baa-review.md",
-      "audience": "vendor",
-      "evidence_refs": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
-      "evidence_status": "requested",
-      "finding_id": "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
-      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
-      "msp_view": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
-      "next_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
-      "output_views": {
-        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers.",
-        "msp_task": "Support the Vendor / BAA workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
-        "owner_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
-        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
-        "vendor_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?"
-      },
-      "owner": "Practice manager",
-      "owner_lane": "vendor",
-      "owner_view": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing. Next action: Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
-      "plain_english_summary": "A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.",
-      "priority": "high",
-      "recipient": "Vendor",
-      "recommended_action": "Add the vendor to the register, confirm PHI access level, and request BAA/evidence status.",
-      "recommended_question": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
-      "reviewer_needed": [
-        "vendor_owner",
-        "legal_or_compliance_reviewer"
-      ],
-      "risk_area": "Vendor / BAA",
-      "roadmap_bucket": "30_days",
-      "secondary_owner_lane": "office_manager",
-      "severity": "high",
-      "stage_id": "vendor_baa_review",
-      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
-      "timeframe": "30_days",
-      "title": "BAA status needs review for Example AI Scribe Vendor",
-      "unsafe_inputs": [
-        "patient names",
-        "patient records",
-        "credentials",
-        "private portal links",
-        "raw logs",
-        "screenshots with sensitive data",
-        "raw contracts with sensitive details",
-        "patient notes",
-        "claim narratives",
-        "raw contracts"
-      ],
-      "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
-      "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
     }
   ]
 }

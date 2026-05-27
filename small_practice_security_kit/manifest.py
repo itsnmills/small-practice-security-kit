@@ -2,16 +2,15 @@ from __future__ import annotations
 
 import hashlib
 import re
-from datetime import UTC, date, datetime, timedelta
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any
 
 from .answer_standard import build_action_packet, flattened_output_views
-from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
+from .evidence_lifecycle import build_evidence_lifecycle, normalize_lifecycle_status
 
 
 SCHEMA_VERSION = "2026-05-19"
-ALLOWED_EVIDENCE_STATUSES = {"missing", "requested", "partial", "reviewed", "outdated", "not_applicable"}
 
 
 SECTION_MODEL = [
@@ -68,6 +67,18 @@ SECTION_MODEL = [
         "title": "Incident Decision Log",
         "artifact": "incident-decision-log.md",
         "source_modules": ["downtime", "handoff_questions", "packet_notice"],
+    },
+    {
+        "id": "incident_evidence_timeline",
+        "title": "Incident Evidence Timeline",
+        "artifact": "incident-evidence-timeline.md",
+        "source_modules": ["incident_timeline", "downtime", "evidence"],
+    },
+    {
+        "id": "incident_after_action",
+        "title": "Incident After-Action Report",
+        "artifact": "incident-after-action-report.md",
+        "source_modules": ["incident_timeline", "downtime", "readiness"],
     },
     {
         "id": "evidence_index",
@@ -127,8 +138,7 @@ def safe_profile_ref(profile_path: Path) -> str:
 
 
 def normalized_evidence_status(raw: Any) -> str:
-    status = str(raw or "requested").strip().lower().replace(" ", "_").replace("-", "_")
-    return status if status in ALLOWED_EVIDENCE_STATUSES else "requested"
+    return normalize_lifecycle_status(raw)
 
 
 def artifact_entry(out_dir: Path, name: str) -> dict[str, Any]:
@@ -160,66 +170,7 @@ def section_entries(out_dir: Path) -> list[dict[str, Any]]:
 
 
 def evidence_references(profile: dict[str, Any], generated_date: date) -> list[dict[str, Any]]:
-    next_review = (generated_date + timedelta(days=30)).isoformat()
-    observed = generated_date.isoformat()
-    refs: list[dict[str, Any]] = []
-
-    for item in profile.get("evidence", []):
-        refs.append(
-            {
-                "evidence_id": str(item.get("id") or f"EVID-{len(refs) + 1:03d}"),
-                "title": str(item.get("title") or "Evidence reference"),
-                "evidence_type": str(item.get("area") or item.get("type") or "general"),
-                "source_system": str(item.get("source_system") or item.get("reference") or "practice evidence index"),
-                "owner": str(item.get("owner") or "Practice owner"),
-                "status": normalized_evidence_status(item.get("status")),
-                "date_observed": str(item.get("date_observed") or observed),
-                "next_review_date": str(item.get("next_review_date") or next_review),
-                "sensitivity_boundary": "reference_only_no_phi_no_secret",
-                "artifact_refs": ["evidence-binder-index.md"],
-                "notes": str(item.get("notes") or ""),
-            }
-        )
-
-    for flow in profile.get("flows", []):
-        refs.append(
-            {
-                "evidence_id": str(flow["id"]),
-                "title": str(flow["evidence_needed"]),
-                "evidence_type": "ephi_flow",
-                "source_system": str(flow["source"]),
-                "owner": "MSP or workflow owner",
-                "status": "requested",
-                "date_observed": observed,
-                "next_review_date": next_review,
-                "sensitivity_boundary": "reference_only_no_phi_no_secret",
-                "artifact_refs": ["ephi-flow-map.md", "evidence-binder-index.md"],
-                "notes": f"Flow to {flow['destination']} via {flow['vendor']}",
-            }
-        )
-
-    for vendor in profile.get("vendors", []):
-        refs.append(
-            {
-                "evidence_id": f"VENDOR-{slug(str(vendor['name'])).upper()}",
-                "title": f"BAA, SOC 2/HITRUST status, security contact, AI data-use review for {vendor['name']}",
-                "evidence_type": "vendor_baa",
-                "source_system": str(vendor["name"]),
-                "owner": "Practice manager",
-                "status": "reviewed" if vendor.get("baa_status") == "signed" else "requested",
-                "date_observed": observed,
-                "next_review_date": next_review,
-                "sensitivity_boundary": "reference_only_no_phi_no_secret",
-                "artifact_refs": ["vendor-baa-review.md", "evidence-binder-index.md"],
-                "notes": (
-                    f"Current BAA status: {vendor.get('baa_status', 'unknown')}; "
-                    f"SOC 2 status: {vendor_soc2_status(vendor)}; "
-                    f"HITRUST status: {vendor_hitrust_status(vendor)}"
-                ),
-            }
-        )
-
-    return refs
+    return build_evidence_lifecycle(profile, generated_date)
 
 
 def finding_entries(profile: dict[str, Any], risk: str, gaps: list[str]) -> list[dict[str, Any]]:

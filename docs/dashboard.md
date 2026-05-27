@@ -52,12 +52,15 @@ The local app is organized around the real practice workflow:
 - AI workflow safety
 - Downtime and incident prep
 - Evidence references
+- Evidence lifecycle and closeout state
+- ePHI traceability from evidence rows back to flows, systems, vendors, AI workflows, downtime items, and incident events
 - Overview and next best actions
 - Readiness review
 - ePHI flow map
 - Vendor and BAA review
 - AI workflow review
 - Evidence queue
+- Blocked, needs-evidence, ready-for-review, and closed counts
 - Downtime and ransomware tabletop
 - Links to generated packet outputs
 - HTML companion pages for the roadmap and evidence index

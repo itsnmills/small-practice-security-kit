@@ -167,6 +167,67 @@
         "tabletop_status": {"type": "string", "minLength": 1}
       }
     },
+    "incident_timeline": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "scenario_name": {"type": "string", "minLength": 1},
+        "scenario_type": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "sensitive_data_boundary": {"type": "string", "minLength": 1},
+        "timeline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["time", "phase", "event", "systems", "owner", "evidence_ref", "status", "decision_gate"],
+            "additionalProperties": true,
+            "properties": {
+              "time": {"type": "string", "minLength": 1},
+              "phase": {"type": "string", "minLength": 1},
+              "event": {"type": "string", "minLength": 1},
+              "systems": {
+                "type": "array",
+                "items": {"type": "string", "minLength": 1}
+              },
+              "owner": {"type": "string", "minLength": 1},
+              "evidence_ref": {"type": "string", "minLength": 1},
+              "status": {"type": "string", "minLength": 1},
+              "decision_gate": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "decision_gates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["gate", "owner", "trigger", "action"],
+            "additionalProperties": true,
+            "properties": {
+              "gate": {"type": "string", "minLength": 1},
+              "owner": {"type": "string", "minLength": 1},
+              "trigger": {"type": "string", "minLength": 1},
+              "action": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "after_actions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "priority", "owner", "action", "evidence_needed", "due"],
+            "additionalProperties": true,
+            "properties": {
+              "id": {"type": "string", "minLength": 1},
+              "priority": {"$ref": "#/$defs/risk"},
+              "owner": {"type": "string", "minLength": 1},
+              "action": {"type": "string", "minLength": 1},
+              "evidence_needed": {"type": "string", "minLength": 1},
+              "due": {"type": "string", "minLength": 1}
+            }
+          }
+        }
+      }
+    },
     "evidence": {
       "type": "array",
       "items": {

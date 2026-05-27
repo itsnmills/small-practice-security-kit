@@ -31,6 +31,7 @@
       <button data-section="flows">ePHI flows</button>
       <button data-section="readiness">Readiness</button>
       <button data-section="ai">AI workflows</button>
+      <button data-section="incident">Incident runner</button>
       <button data-section="downtime">Downtime</button>
       <button data-section="evidence">Evidence</button>
       <button data-section="generate">Generate</button>
@@ -222,6 +223,33 @@
         <div class="actions">
           <button id="add-ai-workflow" class="secondary" type="button">Add AI workflow</button>
           <button class="primary save-profile" type="button">Save AI workflows</button>
+        </div>
+      </section>
+
+      <section id="section-incident" class="panel intake-section">
+        <span class="eyebrow">Incident runner</span>
+        <h2>Run a sanitized tabletop or incident handoff</h2>
+        <p class="safe-note">Use categories, owners, timestamps, and private evidence reference IDs only. Do not enter PHI, screenshots, raw logs, patient details, credentials, private URLs, or real incident-sensitive facts.</p>
+
+        <div class="runner-toolbar">
+          <label>Scenario
+            <select id="incident-scenario"></select>
+          </label>
+          <button id="load-incident-template" class="secondary" type="button">Load scenario template</button>
+          <button id="save-incident-runner" class="primary" type="button">Save runner and rebuild packet</button>
+        </div>
+
+        <div id="incident-summary" class="runner-summary"></div>
+        <div id="incident-timeline" class="runner-list"></div>
+
+        <div class="actions">
+          <button id="add-incident-event" class="secondary" type="button">Add timeline event</button>
+        </div>
+
+        <h3>After-action queue</h3>
+        <div id="incident-after-actions" class="runner-list"></div>
+        <div class="actions">
+          <button id="add-incident-after-action" class="secondary" type="button">Add after-action item</button>
         </div>
       </section>
 

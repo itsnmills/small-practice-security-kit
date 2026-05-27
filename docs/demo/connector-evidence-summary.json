@@ -1,8 +1,10 @@
 {
+  "attention_items": [],
   "by_confidence": {},
   "by_connector": {},
   "by_control_area": {},
   "by_owner_lane": {},
+  "by_priority": {},
   "by_status": {},
   "data_boundary": "metadata_only_no_phi_expected",
   "needs_attention": 0,
