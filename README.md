@@ -1,14 +1,28 @@
 # Small Practice Security Kit
 
-**Local-first healthcare security readiness packets for small practices.**
+**PHI-avoidant, local-first readiness packet builder for small healthcare practices.**
 
-This repo is the public front door for a Velari-style readiness workflow: take a non-PHI practice profile, map where patient data can move outside the EHR, review vendors/BAAs and AI usage, prepare downtime and incident evidence handoffs, then generate an owner/MSP-ready evidence packet, lifecycle-aware evidence index, local closeout dashboard, and 30/60/90 roadmap.
+This is the public Velari flagship proof repo: a local packet builder for small practice owners, practice managers, MSPs, and consultants who need a concrete evidence organization workflow before an audit conversation, renewal, AI rollout, downtime event, incident review, or owner/MSP handoff.
+
+Start with the sanitized sample packet:
+
+- Complete Markdown packet: [`docs/demo/review-packet.md`](docs/demo/review-packet.md)
+- Print-friendly HTML packet: [`docs/demo/review-packet.html`](docs/demo/review-packet.html)
+- Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
+- Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
+- Safety boundary: [`docs/security-model.md`](docs/security-model.md)
+
+![Review packet screenshot](docs/demo/screenshots/review-packet.png)
+
+The checked-in demo uses a fictional `Family Dental Clinic` profile and contains no real PHI, credentials, private URLs, raw logs, contracts, or incident details.
+
+Workflow:
 
 ```text
-local intake -> readiness review -> ePHI flow map -> vendor/BAA review -> AI workflow review -> downtime/tabletop -> incident timeline -> evidence index -> 30/60/90 roadmap
+local intake -> patient-data-outside-the-EHR map -> vendor/BAA review -> AI workflow review -> downtime/tabletop -> incident timeline -> evidence index -> owner/MSP handoff -> 30/60/90 roadmap
 ```
 
-The goal is not to replace attorneys, security assessors, incident responders, or enterprise GRC software. The goal is to give small healthcare practices a practical way to organize the first evidence-backed conversation before an audit, incident, renewal, AI rollout, or MSP handoff.
+Boundary: this is readiness and evidence organization. It does not certify HIPAA compliance, provide legal advice, make breach-notification decisions, complete a formal Security Risk Analysis, or replace qualified legal, compliance, security, MSP/IT, incident response, or insurance professionals.
 
 ## What this helps answer
 
@@ -26,50 +40,52 @@ This kit helps answer:
 - What can the practice owner safely show a reviewer without uploading PHI?
 - What sequence of events, evidence references, decision gates, and after-action owners should be prepared after a suspicious access, downtime, vendor notice, or ransomware concern?
 
-## Velari Cyber Readiness Sprint narrative
-
-This repo demonstrates the public version of a focused small-practice readiness sprint:
-
-> In one focused sprint, a small healthcare practice maps AI, vendor, access, ePHI-flow, downtime, and ransomware-readiness gaps, then receives an owner/MSP-ready evidence packet and prioritized 30/60/90 roadmap.
-
 The strongest wedge is the **Patient Data Outside the EHR Map**: inboxes, shared drives, AI tools, vendors, portals, exports, contractors, backups, billing systems, and MSP-managed systems. Once those flows are visible, the evidence binder, vendor/BAA register, AI workflow review, and downtime plan become concrete.
-
-## Public demo
-
-A complete synthetic demo is checked into [`docs/demo/`](docs/demo/). It uses a fictional `Family Dental Clinic` profile and contains no real PHI, credentials, private URLs, contracts, or incident details.
-
-Start here:
-
-- Demo overview: [`docs/demo/README.md`](docs/demo/README.md)
-- Complete Markdown packet: [`docs/demo/review-packet.md`](docs/demo/review-packet.md)
-- Print-friendly HTML packet: [`docs/demo/review-packet.html`](docs/demo/review-packet.html)
-- Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
-- Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
-
-![Review packet screenshot](docs/demo/screenshots/review-packet.png)
 
 ## What you get
 
-| Output | Purpose |
+### Flagship packet
+
+| Output | Buyer-facing purpose |
+|---|---|
+| `review-packet.md` | Complete Markdown readiness packet for the owner/MSP/reviewer conversation |
+| `review-packet.html` | Print-friendly HTML packet |
+| `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence lifecycle rows, trace metadata, roadmap items, findings, and artifact hashes |
+| `dashboard.html` | Owner-friendly local workflow dashboard with closeout state, traceability, and blocked evidence queues |
+
+### Core readiness artifacts
+
+| Output | Buyer-facing purpose |
 |---|---|
 | `readiness-review.md` | Plain-English baseline readiness review |
 | `ephi-flow-map.md` | Systems, workflows, vendors, ePHI categories, BAA needs, and risk |
 | `vendor-baa-review.md` | Vendor, BAA, SOC 2/HITRUST evidence status, incident terms, subcontractor, and AI data-use review |
 | `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflow review |
+| `evidence-binder-index.md` | Lifecycle-aware evidence references, closeout rules, owner lanes, and ePHI traceability |
+| `limitations-appendix.md` | Explicit statement of what the packet does and does not prove |
+
+### Downtime and incident readiness
+
+| Output | Buyer-facing purpose |
+|---|---|
 | `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter packet |
-| `connected-device-inventory.md` | IoMT/connected-device worksheet for patch owner, default credentials, downtime fallback, and safety notices |
-| `portal-api-flow-review.md` | Portal, app, API/FHIR-style flow worksheet for identity, audit logs, secure messaging, and export/delete evidence |
 | `incident-decision-log.md` | Decision-log template separating technical containment from legal/compliance breach-notification decisions |
 | `incident-evidence-timeline.md` | Sanitized incident/tabletop timeline with guided phase checklist, owner/MSP call sheet, evidence-reference, and decision-gate tracking |
 | `incident-after-action-report.md` | Owner/MSP after-action queue for access, backup, vendor, downtime, and qualified-review follow-up |
-| `evidence-binder-index.md` | Lifecycle-aware evidence references, closeout rules, owner lanes, and ePHI traceability |
+
+### Owner/MSP follow-up
+
+| Output | Buyer-facing purpose |
+|---|---|
 | `owner-msp-handoff.md` | Owner/MSP follow-up, vendor asks, access actions, and handoff boundary |
 | `30-60-90-roadmap.md` | Prioritized remediation and evidence plan |
-| `limitations-appendix.md` | Explicit statement of what the packet does and does not prove |
-| `review-packet.md` | Complete Markdown packet |
-| `review-packet.html` | Print-friendly HTML packet |
-| `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence lifecycle rows, trace metadata, roadmap items, findings, and artifact hashes |
-| `dashboard.html` | Owner-friendly local workflow dashboard with closeout state, traceability, and blocked evidence queues |
+
+### Extended worksheets
+
+| Output | Buyer-facing purpose |
+|---|---|
+| `connected-device-inventory.md` | IoMT/connected-device worksheet for patch owner, default credentials, downtime fallback, and safety notices |
+| `portal-api-flow-review.md` | Portal, app, API/FHIR-style flow worksheet for identity, audit logs, secure messaging, and export/delete evidence |
 
 ## Quick start
 
@@ -174,9 +190,26 @@ More details:
 - [`docs/sprint-mode/delivery-playbook.md`](docs/sprint-mode/delivery-playbook.md)
 - [`docs/sprint-mode/output-map.md`](docs/sprint-mode/output-map.md)
 
-## Modules
+## Repo map
 
-| Module | Purpose |
+This repo is the flagship public workflow. The numbered modules and companion repos are supporting material, not separate products a buyer has to understand first.
+
+### Flagship workflow areas
+
+| Area | Where it lives | Role |
+|---|---|---|
+| Sanitized sample packet | [`docs/demo/`](docs/demo/) | Public proof packet, screenshot, manifest, and safe demo artifacts |
+| Local intake workspace | `open_dashboard.command`, [`docs/intake-mode.md`](docs/intake-mode.md), [`docs/dashboard.md`](docs/dashboard.md) | Owner-friendly local profile, evidence-reference, and closeout workflow |
+| Packet builder CLI | [`scripts/build.py`](scripts/build.py), `07-review-packet-builder/` | Generates the Markdown packet, HTML packet, manifest, dashboard, and roadmap |
+| Sprint Mode runner | [`docs/sprint-mode/`](docs/sprint-mode/) | Velari-style public runner for stage status, owner actions, MSP remediation, vendor questions, and handoff exports |
+| Connector/import layer | [`docs/product/evidence-connector-standard.md`](docs/product/evidence-connector-standard.md), [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md) | Metadata-only imports and official-connector evidence bundles for owner/MSP questions |
+| Safety boundary | [`docs/security-model.md`](docs/security-model.md), [`docs/public-demo-safety.md`](docs/public-demo-safety.md) | PHI-avoidant, local-first, no-secret public-demo rules |
+
+### Module building blocks
+
+The numbered directories preserve the original modular pieces. They now serve the flagship packet workflow.
+
+| Module | Role in the flagship workflow |
 |---|---|
 | `01-readiness-checklist/` | Plain-English security readiness review |
 | `02-ephi-data-flow-map/` | Systems, vendors, workflows, and ePHI movement |
@@ -187,20 +220,20 @@ More details:
 | `07-review-packet-builder/` | Packet builder scripts and output conventions |
 | `08-incident-evidence-timeline/` | Sanitized incident timeline, decision gates, private evidence references, and after-action remediation |
 
-## Companion repo map
+### Companion and reference integrations
 
-This kit is designed to be the front door for a broader healthcare security proof-of-work portfolio:
+Companion repos are optional supporting integrations and reference patterns. They are not the main public product surface.
 
-| Repo | Role in the Kit |
+| Repo | Supporting role |
 |---|---|
 | [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples for allowed/prohibited data handling |
 | [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit-log evidence references |
-| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due-diligence register |
-| [`hipaa-scanner`](https://github.com/itsnmills/hipaa-scanner) | Public-facing readiness triage and security-header checks |
+| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due-diligence register input patterns |
+| [`hipaa-scanner`](https://github.com/itsnmills/hipaa-scanner) | Public-facing readiness triage and security-header reference checks |
 | [`hipaa-compliance-engine`](https://github.com/itsnmills/hipaa-compliance-engine) | Evidence/control mapping ideas |
 | [`ai-governance-auditor`](https://github.com/itsnmills/ai-governance-auditor) | AI governance checklist patterns |
 
-Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md).
+Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md).
 
 ## Safety and data boundary
 
