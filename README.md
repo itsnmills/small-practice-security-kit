@@ -11,6 +11,7 @@ Start with the sanitized sample packet:
 - Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
 - Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
 - Safety boundary: [`docs/security-model.md`](docs/security-model.md)
+- Release note: [`docs/releases/v0.1.0.md`](docs/releases/v0.1.0.md)
 
 ![Review packet screenshot](docs/demo/screenshots/review-packet.png)
 
@@ -229,11 +230,12 @@ Companion repos are optional supporting integrations and reference patterns. The
 | [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples for allowed/prohibited data handling |
 | [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit-log evidence references |
 | [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due-diligence register input patterns |
+| [`velari-chainrisk`](https://github.com/itsnmills/velari-chainrisk) | Attack-chain prioritization and owner/MSP remediation ordering |
 | [`hipaa-scanner`](https://github.com/itsnmills/hipaa-scanner) | Public-facing readiness triage and security-header reference checks |
 | [`hipaa-compliance-engine`](https://github.com/itsnmills/hipaa-compliance-engine) | Evidence/control mapping ideas |
 | [`ai-governance-auditor`](https://github.com/itsnmills/ai-governance-auditor) | AI governance checklist patterns |
 
-Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md).
+Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md). ChainRisk-specific handoff notes live in [`docs/import-plans/velari-chainrisk.md`](docs/import-plans/velari-chainrisk.md).
 
 ## Safety and data boundary
 
