@@ -8,6 +8,14 @@ from typing import Any
 
 from .answer_standard import build_action_packet, flattened_output_views
 from .evidence_lifecycle import build_evidence_lifecycle, normalize_lifecycle_status
+from .external_precheck import (
+    EXTERNAL_PRECHECK_SECTION,
+    external_finding_id,
+    external_finding_owner,
+    external_finding_severity,
+    external_finding_title,
+    external_precheck_findings,
+)
 
 
 SCHEMA_VERSION = "2026-05-19"
@@ -79,6 +87,12 @@ SECTION_MODEL = [
         "title": "Incident After-Action Report",
         "artifact": "incident-after-action-report.md",
         "source_modules": ["incident_timeline", "downtime", "readiness"],
+    },
+    {
+        "id": "external_evidence_precheck",
+        "title": "External Evidence Pre-Check",
+        "artifact": "external-evidence-precheck.md",
+        "source_modules": ["external_precheck"],
     },
     {
         "id": "evidence_index",
@@ -236,6 +250,28 @@ def finding_entries(profile: dict[str, Any], risk: str, gaps: list[str]) -> list
                     "severity": severity,
                 }
             )
+
+    for index, item in enumerate(external_precheck_findings(profile), start=1):
+        finding_id = external_finding_id(item, index)
+        severity = external_finding_severity(item)
+        packet = build_action_packet(
+            finding_id=finding_id,
+            section_id=EXTERNAL_PRECHECK_SECTION,
+            stage_id=EXTERNAL_PRECHECK_SECTION,
+            severity=severity,
+            title=external_finding_title(item),
+            owner=external_finding_owner(item, profile),
+            evidence_refs=[finding_id],
+            service_context="External evidence pre-check",
+        )
+        findings.append(
+            {
+                **packet,
+                **flattened_output_views(packet),
+                "section_id": EXTERNAL_PRECHECK_SECTION,
+                "severity": severity,
+            }
+        )
 
     return findings
 

@@ -13,7 +13,7 @@ Do not send PHI, patient identifiers, credentials, private admin URLs, raw logs,
 ## Summary
 
 - Total control/evidence rows: 30
-- Mapped controls: 18
+- Mapped controls: 20
 - Evidence needing attention: 30
 - Freshness statuses: {"missing": 30}
 - Evidence statuses: {"gated": 3, "missing": 26, "needs_professional_review": 1}

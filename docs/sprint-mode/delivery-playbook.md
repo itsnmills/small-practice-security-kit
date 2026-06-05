@@ -1,4 +1,4 @@
-# Sprint Mode Delivery Playbook
+# Practice Assurance Packet Delivery Playbook
 
 ## 1. Prepare the Profile
 
@@ -7,6 +7,7 @@ Use a synthetic or sanitized profile. Confirm the profile contains only referenc
 - practice size and owner roles,
 - system and vendor names,
 - workflow summaries,
+- authorized public-site tracker, scheduler, portal, TLS, and certificate observation summaries,
 - evidence reference IDs,
 - BAA/review status summaries,
 - no PHI, no secrets, no raw evidence.
@@ -17,7 +18,7 @@ Run:
 python3 -m small_practice_security_kit validate samples/family_dental_clinic.yaml
 ```
 
-## 2. Run the Sprint Packet
+## 2. Run the Practice Assurance Packet
 
 Run:
 
@@ -25,15 +26,16 @@ Run:
 python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out
 ```
 
-Open `out/family_dental_clinic/sprint-command-center.html` first. Use `sprint-client-readout.md` when a concise Markdown readout is easier to review.
+Open `out/family_dental_clinic/practice-assurance-packet.html` first. Use `external-evidence-precheck.md` to route public-site tracker, scheduler, portal, TLS, and certificate questions before internal access is needed. Use `practice-assurance-packet.md` when a plain Markdown copy is easier to review, and use `sprint-command-center.html` when a local command-center view helps.
 
 ## 3. Owner Review
 
-Use `sprint-command-center.html`, `sprint-client-readout.md`, and `sprint-summary.json` to walk the owner through:
+Use `practice-assurance-packet.html`, `sprint-client-readout.md`, and `sprint-summary.json` to walk the owner through:
 
 - top stage statuses,
 - high-priority evidence gaps,
 - what the packet does not prove,
+- which public-site observations need MSP, website vendor, or qualified-review follow-up,
 - which decisions require owner approval,
 - what should go to the MSP, vendors, insurer, or legal/compliance reviewer.
 
@@ -52,7 +54,19 @@ Use `handoff-actions.csv` and `owner-msp-handoff.md` to request:
 
 Ask for evidence references or sanitized summaries, not raw screenshots, logs, credentials, or private links.
 
-## 5. Vendor/BAA Review
+## 5. External Website/Vendor Review
+
+Use `external-evidence-precheck.md`, `risk-register.csv`, and `handoff-actions.csv` to request:
+
+- tracker and tag inventory for scheduler, intake, portal, payment, registration, and contact workflows,
+- tag manager export or configuration summary,
+- sanitized network destination summary,
+- TLS scan summary, certificate expiry/issuer, HTTPS redirect behavior, HSTS status, and covered host list,
+- qualified reviewer disposition for any patient-facing tracker observation.
+
+Do not submit real patient forms, collect patient-entered values, store session cookies, or keep full intercepted payloads with sensitive data.
+
+## 6. Vendor/BAA Review
 
 Use `vendor-baa-review.md`, `risk-register.csv`, and `evidence-binder-export/evidence-binder-index.csv` to track:
 
@@ -63,7 +77,7 @@ Use `vendor-baa-review.md`, `risk-register.csv`, and `evidence-binder-export/evi
 - AI/model-training/data-use terms,
 - security contact and support escalation path.
 
-## 6. AI Workflow Review
+## 7. AI Workflow Review
 
 Use `ai-workflow-review.md` to separate:
 
@@ -73,11 +87,11 @@ Use `ai-workflow-review.md` to separate:
 
 The default public-demo rule is no PHI in public AI tools.
 
-## 7. Evidence Binder Export
+## 8. Evidence Binder Export
 
 Use `evidence-index.json` and `evidence-binder-export/` to seed a private evidence binder. Keep raw evidence in restricted client-approved locations outside this public repo.
 
-## 8. Roadmap and Handoff
+## 9. Roadmap and Handoff
 
 Use:
 

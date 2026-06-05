@@ -4,6 +4,15 @@ from collections import Counter
 from datetime import date, timedelta
 from typing import Any
 
+from .external_precheck import (
+    EXTERNAL_PRECHECK_ARTIFACT,
+    external_finding_id,
+    external_finding_owner,
+    external_finding_severity,
+    external_finding_title,
+    external_precheck_findings,
+)
+
 
 LIFECYCLE_STATUSES = {
     "missing",
@@ -43,6 +52,7 @@ STATUS_ALIASES = {
     "outdated": "stale",
     "stale": "stale",
     "partial": "partial",
+    "observed": "provided",
     "provided": "provided",
     "reviewed": "reviewed",
     "signed": "provided",
@@ -225,6 +235,7 @@ def _record(
     closeout_rule: str,
     notes: str = "",
     reviewer_needed: bool = False,
+    unsafe_inputs: list[str] | None = None,
     flow_ids: list[str] | None = None,
     system_refs: list[str] | None = None,
     vendor_refs: list[str] | None = None,
@@ -250,7 +261,7 @@ def _record(
         "sensitivity_boundary": "reference_only_no_phi_no_secret",
         "artifact_refs": artifact_refs,
         "acceptable_evidence": acceptable_evidence,
-        "unsafe_inputs": DEFAULT_UNSAFE_INPUTS,
+        "unsafe_inputs": _dedupe(unsafe_inputs or DEFAULT_UNSAFE_INPUTS),
         "next_action": next_action,
         "closeout_rule": closeout_rule,
         "notes": notes,
@@ -272,6 +283,87 @@ def build_evidence_lifecycle(profile: dict[str, Any], generated_date: date) -> l
     practice = profile.get("practice", {})
     security_owner = str(practice.get("security_owner") or "Office Manager")
     technical_owner = str(practice.get("technical_owner") or "MSP Lead")
+
+    for index, item in enumerate(external_precheck_findings(profile), start=1):
+        evidence_id = external_finding_id(item, index)
+        title = external_finding_title(item)
+        lowered = title.lower()
+        category = str(item.get("category") or "external_precheck").lower()
+        is_tracker = "tracker" in category or "tracker" in lowered or "pixel" in lowered or "analytics" in lowered
+        is_tls = "tls" in category or "tls" in lowered or "certificate" in lowered or "https" in lowered
+        acceptable = (
+            [
+                "tracker inventory",
+                "tag manager export",
+                "sanitized network request summary",
+                "page/workflow label",
+                "vendor BAA or authorization review note",
+                "privacy reviewer disposition",
+            ]
+            if is_tracker
+            else [
+                "TLS scan summary",
+                "certificate expiry and issuer",
+                "HTTPS redirect evidence",
+                "HSTS status",
+                "covered host list",
+                "MSP attestation",
+            ]
+            if is_tls
+            else [
+                "public observation summary",
+                "page/workflow label",
+                "date observed",
+                "owner",
+                "vendor/MSP/reviewer note",
+            ]
+        )
+        unsafe = DEFAULT_UNSAFE_INPUTS + [
+            "real form submissions",
+            "patient-entered details",
+            "full intercepted payloads with sensitive data",
+            "session cookies",
+            "private admin links",
+        ]
+        page = str(item.get("page_label") or item.get("url_label") or "public patient-facing workflow")
+        destination = str(item.get("network_destination") or item.get("observed_technology") or "")
+        records.append(
+            _record(
+                evidence_id=evidence_id,
+                title=title,
+                evidence_type="external_precheck",
+                source_kind="external_precheck",
+                source_ref=evidence_id,
+                source_system=page,
+                owner=external_finding_owner(item, profile),
+                status=str(item.get("status") or "observed"),
+                risk=external_finding_severity(item),
+                generated_date=generated_date,
+                artifact_refs=[EXTERNAL_PRECHECK_ARTIFACT],
+                acceptable_evidence=acceptable,
+                next_action=str(
+                    item.get("next_action")
+                    or (
+                        "Route the tracker observation to the website vendor and qualified privacy reviewer before relying on the workflow."
+                        if is_tracker
+                        else "Ask the MSP or website vendor to confirm public-site TLS posture and record a reference-only evidence note."
+                        if is_tls
+                        else "Assign the observation to the right owner and collect reference-only evidence."
+                    )
+                ),
+                closeout_rule=(
+                    "Close when tracker purpose, data sent, tag placement, vendor relationship, and reviewer disposition are recorded without PHI."
+                    if is_tracker
+                    else "Close when TLS/certificate posture, covered hosts, redirect behavior, HSTS status, and owner acceptance or remediation are recorded."
+                    if is_tls
+                    else "Close when owner, evidence reference, date observed, and reviewer disposition are recorded."
+                ),
+                notes=f"Observation context: {destination}".strip(),
+                reviewer_needed=True,
+                unsafe_inputs=unsafe,
+                source_modules=["external_precheck"],
+            )
+        )
 
     for item in profile.get("evidence", []):
         evidence_id = str(item.get("id") or f"EVID-{len(records) + 1:03d}")

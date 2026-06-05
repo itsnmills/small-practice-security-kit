@@ -162,7 +162,7 @@
           "type": "string"
         },
         "next_artifact": {
-          "const": "sprint-command-center.html"
+          "const": "practice-assurance-packet.html"
         }
       }
     },
@@ -171,8 +171,8 @@
     },
     "stage_statuses": {
       "type": "array",
-      "minItems": 9,
-      "maxItems": 9,
+      "minItems": 10,
+      "maxItems": 10,
       "items": {
         "$ref": "#/$defs/stage"
       }
@@ -211,7 +211,7 @@
       ],
       "properties": {
         "stages": {
-          "const": 9
+          "const": 10
         },
         "stages_needing_evidence": {
           "type": "integer",
@@ -644,6 +644,7 @@
         "id": {
           "enum": [
             "intake",
+            "external_evidence_precheck",
             "patient_data_outside_ehr_map",
             "ai_phi_review",
             "vendor_baa_review",
@@ -973,6 +974,7 @@
         "name",
         "positioning",
         "audience_lanes",
+        "simple_intake_steps",
         "source_anchors",
         "stage_source_map",
         "first_7_days_actions",
@@ -984,7 +986,7 @@
       ],
       "properties": {
         "name": {
-          "const": "Velari Cyber Readiness Sprint for Small Healthcare Practices"
+          "const": "Velari Practice Assurance Packet for Small Dental Practices"
         },
         "positioning": {
           "type": "string"
@@ -996,6 +998,14 @@
             "$ref": "#/$defs/offering_audience_lane"
           }
         },
+        "simple_intake_steps": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": {
+            "$ref": "#/$defs/offering_intake_step"
+          }
+        },
         "source_anchors": {
           "type": "array",
           "minItems": 4,
@@ -1005,8 +1015,8 @@
         },
         "stage_source_map": {
           "type": "array",
-          "minItems": 9,
-          "maxItems": 9,
+          "minItems": 10,
+          "maxItems": 10,
           "items": {
             "$ref": "#/$defs/offering_stage_source_map"
           }
@@ -1113,6 +1123,52 @@
         }
       }
     },
+    "offering_intake_step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "label",
+        "owner",
+        "question",
+        "evidence_format",
+        "unsafe_inputs",
+        "artifact_ref",
+        "status"
+      ],
+      "properties": {
+        "id": {
+          "enum": [
+            "practice_scope",
+            "vendor_inventory",
+            "patient_facing_urls",
+            "ai_workflows",
+            "msp_evidence"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "question": {
+          "type": "string"
+        },
+        "evidence_format": {
+          "type": "string"
+        },
+        "unsafe_inputs": {
+          "type": "string"
+        },
+        "artifact_ref": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      }
+    },
     "offering_source_anchor": {
       "type": "object",
       "additionalProperties": false,
@@ -1130,6 +1186,8 @@
             "hhs_405d_hicp",
             "cisa_cpgs",
             "onc_ocr_sra_tool",
+            "hhs_ocr_tracking_tech",
+            "hhs_security_rule",
             "hhs_security_rule_nprm",
             "fda_medical_device_cybersecurity"
           ]
@@ -1169,6 +1227,7 @@
         "stage_id": {
           "enum": [
             "intake",
+            "external_evidence_precheck",
             "patient_data_outside_ehr_map",
             "ai_phi_review",
             "vendor_baa_review",

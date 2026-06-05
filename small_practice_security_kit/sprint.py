@@ -27,6 +27,7 @@ from .control_evidence import (
     write_control_evidence_csv,
 )
 from .adapters.evidence_binder import export_binder_index
+from .external_precheck import EXTERNAL_PRECHECK_ARTIFACT, EXTERNAL_PRECHECK_STAGE, external_precheck_findings
 from .manifest import utc_now
 from .offering import (
     build_offering_summary,
@@ -34,6 +35,8 @@ from .offering import (
     render_evidence_collection_checklist,
     render_msp_remediation_brief,
     render_owner_action_plan,
+    render_practice_assurance_packet,
+    render_practice_assurance_packet_html,
     render_source_map,
     render_sprint_offering_readout,
     render_vendor_baa_ai_questionnaire,
@@ -46,6 +49,7 @@ from .sensitive_data import blocking_findings
 SPRINT_SCHEMA_VERSION = "2026-05-19"
 STAGE_ORDER = [
     "intake",
+    "external_evidence_precheck",
     "patient_data_outside_ehr_map",
     "ai_phi_review",
     "vendor_baa_review",
@@ -58,6 +62,9 @@ STAGE_ORDER = [
 
 SPRINT_OUTPUTS = [
     "sprint-index.md",
+    "practice-assurance-packet.html",
+    "practice-assurance-packet.md",
+    "external-evidence-precheck.md",
     "sprint-client-readout.md",
     "sprint-command-center.html",
     "sprint-offering-readout.md",
@@ -142,6 +149,7 @@ def build_stage_statuses(profile: dict[str, Any], out_dir: Path, gaps: list[str]
     workflows = profile.get("ai_workflows", [])
     readiness = profile["readiness"]
     downtime = profile["downtime"]
+    external_findings = external_precheck_findings(profile)
 
     high_risk_flows = [flow for flow in flows if flow.get("risk") in {"high", "critical"}]
     ai_needs_review = [workflow for workflow in workflows if workflow.get("decision") != "allowed"]
@@ -181,6 +189,15 @@ def build_stage_statuses(profile: dict[str, Any], out_dir: Path, gaps: list[str]
             "artifact_refs": ["packet-manifest.json"],
             "evidence_gap_count": 0,
             "next_action": "Confirm the practice profile, owners, review period, and no-PHI evidence-reference boundary.",
+        },
+        {
+            "id": "external_evidence_precheck",
+            "name": "External evidence pre-check",
+            "status": _status(bool(external_findings)),
+            "owner": profile["practice"]["security_owner"],
+            "artifact_refs": [EXTERNAL_PRECHECK_ARTIFACT],
+            "evidence_gap_count": len(external_findings),
+            "next_action": "Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows.",
         },
         {
             "id": "patient_data_outside_ehr_map",
@@ -261,6 +278,7 @@ def build_stage_statuses(profile: dict[str, Any], out_dir: Path, gaps: list[str]
 def _stage_by_section(section_id: str) -> str:
     mapping = {
         "executive_scorecard": "access_offboarding_review",
+        "external_evidence_precheck": "external_evidence_precheck",
         "ai_findings": "ai_phi_review",
         "vendor_baa_exposure": "vendor_baa_review",
         "ephi_map_lite": "patient_data_outside_ehr_map",
@@ -280,6 +298,7 @@ def _stage_for_finding(finding: dict[str, Any]) -> str:
 def _artifact_for_stage(stage_id: str) -> str:
     mapping = {
         "patient_data_outside_ehr_map": "ephi-flow-map.md",
+        "external_evidence_precheck": EXTERNAL_PRECHECK_ARTIFACT,
         "ai_phi_review": "ai-workflow-review.md",
         "vendor_baa_review": "vendor-baa-review.md",
         "access_offboarding_review": "owner-msp-handoff.md",
@@ -293,6 +312,7 @@ def _artifact_for_stage(stage_id: str) -> str:
 def _recipient_for_stage(stage_id: str) -> str:
     mapping = {
         "patient_data_outside_ehr_map": "MSP",
+        "external_evidence_precheck": "Owner/MSP",
         "ai_phi_review": "Owner",
         "vendor_baa_review": "Vendor",
         "access_offboarding_review": "MSP",
@@ -306,6 +326,17 @@ def _recipient_for_stage(stage_id: str) -> str:
 
 def _audience_for_stage(stage_id: str) -> str:
     return _recipient_for_stage(stage_id).lower().replace("/", "_").replace(" ", "_")
+
+
+def _recipient_for_finding(stage_id: str, title: str) -> str:
+    lowered = title.lower()
+    if stage_id == EXTERNAL_PRECHECK_STAGE:
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "Vendor/legal/compliance reviewer"
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "MSP"
+        return "Owner/MSP"
+    return _recipient_for_stage(stage_id)
 
 
 def _roadmap_bucket_for_stage(stage_id: str, priority: str = "medium") -> str:
@@ -342,6 +373,8 @@ def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
     rows: list[dict[str, Any]] = []
     for finding in manifest.get("findings", []):
         stage_id = _stage_for_finding(finding)
+        title = str(finding.get("title", ""))
+        recipient = _recipient_for_finding(stage_id, title)
         evidence_refs = [str(ref) for ref in finding.get("evidence_refs", [])]
         packet = (
             finding
@@ -362,13 +395,13 @@ def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
             )
             else build_action_packet(
                 finding_id=str(finding.get("finding_id", "")),
-                title=str(finding.get("title", "")),
+                title=title,
                 section_id=str(finding.get("section_id", "")),
                 stage_id=stage_id,
                 severity=str(finding.get("severity", "medium")),
                 owner=str(finding.get("owner", "Practice owner/MSP")),
                 evidence_refs=evidence_refs,
-                recipient=_recipient_for_stage(stage_id),
+                recipient=recipient,
             )
         )
         views = flattened_output_views(packet)
@@ -379,10 +412,10 @@ def build_risk_register_rows(manifest: dict[str, Any]) -> list[dict[str, str]]:
                 "stage_id": stage_id,
                 "severity": str(finding.get("severity", "medium")),
                 "priority": str(packet.get("priority", finding.get("severity", "medium"))),
-                "title": str(finding.get("title", "")),
+                "title": title,
                 "owner": str(finding.get("owner", "Practice owner/MSP")),
-                "audience": _audience_for_stage(stage_id),
-                "recipient": _recipient_for_stage(stage_id),
+                "audience": recipient.lower().replace("/", "_").replace(" ", "_"),
+                "recipient": recipient,
                 "evidence_status": _evidence_status(evidence_refs, evidence_by_id),
                 "evidence_refs": ";".join(evidence_refs),
                 "plain_english_summary": str(packet["plain_english_summary"]),
@@ -777,7 +810,7 @@ def build_summary(
         "target_delivery_signal": {
             "status": "needs_evidence_before_closeout" if stages_needing_evidence else "ready_for_client_readout",
             "primary_blocker": stages_needing_evidence[0]["next_action"] if stages_needing_evidence else "",
-            "next_artifact": "sprint-command-center.html",
+            "next_artifact": "practice-assurance-packet.html",
         },
         "data_boundary": manifest["data_boundary"],
         "stage_statuses": stages,
@@ -852,7 +885,7 @@ def render_sprint_index(summary: dict[str, Any], risk_rows: list[dict[str, str]]
         output_lines.append(f"- `{name}`")
     output_lines.append("- `evidence-binder-export/`")
 
-    return f"""# Velari Sprint Mode Index
+    return f"""# Velari Practice Assurance Packet Index
 
 Practice: **{practice['label']}**
 
@@ -860,7 +893,7 @@ Review period: **{practice['review_period']}**
 
 Overall readiness signal: **{summary['overall_risk']}**
 
-This public Sprint Mode packet is a local, reference-only planning aid. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer acceptance, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+This public packet is a local, reference-only planning aid for a buyer-facing Practice Assurance Packet. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer acceptance, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 
 ## Stage Status
 
@@ -876,7 +909,10 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 
 ## Owner/MSP Use
 
-- Open `sprint-command-center.html` first for the one-page readout.
+    - Open `practice-assurance-packet.html` first for the polished report a practice owner can read.
+    - Use `practice-assurance-packet.md` when a plain Markdown copy is easier to review.
+- Use `external-evidence-precheck.md` for public-site tracker, TLS, scheduler, intake, and portal observations that need owner/MSP/vendor/reviewer follow-up.
+- Use `sprint-command-center.html` for the self-contained local command center when a dashboard-style view helps.
 - Use `sprint-offering-readout.md` and `owner-action-plan.md` for the real-offering walkthrough.
 - Use `sprint-client-readout.md` for a portable Markdown summary.
 - Use `connector-evidence-summary.json` to review local connector/import runs, confidence, and safety manifests before relying on automated evidence.
@@ -978,6 +1014,9 @@ This readout is a local, reference-only planning artifact. It does not provide l
 
 ## Generated Artifacts
 
+- `practice-assurance-packet.html`
+- `practice-assurance-packet.md`
+- `external-evidence-precheck.md`
 - `sprint-command-center.html`
 - `sprint-offering-readout.md`
 - `owner-action-plan.md`
@@ -1462,6 +1501,9 @@ def build_sprint(
     )
 
     sprint_index_path = out_dir / "sprint-index.md"
+    assurance_packet_html_path = out_dir / "practice-assurance-packet.html"
+    assurance_packet_path = out_dir / "practice-assurance-packet.md"
+    external_precheck_path = out_dir / EXTERNAL_PRECHECK_ARTIFACT
     client_readout_path = out_dir / "sprint-client-readout.md"
     command_center_path = out_dir / "sprint-command-center.html"
     offering_readout_path = out_dir / "sprint-offering-readout.md"
@@ -1484,6 +1526,16 @@ def build_sprint(
     insurance_evidence_packet_path = out_dir / "insurance-evidence-packet.md"
 
     sprint_index_path.write_text(render_sprint_index(summary, risk_rows), encoding="utf-8", newline="\n")
+    assurance_packet_html_path.write_text(
+        _strip_trailing_whitespace(render_practice_assurance_packet_html(summary, risk_rows, handoff_rows)),
+        encoding="utf-8",
+        newline="\n",
+    )
+    assurance_packet_path.write_text(
+        render_practice_assurance_packet(summary, risk_rows, handoff_rows),
+        encoding="utf-8",
+        newline="\n",
+    )
     client_readout_path.write_text(render_client_readout(summary, risk_rows, handoff_rows), encoding="utf-8", newline="\n")
     offering_readout_path.write_text(
         render_sprint_offering_readout(summary, risk_rows, handoff_rows),
@@ -1603,6 +1655,9 @@ def build_sprint(
         binder_dir=binder_dir,
         artifacts=[
             sprint_index_path,
+            assurance_packet_html_path,
+            assurance_packet_path,
+            external_precheck_path,
             client_readout_path,
             command_center_path,
             offering_readout_path,

@@ -59,6 +59,9 @@ class SprintModeTests(unittest.TestCase):
             out_dir = output_root / "family_dental_clinic"
             for name in [
                 "sprint-index.md",
+                "practice-assurance-packet.html",
+                "practice-assurance-packet.md",
+                "external-evidence-precheck.md",
                 "sprint-client-readout.md",
                 "sprint-command-center.html",
                 "sprint-offering-readout.md",
@@ -97,6 +100,8 @@ class SprintModeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
             summary = json.loads((out_dir / "sprint-summary.json").read_text(encoding="utf-8"))
+            with (out_dir / "risk-register.csv").open(encoding="utf-8") as handle:
+                risk_register_rows = list(csv.DictReader(handle))
 
         self.assertEqual(summary["schema_version"], "2026-05-19")
         self.assertEqual(summary["generator"]["mode"], "velari_sprint_mode_public_runner")
@@ -122,18 +127,26 @@ class SprintModeTests(unittest.TestCase):
         self.assertGreaterEqual(summary["control_evidence_summary"]["total_controls"], 25)
         self.assertGreater(summary["control_evidence_summary"]["mapped_controls"], 0)
         self.assertEqual([stage["id"] for stage in summary["stage_statuses"]], STAGE_ORDER)
+        self.assertIn("external_evidence_precheck", STAGE_ORDER)
+        self.assertEqual(summary["counts"]["stages"], len(STAGE_ORDER))
         self.assertTrue(any(stage["status"] == "needs_evidence" for stage in summary["stage_statuses"]))
-        self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "sprint-command-center.html")
+        self.assertEqual(summary["target_delivery_signal"]["next_artifact"], "practice-assurance-packet.html")
         self.assertGreater(summary["evidence_gap_summary"]["needs_attention"], 0)
         self.assertIn("stale", summary["evidence_gap_summary"]["by_status"])
         self.assertIn("blocked", summary["evidence_gap_summary"]["by_status"])
         self.assertTrue(summary["handoff_lanes"])
         self.assertTrue(summary["top_risks"])
+        self.assertTrue(any(risk["stage_id"] == "external_evidence_precheck" for risk in risk_register_rows))
         self.assertEqual(
             summary["offering_summary"]["name"],
-            "Velari Cyber Readiness Sprint for Small Healthcare Practices",
+            "Velari Practice Assurance Packet for Small Dental Practices",
         )
         self.assertGreaterEqual(len(summary["offering_summary"]["audience_lanes"]), 4)
+        self.assertEqual(len(summary["offering_summary"]["simple_intake_steps"]), 5)
+        self.assertEqual(
+            [step["id"] for step in summary["offering_summary"]["simple_intake_steps"]],
+            ["practice_scope", "vendor_inventory", "patient_facing_urls", "ai_workflows", "msp_evidence"],
+        )
         self.assertGreaterEqual(len(summary["offering_summary"]["source_anchors"]), 4)
         self.assertGreaterEqual(len(summary["offering_summary"]["first_7_days_actions"]), 7)
         self.assertGreaterEqual(len(summary["offering_summary"]["artifact_list"]), 7)
@@ -188,6 +201,9 @@ class SprintModeTests(unittest.TestCase):
             combined = "\n".join(
                 [
                     (out_dir / "sprint-index.md").read_text(encoding="utf-8"),
+                    (out_dir / "practice-assurance-packet.html").read_text(encoding="utf-8"),
+                    (out_dir / "practice-assurance-packet.md").read_text(encoding="utf-8"),
+                    (out_dir / "external-evidence-precheck.md").read_text(encoding="utf-8"),
                     (out_dir / "sprint-client-readout.md").read_text(encoding="utf-8"),
                     (out_dir / "sprint-command-center.html").read_text(encoding="utf-8"),
                     (out_dir / "sprint-offering-readout.md").read_text(encoding="utf-8"),
@@ -248,6 +264,9 @@ class SprintModeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             out_dir = build_sprint(PROFILE, Path(temp), generated_at="2026-05-16T00:00:00Z").output_dir
 
+            assurance_html = (out_dir / "practice-assurance-packet.html").read_text(encoding="utf-8")
+            assurance_packet = (out_dir / "practice-assurance-packet.md").read_text(encoding="utf-8")
+            external_precheck = (out_dir / "external-evidence-precheck.md").read_text(encoding="utf-8")
             offering_readout = (out_dir / "sprint-offering-readout.md").read_text(encoding="utf-8")
             owner_plan = (out_dir / "owner-action-plan.md").read_text(encoding="utf-8")
             msp_brief = (out_dir / "msp-remediation-brief.md").read_text(encoding="utf-8")
@@ -260,7 +279,42 @@ class SprintModeTests(unittest.TestCase):
             portal_api = (out_dir / "portal-api-flow-review.md").read_text(encoding="utf-8")
             incident_log = (out_dir / "incident-decision-log.md").read_text(encoding="utf-8")
 
+        self.assertIn("<title>Family Dental Clinic Practice Assurance Packet</title>", assurance_html)
+        self.assertIn("Velari Practice Assurance Packet", assurance_html)
+        self.assertIn("What Needs Action First", assurance_html)
+        self.assertIn("What To Hand To Whom", assurance_html)
+        self.assertIn("Review basis", assurance_html)
+        self.assertIn("Owner takeaway", assurance_html)
+        self.assertIn("10-Minute Intake", assurance_html)
+        self.assertIn("Practice and owners", assurance_html)
+        self.assertIn("Patient-facing URLs", assurance_html)
+        self.assertIn("Owner Decision Queue", assurance_html)
+        self.assertIn("Why This Helps The MSP", assurance_html)
+        self.assertIn("Ready-To-Send Messages", assurance_html)
+        self.assertIn("Email to MSP", assurance_html)
+        self.assertIn("Next Step With Velari", assurance_html)
+        self.assertIn("First 7 Days", assurance_html)
+        self.assertIn("External Evidence Pre-Check", assurance_html)
+        self.assertIn("Public Patient-Facing Workflow Signals", assurance_html)
+        self.assertIn("external-evidence-precheck.md", assurance_html)
+        self.assertIn("practice-assurance-packet.html", assurance_html)
+        self.assertIn("A plain-English security and vendor evidence report for small dental practices", assurance_packet)
+        self.assertIn("## 10-Minute Intake", assurance_packet)
+        self.assertIn("Practice and owners", assurance_packet)
+        self.assertIn("## Owner Decision Queue", assurance_packet)
+        self.assertIn("## External Evidence Pre-Check", assurance_packet)
+        self.assertIn("## What To Hand To Whom", assurance_packet)
+        self.assertIn("## Ready-To-Send Messages", assurance_packet)
+        self.assertIn("## Why This Helps The MSP", assurance_packet)
+        self.assertIn("## Next Step With Velari", assurance_packet)
+        self.assertIn("not another dashboard", assurance_packet)
+        self.assertIn("# External Evidence Pre-Check", external_precheck)
+        self.assertIn("Meta Pixel", external_precheck)
+        self.assertIn("Google Tag Manager", external_precheck)
+        self.assertIn("June 20, 2024", external_precheck)
+        self.assertIn("does not declare a HIPAA violation", external_precheck)
         self.assertIn("## First 7 Days", offering_readout)
+        self.assertIn("## 10-Minute Intake", offering_readout)
         self.assertIn("## Questions To Send", offering_readout)
         self.assertIn("## What This Does Not Prove", offering_readout)
         self.assertIn("Do Not Upload Or Send PHI To This Public Tool", owner_plan)
@@ -275,6 +329,7 @@ class SprintModeTests(unittest.TestCase):
         self.assertIn("Evidence Safety Boundaries", workshop)
         self.assertIn("HHS Cyber Gateway", source_map)
         self.assertIn("CISA Cybersecurity Performance Goals", source_map)
+        self.assertIn("HHS/OCR Online Tracking Technologies Guidance", source_map)
         self.assertIn("Offering Mode", command_center)
         self.assertIn("## Connected Device Worksheet", connected_devices)
         self.assertIn("Firmware / patch owner", connected_devices)

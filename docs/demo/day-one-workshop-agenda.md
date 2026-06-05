@@ -38,6 +38,9 @@ Practice: **Family Dental Clinic**
 
 ## Expected Outputs
 
+- `practice-assurance-packet.html`
+- `practice-assurance-packet.md`
+- `external-evidence-precheck.md`
 - `sprint-offering-readout.md`
 - `owner-action-plan.md`
 - `msp-remediation-brief.md`

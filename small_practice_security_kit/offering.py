@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+import html
 from typing import Any
 
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
-OFFERING_NAME = "Velari Cyber Readiness Sprint for Small Healthcare Practices"
+OFFERING_NAME = "Velari Practice Assurance Packet for Small Dental Practices"
+OFFERING_TAGLINE = "A plain-English security and vendor evidence report for small dental practices."
 
 SOURCE_ANCHORS: list[dict[str, Any]] = [
     {
@@ -40,6 +42,20 @@ SOURCE_ANCHORS: list[dict[str, Any]] = [
         "how_this_changes_the_sprint": "The public runner stays local-first and reference-only, and it points practices toward qualified review for formal risk assessment decisions.",
     },
     {
+        "id": "hhs_ocr_tracking_tech",
+        "title": "HHS/OCR Online Tracking Technologies Guidance",
+        "urls": ["https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html"],
+        "why_it_matters": "Patient-facing websites, portals, schedulers, and apps can create privacy and vendor-review questions when tracking technologies collect or disclose regulated information.",
+        "how_this_changes_the_sprint": "The packet treats tracker observations as potential privacy/security evidence questions for website vendors and qualified reviewers, not automatic legal conclusions.",
+    },
+    {
+        "id": "hhs_security_rule",
+        "title": "HHS HIPAA Security Rule Summary",
+        "urls": ["https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html"],
+        "why_it_matters": "The Security Rule is technology-neutral and focuses on reasonable safeguards for electronic protected health information, including technical safeguards and transmission security.",
+        "how_this_changes_the_sprint": "The external pre-check turns TLS, certificate, redirect, portal, and public-host observations into MSP evidence questions without claiming a compliance determination.",
+    },
+    {
         "id": "hhs_security_rule_nprm",
         "title": "HHS HIPAA Security Rule NPRM Fact Sheet",
         "urls": ["https://www.hhs.gov/hipaa/for-professionals/security/hipaa-security-rule-nprm/factsheet/index.html"],
@@ -60,6 +76,11 @@ STAGE_SOURCE_MAP: dict[str, dict[str, Any]] = {
         "control_theme": "Scope, safety boundary, accountable owner",
         "source_ids": ["hhs_cyber_gateway", "onc_ocr_sra_tool"],
         "how_this_source_changes_what_we_ask": "Confirm the practice owner, technical owner, review period, and no-PHI/no-secret input rule before discussing evidence.",
+    },
+    "external_evidence_precheck": {
+        "control_theme": "Public-site tracker, patient-facing workflow, and transmission evidence",
+        "source_ids": ["hhs_ocr_tracking_tech", "hhs_security_rule", "cisa_cpgs"],
+        "how_this_source_changes_what_we_ask": "Check public patient-facing workflows for tracker, scheduler, portal, TLS, certificate, redirect, and ownership observations that should be routed to the website vendor, MSP, or qualified reviewer.",
     },
     "patient_data_outside_ehr_map": {
         "control_theme": "ePHI-like workflow visibility, asset inventory, data protection",
@@ -118,7 +139,79 @@ ESCALATION_TRIGGERS = [
     "There is a suspected incident, ransomware event, lost device, unauthorized disclosure, or urgent insurance/legal question.",
 ]
 
+
+def build_simple_intake_steps(profile: dict[str, Any]) -> list[dict[str, str]]:
+    practice = profile["practice"]
+    return [
+        {
+            "id": "practice_scope",
+            "label": "Practice and owners",
+            "owner": "Practice owner / office manager",
+            "question": f"Confirm the practice name, review period, {practice['security_owner']} as security owner, and {practice['technical_owner']} as technical owner.",
+            "evidence_format": "Owner names, review period, location count, staff count, and a no-PHI/no-secret signoff note.",
+            "unsafe_inputs": "PHI, patient identifiers, credentials, private admin links, raw logs, raw contracts.",
+            "artifact_ref": "practice-assurance-packet.html",
+            "status": "Ready to ask",
+        },
+        {
+            "id": "vendor_inventory",
+            "label": "Key vendors",
+            "owner": "Office manager",
+            "question": "List the EHR, billing, email, fax, cloud storage, telehealth, backup, imaging, website, scheduler, portal, AI, and MSP vendors.",
+            "evidence_format": "Vendor names, owner, workflow touched, BAA status label, security evidence status label, and review date if known.",
+            "unsafe_inputs": "Full contracts, patient screenshots, claim details, credentials, private vendor portal links.",
+            "artifact_ref": "vendor-baa-ai-questionnaire.md",
+            "status": "Ready to ask",
+        },
+        {
+            "id": "patient_facing_urls",
+            "label": "Patient-facing URLs",
+            "owner": "Website owner / MSP",
+            "question": "Identify the public website, scheduler, new patient intake, portal login, payment, registration, and contact workflows to review.",
+            "evidence_format": "Public URL labels, page/workflow names, owner, date observed, tracker/tag summary, TLS/certificate summary.",
+            "unsafe_inputs": "Real patient form submissions, session cookies, full intercepted payloads, private portal links.",
+            "artifact_ref": "external-evidence-precheck.md",
+            "status": "Ready to ask",
+        },
+        {
+            "id": "ai_workflows",
+            "label": "AI use",
+            "owner": "Practice owner / department lead",
+            "question": "Name AI tools being used or considered, what staff want to use them for, and whether any workflow could include patient, billing, clinical, credential, or raw evidence details.",
+            "evidence_format": "Tool name, proposed use, data category, vendor, decision label, policy or training reference.",
+            "unsafe_inputs": "Patient notes, transcripts, images, claims, clinical narratives, credentials, raw evidence, prompts with patient details.",
+            "artifact_ref": "ai-workflow-review.md",
+            "status": "Ready to ask",
+        },
+        {
+            "id": "msp_evidence",
+            "label": "MSP evidence status",
+            "owner": "MSP / technical owner",
+            "question": "Mark each proof area as have it, need MSP, need vendor, needs reviewer, or unknown.",
+            "evidence_format": "MFA status, access review date, backup scope, restore-test date, remote support method, log review cadence, patch/vulnerability process.",
+            "unsafe_inputs": "Raw logs, credentials, private URLs, sensitive screenshots, patient data, full network captures.",
+            "artifact_ref": "msp-remediation-brief.md",
+            "status": "Ready to ask",
+        },
+    ]
+
+
 OFFERING_ARTIFACTS: list[dict[str, str]] = [
+    {
+        "path": "practice-assurance-packet.html",
+        "purpose": "Polished buyer-facing report that summarizes the practice, top risks, evidence requests, audience handoffs, and safety boundary.",
+        "audience": "practice_owner_msp",
+    },
+    {
+        "path": "practice-assurance-packet.md",
+        "purpose": "Plain Markdown copy of the Practice Assurance Packet for quick review or text export.",
+        "audience": "practice_owner_msp",
+    },
+    {
+        "path": "external-evidence-precheck.md",
+        "purpose": "Reference-only public-site observation report for tracker, scheduler, portal, TLS, certificate, and vendor/MSP/reviewer follow-up questions.",
+        "audience": "practice_owner_msp_legal",
+    },
     {
         "path": "sprint-offering-readout.md",
         "purpose": "Client-ready plain-English readout of what was reviewed, why it matters, top gaps, next questions, and boundaries.",
@@ -183,6 +276,7 @@ def _stage_name_by_id(stages: list[dict[str, Any]]) -> dict[str, str]:
 def _artifact_for_stage(stage_id: str) -> str:
     mapping = {
         "intake": "sprint-summary.json",
+        "external_evidence_precheck": "external-evidence-precheck.md",
         "patient_data_outside_ehr_map": "ephi-flow-map.md",
         "ai_phi_review": "ai-workflow-review.md",
         "vendor_baa_review": "vendor-baa-ai-questionnaire.md",
@@ -192,7 +286,7 @@ def _artifact_for_stage(stage_id: str) -> str:
         "evidence_packet_export": "evidence-collection-checklist.md",
         "owner_msp_handoff": "owner-action-plan.md",
     }
-    return mapping.get(stage_id, "sprint-offering-readout.md")
+    return mapping.get(stage_id, "practice-assurance-packet.html")
 
 
 def build_audience_lanes(profile: dict[str, Any]) -> list[dict[str, Any]]:
@@ -203,8 +297,9 @@ def build_audience_lanes(profile: dict[str, Any]) -> list[dict[str, Any]]:
             "label": "Practice owner / office manager",
             "value": "Plain-English priorities, first-week decisions, and scripts to send to the MSP, vendors, and reviewers.",
             "primary_owner": str(practice["security_owner"]),
-            "primary_artifacts": ["sprint-offering-readout.md", "owner-action-plan.md", "evidence-collection-checklist.md"],
+            "primary_artifacts": ["practice-assurance-packet.html", "external-evidence-precheck.md", "owner-action-plan.md", "evidence-collection-checklist.md"],
             "first_questions": [
+                "What did the external pre-check observe on the public patient-facing website, scheduler, portal, or intake workflow?",
                 "Which patient-data workflows create the most urgent evidence gaps?",
                 "Which vendor or MSP answers do we need this week?",
                 "Which decisions require a qualified legal/compliance reviewer?",
@@ -217,6 +312,7 @@ def build_audience_lanes(profile: dict[str, Any]) -> list[dict[str, Any]]:
             "primary_owner": str(practice["technical_owner"]),
             "primary_artifacts": ["msp-remediation-brief.md", "risk-register.csv", "handoff-actions.csv"],
             "first_questions": [
+                "Which public hosts, portals, redirects, certificates, and TLS settings need verification?",
                 "Which accounts have MFA enforced, and which systems still need review?",
                 "Which systems are in backup scope, and when was restore last tested?",
                 "Which logs, admin roles, remote support methods, and known-exploited-vulnerability processes can be evidenced?",
@@ -239,8 +335,9 @@ def build_audience_lanes(profile: dict[str, Any]) -> list[dict[str, Any]]:
             "label": "Legal / compliance reviewer",
             "value": "Bounded review notes, escalation triggers, and clear separation between readiness prompts and professional determinations.",
             "primary_owner": "Qualified reviewer",
-            "primary_artifacts": ["sprint-offering-readout.md", "source-map.md", "limitations-appendix.md"],
+            "primary_artifacts": ["practice-assurance-packet.html", "source-map.md", "limitations-appendix.md"],
             "first_questions": [
+                "Which tracker, scheduler, portal, or intake observations need privacy/legal/compliance review before the owner acts?",
                 "Which questions require contract interpretation or formal risk assessment work?",
                 "Which vendor, AI, incident, or insurance answers should be reviewed before the owner acts?",
                 "Which evidence references are enough for planning, and which require private review?",
@@ -262,10 +359,18 @@ def build_first_7_days_actions(profile: dict[str, Any]) -> list[dict[str, str]]:
     ai_text = ", ".join(restricted_ai[:3]) if restricted_ai else "any AI workflow that could receive patient, billing, clinical, credential, or raw evidence details"
     return [
         {
+            "day": "Day 0-1",
+            "lane": "Owner/MSP/vendor reviewer",
+            "stage_id": "external_evidence_precheck",
+            "action": "Review public-site tracker, scheduler, portal, intake, TLS, and certificate observations before relying on patient-facing workflows.",
+            "evidence_request": "Tracker inventory, tag manager export, sanitized network destination summary, TLS scan summary, certificate status, website owner, and qualified-review disposition.",
+            "artifact_ref": "external-evidence-precheck.md",
+        },
+        {
             "day": "Day 1",
             "lane": "Owner",
             "stage_id": "intake",
-            "action": f"Confirm {practice['security_owner']} owns the sprint, {practice['technical_owner']} owns technical evidence, and all outputs stay reference-only.",
+            "action": f"Confirm {practice['security_owner']} owns the packet, {practice['technical_owner']} owns technical evidence, and all outputs stay reference-only.",
             "evidence_request": "Owner signoff note that the public runner contains no PHI, secrets, private URLs, raw contracts, or raw logs.",
             "artifact_ref": "owner-action-plan.md",
         },
@@ -315,7 +420,7 @@ def build_first_7_days_actions(profile: dict[str, Any]) -> list[dict[str, str]]:
             "stage_id": "evidence_packet_export",
             "action": "Escalate BAA, AI, incident, insurance, and formal risk-assessment questions that require qualified review.",
             "evidence_request": "Question list with artifact references only; no PHI, secrets, raw contracts, raw logs, or incident-sensitive details.",
-            "artifact_ref": "sprint-offering-readout.md",
+            "artifact_ref": "practice-assurance-packet.html",
         },
     ]
 
@@ -323,13 +428,16 @@ def build_first_7_days_actions(profile: dict[str, Any]) -> list[dict[str, str]]:
 def build_offering_summary(profile: dict[str, Any], stages: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "name": OFFERING_NAME,
-        "positioning": "A short, patient-safety-oriented readiness sprint that maps ePHI-like workflows, evidence gaps, vendor/BAA/AI questions, MSP checks, and first-week owner actions without collecting raw PHI or evidence in the public repo.",
+        "positioning": f"{OFFERING_TAGLINE} It maps patient-data workflows outside the EHR, evidence gaps, vendor/BAA/AI questions, MSP checks, and first-week owner actions without collecting raw PHI or evidence in the public repo.",
         "audience_lanes": build_audience_lanes(profile),
+        "simple_intake_steps": build_simple_intake_steps(profile),
         "source_anchors": SOURCE_ANCHORS,
         "stage_source_map": build_stage_source_map(stages),
         "first_7_days_actions": build_first_7_days_actions(profile),
         "top_value_outcomes": [
-            "A plain-English map of where patient-data workflows create operational and trust risk outside the EHR.",
+            "A plain-English report a practice owner can read without operating another security dashboard.",
+            "A public-site External Evidence Pre-Check that turns tracker, scheduler, portal, TLS, and certificate observations into safe owner/MSP/vendor/reviewer questions before internal access is needed.",
+            "A map of where patient-data workflows create operational and trust risk outside the EHR.",
             "A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.",
             "A technical remediation brief that asks for specific proof instead of broad security promises.",
             "A vendor/BAA/AI questionnaire that makes contract, SOC 2/HITRUST evidence status, retention, incident notice, subcontractor, and model-training questions visible.",
@@ -363,7 +471,7 @@ def build_stage_source_map(stages: list[dict[str, Any]]) -> list[dict[str, Any]]
                 "source_ids": source_ids,
                 "source_titles": [source_titles[source_id] for source_id in source_ids],
                 "how_this_source_changes_what_we_ask": str(mapping["how_this_source_changes_what_we_ask"]),
-                "artifact_refs": list(stage.get("artifact_refs", [])) + [_artifact_for_stage(stage_id)],
+                "artifact_refs": list(dict.fromkeys([*stage.get("artifact_refs", []), _artifact_for_stage(stage_id)])),
             }
         )
     return rows
@@ -421,6 +529,20 @@ def _joined(value: Any) -> str:
     return str(value)
 
 
+def _html(value: Any) -> str:
+    return html.escape(str(value), quote=True)
+
+
+def _slug_class(value: Any) -> str:
+    text = str(value).lower().replace("_", "-").replace(" ", "-")
+    return "".join(character for character in text if character.isalnum() or character == "-") or "unknown"
+
+
+def _artifact_anchor(path: str) -> str:
+    escaped = _html(path)
+    return f'<a href="{escaped}">{escaped}</a>'
+
+
 def _top_gap_rows(risk_rows: list[dict[str, Any]]) -> list[list[str]]:
     rows = []
     for risk in risk_rows[:5]:
@@ -464,6 +586,180 @@ def _questions_by_lane(summary: dict[str, Any]) -> dict[str, list[str]]:
     for lane in summary["offering_summary"]["audience_lanes"]:
         lanes[str(lane["label"])] = list(lane["first_questions"])
     return lanes
+
+
+def _looks_generic_evidence(value: Any) -> bool:
+    text = _joined(value).lower()
+    generic_markers = [
+        "owner signoff",
+        "evidence reference id",
+        "date observed",
+        "workflow owner",
+        "review note",
+    ]
+    return sum(1 for marker in generic_markers if marker in text) >= 3
+
+
+def _frontdoor_evidence_for_item(item: dict[str, Any]) -> str:
+    current = _joined(item.get("acceptable_evidence", "")).strip()
+    if current and not _looks_generic_evidence(current):
+        return current
+    risk_like = dict(item)
+    risk_like.setdefault("title", item.get("title") or item.get("action") or "")
+    risk_like.setdefault("stage_id", item.get("stage_id", "findings_risk_register"))
+    return _expected_proof_for_risk(risk_like)
+
+
+def _simple_intake_rows(summary: dict[str, Any]) -> list[list[str]]:
+    rows = []
+    for step in summary["offering_summary"].get("simple_intake_steps", []):
+        rows.append(
+            [
+                str(step.get("label", "")),
+                str(step.get("owner", "")),
+                str(step.get("question", "")),
+                str(step.get("evidence_format", "")),
+                str(step.get("unsafe_inputs", "")),
+                str(step.get("artifact_ref", "")),
+            ]
+        )
+    return rows
+
+
+def _decision_queue_rows(risk_rows: list[dict[str, Any]]) -> list[list[str]]:
+    rows = []
+    for risk in risk_rows[:5]:
+        rows.append(
+            [
+                str(risk.get("title", "Evidence question")),
+                str(risk.get("recipient", "Owner/MSP")),
+                _owner_takeaway_for_risk(risk),
+                str(risk.get("recommended_question", "")),
+                _frontdoor_evidence_for_item(risk),
+                _joined(risk.get("unsafe_inputs", "")),
+                str(risk.get("artifact_ref", "practice-assurance-packet.html")),
+            ]
+        )
+    if not rows:
+        rows.append(
+            [
+                "No generated high-priority finding",
+                "Owner/MSP",
+                "Assign an owner and collect a reference-only evidence note.",
+                "Which evidence references should be refreshed first?",
+                "Evidence reference ID, owner, date observed, and short status note.",
+                "PHI; credentials; private URLs; raw logs; raw contracts.",
+                "practice-assurance-packet.html",
+            ]
+        )
+    return rows
+
+
+def _owner_takeaway_for_risk(risk: dict[str, Any]) -> str:
+    title = str(risk.get("title", "")).lower()
+    stage_id = str(risk.get("stage_id", ""))
+    recipient = str(risk.get("recipient", "")).lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in title or "pixel" in title or "analytics" in title or "tag manager" in title:
+            return "Ask the website vendor and privacy reviewer what data the tracker receives on patient-facing pages."
+        if "tls" in title or "certificate" in title or "https" in title:
+            return "Ask the MSP or website vendor to confirm TLS, certificate, redirect, and HSTS evidence."
+        return "Assign the public-site observation to an owner before relying on the workflow."
+    if "mfa" in title:
+        return "Ask the MSP for MFA proof and any exception list."
+    if "backup" in title or "restore" in title:
+        return "Ask the MSP for backup scope and restore-test evidence."
+    if "downtime" in title or stage_id == "downtime_ransomware_review":
+        return "Assign a downtime owner and record tabletop or manual-workflow evidence."
+    if "baa" in title or "vendor" in title or recipient == "vendor" or stage_id == "vendor_baa_review":
+        return "Ask the vendor for BAA status, security evidence status, and incident terms."
+    if "ai" in title or stage_id == "ai_phi_review":
+        return "Keep the workflow no-PHI or restricted until terms and staff guidance are reviewed."
+    if "access" in title or "account" in title or stage_id == "access_offboarding_review":
+        return "Ask the MSP for user, admin-role, and offboarding evidence."
+    return "Assign an owner and collect a reference-only evidence note."
+
+
+def _ready_to_send_messages(summary: dict[str, Any]) -> list[tuple[str, str]]:
+    practice = summary["practice"]
+    label = str(practice["label"])
+    review_period = str(practice["review_period"])
+    return [
+        (
+            "Email to MSP",
+            f"""Subject: Quick evidence request for {label} - Velari packet
+
+Hi [MSP Contact],
+
+We are using a Velari Practice Assurance Packet for our {review_period} review. It highlights a few high-priority items where we need reference-only evidence this week:
+
+- MFA enforcement status and user/admin list exports for EHR, billing, email, remote access, and administrator accounts
+- Backup scope and last restore-test evidence for critical practice systems
+- Downtime workflow or tabletop notes for systems needed during patient care
+
+Please reply with evidence reference IDs, dates observed, owners, scope covered, and any gaps we need to decide on. Keep raw files, screenshots, logs, private URLs, credentials, and sensitive details in our private binder.
+
+Can you send what you have by [date], or suggest a short call if that is easier?
+
+Thanks,
+[Your Name]""",
+        ),
+        (
+            "Email to Vendor",
+            f"""Subject: BAA and security evidence request - {label}
+
+Hi [Vendor Contact],
+
+As part of our {review_period} practice security and vendor review, we need to confirm a few reference-only items for [Vendor Name].
+
+Can you please provide:
+
+- Current BAA status and last review date
+- SOC 2, HITRUST, or equivalent security evidence status
+- Security contact and incident-notification terms
+- Retention/deletion terms and subprocessors or subcontractors
+- AI data-use or model-training terms, if applicable
+
+We only need status labels, public/gated proof references, or a short written response. Please do not send PHI, credentials, raw contracts, raw logs, patient screenshots, or private admin links in this thread.
+
+Thank you,
+[Your Name] / {label}""",
+        ),
+        (
+            "Internal Note to Practice Owner",
+            f"""Subject: First actions from the Velari packet
+
+The Velari packet is ready for {label}. The fastest next step is to send the MSP and vendor requests, then track responses by reference ID instead of moving sensitive files around.
+
+This week I recommend we:
+
+- Ask the MSP for MFA, access, backup, restore-test, and downtime evidence
+- Ask key vendors for BAA, security evidence status, incident, retention/deletion, and AI data-use answers
+- Keep PHI, passwords, raw logs, raw contracts, patient screenshots, and private links out of email and public tools
+- Escalate legal/compliance, insurance, incident, or formal risk-assessment questions to the right reviewer
+
+I can send the first requests and collect responses into the evidence tracker.""",
+        ),
+        (
+            "Optional Note to Reviewer",
+            f"""Subject: Reference-only packet for qualified review - {label}
+
+Hi [Reviewer],
+
+We have a Velari Practice Assurance Packet for {label}'s {review_period} review. It is a readiness and evidence-handoff packet, not a formal Security Risk Analysis, audit opinion, legal advice, or insurance advice.
+
+Can you review the packet and flag which vendor, AI, incident, insurance, contract, or formal risk-assessment questions need qualified review before the practice relies on them?
+
+We are keeping raw evidence in a private/offline binder and using reference IDs in the packet. Please do not request PHI, credentials, raw logs, raw contracts, private admin links, or incident-sensitive details in public tools.""",
+        ),
+    ]
+
+
+def _ready_to_send_messages_markdown(summary: dict[str, Any]) -> str:
+    blocks = []
+    for title, body in _ready_to_send_messages(summary):
+        blocks.append(f"### {title}\n\n```text\n{body}\n```")
+    return "\n\n".join(blocks)
 
 
 def render_sprint_offering_readout(
@@ -522,6 +818,12 @@ Readiness signal: **{summary['readiness_signal']['label']}**
 
 {chr(10).join(reviewed)}
 
+## 10-Minute Intake
+
+Use this as the first call checklist. Unknown is acceptable; unknowns become MSP, vendor, or qualified-review questions.
+
+{markdown_table(['Step', 'Owner', 'Question', 'Evidence format', 'Do not send', 'Artifact'], _simple_intake_rows(summary))}
+
 ## What This Means For Patient Safety And Client Trust
 
 HHS Cyber Gateway frames the work plainly: cyber safety is patient safety. For a small practice, that means the sprint focuses on whether patient-data workflows, vendors, access, AI use, and downtime plans are understandable enough for the owner and MSP to act this week. The packet turns guidance from HHS 405(d) HICP, CISA Cybersecurity Performance Goals, and the ONC/OCR SRA Tool into practical questions and evidence requests.
@@ -552,6 +854,923 @@ HHS Cyber Gateway frames the work plainly: cyber safety is patient safety. For a
 - It does not replace a formal Security Risk Analysis, legal/compliance review, incident reporting decision, penetration test, vulnerability scan, MDR, SOC, or contract review.
 - It does not verify live systems, contracts, backups, logs, user lists, vendor claims, AI terms, or insurance answers.
 - It does not permit PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details in this public repo.
+"""
+
+
+def render_practice_assurance_packet(
+    summary: dict[str, Any],
+    risk_rows: list[dict[str, Any]],
+    handoff_rows: list[dict[str, Any]],
+) -> str:
+    practice = summary["practice"]
+    top_rows = []
+    for risk in risk_rows[:5]:
+        top_rows.append(
+            [
+                risk["title"],
+                risk["priority"],
+                risk.get("recipient", ""),
+                _owner_takeaway_for_risk(risk),
+                risk.get("plain_english_summary", ""),
+                risk.get("recommended_question", ""),
+                _frontdoor_evidence_for_item(risk),
+                _joined(risk.get("unsafe_inputs", "")),
+            ]
+        )
+    if not top_rows:
+        top_rows.append(
+            [
+                "No generated high-priority finding",
+                "low",
+                "Owner/MSP",
+                "Assign an owner and collect a reference-only evidence note.",
+                "No major gap was generated, but evidence references should still be reviewed.",
+                "Which evidence references should be refreshed first?",
+                "Evidence reference ID, owner, date observed, and short status note.",
+                "PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs.",
+            ]
+        )
+
+    external_rows = []
+    for risk in risk_rows:
+        if str(risk.get("stage_id", "")) == "external_evidence_precheck":
+            external_rows.append(
+                [
+                    risk["title"],
+                    risk["priority"],
+                    risk.get("recipient", "Owner/MSP"),
+                    _owner_takeaway_for_risk(risk),
+                    risk.get("recommended_question", ""),
+                    _frontdoor_evidence_for_item(risk),
+                ]
+            )
+    external_section = ""
+    if external_rows:
+        external_section = f"""
+## External Evidence Pre-Check
+
+These are public-site observations from patient-facing workflows such as the website, scheduler, portal, intake, payment, or registration path. They are evidence questions for the practice, MSP, website vendor, and qualified reviewer. They are not HIPAA violation, breach, legal, or compliance determinations.
+
+{markdown_table(['Observation', 'Priority', 'Send to', 'Owner takeaway', 'Question to ask', 'Evidence to request'], external_rows)}
+"""
+
+    handoff_preview = []
+    for row in handoff_rows[:8]:
+        handoff_preview.append(
+            [
+                row.get("recipient", ""),
+                row.get("priority", ""),
+                row.get("action", ""),
+                _frontdoor_evidence_for_item(row),
+                row.get("artifact_ref", ""),
+            ]
+        )
+    if not handoff_preview:
+        handoff_preview.append(["Owner/MSP", "medium", "Review the packet together.", "Evidence reference IDs and owner notes.", "sprint-index.md"])
+
+    audience_rows = [
+        [
+            "Practice owner / office manager",
+            "`practice-assurance-packet.html`, `owner-action-plan.md`, `sprint-client-readout.md`",
+            "What matters first, who to ask, and what can be handled this week.",
+        ],
+        [
+            "MSP / IT partner",
+            "`msp-evidence-request.md`, `msp-remediation-brief.md`, `control-evidence-matrix.csv`",
+            "Which technical proof is needed for access, MFA, backups, restore testing, logs, and remediation sequencing.",
+        ],
+        [
+            "Vendors / BAA / AI reviewers",
+            "`vendor-evidence-request.md`, `vendor-baa-ai-questionnaire.md`, `vendor-baa-review.md`",
+            "Which contract, incident-notice, subcontractor, retention, deletion, audit-log, and AI data-use answers are still unclear.",
+        ],
+        [
+            "Insurance / legal / compliance reviewer",
+            "`insurance-evidence-packet.md`, `limitations-appendix.md`, `source-map.md`",
+            "Which evidence references support planning and which questions need qualified review.",
+        ],
+    ]
+
+    return f"""# Velari Practice Assurance Packet
+
+{OFFERING_TAGLINE}
+
+Practice: **{practice['label']}**
+
+Practice type: **{practice['type']}**
+
+Review period: **{practice['review_period']}**
+
+Readiness signal: **{summary['readiness_signal']['label']}**
+
+Target delivery signal: **{summary['target_delivery_signal']['status'].replace('_', ' ')}**
+
+Review basis: questions are informed by HHS/ONC/OCR SRA guidance, CISA baseline goals, healthcare cybersecurity guidance, and dental ransomware risk guidance. This packet can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA.
+
+## What This Packet Is For
+
+This packet helps a small dental practice understand what security and vendor evidence it already has, what is missing, and what the owner should ask the MSP, vendors, and qualified reviewers next. It is designed as a report and handoff packet, not another dashboard the practice has to manage.
+
+It focuses on the common places evidence gets scattered: EHR, billing, email, fax, shared drives, telehealth, backup, remote support, patient messaging, imaging, AI tools, vendor contracts, and MSP tickets.
+
+## 10-Minute Intake
+
+Use this as the first call checklist. The owner or office manager should be able to answer these without finding raw files or handling PHI. Unknown is acceptable; the packet turns unknowns into MSP, vendor, or reviewer questions.
+
+{markdown_table(['Step', 'Owner', 'Question', 'Evidence format', 'Do not send', 'Artifact'], _simple_intake_rows(summary))}
+
+## Executive Snapshot
+
+- Stages needing evidence: {summary['counts']['stages_needing_evidence']} of {summary['counts']['stages']}
+- High or critical findings: {summary['counts']['high_or_critical_findings']}
+- Evidence references needing attention: {summary['evidence_gap_summary']['needs_attention']}
+- Control evidence rows needing attention: {summary['counts']['control_evidence_needing_attention']}
+- Handoff actions: {summary['counts']['handoff_actions']}
+- Connector evidence items reviewed: {summary['counts']['connector_evidence_items']}
+
+{external_section}
+
+## What Needs Action First
+
+{markdown_table(['Risk or question', 'Priority', 'Send to', 'Owner takeaway', 'Plain-English reason', 'Question to ask', 'Evidence to request', 'Do not send'], top_rows)}
+
+## Owner Decision Queue
+
+These are the decisions or approvals the practice owner should not leave buried in an MSP ticket. Each row separates the owner takeaway from the proof request.
+
+{markdown_table(['Decision', 'Send to', 'Owner takeaway', 'Question to ask', 'Evidence format', 'Do not send', 'Artifact'], _decision_queue_rows(risk_rows))}
+
+## What To Hand To Whom
+
+{markdown_table(['Audience', 'Give them', 'Why it helps'], audience_rows)}
+
+## Evidence Requests To Start This Week
+
+{markdown_table(['Recipient', 'Priority', 'Ask', 'Evidence format', 'Artifact'], handoff_preview)}
+
+## Ready-To-Send Messages
+
+Copy, paste, and adapt. All requests are reference-only. No PHI, credentials, or raw files needed.
+
+{_ready_to_send_messages_markdown(summary)}
+
+## Why This Helps The MSP
+
+- The MSP gets scoped proof requests instead of a vague "are we secure?" conversation.
+- Access, MFA, backup, restore-test, logging, remote-support, and remediation questions are separated from contract and legal/compliance questions.
+- Evidence can be returned as reference IDs, dates observed, owner roles, and short status notes without sending PHI, credentials, private URLs, raw contracts, raw logs, or sensitive screenshots.
+
+## Next Step With Velari
+
+If this packet surfaces gaps the practice wants help closing, the fastest path is a short evidence call plus an updated packet.
+
+- Walk through the top findings in a 30-45 minute evidence call.
+- Send or customize the ready-to-send MSP and vendor messages above.
+- Collect reference-only responses, owners, dates observed, and open questions.
+- Deliver an updated packet with answers incorporated and a clear 30-day owner/MSP/reviewer plan.
+- No PHI, patient data, credentials, passwords, raw logs, full contracts, or private admin links are needed.
+
+This is a one-time packet service, not a dashboard or ongoing subscription. The goal is clarity and handoff in one week, not another tool to manage.
+
+## What This Does Not Do
+
+- It is not an audit opinion, legal advice, cyber-insurance advice, penetration test, vulnerability scan, MDR/SOC service, forensic review, or formal Security Risk Analysis.
+- It can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA.
+- It does not prove that a practice, vendor, system, AI workflow, policy, backup, or evidence binder satisfies a legal or regulatory requirement.
+- It does not verify live systems, contracts, logs, backups, user lists, vendor claims, AI terms, insurance answers, or incident facts.
+- It does not replace the MSP. It gives the practice and MSP a clearer evidence request list and owner handoff.
+
+## Evidence Safety Boundary
+
+Do not put PHI, patient identifiers, credentials, secrets, private URLs, presigned links, raw contracts, raw logs, screenshots with sensitive data, or incident-sensitive details into this public repo or public runner. Keep raw evidence in a private/offline binder and use reference IDs in generated artifacts.
+"""
+
+
+def render_practice_assurance_packet_html(
+    summary: dict[str, Any],
+    risk_rows: list[dict[str, Any]],
+    handoff_rows: list[dict[str, Any]],
+) -> str:
+    practice = summary["practice"]
+    generated_at = summary["generated_at"]
+    delivery_label = str(summary["target_delivery_signal"]["status"]).replace("_", " ")
+    top_risks = risk_rows[:5]
+    if not top_risks:
+        top_risks = [
+            {
+                "title": "No generated high-priority finding",
+                "priority": "low",
+                "recipient": "Owner/MSP",
+                "plain_english_summary": "No major gap was generated, but evidence references should still be reviewed.",
+                "recommended_question": "Which evidence references should be refreshed first?",
+                "acceptable_evidence": ["Evidence reference ID", "owner", "date observed", "short status note"],
+                "unsafe_inputs": ["PHI", "patient identifiers", "credentials", "private URLs", "raw contracts", "raw logs"],
+            }
+        ]
+
+    risk_cards = []
+    for index, risk in enumerate(top_risks, start=1):
+        priority = str(risk.get("priority", "medium"))
+        risk_cards.append(
+            f"""
+            <article class="risk-card priority-{_slug_class(priority)}">
+              <div class="risk-head">
+                <span class="risk-number">{index}</span>
+                <span class="chip priority-{_slug_class(priority)}">{_html(priority)}</span>
+                <span class="chip neutral">{_html(risk.get('recipient', 'Owner/MSP'))}</span>
+              </div>
+              <h3>{_html(risk.get('title', 'Evidence question'))}</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> {_html(_owner_takeaway_for_risk(risk))}</p>
+              <p>{_html(risk.get('plain_english_summary', 'Review this item with the owner and MSP.'))}</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>{_html(risk.get('recommended_question', 'Which evidence should be reviewed first?'))}</dd>
+                <dt>Evidence to request</dt>
+                <dd>{_html(_frontdoor_evidence_for_item(risk))}</dd>
+                <dt>Do not send</dt>
+                <dd>{_html(_joined(risk.get('unsafe_inputs', 'PHI; credentials; private URLs')))}</dd>
+              </dl>
+            </article>
+            """
+        )
+
+    handoff_rows_html = []
+    for row in handoff_rows[:8]:
+        priority = str(row.get("priority", "medium"))
+        handoff_rows_html.append(
+            f"""
+            <tr>
+              <td><span class="chip priority-{_slug_class(priority)}">{_html(priority)}</span></td>
+              <td><strong>{_html(row.get('recipient', 'Owner/MSP'))}</strong></td>
+              <td>{_html(row.get('action', 'Review packet with owner and MSP.'))}</td>
+              <td>{_html(_frontdoor_evidence_for_item(row))}</td>
+              <td>{_artifact_anchor(str(row.get('artifact_ref', 'sprint-index.md')))}</td>
+            </tr>
+            """
+        )
+    if not handoff_rows_html:
+        handoff_rows_html.append(
+            """
+            <tr>
+              <td><span class="chip priority-medium">medium</span></td>
+              <td><strong>Owner/MSP</strong></td>
+              <td>Review the packet together.</td>
+              <td>Evidence reference IDs and owner notes.</td>
+              <td><a href="sprint-index.md">sprint-index.md</a></td>
+            </tr>
+            """
+        )
+
+    audience_cards = [
+        (
+            "Practice owner / office manager",
+            "What matters first, who to ask, and what can move this week.",
+            ["practice-assurance-packet.html", "owner-action-plan.md", "sprint-client-readout.md"],
+        ),
+        (
+            "MSP / IT partner",
+            "Specific proof requests for access, MFA, backups, restore testing, logs, and remediation sequence.",
+            ["msp-evidence-request.md", "msp-remediation-brief.md", "control-evidence-matrix.csv"],
+        ),
+        (
+            "Vendors / BAA / AI reviewers",
+            "Contract, incident-notice, subcontractor, retention, deletion, audit-log, and AI data-use questions.",
+            ["vendor-evidence-request.md", "vendor-baa-ai-questionnaire.md", "vendor-baa-review.md"],
+        ),
+        (
+            "Insurance / legal / compliance reviewer",
+            "Evidence references for planning plus questions that need qualified review.",
+            ["insurance-evidence-packet.md", "limitations-appendix.md", "source-map.md"],
+        ),
+    ]
+    audience_cards_html = []
+    for label, value, artifacts in audience_cards:
+        audience_cards_html.append(
+            f"""
+            <article class="audience-card">
+              <h3>{_html(label)}</h3>
+              <p>{_html(value)}</p>
+              <ul>{''.join(f'<li>{_artifact_anchor(path)}</li>' for path in artifacts)}</ul>
+            </article>
+            """
+        )
+
+    first_week_items = []
+    for action in summary["offering_summary"]["first_7_days_actions"][:7]:
+        first_week_items.append(
+            f"""
+            <li>
+              <span>{_html(action['day'])}</span>
+              <strong>{_html(action['lane'])}</strong>
+              <p>{_html(action['action'])}</p>
+            </li>
+            """
+        )
+
+    source_items = []
+    for source in summary["offering_summary"]["source_anchors"][:4]:
+        source_items.append(
+            f"""
+            <li>
+              <strong>{_html(source['title'])}</strong>
+              <span>{_html(source['why_it_matters'])}</span>
+            </li>
+            """
+        )
+
+    ready_messages_html = []
+    for title, body in _ready_to_send_messages(summary):
+        ready_messages_html.append(
+            f"""
+            <article class="message-block">
+              <h3>{_html(title)}</h3>
+              <pre><code>{_html(body)}</code></pre>
+            </article>
+            """
+        )
+
+    intake_items_html = []
+    for index, step in enumerate(summary["offering_summary"].get("simple_intake_steps", []), start=1):
+        intake_items_html.append(
+            f"""
+            <li>
+              <span class="task-number">{index}</span>
+              <div>
+                <div class="task-top">
+                  <h3>{_html(step.get('label', 'Intake step'))}</h3>
+                  <span class="chip neutral">{_html(step.get('status', 'Ready to ask'))}</span>
+                </div>
+                <p>{_html(step.get('question', 'Confirm this item before the packet is updated.'))}</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>{_html(step.get('evidence_format', 'Reference-only status note.'))}</dd>
+                  <dt>Do not send</dt>
+                  <dd>{_html(step.get('unsafe_inputs', 'PHI; credentials; private URLs.'))}</dd>
+                  <dt>Artifact</dt>
+                  <dd>{_artifact_anchor(str(step.get('artifact_ref', 'practice-assurance-packet.html')))}</dd>
+                </dl>
+              </div>
+            </li>
+            """
+        )
+
+    decision_rows_html = []
+    for row in _decision_queue_rows(risk_rows):
+        decision_rows_html.append(
+            f"""
+            <tr>
+              <td><strong>{_html(row[0])}</strong></td>
+              <td>{_html(row[1])}</td>
+              <td>{_html(row[2])}</td>
+              <td>{_html(row[3])}</td>
+              <td>{_html(row[4])}</td>
+              <td>{_html(row[5])}</td>
+              <td>{_artifact_anchor(row[6])}</td>
+            </tr>
+            """
+        )
+
+    external_risks = [risk for risk in risk_rows if str(risk.get("stage_id", "")) == "external_evidence_precheck"]
+    external_precheck_html = ""
+    if external_risks:
+        external_items = []
+        for risk in external_risks[:4]:
+            external_items.append(
+                f"""
+                <li>
+                  <strong>{_html(risk.get('title', 'External observation'))}</strong>
+                  <span>{_html(risk.get('priority', 'medium'))} &middot; {_html(risk.get('recipient', 'Owner/MSP'))}</span>
+                  <p>{_html(_owner_takeaway_for_risk(risk))}</p>
+                </li>
+                """
+            )
+        external_precheck_html = f"""
+    <section class="panel external-precheck">
+      <div class="eyebrow">External Evidence Pre-Check</div>
+      <h2>Public Patient-Facing Workflow Signals</h2>
+      <p>These are public-site observations from patient-facing workflows such as the website, scheduler, portal, intake, payment, or registration path. They create evidence questions for the practice, MSP, website vendor, and qualified reviewer. They are not HIPAA violation, breach, legal, or compliance determinations.</p>
+      <ul class="signal-list">{''.join(external_items)}</ul>
+      <p class="small-note">Use {_artifact_anchor('external-evidence-precheck.md')} for the reference-only observation table and evidence questions. Do not submit real patient forms or store sensitive intercepted payloads.</p>
+    </section>
+"""
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{_html(practice['label'])} Practice Assurance Packet</title>
+  <style>
+    :root {{
+      --paper: #eef3f7;
+      --sheet: #ffffff;
+      --ink: #17212b;
+      --muted: #5f6f7e;
+      --quiet: #8191a0;
+      --line: #d7e0e7;
+      --line-strong: #afbfca;
+      --navy: #102637;
+      --navy-soft: #e8f1f6;
+      --teal: #0f766e;
+      --teal-soft: #e6f4f2;
+      --gold: #b58b2b;
+      --gold-soft: #fbf2d6;
+      --red: #b42318;
+      --red-soft: #fde8e4;
+      --amber: #b7791f;
+      --amber-soft: #fff3d6;
+      --green: #14745b;
+      --green-soft: #e4f5ee;
+      --shadow: 0 22px 52px rgba(16, 38, 55, 0.12);
+      --radius: 8px;
+    }}
+    * {{ box-sizing: border-box; }}
+    html {{ background: var(--paper); }}
+    body {{
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }}
+    a {{ color: var(--navy); text-decoration: none; border-bottom: 1px solid rgba(16, 38, 55, 0.28); }}
+    a:focus-visible {{ outline: 3px solid var(--gold); outline-offset: 3px; }}
+    .page {{ max-width: 1180px; margin: 0 auto; padding: 30px 22px 56px; }}
+    .cover {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-top: 8px solid var(--navy);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }}
+    .cover-grid {{
+      display: grid;
+      grid-template-columns: minmax(0, 1.42fr) minmax(310px, 0.58fr);
+      min-height: 360px;
+    }}
+    .cover-main {{ padding: 38px 40px 34px; }}
+    .cover-side {{
+      background: var(--navy);
+      color: #fff;
+      padding: 32px;
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }}
+    .eyebrow {{
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }}
+    h1, h2, h3, p {{ margin-top: 0; }}
+    h1 {{ max-width: 760px; margin-bottom: 18px; font-size: 50px; line-height: 1.02; letter-spacing: 0; overflow-wrap: anywhere; }}
+    h2 {{ margin-bottom: 16px; font-size: 24px; line-height: 1.18; letter-spacing: 0; }}
+    h3 {{ margin-bottom: 8px; font-size: 17px; line-height: 1.25; letter-spacing: 0; }}
+    .subtitle {{ max-width: 700px; color: var(--muted); font-size: 18px; }}
+    .practice-meta {{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 30px;
+    }}
+    .meta-item {{ border-top: 1px solid var(--line); padding-top: 12px; }}
+    .meta-item span, .side-label {{ display: block; color: var(--quiet); font-size: 12px; font-weight: 800; text-transform: uppercase; }}
+    .meta-item strong {{ display: block; margin-top: 4px; font-size: 15px; overflow-wrap: anywhere; }}
+    .side-title {{ color: #c6d6df; font-size: 13px; font-weight: 800; text-transform: uppercase; }}
+    .signal {{ display: grid; gap: 12px; }}
+    .signal strong {{ display: block; color: #fff; font-size: 34px; line-height: 1; text-transform: capitalize; }}
+    .signal p {{ color: #c6d6df; margin: 0; }}
+    .boundary {{
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #e5edf2;
+      font-size: 13px;
+    }}
+    .snapshot {{
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 0;
+    }}
+    .stat {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 116px;
+    }}
+    .stat span {{ display: block; color: var(--muted); font-size: 12px; font-weight: 800; }}
+    .stat strong {{ display: block; margin-top: 12px; color: var(--navy); font-size: 30px; line-height: 1; }}
+    section {{ margin-top: 26px; }}
+    .section-head {{ display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-bottom: 12px; }}
+    .section-head p {{ max-width: 620px; margin: 0; color: var(--muted); }}
+    .section-note {{ max-width: 720px; color: var(--muted); margin-bottom: 14px; }}
+    .review-basis {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      color: var(--muted);
+    }}
+    .review-basis strong {{ color: var(--navy); }}
+    .task-list {{
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }}
+    .task-list li {{
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 240px;
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }}
+    .task-number {{
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 900;
+    }}
+    .task-top {{ display: flex; align-items: start; justify-content: space-between; gap: 10px; }}
+    .task-top h3 {{ margin-bottom: 6px; }}
+    .task-list p {{ color: var(--muted); font-size: 14px; }}
+    .risk-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .risk-card {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 280px;
+      box-shadow: 0 10px 24px rgba(16, 38, 55, 0.06);
+    }}
+    .risk-card:first-child {{ grid-column: 1 / -1; min-height: 240px; }}
+    .risk-card.priority-high, .risk-card.priority-critical {{ border-top-color: var(--red); }}
+    .risk-card.priority-low {{ border-top-color: var(--green); }}
+    .risk-head {{ display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 12px; }}
+    .risk-number {{
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }}
+    .chip {{
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      background: var(--navy-soft);
+    }}
+    .chip.priority-high, .chip.priority-critical {{ color: var(--red); background: var(--red-soft); }}
+    .chip.priority-medium {{ color: var(--amber); background: var(--amber-soft); }}
+    .chip.priority-low {{ color: var(--green); background: var(--green-soft); }}
+    .chip.neutral {{ color: var(--muted); background: #f1f5f8; }}
+    .risk-card p {{ color: var(--muted); font-size: 14px; }}
+    .risk-card .takeaway {{
+      margin-bottom: 10px;
+      color: var(--navy);
+      background: var(--navy-soft);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 14px;
+    }}
+    dl {{ margin: 14px 0 0; }}
+    dt {{ margin-top: 12px; color: var(--navy); font-size: 12px; font-weight: 900; text-transform: uppercase; }}
+    dd {{ margin: 3px 0 0; color: var(--muted); font-size: 13px; }}
+    .audience-grid {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }}
+    .audience-card {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 17px;
+      min-height: 230px;
+    }}
+    .audience-card p {{ color: var(--muted); font-size: 14px; }}
+    .audience-card ul, .source-list {{ margin: 14px 0 0; padding: 0; list-style: none; }}
+    .audience-card li {{ margin-top: 7px; font-size: 13px; }}
+    .table-panel {{
+      overflow-x: auto;
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px rgba(16, 38, 55, 0.05);
+    }}
+    .decision-panel table {{ min-width: 1080px; }}
+    table {{ width: 100%; min-width: 920px; border-collapse: collapse; font-size: 14px; }}
+    th, td {{ padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }}
+    th {{ color: var(--navy); background: var(--navy-soft); font-size: 12px; text-transform: uppercase; }}
+    tr:last-child td {{ border-bottom: 0; }}
+    .two-col {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr); gap: 16px; }}
+    .panel {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 19px;
+    }}
+    .message-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .message-block {{
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 17px;
+      min-width: 0;
+    }}
+    .message-block pre {{
+      margin: 12px 0 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: #f7fafc;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      color: var(--ink);
+      font: 13px/1.48 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }}
+    .message-block code {{ font: inherit; }}
+    .plain-list {{ margin: 0; padding-left: 20px; color: var(--muted); }}
+    .plain-list li {{ margin-top: 7px; }}
+    .signal-list {{ margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }}
+    .signal-list li {{
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #f7fafc;
+    }}
+    .signal-list strong {{ display: block; color: var(--navy); }}
+    .signal-list span {{ display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 800; }}
+    .signal-list p {{ margin: 8px 0 0; color: var(--muted); font-size: 13px; }}
+    .next-step-grid {{ display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }}
+    .next-step h3 {{ margin-top: 0; }}
+    .small-note {{ color: var(--muted); font-size: 13px; }}
+    .cta-line {{
+      margin: 18px 0 0;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--navy);
+      font-weight: 800;
+    }}
+    .week-list {{ margin: 0; padding: 0; list-style: none; }}
+    .week-list li {{
+      display: grid;
+      grid-template-columns: 70px 110px minmax(0, 1fr);
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }}
+    .week-list li:last-child {{ border-bottom: 0; }}
+    .week-list span {{ color: var(--gold); font-size: 12px; font-weight: 900; }}
+    .week-list strong {{ color: var(--navy); font-size: 13px; }}
+    .week-list p {{ margin: 0; color: var(--muted); font-size: 13px; }}
+    .source-list li {{ margin-bottom: 12px; padding-left: 12px; border-left: 3px solid var(--line); }}
+    .source-list strong {{ display: block; color: var(--navy); }}
+    .source-list span {{ color: var(--muted); font-size: 13px; }}
+    .footer {{
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }}
+    @media (max-width: 1120px) {{
+      .snapshot {{ grid-template-columns: repeat(3, minmax(0, 1fr)); }}
+      .audience-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+    }}
+    @media (max-width: 820px) {{
+      .page {{ padding: 22px 14px 44px; }}
+      .cover-grid, .two-col {{ grid-template-columns: 1fr; }}
+      .cover-main, .cover-side {{ padding: 26px; }}
+      h1 {{ font-size: 32px; line-height: 1.08; }}
+      .subtitle {{ font-size: 16px; }}
+      .practice-meta, .snapshot, .task-list, .risk-grid, .audience-grid, .message-grid, .next-step-grid, .signal-list {{ grid-template-columns: 1fr; }}
+      .risk-card:first-child {{ grid-column: auto; }}
+      .section-head {{ display: block; }}
+      .week-list li {{ grid-template-columns: 1fr; gap: 2px; }}
+      .footer {{ display: block; }}
+    }}
+    @media print {{
+      body {{ background: #fff; }}
+      .page {{ max-width: none; padding: 0; }}
+      .cover, .stat, .risk-card, .audience-card, .panel, .table-panel {{ box-shadow: none; break-inside: avoid; }}
+      a {{ border-bottom: 0; }}
+      section {{ break-inside: avoid; }}
+    }}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="cover">
+      <div class="cover-grid">
+        <div class="cover-main">
+          <div class="eyebrow">Velari Practice Assurance Packet</div>
+          <h1>{_html(practice['label'])}</h1>
+          <p class="subtitle">{_html(OFFERING_TAGLINE)} Built to show what the practice has, what is missing, and what the owner should ask the MSP, vendors, and qualified reviewers next.</p>
+          <div class="practice-meta" aria-label="Practice summary">
+            <div class="meta-item"><span>Practice type</span><strong>{_html(practice['type'])}</strong></div>
+            <div class="meta-item"><span>Review period</span><strong>{_html(practice['review_period'])}</strong></div>
+            <div class="meta-item"><span>Locations / staff</span><strong>{int(practice['locations'])} / {int(practice['staff_count'])}</strong></div>
+          </div>
+        </div>
+        <aside class="cover-side">
+          <div class="signal">
+            <span class="side-title">Readiness signal</span>
+            <strong>{_html(summary['readiness_signal']['label'])}</strong>
+            <p>{_html(delivery_label)}</p>
+          </div>
+          <div class="boundary">
+            Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details.
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <section class="snapshot" aria-label="Executive snapshot">
+      <div class="stat"><span>Stages needing evidence</span><strong>{summary['counts']['stages_needing_evidence']}/{summary['counts']['stages']}</strong></div>
+      <div class="stat"><span>High or critical findings</span><strong>{summary['counts']['high_or_critical_findings']}</strong></div>
+      <div class="stat"><span>Evidence refs needing attention</span><strong>{summary['evidence_gap_summary']['needs_attention']}</strong></div>
+      <div class="stat"><span>Control evidence rows</span><strong>{summary['counts']['control_evidence_rows']}</strong></div>
+      <div class="stat"><span>Control rows needing attention</span><strong>{summary['counts']['control_evidence_needing_attention']}</strong></div>
+      <div class="stat"><span>Handoff actions</span><strong>{summary['counts']['handoff_actions']}</strong></div>
+    </section>
+
+    <section class="review-basis" aria-label="Review basis">
+      <strong>Review basis:</strong>
+      Questions are informed by HHS/ONC/OCR SRA guidance, CISA baseline goals, healthcare cybersecurity guidance, and dental ransomware risk guidance. This packet can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA.
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Simple Start</div>
+          <h2>10-Minute Intake</h2>
+        </div>
+        <p>Use this as the first call checklist. Unknown is acceptable; the packet turns unknowns into MSP, vendor, or reviewer questions.</p>
+      </div>
+      <ol class="task-list">{''.join(intake_items_html)}</ol>
+    </section>
+
+{external_precheck_html}
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Priority Review</div>
+          <h2>What Needs Action First</h2>
+        </div>
+        <p>These are the first questions to settle before the practice relies on vendor, MSP, AI, downtime, or evidence assumptions.</p>
+      </div>
+      <div class="risk-grid">{''.join(risk_cards)}</div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Owner Decisions</div>
+          <h2>Owner Decision Queue</h2>
+        </div>
+        <p>These are the decisions or approvals the practice owner should not leave buried in an MSP ticket.</p>
+      </div>
+      <div class="table-panel decision-panel">
+        <table>
+          <thead><tr><th>Decision</th><th>Send to</th><th>Owner takeaway</th><th>Question</th><th>Evidence format</th><th>Do not send</th><th>Artifact</th></tr></thead>
+          <tbody>{''.join(decision_rows_html)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Handoff Map</div>
+          <h2>What To Hand To Whom</h2>
+        </div>
+        <p>The packet separates owner decisions, MSP proof, vendor answers, and qualified-review questions so everyone gets a clear lane.</p>
+      </div>
+      <div class="audience-grid">{''.join(audience_cards_html)}</div>
+    </section>
+
+    <section class="panel">
+      <div class="eyebrow">MSP Collaboration</div>
+      <h2>Why This Helps The MSP</h2>
+      <ul class="plain-list">
+        <li>Scoped proof requests replace a vague "are we secure?" conversation.</li>
+        <li>Owner, vendor, legal/compliance, and technical questions stay in separate lanes.</li>
+        <li>The MSP can respond with reference IDs, dates observed, owners, scope covered, and short status notes.</li>
+        <li>Raw screenshots, logs, contracts, private URLs, PHI, and credentials stay in the private/offline binder.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">This Week</div>
+          <h2>Evidence Requests To Start</h2>
+        </div>
+        <p>Request reference IDs, dates observed, owner roles, and short status notes. Keep raw proof in the private/offline binder.</p>
+      </div>
+      <div class="table-panel">
+        <table>
+          <thead><tr><th>Priority</th><th>Recipient</th><th>Ask</th><th>Evidence format</th><th>Artifact</th></tr></thead>
+          <tbody>{''.join(handoff_rows_html)}</tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Copy And Send</div>
+          <h2>Ready-To-Send Messages</h2>
+        </div>
+        <p>Copy, paste, and adapt. All requests are reference-only. No PHI, credentials, raw contracts, raw logs, or private admin links needed.</p>
+      </div>
+      <div class="message-grid">{''.join(ready_messages_html)}</div>
+    </section>
+
+    <section class="two-col">
+      <div class="panel">
+        <div class="eyebrow">Delivery Plan</div>
+        <h2>First 7 Days</h2>
+        <ol class="week-list">{''.join(first_week_items)}</ol>
+      </div>
+      <aside class="panel">
+        <div class="eyebrow">Why These Questions</div>
+        <h2>Source Anchors</h2>
+        <ul class="source-list">{''.join(source_items)}</ul>
+      </aside>
+    </section>
+
+    <section class="panel next-step">
+      <div class="eyebrow">Service Close</div>
+      <h2>Next Step With Velari</h2>
+      <p>If this packet surfaces gaps the practice wants help closing, the fastest path is a short evidence call plus an updated packet.</p>
+      <div class="next-step-grid">
+        <div>
+          <h3>What we do together</h3>
+          <ul class="plain-list">
+            <li>Walk through the top findings in a 30-45 minute evidence call.</li>
+            <li>Customize or send the ready-to-send MSP and vendor messages.</li>
+            <li>Collect reference-only responses, owners, dates observed, and open questions.</li>
+            <li>Deliver an updated packet with answers incorporated and a clear 30-day owner/MSP/reviewer plan.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>What we need from you</h3>
+          <ul class="plain-list">
+            <li>Practice owner, office manager, MSP contact, and review-period confirmation.</li>
+            <li>Names of key EHR, billing, email, fax, cloud storage, telehealth, AI, backup, and imaging vendors.</li>
+            <li>Existing evidence references or private-binder locations if they already exist.</li>
+          </ul>
+          <p class="small-note"><strong>We do not need:</strong> PHI, patient data, credentials, passwords, raw logs, full contracts, patient screenshots, or private admin links.</p>
+        </div>
+      </div>
+      <p class="cta-line">Founding-client packet plus evidence call: one-time, reference-only review with a clear handoff in one week. This is not another dashboard or ongoing subscription.</p>
+    </section>
+
+    <section class="panel">
+      <div class="eyebrow">Boundary</div>
+      <h2>What This Does Not Do</h2>
+      <p>This is not an audit opinion, legal advice, cyber-insurance advice, penetration test, vulnerability scan, MDR/SOC service, forensic review, or formal Security Risk Analysis. It can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA. It does not prove that a practice, vendor, system, AI workflow, policy, backup, or evidence binder satisfies a legal or regulatory requirement. It does not replace the MSP; it gives the practice and MSP a clearer evidence request list and owner handoff.</p>
+    </section>
+
+    <footer class="footer">
+      <span>Generated at {_html(generated_at)}. Source profile hash is tracked in sprint-summary.json and packet-manifest.json.</span>
+      <span>{_html(practice['label'])} / {_html(practice['review_period'])}</span>
+    </footer>
+  </main>
+</body>
+</html>
 """
 
 

@@ -2,8 +2,11 @@
 
 | Buyer/MSP/legal question | Artifact | Why it helps |
 |---|---|---|
-| What is the quickest human-readable starting point? | `sprint-command-center.html` | Self-contained local readout for sprint status, stage stepper, top risks, evidence gaps, handoff lanes, generated artifacts, and boundary language. |
-| What makes this feel like a real client offering? | `sprint-offering-readout.md` | Client-ready readout covering what was reviewed, patient-safety/trust meaning, top gaps, first-week actions, reviewer questions, source anchors, and limitations. |
+| What is the buyer-facing starting point? | `practice-assurance-packet.html` | Polished, client-ready security and vendor evidence report for small dental practices, with 10-minute intake, top risks, owner decisions, evidence asks, audience handoffs, MSP value, and boundaries. |
+| What if Markdown is easier to review? | `practice-assurance-packet.md` | Plain Markdown copy of the same assurance packet, including the 10-minute intake and owner decision queue. |
+| What can we safely observe before internal access is needed? | `external-evidence-precheck.md` | Reference-only tracker, scheduler, intake, portal, TLS, and certificate observations translated into owner/MSP/vendor/reviewer questions. |
+| What is the quickest local command-center view? | `sprint-command-center.html` | Self-contained local readout for sprint status, stage stepper, top risks, evidence gaps, handoff lanes, generated artifacts, and boundary language. |
+| What supports the offer walkthrough? | `sprint-offering-readout.md` | Client-ready readout covering what was reviewed, patient-safety/trust meaning, top gaps, first-week actions, reviewer questions, source anchors, and limitations. |
 | What should the office manager do first? | `owner-action-plan.md` | First 7 days plan with scripts/questions to send to the MSP, vendors, and legal/compliance reviewer. |
 | What should the MSP prove or fix? | `msp-remediation-brief.md` | Technical checks, expected proof, owners, stage references, and source mapping for an IT partner. |
 | What should vendors answer about BAA and AI use? | `vendor-baa-ai-questionnaire.md` | BAA availability, subcontractor, incident notice, retention/deletion, AI training-use, access control, audit-log, and export/delete questions. |

@@ -6,6 +6,9 @@ Reference-only rule: do not gather or store raw evidence in this public repo. Co
 
 | Evidence ID | Evidence needed | Owner | Status | Artifact refs |
 | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | Third-party tracker observed on appointment scheduler | Office Manager | provided | external-evidence-precheck.md |
+| EXT-TRACKER-INTAKE-002 | Analytics tag observed on new patient intake page | Office Manager | provided | external-evidence-precheck.md |
+| EXT-TLS-PORTAL-003 | Patient portal TLS and certificate evidence needs confirmation | MSP Lead | requested | external-evidence-precheck.md |
 | EVID-ACCESS-Q2 | Quarterly access review export placeholder | Office Manager | partial | evidence-binder-index.md |
 | EVID-BACKUP-RESTORE | Backup restore test record placeholder | MSP Lead | stale | evidence-binder-index.md |
 | EVID-CYBER-INSURANCE | Cyber insurance renewal evidence list | Practice Owner | requested | evidence-binder-index.md |
@@ -17,9 +20,6 @@ Reference-only rule: do not gather or store raw evidence in this public repo. Co
 | READINESS-ACCESS-REVIEW | Quarterly access review evidence | MSP Lead | missing | owner-msp-handoff.md, readiness-review.md |
 | READINESS-BACKUP-RESTORE | Backup restore evidence | MSP Lead | missing | downtime-ransomware-tabletop.md, readiness-review.md |
 | READINESS-VENDOR-INVENTORY | Vendor inventory evidence | Office Manager | provided | vendor-baa-review.md, readiness-review.md |
-| READINESS-BAA-REGISTER | BAA register evidence | Office Manager | missing | vendor-baa-review.md, readiness-review.md |
-| READINESS-INCIDENT-CONTACTS | Incident contact evidence | Office Manager | provided | incident-decision-log.md, readiness-review.md |
-| READINESS-DOWNTIME-PLAN | Downtime plan evidence | MSP Lead | missing | downtime-ransomware-tabletop.md, readiness-review.md |
 
 ## Exact Checklist For The Private Binder
 

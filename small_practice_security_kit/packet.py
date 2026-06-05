@@ -15,6 +15,16 @@ from .evidence_lifecycle import (
     summarize_lifecycle,
     trace_label,
 )
+from .external_precheck import (
+    external_finding_id,
+    external_finding_owner,
+    external_finding_recipient,
+    external_finding_severity,
+    external_finding_title,
+    external_precheck_findings,
+    external_precheck_profile,
+    external_precheck_scope,
+)
 from .incident_runner import phase_guidance_for
 from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
@@ -684,6 +694,103 @@ For each app or integration, record owner, scope, vendor, authorization method, 
 """
 
 
+def external_evidence_precheck(profile: dict) -> str:
+    precheck = external_precheck_profile(profile)
+    scope = external_precheck_scope(profile)
+    findings = external_precheck_findings(profile)
+    scope_rows = []
+    for domain in scope.get("domains", []) or []:
+        scope_rows.append(["Domain", str(domain), "Public DNS/website context only"])
+    for workflow in scope.get("workflows", []) or []:
+        if not isinstance(workflow, dict):
+            continue
+        scope_rows.append(
+            [
+                str(workflow.get("workflow_type") or "Workflow"),
+                str(workflow.get("name") or workflow.get("url_label") or "Patient-facing workflow"),
+                str(workflow.get("patient_data_context") or "Data context to confirm"),
+            ]
+        )
+    if not scope_rows:
+        scope_rows.append(["Scope", "Not run", "No external pre-check scope was provided in the profile."])
+
+    finding_rows = []
+    for index, item in enumerate(findings, start=1):
+        title = external_finding_title(item)
+        finding_rows.append(
+            [
+                external_finding_id(item, index),
+                external_finding_severity(item),
+                str(item.get("page_label") or item.get("url_label") or "Public workflow"),
+                str(item.get("observed_technology") or item.get("category") or "External observation"),
+                str(item.get("network_destination") or item.get("host") or "Destination/host to confirm"),
+                external_finding_recipient(item),
+                str(
+                    item.get("next_action")
+                    or "Assign owner, request reference-only evidence, and route qualified-review questions before relying on the workflow."
+                ),
+            ]
+        )
+    if not finding_rows:
+        finding_rows.append(["EXT-PRECHECK-000", "low", "Not run", "No observation", "No destination", "Owner/MSP", "Run only with authorization and reference-only evidence rules."])
+
+    question_rows = [
+        [
+            "Website vendor / tag manager owner",
+            "Which trackers, analytics tags, pixels, or scripts fire on appointment, intake, portal, payment, registration, or contact workflows?",
+            "Tracker inventory, tag manager export, page/workflow label, date observed, and sanitized network destination summary.",
+        ],
+        [
+            "Privacy/legal/compliance reviewer",
+            "Does any tracker observation require BAA, authorization, privacy notice, contract, or formal risk-analysis review before the practice relies on the workflow?",
+            "Reviewer disposition, vendor relationship status, data category summary, and decision note.",
+        ],
+        [
+            "MSP / website host",
+            "Can you confirm HTTPS redirect behavior, certificate validity, TLS posture, HSTS status, and ownership for patient-facing hosts?",
+            "TLS scan summary, certificate expiry/issuer, HSTS status, covered host list, and MSP/vendor attestation.",
+        ],
+    ]
+
+    source_notes = [
+        "HHS/OCR tracking technology guidance says regulated entities must evaluate tracking technologies in authenticated pages and other contexts where PHI may be collected or disclosed.",
+        "A June 20, 2024 federal court order vacated the portion of OCR guidance that treated an IP address plus a visit to certain unauthenticated public webpages as automatically triggering HIPAA obligations.",
+        "This packet therefore flags potential privacy/security evidence questions for review. It does not declare a HIPAA violation, breach, legal conclusion, or regulatory finding.",
+    ]
+
+    return f"""# External Evidence Pre-Check
+
+Purpose: collect safe public-site observations that can be turned into owner, MSP, website vendor, and qualified-review questions before a practice shares internal access or patient data.
+
+Status: **{precheck.get('status', 'reference-only pre-check profile')}**
+
+Authorization boundary: **{precheck.get('authorization', 'Run only with written authorization. Do not submit real patient data or collect sensitive payloads.')}**
+
+## Scope Reviewed
+
+{table(['Type', 'Target', 'Context'], scope_rows)}
+
+## Observations
+
+{table(['ID', 'Priority', 'Page/workflow', 'Observed item', 'Destination or host', 'Send to', 'Next action'], finding_rows)}
+
+## Questions This Creates
+
+{table(['Recipient', 'Question', 'Evidence to request'], question_rows)}
+
+## Review Basis
+
+{chr(10).join(f'- {note}' for note in source_notes)}
+
+## Evidence Safety Boundary
+
+- Do not submit real patient forms during public-site testing.
+- Do not store patient-entered details, session cookies, private admin links, credentials, raw logs, raw contracts, or full intercepted payloads with sensitive data.
+- Use page labels, timestamps, tag/script names, destination domains, certificate status, owner, and reference IDs.
+- Keep screenshots or browser captures sanitized and in the private/offline evidence binder if needed.
+"""
+
+
 def incident_decision_log(profile: dict) -> str:
     rows = [
         ["Incident or concern", "What happened at a sanitized category level?", "Owner/MSP", "open", "Do not record patient names, screenshots, raw logs, or private URLs."],
@@ -1030,6 +1137,7 @@ def build_packet(profile_path: Path, output_root: Path = OUT, *, generated_at: s
         "downtime-ransomware-tabletop.md": downtime_packet(profile),
         "connected-device-inventory.md": connected_device_inventory(profile),
         "portal-api-flow-review.md": portal_api_flow_review(profile),
+        "external-evidence-precheck.md": external_evidence_precheck(profile),
         "incident-decision-log.md": incident_decision_log(profile),
         "incident-evidence-timeline.md": incident_evidence_timeline(profile),
         "incident-after-action-report.md": incident_after_action_report(profile),

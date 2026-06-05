@@ -50,6 +50,13 @@
       "sha256": "9b90cccf2a0131e4a3acb9ca8fe79368326e78f207c68928e8c90b4f08b8b851"
     },
     {
+      "bytes": 3909,
+      "hash_scope": "file_bytes",
+      "media_type": "text/markdown",
+      "path": "external-evidence-precheck.md",
+      "sha256": "f39c7b9242483071a8a8ad3b9c9c3549693f8c9f5f7ee105d0937a372538d809"
+    },
+    {
       "bytes": 2177,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
@@ -71,18 +78,18 @@
       "sha256": "e5228d20fced4d3cd3512e704354b6bc4980d57912973bf1f2df7175d34c528d"
     },
     {
-      "bytes": 17619,
+      "bytes": 18929,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "evidence-binder-index.md",
-      "sha256": "c4f582958da8276d6ae5ab92f42aec8471a4818371645b4f450a50cbf94a67db"
+      "sha256": "d68e5fde1da4225f2a322c0feafd7435e7fbe1ad5a7b452155fe68ac1c928a30"
     },
     {
-      "bytes": 12939,
+      "bytes": 13124,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "owner-msp-handoff.md",
-      "sha256": "0a014b6dfcdc429ee6f8772711ad1b22fd12b96f24ee756c9de46aaac78c80f1"
+      "sha256": "6ea7ee9f0256aff3fb43659f756619253b7a24fb7d8923cb599d85f360c4f1f8"
     },
     {
       "bytes": 8976,
@@ -99,18 +106,18 @@
       "sha256": "33567261b7ea0f79aa076d7ae6ebe065b1832567571cd35422b563bfbb4732da"
     },
     {
-      "bytes": 78633,
+      "bytes": 84044,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "6552a7bfb61ceb752cfd29bb416336651e987d8b77bf4ba49a296185c879ac81"
+      "sha256": "f1c587f391f95e03a1fd948eb67791319bf2ef23515487b35fc60a8f1d93770b"
     },
     {
-      "bytes": 95729,
+      "bytes": 101961,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "10f2acf6d92710af8a76474869590b9b5df25419daff5beba2a93eed1d01021c"
+      "sha256": "836480f2161f407b9d2fcf637e753000df68e00211f837c0283e9fe7eb27d7f4"
     }
   ],
   "data_boundary": {
@@ -120,6 +127,180 @@
     "secrets_allowed": false
   },
   "evidence_references": [
+    {
+      "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when tracker purpose, data sent, tag placement, vendor relationship, and reviewer disposition are recorded without PHI.",
+      "closeout_state": "ready_for_review",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TRACKER-SCHEDULER-001",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "provided",
+      "next_action": "Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages.",
+      "next_review_date": "2026-07-14",
+      "notes": "Observation context: connect.facebook.net and graph.facebook.com",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TRACKER-SCHEDULER-001",
+      "source_system": "Appointment scheduler",
+      "status": "provided",
+      "title": "Third-party tracker observed on appointment scheduler",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TRACKER-SCHEDULER-001",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when tracker purpose, data sent, tag placement, vendor relationship, and reviewer disposition are recorded without PHI.",
+      "closeout_state": "ready_for_review",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TRACKER-INTAKE-002",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "provided",
+      "next_action": "Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision.",
+      "next_review_date": "2026-07-14",
+      "notes": "Observation context: googletagmanager.com and google-analytics.com",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TRACKER-INTAKE-002",
+      "source_system": "New patient intake",
+      "status": "provided",
+      "title": "Analytics tag observed on new patient intake page",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TRACKER-INTAKE-002",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "TLS scan summary",
+        "certificate expiry and issuer",
+        "HTTPS redirect evidence",
+        "HSTS status",
+        "covered host list",
+        "MSP attestation"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when TLS/certificate posture, covered hosts, redirect behavior, HSTS status, and owner acceptance or remediation are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TLS-PORTAL-003",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "requested",
+      "next_action": "Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list.",
+      "next_review_date": "2026-06-14",
+      "notes": "Observation context: portal.familydental.example",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TLS-PORTAL-003",
+      "source_system": "Patient portal login",
+      "status": "requested",
+      "title": "Patient portal TLS and certificate evidence needs confirmation",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TLS-PORTAL-003",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
     {
       "acceptable_evidence": [
         "Quarterly access review export placeholder",
@@ -3456,6 +3637,200 @@
       ],
       "vendor_view": "Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?",
       "why_it_matters": "Vendor uncertainty leaves the practice without clear privacy, incident notice, retention, deletion, and subcontractor answers."
+    },
+    {
+      "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "affected_workflows": [
+        "appointment scheduler",
+        "patient intake",
+        "portal registration",
+        "public contact workflow"
+      ],
+      "evidence_refs": [
+        "EXT-TRACKER-SCHEDULER-001"
+      ],
+      "finding_id": "EXT-TRACKER-SCHEDULER-001",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone.",
+      "msp_view": "Support the Public site tracker / privacy evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone.",
+        "msp_task": "Support the Public site tracker / privacy evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it. Next action: Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
+      "owner": "Office Manager",
+      "owner_lane": "office_manager",
+      "owner_view": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it. Next action: Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+      "plain_english_summary": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it.",
+      "priority": "high",
+      "recommended_question": "Can the website/vendor confirm which trackers fire on patient-facing scheduler, intake, portal, payment, or registration workflows, what data is sent, and whether BAA, authorization, or qualified privacy review is needed?",
+      "reviewer_needed": [
+        "office_manager",
+        "vendor_owner",
+        "legal_or_compliance_reviewer",
+        "technical_reviewer"
+      ],
+      "risk_area": "Public site tracker / privacy evidence",
+      "secondary_owner_lane": "legal_compliance",
+      "section_id": "external_evidence_precheck",
+      "service_context": "External evidence pre-check",
+      "severity": "high",
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Third-party tracker observed on appointment scheduler",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone."
+    },
+    {
+      "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "affected_workflows": [
+        "appointment scheduler",
+        "patient intake",
+        "portal registration",
+        "public contact workflow"
+      ],
+      "evidence_refs": [
+        "EXT-TRACKER-INTAKE-002"
+      ],
+      "finding_id": "EXT-TRACKER-INTAKE-002",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone.",
+      "msp_view": "Support the Public site tracker / privacy evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone.",
+        "msp_task": "Support the Public site tracker / privacy evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it. Next action: Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
+      "owner": "Office Manager",
+      "owner_lane": "office_manager",
+      "owner_view": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it. Next action: Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows.",
+      "plain_english_summary": "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it.",
+      "priority": "high",
+      "recommended_question": "Can the website/vendor confirm which trackers fire on patient-facing scheduler, intake, portal, payment, or registration workflows, what data is sent, and whether BAA, authorization, or qualified privacy review is needed?",
+      "reviewer_needed": [
+        "office_manager",
+        "vendor_owner",
+        "legal_or_compliance_reviewer",
+        "technical_reviewer"
+      ],
+      "risk_area": "Public site tracker / privacy evidence",
+      "secondary_owner_lane": "legal_compliance",
+      "section_id": "external_evidence_precheck",
+      "service_context": "External evidence pre-check",
+      "severity": "high",
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "30_days",
+      "title": "Analytics tag observed on new patient intake page",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone."
+    },
+    {
+      "acceptable_evidence": [
+        "TLS scan summary",
+        "certificate expiry and issuer",
+        "HTTPS redirect evidence",
+        "HSTS status",
+        "covered host list",
+        "MSP attestation"
+      ],
+      "affected_workflows": [
+        "public website",
+        "patient portal",
+        "online scheduler",
+        "payment or intake workflow"
+      ],
+      "evidence_refs": [
+        "EXT-TLS-PORTAL-003"
+      ],
+      "finding_id": "EXT-TLS-PORTAL-003",
+      "legal_compliance_view": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak or unclear public-site encryption evidence can reduce trust in patient-facing workflows and create transmission-security questions for the MSP to confirm.",
+      "msp_view": "Support the Public site TLS / transmission security evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+      "next_action": "Ask the MSP or website vendor to confirm TLS/certificate posture and record a reference-only remediation or acceptance note.",
+      "output_views": {
+        "legal_compliance_note": "Professional review recommended for contract, formal risk assessment, incident, insurance, or regulatory questions. Weak or unclear public-site encryption evidence can reduce trust in patient-facing workflows and create transmission-security questions for the MSP to confirm.",
+        "msp_task": "Support the Public site TLS / transmission security evidence workflow review with reference-only evidence, dates observed, owners, and any missing or stale evidence.",
+        "owner_summary": "A public website or portal encryption signal needs MSP review before the practice relies on the workflow for patient-facing communication. Next action: Ask the MSP or website vendor to confirm TLS/certificate posture and record a reference-only remediation or acceptance note.",
+        "technical_reviewer_note": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+        "vendor_question": "No direct vendor ask unless this workflow depends on a vendor answer."
+      },
+      "owner": "MSP Lead",
+      "owner_lane": "msp",
+      "owner_view": "A public website or portal encryption signal needs MSP review before the practice relies on the workflow for patient-facing communication. Next action: Ask the MSP or website vendor to confirm TLS/certificate posture and record a reference-only remediation or acceptance note.",
+      "plain_english_summary": "A public website or portal encryption signal needs MSP review before the practice relies on the workflow for patient-facing communication.",
+      "priority": "medium",
+      "recommended_question": "Can the MSP confirm certificate validity, HTTPS redirect behavior, TLS posture, HSTS status, and ownership for the public patient-facing workflow?",
+      "reviewer_needed": [
+        "msp",
+        "office_manager",
+        "technical_reviewer"
+      ],
+      "risk_area": "Public site TLS / transmission security evidence",
+      "secondary_owner_lane": "legal_compliance",
+      "section_id": "external_evidence_precheck",
+      "service_context": "External evidence pre-check",
+      "severity": "medium",
+      "technical_reviewer_view": "Review the control evidence, unsafe inputs, and owner/MSP handoff before relying on this action packet.",
+      "timeframe": "90_days",
+      "title": "Patient portal TLS and certificate evidence needs confirmation",
+      "unsafe_inputs": [
+        "patient names",
+        "patient records",
+        "credentials",
+        "private portal links",
+        "raw logs",
+        "screenshots with sensitive data",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ],
+      "vendor_view": "No direct vendor ask unless this workflow depends on a vendor answer.",
+      "why_it_matters": "Weak or unclear public-site encryption evidence can reduce trust in patient-facing workflows and create transmission-security questions for the MSP to confirm."
     }
   ],
   "generated_at": "2026-05-15T00:00:00Z",
@@ -3668,6 +4043,17 @@
     },
     {
       "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "id": "external_evidence_precheck",
+      "source_modules": [
+        "external_precheck"
+      ],
+      "status": "generated",
+      "title": "External Evidence Pre-Check"
+    },
+    {
+      "artifact_refs": [
         "evidence-binder-index.md"
       ],
       "id": "evidence_index",
@@ -3717,6 +4103,6 @@
   ],
   "source_profile": {
     "path": "samples/family_dental_clinic.yaml",
-    "sha256": "cb63afa820ffadc2f215a5c0e39934ed00196952662f5376e27ec6222480ebf7"
+    "sha256": "ffcb689c3b025ed338d234cb6faa46761ff43acdfcccd56081adb23e1c2e006d"
   }
 }

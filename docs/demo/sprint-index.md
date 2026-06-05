@@ -1,4 +1,4 @@
-# Velari Sprint Mode Index
+# Velari Practice Assurance Packet Index
 
 Practice: **Family Dental Clinic**
 
@@ -6,13 +6,14 @@ Review period: **2026 Q2**
 
 Overall readiness signal: **high**
 
-This public Sprint Mode packet is a local, reference-only planning aid. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer acceptance, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
+This public packet is a local, reference-only planning aid for a buyer-facing Practice Assurance Packet. It does not provide legal advice, establish legal or regulatory status, decide incident reporting duties, secure insurer acceptance, or replace a formal Security Risk Analysis. Do not add PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, logs, or incident-sensitive details.
 
 ## Stage Status
 
 | Stage | Status | Evidence gaps | Output | Next action |
 |---|---|---:|---|---|
 | Intake | ready_for_review | 0 | packet-manifest.json | Confirm the practice profile, owners, review period, and no-PHI evidence-reference boundary. |
+| External evidence pre-check | needs_evidence | 3 | external-evidence-precheck.md | Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows. |
 | Patient data outside the EHR map | needs_evidence | 4 | ephi-flow-map.md, connected-device-inventory.md, portal-api-flow-review.md | Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location. |
 | AI/PHI review | needs_evidence | 3 | ai-workflow-review.md | Separate no-PHI administrative AI use from restricted or prohibited PHI workflows before staff rollout. |
 | Vendor/BAA review | needs_evidence | 4 | vendor-baa-review.md | Collect BAA status, SOC 2/HITRUST evidence status, security contact, incident terms, subcontractor posture, and AI/data-use answers. |
@@ -38,6 +39,9 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 ## Generated Outputs
 
 - `sprint-index.md`
+- `practice-assurance-packet.html`
+- `practice-assurance-packet.md`
+- `external-evidence-precheck.md`
 - `sprint-client-readout.md`
 - `sprint-command-center.html`
 - `sprint-offering-readout.md`
@@ -65,6 +69,7 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 - `downtime-ransomware-tabletop.md`
 - `connected-device-inventory.md`
 - `portal-api-flow-review.md`
+- `external-evidence-precheck.md`
 - `incident-decision-log.md`
 - `incident-evidence-timeline.md`
 - `incident-after-action-report.md`
@@ -78,7 +83,10 @@ This public Sprint Mode packet is a local, reference-only planning aid. It does 
 
 ## Owner/MSP Use
 
-- Open `sprint-command-center.html` first for the one-page readout.
+    - Open `practice-assurance-packet.html` first for the polished report a practice owner can read.
+    - Use `practice-assurance-packet.md` when a plain Markdown copy is easier to review.
+- Use `external-evidence-precheck.md` for public-site tracker, TLS, scheduler, intake, and portal observations that need owner/MSP/vendor/reviewer follow-up.
+- Use `sprint-command-center.html` for the self-contained local command center when a dashboard-style view helps.
 - Use `sprint-offering-readout.md` and `owner-action-plan.md` for the real-offering walkthrough.
 - Use `sprint-client-readout.md` for a portable Markdown summary.
 - Use `connector-evidence-summary.json` to review local connector/import runs, confidence, and safety manifests before relying on automated evidence.

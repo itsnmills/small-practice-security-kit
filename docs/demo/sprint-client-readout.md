@@ -12,14 +12,14 @@ This readout is a local, reference-only planning artifact. It does not provide l
 
 ## Executive Snapshot
 
-- Stages needing evidence: 5 of 9
-- High or critical findings: 10
-- Evidence references: 46
-- Evidence references needing attention: 37
+- Stages needing evidence: 6 of 10
+- High or critical findings: 12
+- Evidence references: 49
+- Evidence references needing attention: 40
 - Control evidence rows: 30
 - Control evidence needing attention: 30
 - Connector evidence items: 0
-- Handoff actions: 17
+- Handoff actions: 18
 
 ## Top Risks
 
@@ -35,24 +35,25 @@ This readout is a local, reference-only planning artifact. It does not provide l
 
 | Stage | Owner | Recipient | Gaps | Artifact |
 |---|---|---|---:|---|
+| External evidence pre-check | Office Manager | Owner/MSP | 3 | external-evidence-precheck.md |
 | Patient data outside the EHR map | MSP Lead | MSP | 4 | ephi-flow-map.md, connected-device-inventory.md, portal-api-flow-review.md |
 | AI/PHI review | Office Manager | Owner | 3 | ai-workflow-review.md |
 | Vendor/BAA review | Office Manager | Vendor | 4 | vendor-baa-review.md |
 | Access/offboarding review | MSP Lead | MSP | 2 | readiness-review.md, owner-msp-handoff.md |
 | Downtime/ransomware review | MSP Lead | MSP | 4 | downtime-ransomware-tabletop.md, incident-decision-log.md |
-| Findings/risk register | Practice owner/MSP | Owner | 6 | risk-register.csv, 30-60-90-roadmap.md |
 
 ## Handoff Lanes
 
 | Recipient | Actions | High priority | Artifacts |
 |---|---:|---:|---|
-| Owner/MSP | 2 | 0 | packet-manifest.json, owner-msp-handoff.md |
+| Owner/MSP | 3 | 1 | packet-manifest.json, external-evidence-precheck.md, owner-msp-handoff.md |
 | MSP | 8 | 8 | ephi-flow-map.md, readiness-review.md, downtime-ransomware-tabletop.md, owner-msp-handoff.md |
 | Owner | 3 | 1 | ai-workflow-review.md, risk-register.csv, sprint-index.md |
 | Vendor | 4 | 4 | vendor-baa-review.md |
 
 ## Next Actions
 
+- **Owner/MSP**: Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows. (`external-evidence-precheck.md`)
 - **MSP**: Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location. (`ephi-flow-map.md`)
 - **Owner**: Separate no-PHI administrative AI use from restricted or prohibited PHI workflows before staff rollout. (`ai-workflow-review.md`)
 - **Vendor**: Collect BAA status, SOC 2/HITRUST evidence status, security contact, incident terms, subcontractor posture, and AI/data-use answers. (`vendor-baa-review.md`)
@@ -60,10 +61,12 @@ This readout is a local, reference-only planning artifact. It does not provide l
 - **MSP**: Run or schedule a restore test and tabletop, then record reference IDs and lessons learned. (`downtime-ransomware-tabletop.md`)
 - **MSP**: Which EHR, billing, imaging, email, remote support, and administrator accounts have MFA technically enforced? (`owner-msp-handoff.md`)
 - **MSP**: Which systems are in backup scope, when was the last restore test, and what evidence reference proves it? (`downtime-ransomware-tabletop.md`)
-- **Vendor**: Can the billing, imaging, and AI scribe vendors confirm BAA scope, incident terms, subcontractors, and model-training posture? (`vendor-baa-review.md`)
 
 ## Generated Artifacts
 
+- `practice-assurance-packet.html`
+- `practice-assurance-packet.md`
+- `external-evidence-precheck.md`
 - `sprint-command-center.html`
 - `sprint-offering-readout.md`
 - `owner-action-plan.md`

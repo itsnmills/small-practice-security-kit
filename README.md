@@ -6,6 +6,9 @@ This is the public Velari flagship proof repo: a local packet builder for small 
 
 Start with the sanitized sample packet:
 
+- Practice Assurance Packet: [`docs/demo/practice-assurance-packet.html`](docs/demo/practice-assurance-packet.html)
+- Markdown copy: [`docs/demo/practice-assurance-packet.md`](docs/demo/practice-assurance-packet.md)
+- External Evidence Pre-Check: [`docs/demo/external-evidence-precheck.md`](docs/demo/external-evidence-precheck.md)
 - Complete Markdown packet: [`docs/demo/review-packet.md`](docs/demo/review-packet.md)
 - Print-friendly HTML packet: [`docs/demo/review-packet.html`](docs/demo/review-packet.html)
 - Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
@@ -20,7 +23,7 @@ The checked-in demo uses a fictional `Family Dental Clinic` profile and contains
 Workflow:
 
 ```text
-local intake -> patient-data-outside-the-EHR map -> vendor/BAA review -> AI workflow review -> downtime/tabletop -> incident timeline -> evidence index -> owner/MSP handoff -> 30/60/90 roadmap
+10-minute intake -> external evidence pre-check -> patient-data-outside-the-EHR map -> vendor/BAA review -> AI workflow review -> downtime/tabletop -> owner decision queue -> evidence index -> owner/MSP handoff -> 30/60/90 roadmap
 ```
 
 Boundary: this is readiness and evidence organization. It does not certify HIPAA compliance, provide legal advice, make breach-notification decisions, complete a formal Security Risk Analysis, or replace qualified legal, compliance, security, MSP/IT, incident response, or insurance professionals.
@@ -31,6 +34,9 @@ Small practices often know they need MFA, backups, BAAs, access reviews, AI rule
 
 This kit helps answer:
 
+- What can the practice owner or office manager answer in the first 10 minutes without finding raw files or touching PHI?
+- What can we hand to the practice owner, MSP, vendors, and reviewers without asking the practice to manage another dashboard?
+- Which public-site tracker, appointment, intake, portal, TLS, or certificate observations should become safe owner/MSP/vendor/reviewer questions before internal access is needed?
 - Where does ePHI enter, move, rest, and leave?
 - Which systems and vendors touch ePHI?
 - Which AI workflows are allowed, restricted, or prohibited?
@@ -49,6 +55,9 @@ The strongest wedge is the **Patient Data Outside the EHR Map**: inboxes, shared
 
 | Output | Buyer-facing purpose |
 |---|---|
+| `practice-assurance-packet.html` | Polished, client-ready security and vendor evidence report for small dental practices |
+| `practice-assurance-packet.md` | Plain Markdown copy with 10-minute intake, owner decision queue, and handoff sections |
+| `external-evidence-precheck.md` | Reference-only public-site tracker, scheduler, portal, TLS, and certificate observations translated into safe follow-up questions |
 | `review-packet.md` | Complete Markdown readiness packet for the owner/MSP/reviewer conversation |
 | `review-packet.html` | Print-friendly HTML packet |
 | `packet-manifest.json` | Canonical non-PHI manifest of sections, evidence lifecycle rows, trace metadata, roadmap items, findings, and artifact hashes |
@@ -166,9 +175,9 @@ Open the HTML packet locally:
 out/family_dental_clinic/review-packet.html
 ```
 
-### Velari Sprint Mode public runner
+### Velari Practice Assurance Packet public runner
 
-The Sprint Mode runner wraps the packet builder into the full Cyber Readiness Sprint demo and adds stage status, risk, evidence, and handoff exports:
+The public runner wraps the packet builder into the full Practice Assurance Packet demo and adds stage status, risk, evidence, and handoff exports:
 
 ```bash
 python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out
@@ -177,10 +186,10 @@ python3 -m small_practice_security_kit sprint samples/family_dental_clinic.yaml 
 Start with:
 
 ```text
-out/family_dental_clinic/sprint-command-center.html
+out/family_dental_clinic/practice-assurance-packet.html
 ```
 
-Sprint Mode also writes `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, `connector-evidence-summary.json`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, `incident-decision-log.md`, `incident-evidence-timeline.md`, and `incident-after-action-report.md`.
+The runner also writes `practice-assurance-packet.md`, `sprint-command-center.html`, `sprint-offering-readout.md`, `owner-action-plan.md`, `msp-remediation-brief.md`, `vendor-baa-ai-questionnaire.md`, `evidence-collection-checklist.md`, `day-one-workshop-agenda.md`, `source-map.md`, `sprint-client-readout.md`, `sprint-index.md`, `sprint-summary.json`, `risk-register.csv`, `evidence-index.json`, `handoff-actions.csv`, `connector-evidence-summary.json`, and `evidence-binder-export/` while preserving the existing packet files, including `connected-device-inventory.md`, `portal-api-flow-review.md`, `incident-decision-log.md`, `incident-evidence-timeline.md`, and `incident-after-action-report.md`.
 
 The JSON contracts for private-app import are documented in `schemas/velari-answer-standard.schema.json`, `schemas/normalized-evidence.schema.json`, `schemas/connector-run.schema.json`, `schemas/sprint-summary.schema.json`, and `schemas/evidence-index.schema.json`. `sprint-summary.json` includes an `offering_summary` section for audience lanes, source anchors, first-week actions, artifact checklist, boundaries, and stage-to-source mapping. The product language standard lives in [`docs/product/velari-answer-standard.md`](docs/product/velari-answer-standard.md).
 

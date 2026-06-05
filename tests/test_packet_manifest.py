@@ -27,6 +27,7 @@ class PacketManifestTests(unittest.TestCase):
         self.assertIn("executive_scorecard", section_ids)
         self.assertIn("ai_findings", section_ids)
         self.assertIn("vendor_baa_exposure", section_ids)
+        self.assertIn("external_evidence_precheck", section_ids)
         self.assertIn("incident_evidence_timeline", section_ids)
         self.assertIn("incident_after_action", section_ids)
         self.assertIn("evidence_index", section_ids)
@@ -39,6 +40,7 @@ class PacketManifestTests(unittest.TestCase):
         artifact_paths = {artifact["path"] for artifact in manifest["artifacts"]}
         self.assertIn("review-packet.md", artifact_paths)
         self.assertIn("review-packet.html", artifact_paths)
+        self.assertIn("external-evidence-precheck.md", artifact_paths)
         self.assertIn("evidence-binder-index.md", artifact_paths)
         self.assertIn("incident-evidence-timeline.md", artifact_paths)
         self.assertIn("incident-after-action-report.md", artifact_paths)
@@ -48,6 +50,7 @@ class PacketManifestTests(unittest.TestCase):
         self.assertTrue(manifest["evidence_references"])
         evidence_types = {item["evidence_type"] for item in manifest["evidence_references"]}
         self.assertIn("incident_timeline", evidence_types)
+        self.assertIn("external_precheck", evidence_types)
         self.assertIn("ephi_flow", evidence_types)
         closeout_states = {item["closeout_state"] for item in manifest["evidence_references"]}
         self.assertIn("blocked", closeout_states)
@@ -68,6 +71,7 @@ class PacketManifestTests(unittest.TestCase):
                 self.assertTrue(item[field], field)
             self.assertEqual(item["sensitivity_boundary"], "reference_only_no_phi_no_secret")
         self.assertTrue(manifest["findings"])
+        self.assertTrue(any(finding["section_id"] == "external_evidence_precheck" for finding in manifest["findings"]))
         for finding in manifest["findings"]:
             for field in [
                 "plain_english_summary",

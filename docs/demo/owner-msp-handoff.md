@@ -50,6 +50,9 @@ Initial risk level: **High**
 
 | Evidence | Closeout | Owner | Trace | Next action |
 | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | Ready for review | Office Manager | EXT-TRACKER-SCHEDULER-001 | Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages. |
+| EXT-TRACKER-INTAKE-002 | Ready for review | Office Manager | EXT-TRACKER-INTAKE-002 | Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision. |
+| EXT-TLS-PORTAL-003 | Needs evidence | MSP Lead | EXT-TLS-PORTAL-003 | Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list. |
 | EVID-ACCESS-Q2 | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
 | EVID-BACKUP-RESTORE | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
 | EVID-CYBER-INSURANCE | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
@@ -59,9 +62,6 @@ Initial risk level: **High**
 | READINESS-ACCESS-REVIEW | Needs evidence | MSP Lead | quarterly_access_review | Request proof, document exceptions, and assign an owner before closeout. |
 | READINESS-BACKUP-RESTORE | Blocked | MSP Lead | tested_backups | Request proof, document exceptions, and assign an owner before closeout. |
 | READINESS-BAA-REGISTER | Blocked | Office Manager | baa_register | Request proof, document exceptions, and assign an owner before closeout. |
-| READINESS-DOWNTIME-PLAN | Blocked | MSP Lead | downtime_plan | Request proof, document exceptions, and assign an owner before closeout. |
-| READINESS-LOG-REVIEW | Blocked | MSP Lead | log_review_cadence | Request proof, document exceptions, and assign an owner before closeout. |
-| FLOW-001 | Needs evidence | MSP or workflow owner | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | Confirm the flow owner, channel, BAA need, and private evidence reference. |
 
 ## Handoff Boundary
 

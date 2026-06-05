@@ -1,0 +1,1004 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Family Dental Clinic Practice Assurance Packet</title>
+  <style>
+    :root {
+      --paper: #eef3f7;
+      --sheet: #ffffff;
+      --ink: #17212b;
+      --muted: #5f6f7e;
+      --quiet: #8191a0;
+      --line: #d7e0e7;
+      --line-strong: #afbfca;
+      --navy: #102637;
+      --navy-soft: #e8f1f6;
+      --teal: #0f766e;
+      --teal-soft: #e6f4f2;
+      --gold: #b58b2b;
+      --gold-soft: #fbf2d6;
+      --red: #b42318;
+      --red-soft: #fde8e4;
+      --amber: #b7791f;
+      --amber-soft: #fff3d6;
+      --green: #14745b;
+      --green-soft: #e4f5ee;
+      --shadow: 0 22px 52px rgba(16, 38, 55, 0.12);
+      --radius: 8px;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    a { color: var(--navy); text-decoration: none; border-bottom: 1px solid rgba(16, 38, 55, 0.28); }
+    a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .page { max-width: 1180px; margin: 0 auto; padding: 30px 22px 56px; }
+    .cover {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-top: 8px solid var(--navy);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .cover-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.42fr) minmax(310px, 0.58fr);
+      min-height: 360px;
+    }
+    .cover-main { padding: 38px 40px 34px; }
+    .cover-side {
+      background: var(--navy);
+      color: #fff;
+      padding: 32px;
+      display: grid;
+      align-content: space-between;
+      gap: 28px;
+    }
+    .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 { max-width: 760px; margin-bottom: 18px; font-size: 50px; line-height: 1.02; letter-spacing: 0; overflow-wrap: anywhere; }
+    h2 { margin-bottom: 16px; font-size: 24px; line-height: 1.18; letter-spacing: 0; }
+    h3 { margin-bottom: 8px; font-size: 17px; line-height: 1.25; letter-spacing: 0; }
+    .subtitle { max-width: 700px; color: var(--muted); font-size: 18px; }
+    .practice-meta {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 30px;
+    }
+    .meta-item { border-top: 1px solid var(--line); padding-top: 12px; }
+    .meta-item span, .side-label { display: block; color: var(--quiet); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .meta-item strong { display: block; margin-top: 4px; font-size: 15px; overflow-wrap: anywhere; }
+    .side-title { color: #c6d6df; font-size: 13px; font-weight: 800; text-transform: uppercase; }
+    .signal { display: grid; gap: 12px; }
+    .signal strong { display: block; color: #fff; font-size: 34px; line-height: 1; text-transform: capitalize; }
+    .signal p { color: #c6d6df; margin: 0; }
+    .boundary {
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-left: 4px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 14px;
+      color: #e5edf2;
+      font-size: 13px;
+    }
+    .snapshot {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+      margin: 18px 0 0;
+    }
+    .stat {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 116px;
+    }
+    .stat span { display: block; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .stat strong { display: block; margin-top: 12px; color: var(--navy); font-size: 30px; line-height: 1; }
+    section { margin-top: 26px; }
+    .section-head { display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-bottom: 12px; }
+    .section-head p { max-width: 620px; margin: 0; color: var(--muted); }
+    .section-note { max-width: 720px; color: var(--muted); margin-bottom: 14px; }
+    .review-basis {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      color: var(--muted);
+    }
+    .review-basis strong { color: var(--navy); }
+    .task-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .task-list li {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 240px;
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .task-number {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--teal-soft);
+      color: var(--teal);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .task-top { display: flex; align-items: start; justify-content: space-between; gap: 10px; }
+    .task-top h3 { margin-bottom: 6px; }
+    .task-list p { color: var(--muted); font-size: 14px; }
+    .risk-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .risk-card {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-top: 5px solid var(--amber);
+      border-radius: var(--radius);
+      padding: 16px;
+      min-height: 280px;
+      box-shadow: 0 10px 24px rgba(16, 38, 55, 0.06);
+    }
+    .risk-card:first-child { grid-column: 1 / -1; min-height: 240px; }
+    .risk-card.priority-high, .risk-card.priority-critical { border-top-color: var(--red); }
+    .risk-card.priority-low { border-top-color: var(--green); }
+    .risk-head { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-bottom: 12px; }
+    .risk-number {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--navy);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--navy);
+      background: var(--navy-soft);
+    }
+    .chip.priority-high, .chip.priority-critical { color: var(--red); background: var(--red-soft); }
+    .chip.priority-medium { color: var(--amber); background: var(--amber-soft); }
+    .chip.priority-low { color: var(--green); background: var(--green-soft); }
+    .chip.neutral { color: var(--muted); background: #f1f5f8; }
+    .risk-card p { color: var(--muted); font-size: 14px; }
+    .risk-card .takeaway {
+      margin-bottom: 10px;
+      color: var(--navy);
+      background: var(--navy-soft);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+    dl { margin: 14px 0 0; }
+    dt { margin-top: 12px; color: var(--navy); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    dd { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+    .audience-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .audience-card {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 17px;
+      min-height: 230px;
+    }
+    .audience-card p { color: var(--muted); font-size: 14px; }
+    .audience-card ul, .source-list { margin: 14px 0 0; padding: 0; list-style: none; }
+    .audience-card li { margin-top: 7px; font-size: 13px; }
+    .table-panel {
+      overflow-x: auto;
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 24px rgba(16, 38, 55, 0.05);
+    }
+    .decision-panel table { min-width: 1080px; }
+    table { width: 100%; min-width: 920px; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 13px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: var(--navy); background: var(--navy-soft); font-size: 12px; text-transform: uppercase; }
+    tr:last-child td { border-bottom: 0; }
+    .two-col { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.78fr); gap: 16px; }
+    .panel {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 19px;
+    }
+    .message-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .message-block {
+      background: var(--sheet);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 17px;
+      min-width: 0;
+    }
+    .message-block pre {
+      margin: 12px 0 0;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      background: #f7fafc;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 13px;
+      color: var(--ink);
+      font: 13px/1.48 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+    .message-block code { font: inherit; }
+    .plain-list { margin: 0; padding-left: 20px; color: var(--muted); }
+    .plain-list li { margin-top: 7px; }
+    .signal-list { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .signal-list li {
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--teal);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #f7fafc;
+    }
+    .signal-list strong { display: block; color: var(--navy); }
+    .signal-list span { display: block; margin-top: 4px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .signal-list p { margin: 8px 0 0; color: var(--muted); font-size: 13px; }
+    .next-step-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+    .next-step h3 { margin-top: 0; }
+    .small-note { color: var(--muted); font-size: 13px; }
+    .cta-line {
+      margin: 18px 0 0;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+      color: var(--navy);
+      font-weight: 800;
+    }
+    .week-list { margin: 0; padding: 0; list-style: none; }
+    .week-list li {
+      display: grid;
+      grid-template-columns: 70px 110px minmax(0, 1fr);
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .week-list li:last-child { border-bottom: 0; }
+    .week-list span { color: var(--gold); font-size: 12px; font-weight: 900; }
+    .week-list strong { color: var(--navy); font-size: 13px; }
+    .week-list p { margin: 0; color: var(--muted); font-size: 13px; }
+    .source-list li { margin-bottom: 12px; padding-left: 12px; border-left: 3px solid var(--line); }
+    .source-list strong { display: block; color: var(--navy); }
+    .source-list span { color: var(--muted); font-size: 13px; }
+    .footer {
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      border-top: 1px solid var(--line);
+      padding-top: 16px;
+    }
+    @media (max-width: 1120px) {
+      .snapshot { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .audience-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 820px) {
+      .page { padding: 22px 14px 44px; }
+      .cover-grid, .two-col { grid-template-columns: 1fr; }
+      .cover-main, .cover-side { padding: 26px; }
+      h1 { font-size: 32px; line-height: 1.08; }
+      .subtitle { font-size: 16px; }
+      .practice-meta, .snapshot, .task-list, .risk-grid, .audience-grid, .message-grid, .next-step-grid, .signal-list { grid-template-columns: 1fr; }
+      .risk-card:first-child { grid-column: auto; }
+      .section-head { display: block; }
+      .week-list li { grid-template-columns: 1fr; gap: 2px; }
+      .footer { display: block; }
+    }
+    @media print {
+      body { background: #fff; }
+      .page { max-width: none; padding: 0; }
+      .cover, .stat, .risk-card, .audience-card, .panel, .table-panel { box-shadow: none; break-inside: avoid; }
+      a { border-bottom: 0; }
+      section { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="cover">
+      <div class="cover-grid">
+        <div class="cover-main">
+          <div class="eyebrow">Velari Practice Assurance Packet</div>
+          <h1>Family Dental Clinic</h1>
+          <p class="subtitle">A plain-English security and vendor evidence report for small dental practices. Built to show what the practice has, what is missing, and what the owner should ask the MSP, vendors, and qualified reviewers next.</p>
+          <div class="practice-meta" aria-label="Practice summary">
+            <div class="meta-item"><span>Practice type</span><strong>Dental practice</strong></div>
+            <div class="meta-item"><span>Review period</span><strong>2026 Q2</strong></div>
+            <div class="meta-item"><span>Locations / staff</span><strong>1 / 14</strong></div>
+          </div>
+        </div>
+        <aside class="cover-side">
+          <div class="signal">
+            <span class="side-title">Readiness signal</span>
+            <strong>high</strong>
+            <p>needs evidence before closeout</p>
+          </div>
+          <div class="boundary">
+            Reference-only boundary: no PHI, patient identifiers, credentials, secrets, private URLs, raw contracts, raw logs, or incident-sensitive details.
+          </div>
+        </aside>
+      </div>
+    </header>
+
+    <section class="snapshot" aria-label="Executive snapshot">
+      <div class="stat"><span>Stages needing evidence</span><strong>6/10</strong></div>
+      <div class="stat"><span>High or critical findings</span><strong>12</strong></div>
+      <div class="stat"><span>Evidence refs needing attention</span><strong>40</strong></div>
+      <div class="stat"><span>Control evidence rows</span><strong>30</strong></div>
+      <div class="stat"><span>Control rows needing attention</span><strong>30</strong></div>
+      <div class="stat"><span>Handoff actions</span><strong>18</strong></div>
+    </section>
+
+    <section class="review-basis" aria-label="Review basis">
+      <strong>Review basis:</strong>
+      Questions are informed by HHS/ONC/OCR SRA guidance, CISA baseline goals, healthcare cybersecurity guidance, and dental ransomware risk guidance. This packet can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA.
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Simple Start</div>
+          <h2>10-Minute Intake</h2>
+        </div>
+        <p>Use this as the first call checklist. Unknown is acceptable; the packet turns unknowns into MSP, vendor, or reviewer questions.</p>
+      </div>
+      <ol class="task-list">
+            <li>
+              <span class="task-number">1</span>
+              <div>
+                <div class="task-top">
+                  <h3>Practice and owners</h3>
+                  <span class="chip neutral">Ready to ask</span>
+                </div>
+                <p>Confirm the practice name, review period, Office Manager as security owner, and MSP Lead as technical owner.</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>Owner names, review period, location count, staff count, and a no-PHI/no-secret signoff note.</dd>
+                  <dt>Do not send</dt>
+                  <dd>PHI, patient identifiers, credentials, private admin links, raw logs, raw contracts.</dd>
+                  <dt>Artifact</dt>
+                  <dd><a href="practice-assurance-packet.html">practice-assurance-packet.html</a></dd>
+                </dl>
+              </div>
+            </li>
+
+            <li>
+              <span class="task-number">2</span>
+              <div>
+                <div class="task-top">
+                  <h3>Key vendors</h3>
+                  <span class="chip neutral">Ready to ask</span>
+                </div>
+                <p>List the EHR, billing, email, fax, cloud storage, telehealth, backup, imaging, website, scheduler, portal, AI, and MSP vendors.</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>Vendor names, owner, workflow touched, BAA status label, security evidence status label, and review date if known.</dd>
+                  <dt>Do not send</dt>
+                  <dd>Full contracts, patient screenshots, claim details, credentials, private vendor portal links.</dd>
+                  <dt>Artifact</dt>
+                  <dd><a href="vendor-baa-ai-questionnaire.md">vendor-baa-ai-questionnaire.md</a></dd>
+                </dl>
+              </div>
+            </li>
+
+            <li>
+              <span class="task-number">3</span>
+              <div>
+                <div class="task-top">
+                  <h3>Patient-facing URLs</h3>
+                  <span class="chip neutral">Ready to ask</span>
+                </div>
+                <p>Identify the public website, scheduler, new patient intake, portal login, payment, registration, and contact workflows to review.</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>Public URL labels, page/workflow names, owner, date observed, tracker/tag summary, TLS/certificate summary.</dd>
+                  <dt>Do not send</dt>
+                  <dd>Real patient form submissions, session cookies, full intercepted payloads, private portal links.</dd>
+                  <dt>Artifact</dt>
+                  <dd><a href="external-evidence-precheck.md">external-evidence-precheck.md</a></dd>
+                </dl>
+              </div>
+            </li>
+
+            <li>
+              <span class="task-number">4</span>
+              <div>
+                <div class="task-top">
+                  <h3>AI use</h3>
+                  <span class="chip neutral">Ready to ask</span>
+                </div>
+                <p>Name AI tools being used or considered, what staff want to use them for, and whether any workflow could include patient, billing, clinical, credential, or raw evidence details.</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>Tool name, proposed use, data category, vendor, decision label, policy or training reference.</dd>
+                  <dt>Do not send</dt>
+                  <dd>Patient notes, transcripts, images, claims, clinical narratives, credentials, raw evidence, prompts with patient details.</dd>
+                  <dt>Artifact</dt>
+                  <dd><a href="ai-workflow-review.md">ai-workflow-review.md</a></dd>
+                </dl>
+              </div>
+            </li>
+
+            <li>
+              <span class="task-number">5</span>
+              <div>
+                <div class="task-top">
+                  <h3>MSP evidence status</h3>
+                  <span class="chip neutral">Ready to ask</span>
+                </div>
+                <p>Mark each proof area as have it, need MSP, need vendor, needs reviewer, or unknown.</p>
+                <dl>
+                  <dt>Evidence format</dt>
+                  <dd>MFA status, access review date, backup scope, restore-test date, remote support method, log review cadence, patch/vulnerability process.</dd>
+                  <dt>Do not send</dt>
+                  <dd>Raw logs, credentials, private URLs, sensitive screenshots, patient data, full network captures.</dd>
+                  <dt>Artifact</dt>
+                  <dd><a href="msp-remediation-brief.md">msp-remediation-brief.md</a></dd>
+                </dl>
+              </div>
+            </li>
+            </ol>
+    </section>
+
+
+    <section class="panel external-precheck">
+      <div class="eyebrow">External Evidence Pre-Check</div>
+      <h2>Public Patient-Facing Workflow Signals</h2>
+      <p>These are public-site observations from patient-facing workflows such as the website, scheduler, portal, intake, payment, or registration path. They create evidence questions for the practice, MSP, website vendor, and qualified reviewer. They are not HIPAA violation, breach, legal, or compliance determinations.</p>
+      <ul class="signal-list">
+                <li>
+                  <strong>Analytics tag observed on new patient intake page</strong>
+                  <span>high &middot; Vendor/legal/compliance reviewer</span>
+                  <p>Ask the website vendor and privacy reviewer what data the tracker receives on patient-facing pages.</p>
+                </li>
+
+                <li>
+                  <strong>Third-party tracker observed on appointment scheduler</strong>
+                  <span>high &middot; Vendor/legal/compliance reviewer</span>
+                  <p>Ask the website vendor and privacy reviewer what data the tracker receives on patient-facing pages.</p>
+                </li>
+
+                <li>
+                  <strong>Patient portal TLS and certificate evidence needs confirmation</strong>
+                  <span>medium &middot; MSP</span>
+                  <p>Ask the MSP or website vendor to confirm TLS, certificate, redirect, and HSTS evidence.</p>
+                </li>
+                </ul>
+      <p class="small-note">Use <a href="external-evidence-precheck.md">external-evidence-precheck.md</a> for the reference-only observation table and evidence questions. Do not submit real patient forms or store sensitive intercepted payloads.</p>
+    </section>
+
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Priority Review</div>
+          <h2>What Needs Action First</h2>
+        </div>
+        <p>These are the first questions to settle before the practice relies on vendor, MSP, AI, downtime, or evidence assumptions.</p>
+      </div>
+      <div class="risk-grid">
+            <article class="risk-card priority-high">
+              <div class="risk-head">
+                <span class="risk-number">1</span>
+                <span class="chip priority-high">high</span>
+                <span class="chip neutral">Vendor</span>
+              </div>
+              <h3>BAA status needs review for Example Imaging Vendor</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> Ask the vendor for BAA status, security evidence status, and incident terms.</p>
+              <p>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?</dd>
+                <dt>Evidence to request</dt>
+                <dd>BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms</dd>
+                <dt>Do not send</dt>
+                <dd>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw contracts with sensitive details</dd>
+              </dl>
+            </article>
+
+            <article class="risk-card priority-high">
+              <div class="risk-head">
+                <span class="risk-number">2</span>
+                <span class="chip priority-high">high</span>
+                <span class="chip neutral">Vendor</span>
+              </div>
+              <h3>Complete the BAA register and review dates</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> Ask the vendor for BAA status, security evidence status, and incident terms.</p>
+              <p>A vendor appears to support a workflow involving patient data, but BAA status or review evidence is missing.</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?</dd>
+                <dt>Evidence to request</dt>
+                <dd>BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms</dd>
+                <dt>Do not send</dt>
+                <dd>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw contracts with sensitive details</dd>
+              </dl>
+            </article>
+
+            <article class="risk-card priority-high">
+              <div class="risk-head">
+                <span class="risk-number">3</span>
+                <span class="chip priority-high">high</span>
+                <span class="chip neutral">MSP</span>
+              </div>
+              <h3>Document downtime procedures for critical systems</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> Assign a downtime owner and record tabletop or manual-workflow evidence.</p>
+              <p>Downtime workflow evidence is missing for a system the practice may need during patient care.</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</dd>
+                <dt>Evidence to request</dt>
+                <dd>Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets.</dd>
+                <dt>Do not send</dt>
+                <dd>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data</dd>
+              </dl>
+            </article>
+
+            <article class="risk-card priority-high">
+              <div class="risk-head">
+                <span class="risk-number">4</span>
+                <span class="chip priority-high">high</span>
+                <span class="chip neutral">MSP</span>
+              </div>
+              <h3>Enable MFA for EHR access</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> Ask the MSP for MFA proof and any exception list.</p>
+              <p>MFA evidence for an EHR or remote-access workflow is missing or not recorded.</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?</dd>
+                <dt>Evidence to request</dt>
+                <dd>MFA policy export; admin screenshot with date observed; covered groups; exception list; MSP attestation</dd>
+                <dt>Do not send</dt>
+                <dd>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data</dd>
+              </dl>
+            </article>
+
+            <article class="risk-card priority-high">
+              <div class="risk-head">
+                <span class="risk-number">5</span>
+                <span class="chip priority-high">high</span>
+                <span class="chip neutral">MSP</span>
+              </div>
+              <h3>Run a restore test and record evidence</h3>
+              <p class="takeaway"><strong>Owner takeaway:</strong> Ask the MSP for backup scope and restore-test evidence.</p>
+              <p>Backup restore evidence is missing or stale for systems needed during patient care.</p>
+              <dl>
+                <dt>Question to ask</dt>
+                <dd>Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?</dd>
+                <dt>Evidence to request</dt>
+                <dd>backup scope summary; restore-test note; date observed; recovery owner; systems excluded from backup</dd>
+                <dt>Do not send</dt>
+                <dd>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw backup data; private console links</dd>
+              </dl>
+            </article>
+            </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Owner Decisions</div>
+          <h2>Owner Decision Queue</h2>
+        </div>
+        <p>These are the decisions or approvals the practice owner should not leave buried in an MSP ticket.</p>
+      </div>
+      <div class="table-panel decision-panel">
+        <table>
+          <thead><tr><th>Decision</th><th>Send to</th><th>Owner takeaway</th><th>Question</th><th>Evidence format</th><th>Do not send</th><th>Artifact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>BAA status needs review for Example Imaging Vendor</strong></td>
+              <td>Vendor</td>
+              <td>Ask the vendor for BAA status, security evidence status, and incident terms.</td>
+              <td>Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?</td>
+              <td>BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms</td>
+              <td>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw contracts with sensitive details</td>
+              <td><a href="vendor-baa-review.md">vendor-baa-review.md</a></td>
+            </tr>
+
+            <tr>
+              <td><strong>Complete the BAA register and review dates</strong></td>
+              <td>Vendor</td>
+              <td>Ask the vendor for BAA status, security evidence status, and incident terms.</td>
+              <td>Can you confirm whether this vendor stores, processes, transmits, or accesses PHI, whether a BAA is in place, and when it was last reviewed?</td>
+              <td>BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms</td>
+              <td>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw contracts with sensitive details</td>
+              <td><a href="vendor-baa-review.md">vendor-baa-review.md</a></td>
+            </tr>
+
+            <tr>
+              <td><strong>Document downtime procedures for critical systems</strong></td>
+              <td>MSP</td>
+              <td>Assign a downtime owner and record tabletop or manual-workflow evidence.</td>
+              <td>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</td>
+              <td>Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets.</td>
+              <td>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data</td>
+              <td><a href="downtime-ransomware-tabletop.md">downtime-ransomware-tabletop.md</a></td>
+            </tr>
+
+            <tr>
+              <td><strong>Enable MFA for EHR access</strong></td>
+              <td>MSP</td>
+              <td>Ask the MSP for MFA proof and any exception list.</td>
+              <td>Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?</td>
+              <td>MFA policy export; admin screenshot with date observed; covered groups; exception list; MSP attestation</td>
+              <td>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data</td>
+              <td><a href="owner-msp-handoff.md">owner-msp-handoff.md</a></td>
+            </tr>
+
+            <tr>
+              <td><strong>Run a restore test and record evidence</strong></td>
+              <td>MSP</td>
+              <td>Ask the MSP for backup scope and restore-test evidence.</td>
+              <td>Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?</td>
+              <td>backup scope summary; restore-test note; date observed; recovery owner; systems excluded from backup</td>
+              <td>patient names; patient records; credentials; private portal links; raw logs; screenshots with sensitive data; raw backup data; private console links</td>
+              <td><a href="downtime-ransomware-tabletop.md">downtime-ransomware-tabletop.md</a></td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Handoff Map</div>
+          <h2>What To Hand To Whom</h2>
+        </div>
+        <p>The packet separates owner decisions, MSP proof, vendor answers, and qualified-review questions so everyone gets a clear lane.</p>
+      </div>
+      <div class="audience-grid">
+            <article class="audience-card">
+              <h3>Practice owner / office manager</h3>
+              <p>What matters first, who to ask, and what can move this week.</p>
+              <ul><li><a href="practice-assurance-packet.html">practice-assurance-packet.html</a></li><li><a href="owner-action-plan.md">owner-action-plan.md</a></li><li><a href="sprint-client-readout.md">sprint-client-readout.md</a></li></ul>
+            </article>
+
+            <article class="audience-card">
+              <h3>MSP / IT partner</h3>
+              <p>Specific proof requests for access, MFA, backups, restore testing, logs, and remediation sequence.</p>
+              <ul><li><a href="msp-evidence-request.md">msp-evidence-request.md</a></li><li><a href="msp-remediation-brief.md">msp-remediation-brief.md</a></li><li><a href="control-evidence-matrix.csv">control-evidence-matrix.csv</a></li></ul>
+            </article>
+
+            <article class="audience-card">
+              <h3>Vendors / BAA / AI reviewers</h3>
+              <p>Contract, incident-notice, subcontractor, retention, deletion, audit-log, and AI data-use questions.</p>
+              <ul><li><a href="vendor-evidence-request.md">vendor-evidence-request.md</a></li><li><a href="vendor-baa-ai-questionnaire.md">vendor-baa-ai-questionnaire.md</a></li><li><a href="vendor-baa-review.md">vendor-baa-review.md</a></li></ul>
+            </article>
+
+            <article class="audience-card">
+              <h3>Insurance / legal / compliance reviewer</h3>
+              <p>Evidence references for planning plus questions that need qualified review.</p>
+              <ul><li><a href="insurance-evidence-packet.md">insurance-evidence-packet.md</a></li><li><a href="limitations-appendix.md">limitations-appendix.md</a></li><li><a href="source-map.md">source-map.md</a></li></ul>
+            </article>
+            </div>
+    </section>
+
+    <section class="panel">
+      <div class="eyebrow">MSP Collaboration</div>
+      <h2>Why This Helps The MSP</h2>
+      <ul class="plain-list">
+        <li>Scoped proof requests replace a vague "are we secure?" conversation.</li>
+        <li>Owner, vendor, legal/compliance, and technical questions stay in separate lanes.</li>
+        <li>The MSP can respond with reference IDs, dates observed, owners, scope covered, and short status notes.</li>
+        <li>Raw screenshots, logs, contracts, private URLs, PHI, and credentials stay in the private/offline binder.</li>
+      </ul>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">This Week</div>
+          <h2>Evidence Requests To Start</h2>
+        </div>
+        <p>Request reference IDs, dates observed, owner roles, and short status notes. Keep raw proof in the private/offline binder.</p>
+      </div>
+      <div class="table-panel">
+        <table>
+          <thead><tr><th>Priority</th><th>Recipient</th><th>Ask</th><th>Evidence format</th><th>Artifact</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="chip priority-medium">medium</span></td>
+              <td><strong>Owner/MSP</strong></td>
+              <td>Confirm the practice profile, owners, review period, and no-PHI evidence-reference boundary.</td>
+              <td>Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets.</td>
+              <td><a href="packet-manifest.json">packet-manifest.json</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>Owner/MSP</strong></td>
+              <td>Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows.</td>
+              <td>public observation summary; page/workflow label; date observed; owner; vendor/MSP/reviewer note</td>
+              <td><a href="external-evidence-precheck.md">external-evidence-precheck.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>MSP</strong></td>
+              <td>Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location.</td>
+              <td>workflow map; secure email policy; shared-drive access review; retention summary; staff guidance</td>
+              <td><a href="ephi-flow-map.md">ephi-flow-map.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>Owner</strong></td>
+              <td>Separate no-PHI administrative AI use from restricted or prohibited PHI workflows before staff rollout.</td>
+              <td>AI acceptable-use guidance; vendor terms summary; model-training setting; retention/deletion terms; staff acknowledgement</td>
+              <td><a href="ai-workflow-review.md">ai-workflow-review.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>Vendor</strong></td>
+              <td>Collect BAA status, SOC 2/HITRUST evidence status, security contact, incident terms, subcontractor posture, and AI/data-use answers.</td>
+              <td>BAA status; BAA review date; vendor security page; SOC 2 or HITRUST status; incident notification terms; retention/deletion terms</td>
+              <td><a href="vendor-baa-review.md">vendor-baa-review.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>MSP</strong></td>
+              <td>Export user lists, verify MFA enforcement, and document owner signoff for access and offboarding review.</td>
+              <td>User list export, admin role list, owner signoff, removed-account notes, and exception sunset dates.</td>
+              <td><a href="readiness-review.md">readiness-review.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-high">high</span></td>
+              <td><strong>MSP</strong></td>
+              <td>Run or schedule a restore test and tabletop, then record reference IDs and lessons learned.</td>
+              <td>Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets.</td>
+              <td><a href="downtime-ransomware-tabletop.md">downtime-ransomware-tabletop.md</a></td>
+            </tr>
+
+            <tr>
+              <td><span class="chip priority-medium">medium</span></td>
+              <td><strong>Owner</strong></td>
+              <td>Review top findings with the owner and assign 30-day remediation owners.</td>
+              <td>Reference-only screenshot/export/note in the private binder with owner, date observed, and no PHI or secrets.</td>
+              <td><a href="risk-register.csv">risk-register.csv</a></td>
+            </tr>
+            </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Copy And Send</div>
+          <h2>Ready-To-Send Messages</h2>
+        </div>
+        <p>Copy, paste, and adapt. All requests are reference-only. No PHI, credentials, raw contracts, raw logs, or private admin links needed.</p>
+      </div>
+      <div class="message-grid">
+            <article class="message-block">
+              <h3>Email to MSP</h3>
+              <pre><code>Subject: Quick evidence request for Family Dental Clinic - Velari packet
+
+Hi [MSP Contact],
+
+We are using a Velari Practice Assurance Packet for our 2026 Q2 review. It highlights a few high-priority items where we need reference-only evidence this week:
+
+- MFA enforcement status and user/admin list exports for EHR, billing, email, remote access, and administrator accounts
+- Backup scope and last restore-test evidence for critical practice systems
+- Downtime workflow or tabletop notes for systems needed during patient care
+
+Please reply with evidence reference IDs, dates observed, owners, scope covered, and any gaps we need to decide on. Keep raw files, screenshots, logs, private URLs, credentials, and sensitive details in our private binder.
+
+Can you send what you have by [date], or suggest a short call if that is easier?
+
+Thanks,
+[Your Name]</code></pre>
+            </article>
+
+            <article class="message-block">
+              <h3>Email to Vendor</h3>
+              <pre><code>Subject: BAA and security evidence request - Family Dental Clinic
+
+Hi [Vendor Contact],
+
+As part of our 2026 Q2 practice security and vendor review, we need to confirm a few reference-only items for [Vendor Name].
+
+Can you please provide:
+
+- Current BAA status and last review date
+- SOC 2, HITRUST, or equivalent security evidence status
+- Security contact and incident-notification terms
+- Retention/deletion terms and subprocessors or subcontractors
+- AI data-use or model-training terms, if applicable
+
+We only need status labels, public/gated proof references, or a short written response. Please do not send PHI, credentials, raw contracts, raw logs, patient screenshots, or private admin links in this thread.
+
+Thank you,
+[Your Name] / Family Dental Clinic</code></pre>
+            </article>
+
+            <article class="message-block">
+              <h3>Internal Note to Practice Owner</h3>
+              <pre><code>Subject: First actions from the Velari packet
+
+The Velari packet is ready for Family Dental Clinic. The fastest next step is to send the MSP and vendor requests, then track responses by reference ID instead of moving sensitive files around.
+
+This week I recommend we:
+
+- Ask the MSP for MFA, access, backup, restore-test, and downtime evidence
+- Ask key vendors for BAA, security evidence status, incident, retention/deletion, and AI data-use answers
+- Keep PHI, passwords, raw logs, raw contracts, patient screenshots, and private links out of email and public tools
+- Escalate legal/compliance, insurance, incident, or formal risk-assessment questions to the right reviewer
+
+I can send the first requests and collect responses into the evidence tracker.</code></pre>
+            </article>
+
+            <article class="message-block">
+              <h3>Optional Note to Reviewer</h3>
+              <pre><code>Subject: Reference-only packet for qualified review - Family Dental Clinic
+
+Hi [Reviewer],
+
+We have a Velari Practice Assurance Packet for Family Dental Clinic&#x27;s 2026 Q2 review. It is a readiness and evidence-handoff packet, not a formal Security Risk Analysis, audit opinion, legal advice, or insurance advice.
+
+Can you review the packet and flag which vendor, AI, incident, insurance, contract, or formal risk-assessment questions need qualified review before the practice relies on them?
+
+We are keeping raw evidence in a private/offline binder and using reference IDs in the packet. Please do not request PHI, credentials, raw logs, raw contracts, private admin links, or incident-sensitive details in public tools.</code></pre>
+            </article>
+            </div>
+    </section>
+
+    <section class="two-col">
+      <div class="panel">
+        <div class="eyebrow">Delivery Plan</div>
+        <h2>First 7 Days</h2>
+        <ol class="week-list">
+            <li>
+              <span>Day 0-1</span>
+              <strong>Owner/MSP/vendor reviewer</strong>
+              <p>Review public-site tracker, scheduler, portal, intake, TLS, and certificate observations before relying on patient-facing workflows.</p>
+            </li>
+
+            <li>
+              <span>Day 1</span>
+              <strong>Owner</strong>
+              <p>Confirm Office Manager owns the packet, MSP Lead owns technical evidence, and all outputs stay reference-only.</p>
+            </li>
+
+            <li>
+              <span>Days 1-2</span>
+              <strong>MSP</strong>
+              <p>Request MFA enforcement status and user-list exports for EHR, billing, imaging, email, remote access, administrator, and vendor-support accounts.</p>
+            </li>
+
+            <li>
+              <span>Days 2-3</span>
+              <strong>MSP</strong>
+              <p>Confirm backup scope and last restore-test evidence for Cloud EHR, Billing Portal, Phones, Shared Drive.</p>
+            </li>
+
+            <li>
+              <span>Days 3-4</span>
+              <strong>Vendor</strong>
+              <p>Send BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access control, audit-log, and export/delete questions to Example EHR Vendor, Example Billing Vendor, Workspace Provider, Example Imaging Vendor.</p>
+            </li>
+
+            <li>
+              <span>Days 4-5</span>
+              <strong>Owner</strong>
+              <p>Decide interim AI rules for Billing appeal drafter, AI scribe pilot, Paste patient-level note into public chatbot and issue no-PHI staff guidance before any rollout.</p>
+            </li>
+
+            <li>
+              <span>Days 5-7</span>
+              <strong>Owner/MSP</strong>
+              <p>Run a 30-minute downtime/ransomware tabletop for an EHR outage during patient care and record lessons learned.</p>
+            </li>
+            </ol>
+      </div>
+      <aside class="panel">
+        <div class="eyebrow">Why These Questions</div>
+        <h2>Source Anchors</h2>
+        <ul class="source-list">
+            <li>
+              <strong>HHS Cyber Gateway</strong>
+              <span>Frames healthcare cybersecurity as patient-safety work, not only IT hygiene.</span>
+            </li>
+
+            <li>
+              <strong>HHS 405(d) HICP</strong>
+              <span>Prioritizes common healthcare threats and the mitigating practices small organizations can discuss with IT partners.</span>
+            </li>
+
+            <li>
+              <strong>CISA Cybersecurity Performance Goals</strong>
+              <span>Provides voluntary, high-impact baseline practices that help small teams prioritize without pretending the list is comprehensive.</span>
+            </li>
+
+            <li>
+              <strong>ONC/OCR Security Risk Assessment Tool</strong>
+              <span>Supports small and medium providers conducting HIPAA Security Rule risk assessments while keeping entries local to the user&#x27;s computer.</span>
+            </li>
+            </ul>
+      </aside>
+    </section>
+
+    <section class="panel next-step">
+      <div class="eyebrow">Service Close</div>
+      <h2>Next Step With Velari</h2>
+      <p>If this packet surfaces gaps the practice wants help closing, the fastest path is a short evidence call plus an updated packet.</p>
+      <div class="next-step-grid">
+        <div>
+          <h3>What we do together</h3>
+          <ul class="plain-list">
+            <li>Walk through the top findings in a 30-45 minute evidence call.</li>
+            <li>Customize or send the ready-to-send MSP and vendor messages.</li>
+            <li>Collect reference-only responses, owners, dates observed, and open questions.</li>
+            <li>Deliver an updated packet with answers incorporated and a clear 30-day owner/MSP/reviewer plan.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>What we need from you</h3>
+          <ul class="plain-list">
+            <li>Practice owner, office manager, MSP contact, and review-period confirmation.</li>
+            <li>Names of key EHR, billing, email, fax, cloud storage, telehealth, AI, backup, and imaging vendors.</li>
+            <li>Existing evidence references or private-binder locations if they already exist.</li>
+          </ul>
+          <p class="small-note"><strong>We do not need:</strong> PHI, patient data, credentials, passwords, raw logs, full contracts, patient screenshots, or private admin links.</p>
+        </div>
+      </div>
+      <p class="cta-line">Founding-client packet plus evidence call: one-time, reference-only review with a clear handoff in one week. This is not another dashboard or ongoing subscription.</p>
+    </section>
+
+    <section class="panel">
+      <div class="eyebrow">Boundary</div>
+      <h2>What This Does Not Do</h2>
+      <p>This is not an audit opinion, legal advice, cyber-insurance advice, penetration test, vulnerability scan, MDR/SOC service, forensic review, or formal Security Risk Analysis. It can support preparation for a formal Security Risk Analysis, but it is not itself a formal SRA. It does not prove that a practice, vendor, system, AI workflow, policy, backup, or evidence binder satisfies a legal or regulatory requirement. It does not replace the MSP; it gives the practice and MSP a clearer evidence request list and owner handoff.</p>
+    </section>
+
+    <footer class="footer">
+      <span>Generated at 2026-05-15T00:00:00Z. Source profile hash is tracked in sprint-summary.json and packet-manifest.json.</span>
+      <span>Family Dental Clinic / 2026 Q2</span>
+    </footer>
+  </main>
+</body>
+</html>

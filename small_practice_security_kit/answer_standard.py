@@ -36,6 +36,7 @@ SECTION_STAGE_MAP = {
     "access_mfa_offboarding": "access_offboarding_review",
     "downtime_ransomware": "downtime_ransomware_review",
     "evidence_index": "evidence_packet_export",
+    "external_evidence_precheck": "external_evidence_precheck",
     "owner_msp_handoff": "owner_msp_handoff",
     "roadmap_30_60_90": "findings_risk_register",
 }
@@ -56,6 +57,19 @@ def stage_for_section(section_id: str) -> str:
 
 def stage_for_title(title: str, section_id: str = "") -> str:
     lowered = title.lower()
+    if (
+        "tracker" in lowered
+        or "pixel" in lowered
+        or "analytics" in lowered
+        or "tag manager" in lowered
+        or "tls" in lowered
+        or "certificate" in lowered
+        or "https" in lowered
+        or "scheduler" in lowered
+        or "intake" in lowered
+        or section_id == "external_evidence_precheck"
+    ):
+        return "external_evidence_precheck"
     if "backup" in lowered or "restore" in lowered or "downtime" in lowered:
         return "downtime_ransomware_review"
     if "baa" in lowered or "vendor" in lowered:
@@ -90,6 +104,12 @@ def timeframe_for_priority(priority: str, stage_id: str) -> str:
 
 def owner_lane_for_stage(stage_id: str, title: str = "") -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "msp"
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "office_manager"
+        return "office_manager"
     if stage_id == "vendor_baa_review":
         return "vendor"
     if stage_id in {"access_offboarding_review", "downtime_ransomware_review"}:
@@ -106,6 +126,8 @@ def owner_lane_for_stage(stage_id: str, title: str = "") -> str:
 
 
 def secondary_owner_lane_for_stage(stage_id: str, owner_lane: str) -> str:
+    if stage_id == "external_evidence_precheck":
+        return "legal_compliance" if owner_lane != "legal_compliance" else "msp"
     if owner_lane == "msp":
         return "office_manager"
     if owner_lane == "vendor":
@@ -119,6 +141,12 @@ def secondary_owner_lane_for_stage(stage_id: str, owner_lane: str) -> str:
 
 def risk_area_for_stage(stage_id: str, title: str) -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "Public site tracker / privacy evidence"
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "Public site TLS / transmission security evidence"
+        return "External evidence pre-check"
     if "mfa" in lowered:
         return "Access / MFA"
     if "access review" in lowered or "account" in lowered:
@@ -138,6 +166,12 @@ def risk_area_for_stage(stage_id: str, title: str) -> str:
 
 def affected_workflows_for_stage(stage_id: str, title: str) -> list[str]:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return ["appointment scheduler", "patient intake", "portal registration", "public contact workflow"]
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return ["public website", "patient portal", "online scheduler", "payment or intake workflow"]
+        return ["public website", "patient-facing workflow", "vendor handoff"]
     if "mfa" in lowered or "access" in lowered or "account" in lowered:
         return ["EHR access", "billing access", "email access", "remote access"]
     if "backup" in lowered or "restore" in lowered or "downtime" in lowered:
@@ -155,6 +189,12 @@ def affected_workflows_for_stage(stage_id: str, title: str) -> list[str]:
 
 def plain_summary_for_finding(title: str, stage_id: str) -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "A third-party tracker or analytics tag was observed on a patient-facing workflow and needs vendor/privacy review before the practice relies on it."
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "A public website or portal encryption signal needs MSP review before the practice relies on the workflow for patient-facing communication."
+        return "A public patient-facing workflow produced an external evidence observation that needs owner, MSP, vendor, or qualified-review follow-up."
     if "mfa" in lowered:
         return "MFA evidence for an EHR or remote-access workflow is missing or not recorded."
     if "access review" in lowered or "quarterly access" in lowered:
@@ -176,6 +216,12 @@ def plain_summary_for_finding(title: str, stage_id: str) -> str:
 
 def why_it_matters_for_finding(title: str, stage_id: str) -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "Tracking technologies on intake, scheduler, portal, payment, or registration workflows can create privacy, vendor-contract, authorization, and evidence questions that a small practice should not have to decode alone."
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "Weak or unclear public-site encryption evidence can reduce trust in patient-facing workflows and create transmission-security questions for the MSP to confirm."
+        return "External observations give the owner a concrete starting point without requiring access to private systems or patient data."
     if "mfa" in lowered or "account" in lowered or "access" in lowered:
         return "Weak access proof makes it harder to show who can reach systems that support patient care and patient-data workflows."
     if "backup" in lowered or "restore" in lowered or "downtime" in lowered:
@@ -193,6 +239,12 @@ def why_it_matters_for_finding(title: str, stage_id: str) -> str:
 
 def recommended_question_for_finding(title: str, stage_id: str, recipient: str = "") -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "Can the website/vendor confirm which trackers fire on patient-facing scheduler, intake, portal, payment, or registration workflows, what data is sent, and whether BAA, authorization, or qualified privacy review is needed?"
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "Can the MSP confirm certificate validity, HTTPS redirect behavior, TLS posture, HSTS status, and ownership for the public patient-facing workflow?"
+        return "Who owns this public-site observation, what evidence confirms the current state, and which vendor/MSP/reviewer should answer next?"
     if "mfa" in lowered:
         return "Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?"
     if "access review" in lowered or "account" in lowered:
@@ -214,6 +266,12 @@ def recommended_question_for_finding(title: str, stage_id: str, recipient: str =
 
 def acceptable_evidence_for_finding(title: str, stage_id: str) -> list[str]:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return ["tracker inventory", "tag manager export", "sanitized network request summary", "page/workflow label", "vendor BAA or authorization review note", "privacy reviewer disposition"]
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return ["TLS scan summary", "certificate expiry and issuer", "HTTPS redirect evidence", "HSTS status", "covered host list", "MSP attestation"]
+        return ["public observation summary", "page/workflow label", "date observed", "owner", "vendor/MSP/reviewer note"]
     if "mfa" in lowered:
         return ["MFA policy export", "admin screenshot with date observed", "covered groups", "exception list", "MSP attestation"]
     if "access review" in lowered or "account" in lowered:
@@ -234,6 +292,8 @@ def acceptable_evidence_for_finding(title: str, stage_id: str) -> list[str]:
 def unsafe_inputs_for_finding(title: str, stage_id: str) -> list[str]:
     lowered = title.lower()
     unsafe = list(DEFAULT_UNSAFE_INPUTS)
+    if stage_id == "external_evidence_precheck":
+        unsafe.extend(["real form submissions", "patient-entered details", "full intercepted payloads with sensitive data", "session cookies", "private admin links"])
     if "baa" in lowered or stage_id == "vendor_baa_review":
         unsafe.append("raw contracts with sensitive details")
     if "ai" in lowered or stage_id == "ai_phi_review":
@@ -247,6 +307,12 @@ def unsafe_inputs_for_finding(title: str, stage_id: str) -> list[str]:
 
 def next_action_for_finding(title: str, stage_id: str) -> str:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return "Send the observation to the website vendor and qualified privacy reviewer, confirm tracker purpose and data flow, and decide whether the tag should be removed or restricted on patient-facing workflows."
+        if "tls" in lowered or "certificate" in lowered or "https" in lowered:
+            return "Ask the MSP or website vendor to confirm TLS/certificate posture and record a reference-only remediation or acceptance note."
+        return "Assign the observation to the right owner and collect reference-only evidence before relying on the public workflow."
     if "mfa" in lowered:
         return "Request MFA proof, document exceptions, and assign an owner for any missing enforcement."
     if "access review" in lowered or "account" in lowered:
@@ -268,6 +334,10 @@ def next_action_for_finding(title: str, stage_id: str) -> str:
 
 def reviewers_for_stage(stage_id: str, title: str) -> list[str]:
     lowered = title.lower()
+    if stage_id == "external_evidence_precheck":
+        if "tracker" in lowered or "pixel" in lowered or "analytics" in lowered or "tag manager" in lowered:
+            return ["office_manager", "vendor_owner", "legal_or_compliance_reviewer", "technical_reviewer"]
+        return ["msp", "office_manager", "technical_reviewer"]
     if "baa" in lowered or stage_id == "vendor_baa_review":
         return ["vendor_owner", "legal_or_compliance_reviewer"]
     if "ai" in lowered or stage_id == "ai_phi_review":

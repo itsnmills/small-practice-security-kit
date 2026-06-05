@@ -42,6 +42,9 @@
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
+      "EXT-TLS-PORTAL-003",
+      "EXT-TRACKER-INTAKE-002",
+      "EXT-TRACKER-SCHEDULER-001",
       "READINESS-001",
       "READINESS-002",
       "READINESS-003",
@@ -52,7 +55,7 @@
       "VENDOR-EXAMPLE_BILLING_VENDOR",
       "VENDOR-EXAMPLE_IMAGING_VENDOR"
     ],
-    "mapped_controls": 18,
+    "mapped_controls": 20,
     "needs_attention": 30,
     "total_controls": 30
   },
@@ -60,12 +63,12 @@
     "connector_evidence_items": 0,
     "control_evidence_needing_attention": 30,
     "control_evidence_rows": 30,
-    "evidence_references": 46,
-    "findings": 12,
-    "handoff_actions": 17,
-    "high_or_critical_findings": 10,
-    "stages": 9,
-    "stages_needing_evidence": 5
+    "evidence_references": 49,
+    "findings": 15,
+    "handoff_actions": 18,
+    "high_or_critical_findings": 12,
+    "stages": 10,
+    "stages_needing_evidence": 6
   },
   "data_boundary": {
     "classification": "synthetic_or_client_reference_metadata_only",
@@ -75,14 +78,24 @@
   },
   "evidence_gap_summary": {
     "by_owner": {
-      "MSP Lead": 13,
+      "MSP Lead": 14,
       "MSP or workflow owner": 5,
-      "Office Manager": 10,
+      "Office Manager": 12,
       "Practice Owner": 3,
       "Practice manager": 5,
       "Qualified reviewer": 1
     },
     "by_stage": [
+      {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "evidence_gap_count": 3,
+        "owner": "Office Manager",
+        "recipient": "Owner/MSP",
+        "stage_id": "external_evidence_precheck",
+        "stage_name": "External evidence pre-check"
+      },
       {
         "artifact_refs": [
           "ephi-flow-map.md",
@@ -166,12 +179,12 @@
       "missing": 11,
       "not_applicable": 1,
       "partial": 1,
-      "provided": 8,
-      "requested": 20,
+      "provided": 10,
+      "requested": 21,
       "stale": 2
     },
-    "needs_attention": 37,
-    "total_references": 46
+    "needs_attention": 40,
+    "total_references": 49
   },
   "generated_at": "2026-05-15T00:00:00Z",
   "generator": {
@@ -180,16 +193,18 @@
   },
   "handoff_lanes": [
     {
-      "actions": 2,
+      "actions": 3,
       "artifact_refs": [
         "packet-manifest.json",
+        "external-evidence-precheck.md",
         "owner-msp-handoff.md"
       ],
       "audience": "owner_msp",
-      "high_priority_actions": 0,
+      "high_priority_actions": 1,
       "recipient": "Owner/MSP",
       "stage_ids": [
         "intake",
+        "external_evidence_precheck",
         "owner_msp_handoff"
       ]
     },
@@ -247,6 +262,21 @@
   "offering_summary": {
     "artifact_list": [
       {
+        "audience": "practice_owner_msp",
+        "path": "practice-assurance-packet.html",
+        "purpose": "Polished buyer-facing report that summarizes the practice, top risks, evidence requests, audience handoffs, and safety boundary."
+      },
+      {
+        "audience": "practice_owner_msp",
+        "path": "practice-assurance-packet.md",
+        "purpose": "Plain Markdown copy of the Practice Assurance Packet for quick review or text export."
+      },
+      {
+        "audience": "practice_owner_msp_legal",
+        "path": "external-evidence-precheck.md",
+        "purpose": "Reference-only public-site observation report for tracker, scheduler, portal, TLS, certificate, and vendor/MSP/reviewer follow-up questions."
+      },
+      {
         "audience": "owner_msp_legal",
         "path": "sprint-offering-readout.md",
         "purpose": "Client-ready plain-English readout of what was reviewed, why it matters, top gaps, next questions, and boundaries."
@@ -300,6 +330,7 @@
     "audience_lanes": [
       {
         "first_questions": [
+          "What did the external pre-check observe on the public patient-facing website, scheduler, portal, or intake workflow?",
           "Which patient-data workflows create the most urgent evidence gaps?",
           "Which vendor or MSP answers do we need this week?",
           "Which decisions require a qualified legal/compliance reviewer?"
@@ -307,7 +338,8 @@
         "id": "practice_owner",
         "label": "Practice owner / office manager",
         "primary_artifacts": [
-          "sprint-offering-readout.md",
+          "practice-assurance-packet.html",
+          "external-evidence-precheck.md",
           "owner-action-plan.md",
           "evidence-collection-checklist.md"
         ],
@@ -316,6 +348,7 @@
       },
       {
         "first_questions": [
+          "Which public hosts, portals, redirects, certificates, and TLS settings need verification?",
           "Which accounts have MFA enforced, and which systems still need review?",
           "Which systems are in backup scope, and when was restore last tested?",
           "Which logs, admin roles, remote support methods, and known-exploited-vulnerability processes can be evidenced?"
@@ -347,6 +380,7 @@
       },
       {
         "first_questions": [
+          "Which tracker, scheduler, portal, or intake observations need privacy/legal/compliance review before the owner acts?",
           "Which questions require contract interpretation or formal risk assessment work?",
           "Which vendor, AI, incident, or insurance answers should be reviewed before the owner acts?",
           "Which evidence references are enough for planning, and which require private review?"
@@ -354,7 +388,7 @@
         "id": "legal_compliance_reviewer",
         "label": "Legal / compliance reviewer",
         "primary_artifacts": [
-          "sprint-offering-readout.md",
+          "practice-assurance-packet.html",
           "source-map.md",
           "limitations-appendix.md"
         ],
@@ -377,7 +411,15 @@
     ],
     "first_7_days_actions": [
       {
-        "action": "Confirm Office Manager owns the sprint, MSP Lead owns technical evidence, and all outputs stay reference-only.",
+        "action": "Review public-site tracker, scheduler, portal, intake, TLS, and certificate observations before relying on patient-facing workflows.",
+        "artifact_ref": "external-evidence-precheck.md",
+        "day": "Day 0-1",
+        "evidence_request": "Tracker inventory, tag manager export, sanitized network destination summary, TLS scan summary, certificate status, website owner, and qualified-review disposition.",
+        "lane": "Owner/MSP/vendor reviewer",
+        "stage_id": "external_evidence_precheck"
+      },
+      {
+        "action": "Confirm Office Manager owns the packet, MSP Lead owns technical evidence, and all outputs stay reference-only.",
         "artifact_ref": "owner-action-plan.md",
         "day": "Day 1",
         "evidence_request": "Owner signoff note that the public runner contains no PHI, secrets, private URLs, raw contracts, or raw logs.",
@@ -426,20 +468,72 @@
       },
       {
         "action": "Escalate BAA, AI, incident, insurance, and formal risk-assessment questions that require qualified review.",
-        "artifact_ref": "sprint-offering-readout.md",
+        "artifact_ref": "practice-assurance-packet.html",
         "day": "Day 7",
         "evidence_request": "Question list with artifact references only; no PHI, secrets, raw contracts, raw logs, or incident-sensitive details.",
         "lane": "Legal/compliance reviewer",
         "stage_id": "evidence_packet_export"
       }
     ],
-    "name": "Velari Cyber Readiness Sprint for Small Healthcare Practices",
-    "positioning": "A short, patient-safety-oriented readiness sprint that maps ePHI-like workflows, evidence gaps, vendor/BAA/AI questions, MSP checks, and first-week owner actions without collecting raw PHI or evidence in the public repo.",
+    "name": "Velari Practice Assurance Packet for Small Dental Practices",
+    "positioning": "A plain-English security and vendor evidence report for small dental practices. It maps patient-data workflows outside the EHR, evidence gaps, vendor/BAA/AI questions, MSP checks, and first-week owner actions without collecting raw PHI or evidence in the public repo.",
     "private_app_import": {
       "contract_key": "offering_summary",
       "import_use": "Seed private Sprint Mode lanes, first-week tasks, source mappings, artifact checklist, and boundary warnings before any reviewed evidence import.",
       "review_before_import": true
     },
+    "simple_intake_steps": [
+      {
+        "artifact_ref": "practice-assurance-packet.html",
+        "evidence_format": "Owner names, review period, location count, staff count, and a no-PHI/no-secret signoff note.",
+        "id": "practice_scope",
+        "label": "Practice and owners",
+        "owner": "Practice owner / office manager",
+        "question": "Confirm the practice name, review period, Office Manager as security owner, and MSP Lead as technical owner.",
+        "status": "Ready to ask",
+        "unsafe_inputs": "PHI, patient identifiers, credentials, private admin links, raw logs, raw contracts."
+      },
+      {
+        "artifact_ref": "vendor-baa-ai-questionnaire.md",
+        "evidence_format": "Vendor names, owner, workflow touched, BAA status label, security evidence status label, and review date if known.",
+        "id": "vendor_inventory",
+        "label": "Key vendors",
+        "owner": "Office manager",
+        "question": "List the EHR, billing, email, fax, cloud storage, telehealth, backup, imaging, website, scheduler, portal, AI, and MSP vendors.",
+        "status": "Ready to ask",
+        "unsafe_inputs": "Full contracts, patient screenshots, claim details, credentials, private vendor portal links."
+      },
+      {
+        "artifact_ref": "external-evidence-precheck.md",
+        "evidence_format": "Public URL labels, page/workflow names, owner, date observed, tracker/tag summary, TLS/certificate summary.",
+        "id": "patient_facing_urls",
+        "label": "Patient-facing URLs",
+        "owner": "Website owner / MSP",
+        "question": "Identify the public website, scheduler, new patient intake, portal login, payment, registration, and contact workflows to review.",
+        "status": "Ready to ask",
+        "unsafe_inputs": "Real patient form submissions, session cookies, full intercepted payloads, private portal links."
+      },
+      {
+        "artifact_ref": "ai-workflow-review.md",
+        "evidence_format": "Tool name, proposed use, data category, vendor, decision label, policy or training reference.",
+        "id": "ai_workflows",
+        "label": "AI use",
+        "owner": "Practice owner / department lead",
+        "question": "Name AI tools being used or considered, what staff want to use them for, and whether any workflow could include patient, billing, clinical, credential, or raw evidence details.",
+        "status": "Ready to ask",
+        "unsafe_inputs": "Patient notes, transcripts, images, claims, clinical narratives, credentials, raw evidence, prompts with patient details."
+      },
+      {
+        "artifact_ref": "msp-remediation-brief.md",
+        "evidence_format": "MFA status, access review date, backup scope, restore-test date, remote support method, log review cadence, patch/vulnerability process.",
+        "id": "msp_evidence",
+        "label": "MSP evidence status",
+        "owner": "MSP / technical owner",
+        "question": "Mark each proof area as have it, need MSP, need vendor, needs reviewer, or unknown.",
+        "status": "Ready to ask",
+        "unsafe_inputs": "Raw logs, credentials, private URLs, sensitive screenshots, patient data, full network captures."
+      }
+    ],
     "source_anchors": [
       {
         "how_this_changes_the_sprint": "Every finding is translated into patient-care continuity, trust, and owner/MSP action language.",
@@ -477,6 +571,24 @@
           "https://healthit.gov/privacy-security/security-risk-assessment-tool/"
         ],
         "why_it_matters": "Supports small and medium providers conducting HIPAA Security Rule risk assessments while keeping entries local to the user's computer."
+      },
+      {
+        "how_this_changes_the_sprint": "The packet treats tracker observations as potential privacy/security evidence questions for website vendors and qualified reviewers, not automatic legal conclusions.",
+        "id": "hhs_ocr_tracking_tech",
+        "title": "HHS/OCR Online Tracking Technologies Guidance",
+        "urls": [
+          "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/hipaa-online-tracking/index.html"
+        ],
+        "why_it_matters": "Patient-facing websites, portals, schedulers, and apps can create privacy and vendor-review questions when tracking technologies collect or disclose regulated information."
+      },
+      {
+        "how_this_changes_the_sprint": "The external pre-check turns TLS, certificate, redirect, portal, and public-host observations into MSP evidence questions without claiming a compliance determination.",
+        "id": "hhs_security_rule",
+        "title": "HHS HIPAA Security Rule Summary",
+        "urls": [
+          "https://www.hhs.gov/hipaa/for-professionals/security/laws-regulations/index.html"
+        ],
+        "why_it_matters": "The Security Rule is technology-neutral and focuses on reasonable safeguards for electronic protected health information, including technical safeguards and transmission security."
       },
       {
         "how_this_changes_the_sprint": "Modernization items such as asset inventory, network maps, MFA, encryption, vulnerability scanning, segmentation, backups, incident response, and BA verification are tracked as watchlist deltas, not guaranteed current obligations.",
@@ -518,10 +630,28 @@
       },
       {
         "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "control_theme": "Public-site tracker, patient-facing workflow, and transmission evidence",
+        "how_this_source_changes_what_we_ask": "Check public patient-facing workflows for tracker, scheduler, portal, TLS, certificate, redirect, and ownership observations that should be routed to the website vendor, MSP, or qualified reviewer.",
+        "source_ids": [
+          "hhs_ocr_tracking_tech",
+          "hhs_security_rule",
+          "cisa_cpgs"
+        ],
+        "source_titles": [
+          "HHS/OCR Online Tracking Technologies Guidance",
+          "HHS HIPAA Security Rule Summary",
+          "CISA Cybersecurity Performance Goals"
+        ],
+        "stage_id": "external_evidence_precheck",
+        "stage_name": "External evidence pre-check"
+      },
+      {
+        "artifact_refs": [
           "ephi-flow-map.md",
           "connected-device-inventory.md",
-          "portal-api-flow-review.md",
-          "ephi-flow-map.md"
+          "portal-api-flow-review.md"
         ],
         "control_theme": "ePHI-like workflow visibility, asset inventory, data protection",
         "how_this_source_changes_what_we_ask": "Ask where patient data leaves the EHR, which vendor or system handles it, whether a BAA may be needed, what connected devices, portals, apps, or integrations touch the workflow, and what evidence reference proves the control.",
@@ -542,7 +672,6 @@
       },
       {
         "artifact_refs": [
-          "ai-workflow-review.md",
           "ai-workflow-review.md"
         ],
         "control_theme": "AI data-use boundary, data protection, governance",
@@ -619,8 +748,7 @@
       {
         "artifact_refs": [
           "risk-register.csv",
-          "30-60-90-roadmap.md",
-          "risk-register.csv"
+          "30-60-90-roadmap.md"
         ],
         "control_theme": "Prioritized readiness gaps and fix sequencing",
         "how_this_source_changes_what_we_ask": "Sort gaps by likely patient-safety and operational impact, then assign owners and a 30/60/90 evidence path.",
@@ -681,7 +809,9 @@
       }
     ],
     "top_value_outcomes": [
-      "A plain-English map of where patient-data workflows create operational and trust risk outside the EHR.",
+      "A plain-English report a practice owner can read without operating another security dashboard.",
+      "A public-site External Evidence Pre-Check that turns tracker, scheduler, portal, TLS, and certificate observations into safe owner/MSP/vendor/reviewer questions before internal access is needed.",
+      "A map of where patient-data workflows create operational and trust risk outside the EHR.",
       "A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.",
       "A technical remediation brief that asks for specific proof instead of broad security promises.",
       "A vendor/BAA/AI questionnaire that makes contract, SOC 2/HITRUST evidence status, retention, incident notice, subcontractor, and model-training questions visible.",
@@ -699,6 +829,7 @@
       "downtime-ransomware-tabletop.md",
       "connected-device-inventory.md",
       "portal-api-flow-review.md",
+      "external-evidence-precheck.md",
       "incident-decision-log.md",
       "incident-evidence-timeline.md",
       "incident-after-action-report.md",
@@ -711,6 +842,9 @@
     ],
     "sprint": [
       "sprint-index.md",
+      "practice-assurance-packet.html",
+      "practice-assurance-packet.md",
+      "external-evidence-precheck.md",
       "sprint-client-readout.md",
       "sprint-command-center.html",
       "sprint-offering-readout.md",
@@ -742,16 +876,16 @@
     "type": "Dental practice"
   },
   "readiness_signal": {
-    "high_or_critical_findings": 10,
+    "high_or_critical_findings": 12,
     "label": "high",
     "meaning": "Evidence-backed readiness signal for sprint prioritization only; not a compliance score.",
-    "stages_needing_evidence": 5
+    "stages_needing_evidence": 6
   },
   "schema_version": "2026-05-19",
   "source_profile": {
     "input_path": "family_dental_clinic.yaml",
     "path": "samples/family_dental_clinic.yaml",
-    "sha256": "cb63afa820ffadc2f215a5c0e39934ed00196952662f5376e27ec6222480ebf7"
+    "sha256": "ffcb689c3b025ed338d234cb6faa46761ff43acdfcccd56081adb23e1c2e006d"
   },
   "sprint_id": "sprint_family_dental_clinic_2026_q2",
   "stage_statuses": [
@@ -765,6 +899,17 @@
       "next_action": "Confirm the practice profile, owners, review period, and no-PHI evidence-reference boundary.",
       "owner": "Office Manager",
       "status": "ready_for_review"
+    },
+    {
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "evidence_gap_count": 3,
+      "id": "external_evidence_precheck",
+      "name": "External evidence pre-check",
+      "next_action": "Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows.",
+      "owner": "Office Manager",
+      "status": "needs_evidence"
     },
     {
       "artifact_refs": [
@@ -865,8 +1010,8 @@
     }
   ],
   "target_delivery_signal": {
-    "next_artifact": "sprint-command-center.html",
-    "primary_blocker": "Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location.",
+    "next_artifact": "practice-assurance-packet.html",
+    "primary_blocker": "Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows.",
     "status": "needs_evidence_before_closeout"
   },
   "top_risks": [

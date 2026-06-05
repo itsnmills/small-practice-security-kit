@@ -4,10 +4,10 @@ This is a lifecycle index for reference-only evidence. Store raw proof in the pr
 
 ## Lifecycle Summary
 
-- Total evidence rows: 46
+- Total evidence rows: 49
 - Blocked: 13
-- Needs evidence: 22
-- Ready for review: 2
+- Needs evidence: 23
+- Ready for review: 4
 - Closed: 8
 - Traceable to ePHI flows: 23
 
@@ -15,6 +15,9 @@ This is a lifecycle index for reference-only evidence. Store raw proof in the pr
 
 | Evidence ID | Area | Lifecycle | Closeout | Owner | Trace | Acceptable evidence | Next action | Artifacts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | external_precheck | Provided | Ready for review | Office Manager | EXT-TRACKER-SCHEDULER-001 | tracker inventory; tag manager export; sanitized network request summary; page/workflow label; vendor BAA or authorization review note; privacy reviewer disposition | Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages. | external-evidence-precheck.md |
+| EXT-TRACKER-INTAKE-002 | external_precheck | Provided | Ready for review | Office Manager | EXT-TRACKER-INTAKE-002 | tracker inventory; tag manager export; sanitized network request summary; page/workflow label; vendor BAA or authorization review note; privacy reviewer disposition | Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision. | external-evidence-precheck.md |
+| EXT-TLS-PORTAL-003 | external_precheck | Requested | Needs evidence | MSP Lead | EXT-TLS-PORTAL-003 | TLS scan summary; certificate expiry and issuer; HTTPS redirect evidence; HSTS status; covered host list; MSP attestation | Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list. | external-evidence-precheck.md |
 | EVID-ACCESS-Q2 | access | Partial | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Quarterly access review export placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
 | EVID-BACKUP-RESTORE | backup | Stale | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Backup restore test record placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
 | EVID-CYBER-INSURANCE | insurance | Requested | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Cyber insurance renewal evidence list; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |

@@ -249,6 +249,8 @@
     "linked_answer_packet_ids": [
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -486,7 +488,9 @@
       "READINESS-006",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -554,7 +558,9 @@
       "READINESS-006",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -746,9 +752,12 @@
       "READINESS-006",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
-      "AI-BILLING_APPEAL_DRAFTER"
+      "AI-BILLING_APPEAL_DRAFTER",
+      "EXT-TLS-PORTAL-003"
     ],
     "next_action": "Ask the MSP to list vendor support paths, named owners, MFA coverage, and disablement process.",
     "practice_applicability": [
@@ -1222,7 +1231,9 @@
     "freshness_status": "missing",
     "last_collected_at": null,
     "last_reviewed_at": null,
-    "linked_answer_packet_ids": [],
+    "linked_answer_packet_ids": [
+      "EXT-TLS-PORTAL-003"
+    ],
     "next_action": "Confirm encryption and device protection status for laptops, workstations, and portable media.",
     "practice_applicability": [
       "small_practice",
@@ -1345,9 +1356,12 @@
       "READINESS-006",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
-      "AI-BILLING_APPEAL_DRAFTER"
+      "AI-BILLING_APPEAL_DRAFTER",
+      "EXT-TLS-PORTAL-003"
     ],
     "next_action": "Update the vendor register with ePHI access, owner, and review date.",
     "practice_applicability": [
@@ -1408,9 +1422,12 @@
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
-      "AI-BILLING_APPEAL_DRAFTER"
+      "AI-BILLING_APPEAL_DRAFTER",
+      "EXT-TLS-PORTAL-003"
     ],
     "next_action": "Confirm BAA status and review date for each vendor that stores, processes, transmits, or accesses ePHI.",
     "practice_applicability": [
@@ -1474,9 +1491,12 @@
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
-      "AI-BILLING_APPEAL_DRAFTER"
+      "AI-BILLING_APPEAL_DRAFTER",
+      "EXT-TLS-PORTAL-003"
     ],
     "next_action": "Request vendor security evidence status and route private proof to the appropriate reviewer.",
     "practice_applicability": [
@@ -1539,9 +1559,12 @@
       "READINESS-004",
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
       "VENDOR-EXAMPLE_BILLING_VENDOR",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
-      "AI-BILLING_APPEAL_DRAFTER"
+      "AI-BILLING_APPEAL_DRAFTER",
+      "EXT-TLS-PORTAL-003"
     ],
     "next_action": "Request incident-notification, retention, deletion, export, and subcontractor term status from each relevant vendor.",
     "practice_applicability": [
@@ -1601,6 +1624,8 @@
     "linked_answer_packet_ids": [
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1664,6 +1689,8 @@
     "linked_answer_packet_ids": [
       "AI-PASTE_PATIENT_LEVEL_NOTE_INTO_PUBLIC_CHATBOT",
       "VENDOR-EXAMPLE_AI_SCRIBE_VENDOR",
+      "EXT-TRACKER-INTAKE-002",
+      "EXT-TRACKER-SCHEDULER-001",
       "AI-AI_SCRIBE_PILOT",
       "AI-BILLING_APPEAL_DRAFTER"
     ],
@@ -1787,7 +1814,9 @@
     "freshness_status": "missing",
     "last_collected_at": null,
     "last_reviewed_at": null,
-    "linked_answer_packet_ids": [],
+    "linked_answer_packet_ids": [
+      "EXT-TLS-PORTAL-003"
+    ],
     "next_action": "Record disposal, transfer, wipe, or destruction evidence when devices or media leave service.",
     "practice_applicability": [
       "small_practice",

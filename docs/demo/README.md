@@ -14,11 +14,15 @@ The sample intentionally includes realistic gaps:
 - Quarterly access review is not documented.
 - Backup restore evidence is missing.
 - BAA register review dates are incomplete.
+- Public-site tracker and TLS observations need website vendor, MSP, and qualified-review follow-up.
 - Downtime plan and tabletop evidence are missing.
 - AI workflow rules need clearer allowed/restricted/prohibited examples.
 
 ## Start here
 
+- Practice Assurance Packet: [`practice-assurance-packet.html`](practice-assurance-packet.html)
+- Markdown copy with 10-minute intake and owner decision queue: [`practice-assurance-packet.md`](practice-assurance-packet.md)
+- External Evidence Pre-Check: [`external-evidence-precheck.md`](external-evidence-precheck.md)
 - Complete packet, Markdown: [`review-packet.md`](review-packet.md)
 - Complete packet, print-friendly HTML: [`review-packet.html`](review-packet.html)
 - Canonical manifest and hashes: [`packet-manifest.json`](packet-manifest.json)
@@ -36,6 +40,7 @@ The sample intentionally includes realistic gaps:
 - [`downtime-ransomware-tabletop.md`](downtime-ransomware-tabletop.md) — downtime/tabletop starter packet.
 - [`connected-device-inventory.md`](connected-device-inventory.md) — IoMT/connected-device worksheet for vendor, patch owner, default credentials, fallback, and safety notices.
 - [`portal-api-flow-review.md`](portal-api-flow-review.md) — portal, app, API/FHIR-style flow worksheet for identity, logs, messaging, ownership, and export/delete evidence.
+- [`external-evidence-precheck.md`](external-evidence-precheck.md) — reference-only tracker, scheduler, portal, TLS, and certificate observations translated into safe follow-up questions.
 - [`incident-decision-log.md`](incident-decision-log.md) — decision-log template separating technical containment from qualified legal/compliance decisions.
 - [`evidence-binder-index.md`](evidence-binder-index.md) — evidence references to collect.
 - [`owner-msp-handoff.md`](owner-msp-handoff.md) — owner/MSP action handoff.
@@ -44,6 +49,9 @@ The sample intentionally includes realistic gaps:
 
 ## Sprint action artifacts
 
+- [`practice-assurance-packet.html`](practice-assurance-packet.html) — polished buyer-facing report for the practice owner/MSP conversation, including 10-minute intake and owner decision queue.
+- [`practice-assurance-packet.md`](practice-assurance-packet.md) — plain Markdown copy of the same report.
+- [`external-evidence-precheck.md`](external-evidence-precheck.md) — public-site observation handoff for website vendor, MSP, and qualified-review questions.
 - [`sprint-index.md`](sprint-index.md) — entry point for generated Sprint Mode outputs.
 - [`sprint-client-readout.md`](sprint-client-readout.md) — owner-facing action packet summary.
 - [`sprint-command-center.html`](sprint-command-center.html) — self-contained HTML command center.

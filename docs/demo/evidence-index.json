@@ -20,6 +20,180 @@
   "evidence_references": [
     {
       "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when tracker purpose, data sent, tag placement, vendor relationship, and reviewer disposition are recorded without PHI.",
+      "closeout_state": "ready_for_review",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TRACKER-SCHEDULER-001",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "provided",
+      "next_action": "Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages.",
+      "next_review_date": "2026-07-14",
+      "notes": "Observation context: connect.facebook.net and graph.facebook.com",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TRACKER-SCHEDULER-001",
+      "source_system": "Appointment scheduler",
+      "status": "provided",
+      "title": "Third-party tracker observed on appointment scheduler",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TRACKER-SCHEDULER-001",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "tracker inventory",
+        "tag manager export",
+        "sanitized network request summary",
+        "page/workflow label",
+        "vendor BAA or authorization review note",
+        "privacy reviewer disposition"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when tracker purpose, data sent, tag placement, vendor relationship, and reviewer disposition are recorded without PHI.",
+      "closeout_state": "ready_for_review",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TRACKER-INTAKE-002",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "provided",
+      "next_action": "Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision.",
+      "next_review_date": "2026-07-14",
+      "notes": "Observation context: googletagmanager.com and google-analytics.com",
+      "owner": "Office Manager",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TRACKER-INTAKE-002",
+      "source_system": "New patient intake",
+      "status": "provided",
+      "title": "Analytics tag observed on new patient intake page",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TRACKER-INTAKE-002",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
+    {
+      "acceptable_evidence": [
+        "TLS scan summary",
+        "certificate expiry and issuer",
+        "HTTPS redirect evidence",
+        "HSTS status",
+        "covered host list",
+        "MSP attestation"
+      ],
+      "artifact_refs": [
+        "external-evidence-precheck.md"
+      ],
+      "closeout_rule": "Close when TLS/certificate posture, covered hosts, redirect behavior, HSTS status, and owner acceptance or remediation are recorded.",
+      "closeout_state": "needs_evidence",
+      "date_observed": "2026-05-15",
+      "evidence_id": "EXT-TLS-PORTAL-003",
+      "evidence_type": "external_precheck",
+      "lifecycle_status": "requested",
+      "next_action": "Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list.",
+      "next_review_date": "2026-06-14",
+      "notes": "Observation context: portal.familydental.example",
+      "owner": "MSP Lead",
+      "sensitivity_boundary": "reference_only_no_phi_no_secret",
+      "source_kind": "external_precheck",
+      "source_ref": "EXT-TLS-PORTAL-003",
+      "source_system": "Patient portal login",
+      "status": "requested",
+      "title": "Patient portal TLS and certificate evidence needs confirmation",
+      "trace": {
+        "artifact_refs": [
+          "external-evidence-precheck.md"
+        ],
+        "flow_ids": [],
+        "source_kind": "external_precheck",
+        "source_modules": [
+          "external_precheck"
+        ],
+        "source_ref": "EXT-TLS-PORTAL-003",
+        "system_refs": [],
+        "vendor_refs": [],
+        "workflow_refs": []
+      },
+      "unsafe_inputs": [
+        "PHI",
+        "patient identifiers",
+        "credentials",
+        "private URLs",
+        "raw logs",
+        "screenshots with sensitive data",
+        "raw contracts",
+        "real incident details",
+        "real form submissions",
+        "patient-entered details",
+        "full intercepted payloads with sensitive data",
+        "session cookies",
+        "private admin links"
+      ]
+    },
+    {
+      "acceptable_evidence": [
         "Quarterly access review export placeholder",
         "date observed",
         "owner signoff",

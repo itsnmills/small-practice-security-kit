@@ -188,8 +188,8 @@
       <aside class="metrics" aria-label="Sprint metrics">
         <div class="metric"><span>Readiness signal</span><strong>high</strong></div>
         <div class="metric"><span>Delivery signal</span><strong>Needs Evidence Before Closeout</strong></div>
-        <div class="metric"><span>High/critical findings</span><strong>10</strong></div>
-        <div class="metric"><span>Evidence needing attention</span><strong>37</strong></div>
+        <div class="metric"><span>High/critical findings</span><strong>12</strong></div>
+        <div class="metric"><span>Evidence needing attention</span><strong>40</strong></div>
       </aside>
     </header>
 
@@ -198,15 +198,21 @@
       <div class="offering-grid">
         <div>
           <h3>Top Value Delivered</h3>
-          <ul><li>A plain-English map of where patient-data workflows create operational and trust risk outside the EHR.</li><li>A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.</li><li>A technical remediation brief that asks for specific proof instead of broad security promises.</li><li>A vendor/BAA/AI questionnaire that makes contract, SOC 2/HITRUST evidence status, retention, incident notice, subcontractor, and model-training questions visible.</li><li>A reference-only evidence checklist ready for a private/offline binder without moving PHI or raw restricted evidence into this repo.</li></ul>
+          <ul><li>A plain-English report a practice owner can read without operating another security dashboard.</li><li>A public-site External Evidence Pre-Check that turns tracker, scheduler, portal, TLS, and certificate observations into safe owner/MSP/vendor/reviewer questions before internal access is needed.</li><li>A map of where patient-data workflows create operational and trust risk outside the EHR.</li><li>A first-week action plan the office manager can actually send to the MSP, vendors, and reviewers.</li><li>A technical remediation brief that asks for specific proof instead of broad security promises.</li></ul>
         </div>
         <div>
           <h3>First 7 Days</h3>
           <ol>
         <li>
+          <strong>Day 0-1 &middot; Owner/MSP/vendor reviewer</strong>
+          <span>external-evidence-precheck.md</span>
+          Review public-site tracker, scheduler, portal, intake, TLS, and certificate observations before relying on patient-facing workflows.
+        </li>
+
+        <li>
           <strong>Day 1 &middot; Owner</strong>
           <span>owner-action-plan.md</span>
-          Confirm Office Manager owns the sprint, MSP Lead owns technical evidence, and all outputs stay reference-only.
+          Confirm Office Manager owns the packet, MSP Lead owns technical evidence, and all outputs stay reference-only.
         </li>
 
         <li>
@@ -238,12 +244,6 @@
           <span>day-one-workshop-agenda.md</span>
           Run a 30-minute downtime/ransomware tabletop for an EHR outage during patient care and record lessons learned.
         </li>
-
-        <li>
-          <strong>Day 7 &middot; Legal/compliance reviewer</strong>
-          <span>sprint-offering-readout.md</span>
-          Escalate BAA, AI, incident, insurance, and formal risk-assessment questions that require qualified review.
-        </li>
         </ol>
         </div>
       </div>
@@ -271,11 +271,11 @@
       <div class="offering-grid">
         <div>
           <h3>Source-Backed Themes</h3>
-          <ul class="source-themes"><li><strong>HHS Cyber Gateway</strong><span>Every finding is translated into patient-care continuity, trust, and owner/MSP action language.</span></li><li><strong>HHS 405(d) HICP</strong><span>The packet asks about social engineering, ransomware, lost equipment or data, insider data loss, connected devices, identity, endpoint, data protection, asset, network, vulnerability, response, and governance evidence.</span></li><li><strong>CISA Cybersecurity Performance Goals</strong><span>The packet turns asset inventory, accountable ownership, third-party notification, known exploited vulnerability handling, backups, MFA, incident response, and secure defaults into concrete evidence requests.</span></li><li><strong>ONC/OCR Security Risk Assessment Tool</strong><span>The public runner stays local-first and reference-only, and it points practices toward qualified review for formal risk assessment decisions.</span></li><li><strong>HHS HIPAA Security Rule NPRM Fact Sheet</strong><span>Modernization items such as asset inventory, network maps, MFA, encryption, vulnerability scanning, segmentation, backups, incident response, and BA verification are tracked as watchlist deltas, not guaranteed current obligations.</span></li><li><strong>FDA Medical Device Cybersecurity Guidance</strong><span>The packet adds a connected-device worksheet for device/vendor ownership, patch evidence, default credential status, downtime fallback, and safety/security notice review.</span></li></ul>
+          <ul class="source-themes"><li><strong>HHS Cyber Gateway</strong><span>Every finding is translated into patient-care continuity, trust, and owner/MSP action language.</span></li><li><strong>HHS 405(d) HICP</strong><span>The packet asks about social engineering, ransomware, lost equipment or data, insider data loss, connected devices, identity, endpoint, data protection, asset, network, vulnerability, response, and governance evidence.</span></li><li><strong>CISA Cybersecurity Performance Goals</strong><span>The packet turns asset inventory, accountable ownership, third-party notification, known exploited vulnerability handling, backups, MFA, incident response, and secure defaults into concrete evidence requests.</span></li><li><strong>ONC/OCR Security Risk Assessment Tool</strong><span>The public runner stays local-first and reference-only, and it points practices toward qualified review for formal risk assessment decisions.</span></li><li><strong>HHS/OCR Online Tracking Technologies Guidance</strong><span>The packet treats tracker observations as potential privacy/security evidence questions for website vendors and qualified reviewers, not automatic legal conclusions.</span></li><li><strong>HHS HIPAA Security Rule Summary</strong><span>The external pre-check turns TLS, certificate, redirect, portal, and public-host observations into MSP evidence questions without claiming a compliance determination.</span></li><li><strong>HHS HIPAA Security Rule NPRM Fact Sheet</strong><span>Modernization items such as asset inventory, network maps, MFA, encryption, vulnerability scanning, segmentation, backups, incident response, and BA verification are tracked as watchlist deltas, not guaranteed current obligations.</span></li><li><strong>FDA Medical Device Cybersecurity Guidance</strong><span>The packet adds a connected-device worksheet for device/vendor ownership, patch evidence, default credential status, downtime fallback, and safety/security notice review.</span></li></ul>
         </div>
         <div>
           <h3>Artifact Checklist</h3>
-          <ul class="offering-artifacts"><li><strong>sprint-offering-readout.md</strong><span>Client-ready plain-English readout of what was reviewed, why it matters, top gaps, next questions, and boundaries.</span></li><li><strong>owner-action-plan.md</strong><span>First-week office-manager plan with scripts for MSP, vendor, and legal/compliance follow-up.</span></li><li><strong>msp-remediation-brief.md</strong><span>Technical handoff that converts gaps into checks, expected proof, owners, stages, and source mapping.</span></li><li><strong>vendor-baa-ai-questionnaire.md</strong><span>BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access, audit-log, and export/delete questions.</span></li><li><strong>evidence-collection-checklist.md</strong><span>Reference-only list of screenshots, exports, policy pages, and notes to gather in the private/offline evidence binder.</span></li><li><strong>day-one-workshop-agenda.md</strong><span>Consultative first-session agenda with discovery questions, evidence safety boundaries, lanes, and expected outputs.</span></li><li><strong>source-map.md</strong><span>Stage-to-source map showing how HHS, HICP, CISA, and ONC/OCR anchors change the packet questions.</span></li><li><strong>connected-device-inventory.md</strong><span>IoMT/medical-device worksheet for vendor, network/access path, PHI handled, patch owner, default credentials, downtime fallback, and safety notice review.</span></li><li><strong>portal-api-flow-review.md</strong><span>Portal, API, app, and FHIR-style flow worksheet covering patient identity workflow, audit logs, secure messaging, ownership, and export/delete evidence.</span></li><li><strong>incident-decision-log.md</strong><span>Decision-log template separating technical containment from qualified legal/compliance breach-notification decisions.</span></li></ul>
+          <ul class="offering-artifacts"><li><strong>practice-assurance-packet.html</strong><span>Polished buyer-facing report that summarizes the practice, top risks, evidence requests, audience handoffs, and safety boundary.</span></li><li><strong>practice-assurance-packet.md</strong><span>Plain Markdown copy of the Practice Assurance Packet for quick review or text export.</span></li><li><strong>external-evidence-precheck.md</strong><span>Reference-only public-site observation report for tracker, scheduler, portal, TLS, certificate, and vendor/MSP/reviewer follow-up questions.</span></li><li><strong>sprint-offering-readout.md</strong><span>Client-ready plain-English readout of what was reviewed, why it matters, top gaps, next questions, and boundaries.</span></li><li><strong>owner-action-plan.md</strong><span>First-week office-manager plan with scripts for MSP, vendor, and legal/compliance follow-up.</span></li><li><strong>msp-remediation-brief.md</strong><span>Technical handoff that converts gaps into checks, expected proof, owners, stages, and source mapping.</span></li><li><strong>vendor-baa-ai-questionnaire.md</strong><span>BAA, SOC 2/HITRUST evidence status, subcontractor, incident notice, retention/deletion, AI training-use, access, audit-log, and export/delete questions.</span></li><li><strong>evidence-collection-checklist.md</strong><span>Reference-only list of screenshots, exports, policy pages, and notes to gather in the private/offline evidence binder.</span></li><li><strong>day-one-workshop-agenda.md</strong><span>Consultative first-session agenda with discovery questions, evidence safety boundaries, lanes, and expected outputs.</span></li><li><strong>source-map.md</strong><span>Stage-to-source map showing how HHS, HICP, CISA, and ONC/OCR anchors change the packet questions.</span></li><li><strong>connected-device-inventory.md</strong><span>IoMT/medical-device worksheet for vendor, network/access path, PHI handled, patch owner, default credentials, downtime fallback, and safety notice review.</span></li><li><strong>portal-api-flow-review.md</strong><span>Portal, API, app, and FHIR-style flow worksheet covering patient identity workflow, audit logs, secure messaging, ownership, and export/delete evidence.</span></li><li><strong>incident-decision-log.md</strong><span>Decision-log template separating technical containment from qualified legal/compliance breach-notification decisions.</span></li></ul>
         </div>
       </div>
     </section>
@@ -299,6 +299,19 @@
             <article class="stage-card status-needs_evidence">
               <div class="stage-number">2</div>
               <div>
+                <h3>External evidence pre-check</h3>
+                <p class="stage-meta">Needs evidence &middot; Owner: Office Manager</p>
+                <p>Review public-site tracker, TLS, scheduler, intake, and portal observations before the practice relies on patient-facing workflows.</p>
+                <div class="stage-foot">
+                  <span>3 evidence gaps</span>
+                  <ul><li>external-evidence-precheck.md</li></ul>
+                </div>
+              </div>
+            </article>
+
+            <article class="stage-card status-needs_evidence">
+              <div class="stage-number">3</div>
+              <div>
                 <h3>Patient data outside the EHR map</h3>
                 <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
                 <p>Confirm each high-risk flow owner, channel, BAA need, and reference-only evidence location.</p>
@@ -310,7 +323,7 @@
             </article>
 
             <article class="stage-card status-needs_evidence">
-              <div class="stage-number">3</div>
+              <div class="stage-number">4</div>
               <div>
                 <h3>AI/PHI review</h3>
                 <p class="stage-meta">Needs evidence &middot; Owner: Office Manager</p>
@@ -323,7 +336,7 @@
             </article>
 
             <article class="stage-card status-needs_evidence">
-              <div class="stage-number">4</div>
+              <div class="stage-number">5</div>
               <div>
                 <h3>Vendor/BAA review</h3>
                 <p class="stage-meta">Needs evidence &middot; Owner: Office Manager</p>
@@ -336,7 +349,7 @@
             </article>
 
             <article class="stage-card status-needs_evidence">
-              <div class="stage-number">5</div>
+              <div class="stage-number">6</div>
               <div>
                 <h3>Access/offboarding review</h3>
                 <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
@@ -349,7 +362,7 @@
             </article>
 
             <article class="stage-card status-needs_evidence">
-              <div class="stage-number">6</div>
+              <div class="stage-number">7</div>
               <div>
                 <h3>Downtime/ransomware review</h3>
                 <p class="stage-meta">Needs evidence &middot; Owner: MSP Lead</p>
@@ -362,7 +375,7 @@
             </article>
 
             <article class="stage-card status-ready_for_review">
-              <div class="stage-number">7</div>
+              <div class="stage-number">8</div>
               <div>
                 <h3>Findings/risk register</h3>
                 <p class="stage-meta">Ready for review &middot; Owner: Practice owner/MSP</p>
@@ -375,7 +388,7 @@
             </article>
 
             <article class="stage-card status-complete">
-              <div class="stage-number">8</div>
+              <div class="stage-number">9</div>
               <div>
                 <h3>Evidence packet/export</h3>
                 <p class="stage-meta">Complete &middot; Owner: Office Manager</p>
@@ -388,7 +401,7 @@
             </article>
 
             <article class="stage-card status-ready_for_review">
-              <div class="stage-number">9</div>
+              <div class="stage-number">10</div>
               <div>
                 <h3>Owner/MSP handoff</h3>
                 <p class="stage-meta">Ready for review &middot; Owner: Practice owner/MSP</p>
@@ -493,6 +506,27 @@
               <thead><tr><th>Evidence</th><th>Status</th><th>Owner</th><th>Artifact</th></tr></thead>
               <tbody>
             <tr>
+              <td><strong>EXT-TRACKER-SCHEDULER-001</strong><span>Third-party tracker observed on appointment scheduler</span></td>
+              <td>ready_for_review</td>
+              <td>Office Manager</td>
+              <td>external-evidence-precheck.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EXT-TRACKER-INTAKE-002</strong><span>Analytics tag observed on new patient intake page</span></td>
+              <td>ready_for_review</td>
+              <td>Office Manager</td>
+              <td>external-evidence-precheck.md</td>
+            </tr>
+
+            <tr>
+              <td><strong>EXT-TLS-PORTAL-003</strong><span>Patient portal TLS and certificate evidence needs confirmation</span></td>
+              <td>needs_evidence</td>
+              <td>MSP Lead</td>
+              <td>external-evidence-precheck.md</td>
+            </tr>
+
+            <tr>
               <td><strong>EVID-ACCESS-Q2</strong><span>Quarterly access review export placeholder</span></td>
               <td>needs_evidence</td>
               <td>Office Manager</td>
@@ -526,27 +560,6 @@
               <td>Office Manager</td>
               <td>evidence-binder-index.md</td>
             </tr>
-
-            <tr>
-              <td><strong>READINESS-MFA-EHR</strong><span>EHR MFA evidence</span></td>
-              <td>blocked</td>
-              <td>MSP Lead</td>
-              <td>owner-msp-handoff.md, readiness-review.md</td>
-            </tr>
-
-            <tr>
-              <td><strong>READINESS-ACCESS-REVIEW</strong><span>Quarterly access review evidence</span></td>
-              <td>needs_evidence</td>
-              <td>MSP Lead</td>
-              <td>owner-msp-handoff.md, readiness-review.md</td>
-            </tr>
-
-            <tr>
-              <td><strong>READINESS-BACKUP-RESTORE</strong><span>Backup restore evidence</span></td>
-              <td>blocked</td>
-              <td>MSP Lead</td>
-              <td>downtime-ransomware-tabletop.md, readiness-review.md</td>
-            </tr>
             </tbody>
             </table>
           </div>
@@ -570,8 +583,8 @@
           <div class="lanes">
             <article class="lane-card">
               <h3>Owner/MSP</h3>
-              <p><strong>0</strong> high-priority actions &middot; 2 total</p>
-              <ul><li>packet-manifest.json</li><li>owner-msp-handoff.md</li></ul>
+              <p><strong>1</strong> high-priority actions &middot; 3 total</p>
+              <ul><li>packet-manifest.json</li><li>external-evidence-precheck.md</li><li>owner-msp-handoff.md</li></ul>
             </article>
 
             <article class="lane-card">
@@ -602,6 +615,13 @@
               <span>medium &middot; 90_days &middot; packet-manifest.json</span>
               This readiness item needs an owner, evidence support, and a next action before closeout.
               <span>Does this item require owner signoff, MSP evidence, vendor clarification, or professional review before action?</span>
+            </li>
+
+            <li>
+              <strong>Owner/MSP</strong>
+              <span>high &middot; 30_days &middot; external-evidence-precheck.md</span>
+              A public patient-facing workflow produced an external evidence observation that needs owner, MSP, vendor, or qualified-review follow-up.
+              <span>Who owns this public-site observation, what evidence confirms the current state, and which vendor/MSP/reviewer should answer next?</span>
             </li>
 
             <li>
@@ -659,19 +679,12 @@
               MFA evidence for an EHR or remote-access workflow is missing or not recorded.
               <span>Can you provide an MFA enforcement export or screenshot for EHR, billing, email, remote access, admin, and vendor-support accounts?</span>
             </li>
-
-            <li>
-              <strong>MSP</strong>
-              <span>high &middot; 30_days &middot; downtime-ransomware-tabletop.md</span>
-              Backup restore evidence is missing or stale for systems needed during patient care.
-              <span>Can you provide backup scope, last restore-test date, recovery owner, and a private binder reference ID?</span>
-            </li>
             </ol>
         </section>
 
         <section>
           <h2>Generated Artifacts</h2>
-          <ul class="artifact-list"><li>sprint-index.md</li><li>sprint-client-readout.md</li><li>sprint-command-center.html</li><li>sprint-offering-readout.md</li><li>owner-action-plan.md</li><li>msp-remediation-brief.md</li><li>vendor-baa-ai-questionnaire.md</li><li>evidence-collection-checklist.md</li><li>day-one-workshop-agenda.md</li><li>source-map.md</li><li>sprint-summary.json</li><li>risk-register.csv</li><li>evidence-index.json</li><li>handoff-actions.csv</li><li>connector-evidence-summary.json</li><li>control-evidence-matrix.csv</li><li>control-evidence-matrix.json</li><li>evidence-freshness-report.md</li><li>msp-evidence-request.md</li><li>vendor-evidence-request.md</li><li>insurance-evidence-packet.md</li><li>readiness-review.md</li><li>ephi-flow-map.md</li><li>vendor-baa-review.md</li><li>ai-workflow-review.md</li><li>downtime-ransomware-tabletop.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li><li>incident-decision-log.md</li><li>evidence-binder-export/</li></ul>
+          <ul class="artifact-list"><li>sprint-index.md</li><li>practice-assurance-packet.html</li><li>practice-assurance-packet.md</li><li>external-evidence-precheck.md</li><li>sprint-client-readout.md</li><li>sprint-command-center.html</li><li>sprint-offering-readout.md</li><li>owner-action-plan.md</li><li>msp-remediation-brief.md</li><li>vendor-baa-ai-questionnaire.md</li><li>evidence-collection-checklist.md</li><li>day-one-workshop-agenda.md</li><li>source-map.md</li><li>sprint-summary.json</li><li>risk-register.csv</li><li>evidence-index.json</li><li>handoff-actions.csv</li><li>connector-evidence-summary.json</li><li>control-evidence-matrix.csv</li><li>control-evidence-matrix.json</li><li>evidence-freshness-report.md</li><li>msp-evidence-request.md</li><li>vendor-evidence-request.md</li><li>insurance-evidence-packet.md</li><li>readiness-review.md</li><li>ephi-flow-map.md</li><li>vendor-baa-review.md</li><li>ai-workflow-review.md</li><li>downtime-ransomware-tabletop.md</li><li>connected-device-inventory.md</li><li>portal-api-flow-review.md</li><li>external-evidence-precheck.md</li><li>evidence-binder-export/</li></ul>
         </section>
       </aside>
     </div>

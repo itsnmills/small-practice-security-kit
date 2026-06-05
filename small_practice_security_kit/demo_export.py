@@ -22,6 +22,7 @@ PACKET_ARTIFACTS = [
     "downtime-ransomware-tabletop.md",
     "connected-device-inventory.md",
     "portal-api-flow-review.md",
+    "external-evidence-precheck.md",
     "incident-decision-log.md",
     "incident-evidence-timeline.md",
     "incident-after-action-report.md",
@@ -35,6 +36,8 @@ PACKET_ARTIFACTS = [
 ]
 SPRINT_ARTIFACTS = [
     "sprint-index.md",
+    "practice-assurance-packet.html",
+    "practice-assurance-packet.md",
     "sprint-client-readout.md",
     "sprint-command-center.html",
     "sprint-offering-readout.md",

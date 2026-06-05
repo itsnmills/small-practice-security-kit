@@ -204,6 +204,55 @@ For each app or integration, record owner, scope, vendor, authorization method, 
 
 ---
 
+# External Evidence Pre-Check
+
+Purpose: collect safe public-site observations that can be turned into owner, MSP, website vendor, and qualified-review questions before a practice shares internal access or patient data.
+
+Status: **synthetic demo observations only**
+
+Authorization boundary: **Demo data only. For a real practice, run public-site checks only with written authorization, no real patient submissions, and reference-only evidence.**
+
+## Scope Reviewed
+
+| Type | Target | Context |
+| --- | --- | --- |
+| Domain | familydental.example | Public DNS/website context only |
+| scheduler | Appointment scheduler | appointment request categories; no real form submission in demo |
+| intake | New patient intake | demographic and insurance categories; no real form submission in demo |
+| portal | Patient portal login | authenticated portal context to review with vendor |
+
+## Observations
+
+| ID | Priority | Page/workflow | Observed item | Destination or host | Send to | Next action |
+| --- | --- | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | high | Appointment scheduler | Meta Pixel | connect.facebook.net and graph.facebook.com | Vendor/legal/compliance reviewer | Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages. |
+| EXT-TRACKER-INTAKE-002 | high | New patient intake | Google Tag Manager and Google Analytics | googletagmanager.com and google-analytics.com | Vendor/legal/compliance reviewer | Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision. |
+| EXT-TLS-PORTAL-003 | medium | Patient portal login | HTTPS certificate and redirect posture | portal.familydental.example | MSP | Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list. |
+
+## Questions This Creates
+
+| Recipient | Question | Evidence to request |
+| --- | --- | --- |
+| Website vendor / tag manager owner | Which trackers, analytics tags, pixels, or scripts fire on appointment, intake, portal, payment, registration, or contact workflows? | Tracker inventory, tag manager export, page/workflow label, date observed, and sanitized network destination summary. |
+| Privacy/legal/compliance reviewer | Does any tracker observation require BAA, authorization, privacy notice, contract, or formal risk-analysis review before the practice relies on the workflow? | Reviewer disposition, vendor relationship status, data category summary, and decision note. |
+| MSP / website host | Can you confirm HTTPS redirect behavior, certificate validity, TLS posture, HSTS status, and ownership for patient-facing hosts? | TLS scan summary, certificate expiry/issuer, HSTS status, covered host list, and MSP/vendor attestation. |
+
+## Review Basis
+
+- HHS/OCR tracking technology guidance says regulated entities must evaluate tracking technologies in authenticated pages and other contexts where PHI may be collected or disclosed.
+- A June 20, 2024 federal court order vacated the portion of OCR guidance that treated an IP address plus a visit to certain unauthenticated public webpages as automatically triggering HIPAA obligations.
+- This packet therefore flags potential privacy/security evidence questions for review. It does not declare a HIPAA violation, breach, legal conclusion, or regulatory finding.
+
+## Evidence Safety Boundary
+
+- Do not submit real patient forms during public-site testing.
+- Do not store patient-entered details, session cookies, private admin links, credentials, raw logs, raw contracts, or full intercepted payloads with sensitive data.
+- Use page labels, timestamps, tag/script names, destination domains, certificate status, owner, and reference IDs.
+- Keep screenshots or browser captures sanitized and in the private/offline evidence binder if needed.
+
+
+---
+
 # Incident Decision Log
 
 Use this as a handoff template when an outage, ransomware concern, lost device, vendor notice, misdirected message, or suspicious access question appears during the sprint. It separates technical response work from qualified breach-notification and legal/compliance decisions.
@@ -363,10 +412,10 @@ This is a lifecycle index for reference-only evidence. Store raw proof in the pr
 
 ## Lifecycle Summary
 
-- Total evidence rows: 46
+- Total evidence rows: 49
 - Blocked: 13
-- Needs evidence: 22
-- Ready for review: 2
+- Needs evidence: 23
+- Ready for review: 4
 - Closed: 8
 - Traceable to ePHI flows: 23
 
@@ -374,6 +423,9 @@ This is a lifecycle index for reference-only evidence. Store raw proof in the pr
 
 | Evidence ID | Area | Lifecycle | Closeout | Owner | Trace | Acceptable evidence | Next action | Artifacts |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | external_precheck | Provided | Ready for review | Office Manager | EXT-TRACKER-SCHEDULER-001 | tracker inventory; tag manager export; sanitized network request summary; page/workflow label; vendor BAA or authorization review note; privacy reviewer disposition | Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages. | external-evidence-precheck.md |
+| EXT-TRACKER-INTAKE-002 | external_precheck | Provided | Ready for review | Office Manager | EXT-TRACKER-INTAKE-002 | tracker inventory; tag manager export; sanitized network request summary; page/workflow label; vendor BAA or authorization review note; privacy reviewer disposition | Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision. | external-evidence-precheck.md |
+| EXT-TLS-PORTAL-003 | external_precheck | Requested | Needs evidence | MSP Lead | EXT-TLS-PORTAL-003 | TLS scan summary; certificate expiry and issuer; HTTPS redirect evidence; HSTS status; covered host list; MSP attestation | Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list. | external-evidence-precheck.md |
 | EVID-ACCESS-Q2 | access | Partial | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Quarterly access review export placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
 | EVID-BACKUP-RESTORE | backup | Stale | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Backup restore test record placeholder; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
 | EVID-CYBER-INSURANCE | insurance | Requested | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Cyber insurance renewal evidence list; date observed; owner signoff; scope covered; exception note | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. | evidence-binder-index.md |
@@ -476,6 +528,9 @@ Initial risk level: **High**
 
 | Evidence | Closeout | Owner | Trace | Next action |
 | --- | --- | --- | --- | --- |
+| EXT-TRACKER-SCHEDULER-001 | Ready for review | Office Manager | EXT-TRACKER-SCHEDULER-001 | Ask the website vendor and qualified privacy reviewer whether this tracker should be removed or restricted on scheduler pages. |
+| EXT-TRACKER-INTAKE-002 | Ready for review | Office Manager | EXT-TRACKER-INTAKE-002 | Ask the website vendor to document tag purpose, data sent, and whether the intake workflow should suppress analytics tags pending reviewer decision. |
+| EXT-TLS-PORTAL-003 | Needs evidence | MSP Lead | EXT-TLS-PORTAL-003 | Ask the MSP or portal vendor for TLS scan summary, certificate expiry, redirect behavior, HSTS status, and covered host list. |
 | EVID-ACCESS-Q2 | Needs evidence | Office Manager | EVID-ACCESS-Q2 | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
 | EVID-BACKUP-RESTORE | Blocked | MSP Lead | EVID-BACKUP-RESTORE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
 | EVID-CYBER-INSURANCE | Needs evidence | Practice Owner | EVID-CYBER-INSURANCE | Collect or refresh the reference-only evidence and record owner/date/scope without uploading raw evidence. |
@@ -485,9 +540,6 @@ Initial risk level: **High**
 | READINESS-ACCESS-REVIEW | Needs evidence | MSP Lead | quarterly_access_review | Request proof, document exceptions, and assign an owner before closeout. |
 | READINESS-BACKUP-RESTORE | Blocked | MSP Lead | tested_backups | Request proof, document exceptions, and assign an owner before closeout. |
 | READINESS-BAA-REGISTER | Blocked | Office Manager | baa_register | Request proof, document exceptions, and assign an owner before closeout. |
-| READINESS-DOWNTIME-PLAN | Blocked | MSP Lead | downtime_plan | Request proof, document exceptions, and assign an owner before closeout. |
-| READINESS-LOG-REVIEW | Blocked | MSP Lead | log_review_cadence | Request proof, document exceptions, and assign an owner before closeout. |
-| FLOW-001 | Needs evidence | MSP or workflow owner | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | Confirm the flow owner, channel, BAA need, and private evidence reference. |
 
 ## Handoff Boundary
 
