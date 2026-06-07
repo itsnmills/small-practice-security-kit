@@ -1,22 +1,24 @@
-# Small Practice Security Kit
+# Velari Small Practice Security Kit
 
 **PHI-avoidant, local-first readiness packet builder for small healthcare practices.**
 
+![Velari Sprint Command Center showing readiness status, evidence gaps, and first-week actions](docs/demo/screenshots/velari-sprint-command-center.png)
+
 This is the public Velari flagship proof repo: a local packet builder for small practice owners, practice managers, MSPs, and consultants who need a concrete evidence organization workflow before an audit conversation, renewal, AI rollout, downtime event, incident review, or owner/MSP handoff.
 
-Start with the sanitized sample packet:
+Start with the branded, sanitized proof:
 
+- Velari Sprint Command Center: [`docs/demo/sprint-command-center.html`](docs/demo/sprint-command-center.html)
 - Practice Assurance Packet: [`docs/demo/practice-assurance-packet.html`](docs/demo/practice-assurance-packet.html)
 - Markdown copy: [`docs/demo/practice-assurance-packet.md`](docs/demo/practice-assurance-packet.md)
 - External Evidence Pre-Check: [`docs/demo/external-evidence-precheck.md`](docs/demo/external-evidence-precheck.md)
 - Complete Markdown packet: [`docs/demo/review-packet.md`](docs/demo/review-packet.md)
 - Print-friendly HTML packet: [`docs/demo/review-packet.html`](docs/demo/review-packet.html)
+- Hero screenshot: [`docs/demo/screenshots/velari-sprint-command-center.png`](docs/demo/screenshots/velari-sprint-command-center.png)
 - Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
 - Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
 - Safety boundary: [`docs/security-model.md`](docs/security-model.md)
 - Release note: [`docs/releases/v0.1.0.md`](docs/releases/v0.1.0.md)
-
-![Review packet screenshot](docs/demo/screenshots/review-packet.png)
 
 The checked-in demo uses a fictional `Family Dental Clinic` profile and contains no real PHI, credentials, private URLs, raw logs, contracts, or incident details.
 
