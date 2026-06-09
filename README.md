@@ -234,17 +234,21 @@ The numbered directories preserve the original modular pieces. They now serve th
 
 ### Companion and reference integrations
 
-Companion repos are optional supporting integrations and reference patterns. They are not the main public product surface.
+Companion repos are optional supporting integrations and reference patterns. They are not the main public product surface. Public links below are visitor-safe; private Velari modules are intentionally listed without GitHub links so the public README does not send prospects to 404 pages.
 
 | Repo | Supporting role |
 |---|---|
 | [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples for allowed/prohibited data handling |
-| [`agent-audit-trail`](https://github.com/itsnmills/agent-audit-trail) | AI audit-log evidence references |
-| [`vendor-risk-manager`](https://github.com/itsnmills/vendor-risk-manager) | Vendor/BAA due-diligence register input patterns |
-| [`velari-chainrisk`](https://github.com/itsnmills/velari-chainrisk) | Attack-chain prioritization and owner/MSP remediation ordering |
-| [`hipaa-scanner`](https://github.com/itsnmills/hipaa-scanner) | Public-facing readiness triage and security-header reference checks |
-| [`hipaa-compliance-engine`](https://github.com/itsnmills/hipaa-compliance-engine) | Evidence/control mapping ideas |
-| [`ai-governance-auditor`](https://github.com/itsnmills/ai-governance-auditor) | AI governance checklist patterns |
+| [`cloud-iam-access-review-analyzer`](https://github.com/itsnmills/cloud-iam-access-review-analyzer) | Cloud/IAM access review evidence for owner/MSP action queues |
+| [`health-ai-governance-auditor`](https://github.com/itsnmills/health-ai-governance-auditor) | AI vendor governance, BAA, PHI-handling, and safety review patterns |
+| [`policy-to-evidence-graph`](https://github.com/itsnmills/policy-to-evidence-graph) | Control-to-evidence mapping and readiness trend ideas |
+| [`security-operations-triage-pipeline`](https://github.com/itsnmills/security-operations-triage-pipeline) | Security finding prioritization and ticket/handoff patterns |
+| `agent-audit-trail` | Private Velari module for AI audit-log evidence references |
+| `vendor-risk-manager` | Private Velari module for vendor/BAA due-diligence register input patterns |
+| `velari-chainrisk` | Private Velari module for attack-chain prioritization and owner/MSP remediation ordering |
+| `hipaa-scanner` | Private Velari module for readiness triage and security-header reference checks |
+| `hipaa-compliance-engine` | Private Velari module for evidence/control mapping ideas |
+| `ai-governance-auditor` | Private legacy module superseded by `health-ai-governance-auditor` |
 
 Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md). ChainRisk-specific handoff notes live in [`docs/import-plans/velari-chainrisk.md`](docs/import-plans/velari-chainrisk.md).
 
