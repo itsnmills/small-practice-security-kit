@@ -6,6 +6,16 @@
 
 This is the public Velari flagship proof repo: a local packet builder for small practice owners, practice managers, MSPs, and consultants who need a concrete evidence organization workflow before an audit conversation, renewal, AI rollout, downtime event, incident review, or owner/MSP handoff.
 
+## Work with Velari
+
+Use this repo to request a no-PHI external evidence pre-check for a small healthcare practice, MSP-supported practice, or AI-governance readiness review. Start from [Noah Mills on GitHub](https://github.com/itsnmills) or open a GitHub issue in this repo with public-safe context only: practice type, general systems involved, and the decision you are trying to prepare for. Do not include PHI, credentials, private URLs, contracts, logs, patient details, or incident details.
+
+For practice owners, the short version is:
+
+- This creates a clean readiness packet before an audit, renewal, MSP handoff, AI rollout, downtime event, or owner decision.
+- It keeps the first pass local-first and PHI-avoidant.
+- It turns scattered evidence into owner actions, MSP questions, vendor/BAA follow-up, and reviewer-safe artifacts.
+
 Start with the branded, sanitized proof:
 
 - Velari Sprint Command Center: [`docs/demo/sprint-command-center.html`](docs/demo/sprint-command-center.html)
