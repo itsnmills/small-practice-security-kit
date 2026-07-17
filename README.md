@@ -28,7 +28,8 @@ Start with the branded, sanitized proof:
 - Screenshot: [`docs/demo/screenshots/review-packet.png`](docs/demo/screenshots/review-packet.png)
 - Canonical manifest: [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
 - Safety boundary: [`docs/security-model.md`](docs/security-model.md)
-- Release note: [`docs/releases/v0.1.0.md`](docs/releases/v0.1.0.md)
+- Public suite map: [`docs/suite.md`](docs/suite.md)
+- Release notes: [`docs/releases/v0.1.1.md`](docs/releases/v0.1.1.md) (2026-07-16 suite refresh) · [`docs/releases/v0.1.0.md`](docs/releases/v0.1.0.md)
 
 The checked-in demo uses a fictional `Family Dental Clinic` profile and contains no real PHI, credentials, private URLs, raw logs, contracts, or incident details.
 
@@ -250,7 +251,7 @@ Companion repos are optional supporting integrations and reference patterns. The
 |---|---|
 | [`Strands-PHI-Guardrails-Demo`](https://github.com/itsnmills/Strands-PHI-Guardrails-Demo) | PHI guardrail examples for allowed/prohibited data handling |
 | [`cloud-iam-access-review-analyzer`](https://github.com/itsnmills/cloud-iam-access-review-analyzer) | Cloud/IAM access review evidence for owner/MSP action queues |
-| [`health-ai-governance-auditor`](https://github.com/itsnmills/health-ai-governance-auditor) | AI vendor governance, BAA, PHI-handling, and safety review patterns |
+| [`health-ai-governance-auditor`](https://github.com/itsnmills/health-ai-governance-auditor) | AI vendor governance, BAA, PHI-handling, agent/MCP, and safety review patterns (v0.1.1) |
 | [`policy-to-evidence-graph`](https://github.com/itsnmills/policy-to-evidence-graph) | Control-to-evidence mapping and readiness trend ideas |
 | [`security-operations-triage-pipeline`](https://github.com/itsnmills/security-operations-triage-pipeline) | Security finding prioritization and ticket/handoff patterns |
 | `agent-audit-trail` | Private Velari module for AI audit-log evidence references |
@@ -260,7 +261,7 @@ Companion repos are optional supporting integrations and reference patterns. The
 | `hipaa-compliance-engine` | Private Velari module for evidence/control mapping ideas |
 | `ai-governance-auditor` | Private legacy module superseded by `health-ai-governance-auditor` |
 
-Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md). ChainRisk-specific handoff notes live in [`docs/import-plans/velari-chainrisk.md`](docs/import-plans/velari-chainrisk.md).
+Living suite map: [`docs/suite.md`](docs/suite.md). Detailed integration notes live in [`docs/import-plans/existing-repos.md`](docs/import-plans/existing-repos.md). The local GitHub description recommendation lives in [`docs/github-repo-description.md`](docs/github-repo-description.md). ChainRisk-specific handoff notes live in [`docs/import-plans/velari-chainrisk.md`](docs/import-plans/velari-chainrisk.md).
 
 ## Safety and data boundary
 
@@ -300,10 +301,11 @@ Use it as a practical organizer and first-pass evidence workflow.
 
 ## Roadmap
 
-1. Add read-only Google Workspace and Microsoft 365 API collectors after CSV/import mode is stable.
-2. Add optional PDF rendering and richer scoring/priority explanations.
-3. Add more sample profiles and demo packets for different practice types.
-4. Add release workflow for demo artifacts across repos and improve compatibility for companion integrations.
+1. Keep public suite companions on a visible refresh cadence (see [`docs/suite.md`](docs/suite.md)).
+2. Add read-only Google Workspace and Microsoft 365 API collectors after CSV/import mode is stable.
+3. Add optional PDF rendering and richer scoring/priority explanations.
+4. Add more sample profiles and demo packets for different practice types.
+5. Add release workflow for demo artifacts across repos and improve compatibility for companion integrations.
 
 ## License
 
