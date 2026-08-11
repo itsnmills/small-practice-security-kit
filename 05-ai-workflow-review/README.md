@@ -44,5 +44,3 @@ Import **summary risk cards and owner actions** into the packet — not raw logs
 - Vendor follow-up questions
 - Owner/MSP actions for the 30/60/90 roadmap
 - Evidence references (BAA status, policy excerpt, training opt-out, tool allowlist screenshot references)
-
-See the suite map: [`docs/suite.md`](../docs/suite.md).

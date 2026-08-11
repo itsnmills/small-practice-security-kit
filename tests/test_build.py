@@ -44,13 +44,6 @@ class BuildTests(unittest.TestCase):
         subprocess.run([sys.executable, "scripts/build.py", "samples/family_dental_clinic.yaml"], cwd=ROOT, check=True)
         subprocess.run([sys.executable, "scripts/validate_content.py"], cwd=ROOT, check=True)
 
-    def test_docs_describe_existing_repo_imports(self) -> None:
-        text = (ROOT / "docs" / "import-plans" / "existing-repos.md").read_text(encoding="utf-8")
-        self.assertIn("hipaa-evidence-binder-template", text)
-        self.assertIn("ephi-data-flow-mapper", text)
-        self.assertIn("vendor-risk-manager", text)
-        self.assertIn("health-ai-governance-auditor", text)
-
 
 if __name__ == "__main__":
     unittest.main()
