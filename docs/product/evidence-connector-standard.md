@@ -1,8 +1,8 @@
-# Velari Evidence Connector Standard
+# Evidence Connector Standard
 
 ## Purpose
 
-The Evidence Connector Standard turns Velari from a manual intake workflow into a local-first evidence operations workflow. A practice owner should connect or import what already exists, then Velari should ask only for the gaps that require an owner, MSP, vendor, or qualified reviewer.
+The Evidence Connector Standard turns the kit from a manual intake workflow into a local-first evidence operations workflow. A practice owner should connect or import what already exists, then the kit should ask only for the gaps that require an owner, MSP, vendor, or qualified reviewer.
 
 Connectors collect metadata and summaries. They do not collect PHI, credentials, mailbox contents, Drive or SharePoint file contents, raw logs, patient screenshots, raw contracts, or incident-sensitive source details.
 
@@ -107,7 +107,7 @@ Each connector must declare:
 - unsafe scopes,
 - human approval requirements.
 
-Default Velari connectors use official read-only APIs when the practice/MSP can authorize them, with CSV imports as a fallback. Official Google Workspace and Microsoft 365 connectors store OAuth tokens in the macOS Keychain when available, fall back to a local `0600` token file only when Keychain is unavailable, and collect only aggregated metadata.
+Default connectors use official read-only APIs when the practice/MSP can authorize them, with CSV imports as a fallback. Official Google Workspace and Microsoft 365 connectors store OAuth tokens in the macOS Keychain when available, fall back to a local `0600` token file only when Keychain is unavailable, and collect only aggregated metadata.
 
 Official Google Workspace evidence currently translates API metadata into action-ready MFA, admin-role, and account-lifecycle evidence. Official Microsoft 365 evidence translates Graph metadata into MFA, account-status, self-service password reset, guest-access, and account-lifecycle evidence. These connectors store aggregate counts and evidence questions; they do not store user identities, mailbox contents, Drive/SharePoint/OneDrive contents, raw sign-in logs, screenshots, credentials, or private admin URLs.
 
