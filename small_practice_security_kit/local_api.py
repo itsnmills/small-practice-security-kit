@@ -27,6 +27,7 @@ from .connectors import (
     write_connector_wizard,
 )
 from .dashboard import build_dashboard
+from .ephi_map import annotate_profile, strip_derived_ephi_fields
 from .evidence_refresh import build_refresh_report, write_refresh_report
 from .file_inventory import FileInventoryError, default_evidence_roots, inventory_folder, resolve_allowed_path
 from .incident_runner import enrich_incident_timeline, safety_findings, scenario_options, scenario_template
@@ -265,7 +266,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                 self._json(HTTPStatus.OK, {"ok": True, "catalogs": load_catalogs()})
                 return
             if request_path == "/api/profile":
-                self._json(HTTPStatus.OK, {"ok": True, "profile": load_profile(state.profile_path)})
+                self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(load_profile(state.profile_path))})
                 return
             if request_path == "/api/incident-runner":
                 profile = load_profile(state.profile_path)
@@ -327,12 +328,13 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     state.profile_path = path
                     state.out_dir = build_packet(path)
                     build_dashboard(path, state.out_dir)
-                    self._json(HTTPStatus.OK, {"ok": True, "profile": profile, "profile_path": str(path), "links": self._links()})
+                    self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(profile), "profile_path": str(path), "links": self._links()})
                     return
                 if self.path == "/api/profile":
                     profile = payload.get("profile")
                     if not isinstance(profile, dict):
                         raise ValueError("profile object required")
+                    profile = strip_derived_ephi_fields(profile)
                     findings = [finding.to_dict() for finding in find_sensitive_data(profile)]
                     blocked = [finding.to_dict() for finding in blocking_findings(profile)]
                     if blocked:
@@ -343,13 +345,13 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     if profiles_root not in state.profile_path.resolve().parents:
                         state.profile_path = safe_profile_path(profile["practice"]["name"])
                     atomic_write_profile(profile, state.profile_path, action="save", warnings=findings)
-                    self._json(HTTPStatus.OK, {"ok": True, "profile": profile, "findings": findings})
+                    self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(profile), "findings": findings})
                     return
                 if self.path == "/api/suggestions/rebuild":
                     profile = payload.get("profile") or load_profile(state.profile_path)
-                    profile = rebuild_profile_suggestions(profile)
+                    profile = rebuild_profile_suggestions(strip_derived_ephi_fields(profile))
                     findings = [finding.to_dict() for finding in find_sensitive_data(profile)]
-                    self._json(HTTPStatus.OK, {"ok": True, "profile": profile, "findings": findings})
+                    self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(profile), "findings": findings})
                     return
                 if self.path == "/api/evidence":
                     profile = load_profile(state.profile_path)

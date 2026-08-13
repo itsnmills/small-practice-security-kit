@@ -47,7 +47,7 @@ The local app is organized around the real practice workflow:
 - Practice basics
 - Systems used
 - Vendors and BAAs
-- Suggested ePHI flows
+- Suggested ePHI flows, classified as never-touches-the-EHR, leaves-or-enters-the-EHR, or stays-in-the-EHR
 - Readiness checklist
 - AI workflow safety
 - Downtime and incident prep

@@ -14,7 +14,7 @@ practice preset -> common systems -> suggested vendors/flows/evidence -> local s
 - Starts from practice-type presets instead of a blank form.
 - Offers common healthcare system defaults.
 - Builds vendor/BAA review rows from selected systems.
-- Suggests ePHI flows from deterministic rules.
+- Suggests ePHI flows from deterministic rules and labels which ones never touch the EHR.
 - Tracks evidence references without storing PHI.
 - Includes AI workflow safety review.
 - Generates the dashboard, packet, roadmap, and evidence index.

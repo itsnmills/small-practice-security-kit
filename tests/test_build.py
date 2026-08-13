@@ -16,6 +16,8 @@ class BuildTests(unittest.TestCase):
         text = packet.read_text(encoding="utf-8")
         self.assertIn("Readiness Review", text)
         self.assertIn("ePHI Flow Map", text)
+        self.assertIn("Patient Data Outside the EHR", text)
+        self.assertIn("Never touches the EHR", text)
         self.assertIn("Vendor and BAA Review", text)
         self.assertIn("AI Workflow Review", text)
         self.assertIn("External Evidence Pre-Check", text)

@@ -7,6 +7,7 @@ from datetime import date
 from pathlib import Path
 
 from .brand import VELARI_CSS_VARIABLES
+from .ephi_map import KIND_LABELS, LANE_LABELS, build_ephi_map
 from .evidence_lifecycle import (
     build_evidence_lifecycle,
     closeout_label,
@@ -186,11 +187,34 @@ Overall initial risk: **{risk}**
 
 
 def ephi_flow_map(profile: dict) -> str:
+    mapped = build_ephi_map(profile)
+    counts = mapped["counts"]
     flow_lifecycle = lifecycle_by_source(lifecycle_records(profile), "flow")
+    outside_rows = [
+        [
+            flow["id"],
+            flow["ehr_lane_label"],
+            flow["outside_kind_label"],
+            flow["source"],
+            flow["destination"],
+            flow["vendor"],
+            flow["ephi_type"],
+            yn(flow["baa_needed"]),
+            flow["risk"],
+            flow["evidence_needed"],
+        ]
+        for flow in mapped["outside_flows"]
+    ]
+    outside_system_rows = [
+        [system["name"], system["category"], system["ephi_role"], system["vendor"], system["evidence_needed"]]
+        for system in mapped["outside_systems"]
+    ]
     system_rows = [[s["name"], s["category"], s["ephi_role"], s["vendor"], s["evidence_needed"]] for s in profile["systems"]]
     flow_rows = [
         [
             f["id"],
+            LANE_LABELS.get(f.get("ehr_lane", ""), f.get("ehr_lane_label", "")),
+            KIND_LABELS.get(f.get("outside_kind", ""), f.get("outside_kind_label", "")),
             f["source"],
             f["destination"],
             f["vendor"],
@@ -201,7 +225,7 @@ def ephi_flow_map(profile: dict) -> str:
             closeout_label(flow_lifecycle[f["id"]]["closeout_state"]),
             f["evidence_needed"],
         ]
-        for f in profile["flows"]
+        for f in mapped["flows"]
     ]
     trace_rows = [
         [
@@ -212,15 +236,48 @@ def ephi_flow_map(profile: dict) -> str:
         ]
         for record in flow_lifecycle.values()
     ]
+    if counts["outside_flows"]:
+        lead = (
+            f"{counts['never_touches']} flow(s) never touch the EHR. "
+            f"{counts['crosses']} leave or enter the EHR. "
+            f"{counts['high_risk_outside']} of those are high or critical risk."
+        )
+    else:
+        lead = "No patient-data paths outside the EHR were mapped in this profile."
+    outside_table = (
+        table(
+            ["Flow", "Lane", "Location", "Source", "Destination", "Vendor", "ePHI Type", "BAA Needed", "Risk", "Evidence Needed"],
+            outside_rows,
+        )
+        if outside_rows
+        else "No outside-the-EHR flows were identified."
+    )
+    outside_systems_table = (
+        table(["System", "Category", "ePHI Role", "Vendor", "Evidence Needed"], outside_system_rows)
+        if outside_system_rows
+        else "No non-EHR systems were listed."
+    )
     return f"""# ePHI Flow Map
 
-## Systems
+Patient data outside the EHR is where small-practice evidence usually breaks: inboxes, shared drives, imaging exports, messaging, billing, AI tools, and other sidecar workflows. The EHR is one system. This map is the rest.
+
+{lead}
+
+## Patient Data Outside the EHR
+
+{outside_table}
+
+## Systems Outside the EHR
+
+{outside_systems_table}
+
+## All Systems
 
 {table(['System', 'Category', 'ePHI Role', 'Vendor', 'Evidence Needed'], system_rows)}
 
-## Flows
+## All Flows
 
-{table(['Flow', 'Source', 'Destination', 'Vendor', 'ePHI Type', 'BAA Needed', 'Risk', 'Lifecycle', 'Closeout', 'Evidence Needed'], flow_rows)}
+{table(['Flow', 'Lane', 'Location', 'Source', 'Destination', 'Vendor', 'ePHI Type', 'BAA Needed', 'Risk', 'Lifecycle', 'Closeout', 'Evidence Needed'], flow_rows)}
 
 ## Traceability Summary
 

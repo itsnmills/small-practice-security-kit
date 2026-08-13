@@ -39,9 +39,11 @@ day action list.
 ```
 
 The part I think is most useful is the **Patient Data Outside the EHR Map**: inboxes, shared
-drives, AI tools, vendor portals, exports, contractors, backups, and billing systems. Once
-those flows are visible, the evidence binder, vendor register, and downtime plan stop being
-abstract.
+drives, AI tools, vendor portals, exports, contractors, backups, and billing systems. The
+generated `ephi-flow-map.md` now leads with those sidecar paths — flows that never touch the
+EHR, plus flows that leave or enter the chart — instead of treating every row as equal.
+Once those flows are visible, the evidence binder, vendor register, and downtime plan stop
+being abstract.
 
 ## Where the content comes from
 

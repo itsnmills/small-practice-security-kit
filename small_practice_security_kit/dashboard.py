@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Iterable
 
 from .brand import VELARI_CSS_VARIABLES
+from .ephi_map import build_ephi_map
 from .evidence_lifecycle import build_evidence_lifecycle, closeout_label, lifecycle_label, summarize_lifecycle, trace_label
 from .packet import OUT, _incident_profile, render_html, risk_level
 from .profile import load_profile, slugify
@@ -111,6 +112,12 @@ def next_actions(profile: dict) -> list[str]:
     for workflow in profile["ai_workflows"]:
         if workflow["decision"] in {"restricted", "prohibited"}:
             actions.append(f"Create staff guidance for AI workflow: {workflow['name']}.")
+    mapped = build_ephi_map(profile)
+    if mapped["high_risk_outside"]:
+        first = mapped["high_risk_outside"][0]
+        actions.append(
+            f"Assign an owner for high-risk patient-data flow {first['id']} ({first['source']} -> {first['destination']}), which {first['ehr_lane_label'].lower()}."
+        )
     if profile["downtime"]["downtime_plan_status"] != "documented":
         actions.append("Assign downtime owners and document manual workarounds.")
     deduped: list[str] = []
@@ -156,7 +163,9 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     readiness_total = len(profile["readiness"])
     vendors_touching_ephi = sum(1 for vendor in profile["vendors"] if vendor["touches_ephi"])
     signed_baas = sum(1 for vendor in profile["vendors"] if vendor["touches_ephi"] and vendor["baa_status"] == "signed")
+    ephi_map = build_ephi_map(profile)
     high_flows = sum(1 for flow in profile["flows"] if flow["risk"] == "high")
+    outside_flows = ephi_map["counts"]["outside_flows"]
     restricted_ai = sum(1 for workflow in profile["ai_workflows"] if workflow["decision"] != "allowed")
     incident = _incident_profile(profile)
     incident_events = len(incident.get("timeline", []))
@@ -169,7 +178,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     task_list = "".join(
         [
             task_row("Readiness review", "MFA, access, backups, training, logging, and incident basics.", "review" if gaps else "done", "#readiness"),
-            task_row("ePHI flow map", "Where ePHI enters, moves, rests, and leaves the practice.", "review" if high_flows else "done", "#flows"),
+            task_row("ePHI flow map", "Patient-data paths that leave, enter, or never touch the EHR.", "review" if outside_flows or high_flows else "done", "#flows"),
             task_row("Vendor and BAA review", "BAA status, SOC 2/HITRUST status, subcontractors, incident terms, and AI data use.", "review" if signed_baas < vendors_touching_ephi else "done", "#vendors"),
             task_row("AI workflow review", "Allowed, restricted, and prohibited AI uses.", "review" if restricted_ai else "done", "#ai"),
             task_row("Downtime packet", "Critical systems, restore tests, tabletop, and manual workarounds.", "blocked" if profile["downtime"]["downtime_plan_status"] != "documented" else "done", "#downtime"),
@@ -181,13 +190,15 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
     flow_rows = [
         [
             esc(flow["id"]),
+            badge(flow["ehr_lane_label"], kind="blocked" if flow["ehr_lane"] == "outside_ehr" else "review" if flow["outside_ehr"] else "done"),
+            esc(flow["outside_kind_label"]),
             esc(flow["source"]),
             esc(flow["destination"]),
             esc(flow["vendor"]),
             badge("BAA needed" if flow["baa_needed"] else "No BAA flag", kind="review" if flow["baa_needed"] else "unknown"),
             badge(flow["risk"]),
         ]
-        for flow in profile["flows"]
+        for flow in ephi_map["flows"]
     ]
     vendor_rows = [
         [
@@ -403,6 +414,7 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         {metric("Initial risk", risk, f"{len(gaps)} priority readiness gaps", status_class(risk))}
         {metric("Readiness", f"{ready_count}/{readiness_total}", "baseline items ready")}
         {metric("Vendor BAAs", f"{signed_baas}/{vendors_touching_ephi}", "ePHI vendors signed")}
+        {metric("Outside the EHR", outside_flows, f"{ephi_map['counts']['never_touches']} never touch the chart", "blocked" if ephi_map["counts"]["high_risk_outside"] else "")}
         {metric("AI workflows", restricted_ai, "restricted or prohibited")}
         {metric("Incident actions", incident_actions, f"{incident_events} timeline events")}
         {metric("Evidence closeout", f"{lifecycle_summary['closed']}/{lifecycle_summary['total']}", f"{lifecycle_summary['blocked']} blocked, {lifecycle_summary['needs_evidence']} need evidence")}
@@ -419,8 +431,8 @@ def build_dashboard(profile_path: Path, output_dir: Path | None = None) -> Path:
         {table(["Item", "Ready?", "Evidence lane"], readiness_rows(profile))}
       </section>
       <section id="flows" class="panel section">
-        <div class="section-head"><div><h2>ePHI flow map</h2><p>Plain-English view of where ePHI enters, moves, rests, and leaves the practice.</p></div></div>
-        {table(["Flow", "Source", "Destination", "Vendor", "BAA", "Risk"], flow_rows)}
+        <div class="section-head"><div><h2>Patient data outside the EHR</h2><p>The EHR is one system. This map is the rest: email, shared files, imaging exports, messaging, billing, AI, and other sidecar paths.</p></div>{badge(f"{outside_flows} outside-EHR flows")}</div>
+        {table(["Flow", "Lane", "Location", "Source", "Destination", "Vendor", "BAA", "Risk"], flow_rows)}
       </section>
       <section id="vendors" class="panel section">
         <div class="section-head"><div><h2>Vendor and BAA review</h2><p>BAA status, SOC 2/HITRUST evidence status, incident terms, subcontractor visibility, and AI/customer-data questions.</p></div></div>

@@ -426,11 +426,12 @@ const SECTION_PLAYBOOKS = {
     ],
   },
   flows: {
-    lane: "Data movement",
-    question: "Where can ePHI move, and who controls the path?",
-    goal: "Make invisible data movement concrete enough for a practice owner to decide what needs a BAA, control, vendor answer, or downtime workaround.",
+    lane: "Patient data outside the EHR",
+    question: "Where can ePHI move besides the chart, and who controls that path?",
+    goal: "Make invisible sidecar movement concrete enough for a practice owner to decide what needs a BAA, control, vendor answer, or downtime workaround.",
     doNow: [
       "Confirm each source, destination, vendor, transmission method, and evidence need.",
+      "Pay extra attention to flows that never touch the EHR.",
       "Flag flows with unknown vendor ownership or missing BAA status.",
       "Remove flows that do not exist so the packet stays credible.",
     ],
@@ -769,25 +770,49 @@ function renderVendorsCommand() {
   );
 }
 
+function isEhrEndpoint(label) {
+  const hay = String(label || "").toLowerCase();
+  const matched = (profile.systems || []).find((system) => {
+    const name = String(system.name || "").toLowerCase();
+    return name && (hay === name || (name.length >= 8 && hay.includes(name)) || (hay.length >= 8 && name.includes(hay)));
+  });
+  if (matched) {
+    const category = String(matched.category || "").toLowerCase();
+    const name = String(matched.name || "").toLowerCase();
+    return category === "ehr" || category === "emr" || /\behr\b|\bemr\b|electronic health|electronic medical/.test(name);
+  }
+  return /\behr\b|\bemr\b|electronic health|electronic medical/.test(hay);
+}
+
+function classifyFlowLane(flow) {
+  const sourceEhr = isEhrEndpoint(flow.source);
+  const destEhr = isEhrEndpoint(flow.destination);
+  if (sourceEhr && destEhr) return { key: "inside_ehr", label: "Stays in the EHR" };
+  if (sourceEhr || destEhr) return { key: "crosses_ehr", label: "Leaves or enters the EHR" };
+  return { key: "outside_ehr", label: "Never touches the EHR" };
+}
+
 function renderFlowsCommand() {
   const flows = profile.flows || [];
-  const baaNeeded = countWhere(flows, (flow) => flow.baa_needed);
-  const highRisk = countWhere(flows, (flow) => isHighRisk(flow.risk));
+  const lanes = flows.map((flow) => classifyFlowLane(flow));
+  const neverTouches = countWhere(lanes, (lane) => lane.key === "outside_ehr");
+  const crosses = countWhere(lanes, (lane) => lane.key === "crosses_ehr");
+  const highRisk = countWhere(flows, (flow) => isHighRisk(flow.risk) && classifyFlowLane(flow).key !== "inside_ehr");
   const unconfirmed = countWhere(flows, (flow) => flow.confirmed === false);
   renderCommandStrip(
     "#flows-command",
-    "ePHI movement map",
-    "The hard question is not whether ePHI exists; it is where it moves.",
+    "Patient data outside the EHR",
+    "The EHR is one system. The hard question is where patient data goes besides the chart.",
     "Use this page to force plain-English answers about source, destination, vendor, transmission method, and what proof is needed.",
     [
-      commandMetric("Flows mapped", flows.length, "Generated plus manual"),
-      commandMetric("Need BAA review", baaNeeded, "Contract lane"),
-      commandMetric("High risk", highRisk, "Owner/MSP attention", highRisk ? "needs-work" : ""),
+      commandMetric("Never touches EHR", neverTouches, "Sidecar or shadow path", neverTouches ? "needs-work" : ""),
+      commandMetric("Leaves or enters EHR", crosses, "Chart handoff"),
+      commandMetric("High-risk outside", highRisk, "Owner/MSP attention", highRisk ? "needs-work" : ""),
       commandMetric("Unconfirmed", unconfirmed, "Verify workflow", unconfirmed ? "needs-work" : ""),
     ],
     [
-      "Review high-risk flows with the owner and MSP before packet generation.",
-      "For each ePHI flow, identify the evidence reference that proves the safeguard or contract status.",
+      "Review flows that never touch the EHR before the ones that stay in the chart.",
+      "For each outside path, identify the evidence reference that proves the safeguard or contract status.",
     ],
   );
 }
@@ -943,11 +968,33 @@ function renderVendors() {
   </tbody></table>`;
 }
 
+function refreshFlowLanes() {
+  const table = $("#flows-table");
+  if (!table) return;
+  collectInputs(table);
+  renderFlowsCommand();
+  Array.from(table.querySelectorAll("tbody tr")).forEach((row, index) => {
+    const flow = (profile.flows || [])[index];
+    if (!flow) return;
+    const lane = classifyFlowLane(flow);
+    row.classList.toggle("row-outside-ehr", lane.key === "outside_ehr");
+    row.classList.toggle("row-crosses-ehr", lane.key === "crosses_ehr");
+    const pill = row.querySelector(".lane-pill");
+    if (pill) {
+      pill.className = `lane-pill lane-${lane.key}`;
+      pill.textContent = lane.label;
+    }
+  });
+}
+
 function renderFlows() {
   renderFlowsCommand();
-  $("#flows-table").innerHTML = `<table><thead><tr><th>Flow</th><th>Source</th><th>Destination</th><th>Vendor</th><th>ePHI type</th><th>Transmission</th><th>BAA</th><th>Risk</th><th>Evidence</th><th>Remove</th></tr></thead><tbody>
-    ${profile.flows.map((flow, index) => `<tr>
+  $("#flows-table").innerHTML = `<table><thead><tr><th>Flow</th><th>Lane</th><th>Source</th><th>Destination</th><th>Vendor</th><th>ePHI type</th><th>Transmission</th><th>BAA</th><th>Risk</th><th>Evidence</th><th>Remove</th></tr></thead><tbody>
+    ${profile.flows.map((flow, index) => {
+      const lane = classifyFlowLane(flow);
+      return `<tr class="${lane.key === "outside_ehr" ? "row-outside-ehr" : lane.key === "crosses_ehr" ? "row-crosses-ehr" : ""}">
       <td>${textInput(flow.id, `flows.${index}.id`)}</td>
+      <td><span class="lane-pill lane-${lane.key}">${escapeHtml(lane.label)}</span></td>
       <td>${textInput(flow.source, `flows.${index}.source`)}</td>
       <td>${textInput(flow.destination, `flows.${index}.destination`)}</td>
       <td>${textInput(flow.vendor, `flows.${index}.vendor`)}</td>
@@ -957,7 +1004,8 @@ function renderFlows() {
       <td>${selectInput(flow.risk, `flows.${index}.risk`, ["low", "medium", "high", "critical"])}</td>
       <td>${textInput(flow.evidence_needed, `flows.${index}.evidence_needed`)}</td>
       <td class="actions-cell"><button class="danger compact" type="button" data-remove="flows:${index}">Remove</button></td>
-    </tr>`).join("")}
+    </tr>`;
+    }).join("")}
   </tbody></table>`;
 }
 
@@ -1524,6 +1572,13 @@ async function init() {
     } catch (error) {
       showAlert(error.message);
     }
+  });
+
+  $("#flows-table").addEventListener("input", (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+    const path = target.getAttribute("data-path") || "";
+    if (path.includes(".source") || path.includes(".destination")) refreshFlowLanes();
   });
 
   document.addEventListener("click", (event) => {

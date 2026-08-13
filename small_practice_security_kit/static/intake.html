@@ -28,7 +28,7 @@
       <button data-section="systems">Systems used</button>
       <button data-section="connectors">Connectors</button>
       <button data-section="vendors">Vendors / BAAs</button>
-      <button data-section="flows">ePHI flows</button>
+      <button data-section="flows">Outside the EHR</button>
       <button data-section="readiness">Readiness</button>
       <button data-section="ai">AI workflows</button>
       <button data-section="incident">Incident runner</button>
@@ -206,9 +206,9 @@
       </section>
 
       <section id="section-flows" class="panel intake-section">
-        <span class="eyebrow">ePHI flow map</span>
-        <h2>Review suggested ePHI movement</h2>
-        <p class="lede">Flows are suggested deterministically from selected systems. Confirm, edit, or remove them before generating the packet.</p>
+        <span class="eyebrow">Patient data outside the EHR</span>
+        <h2>Where patient data lives besides the chart</h2>
+        <p class="lede">The EHR is one system. Confirm the sidecar paths: email, shared files, imaging exports, messaging, billing, AI, and anything else that never hits the chart.</p>
         <div class="section-playbook" data-playbook="flows"></div>
         <div id="flows-command" class="command-strip"></div>
         <div id="flows-table" class="editor-table"></div>

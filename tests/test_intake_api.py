@@ -76,6 +76,13 @@ class IntakeApiTests(unittest.TestCase):
         with urllib.request.urlopen(self.base + "/dashboard.html", timeout=5) as response:
             self.assertIn("Owner dashboard", response.read().decode("utf-8"))
 
+    def test_profile_api_annotates_outside_ehr_lanes(self) -> None:
+        loaded = self.get_json("/api/profile")
+        self.assertTrue(loaded["ok"])
+        self.assertGreater(len(loaded["profile"]["flows"]), 0)
+        self.assertIn("ehr_lane", loaded["profile"]["flows"][0])
+        self.assertIn("ehr_lane_label", loaded["profile"]["flows"][0])
+
     def test_connector_center_collects_and_builds_from_evidence(self) -> None:
         status = self.get_json("/api/status")
         practice_name = f"API Connector Center Clinic {uuid.uuid4().hex[:8]}"
