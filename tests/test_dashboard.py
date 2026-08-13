@@ -43,6 +43,27 @@ class DashboardTests(unittest.TestCase):
         self.assertTrue((ROOT / "out" / "family_dental_clinic" / "incident-after-action-report.html").exists())
         self.assertTrue((ROOT / "out" / "family_dental_clinic" / "evidence-binder-index.html").exists())
 
+    def test_serve_refuses_non_loopback_host(self) -> None:
+        result = subprocess.run(
+            [
+                sys.executable,
+                "scripts/serve_dashboard.py",
+                "--profile",
+                "samples/family_dental_clinic.yaml",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8766",
+                "--no-open",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            timeout=20,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("loopback", result.stderr.lower())
+
 
 if __name__ == "__main__":
     unittest.main()

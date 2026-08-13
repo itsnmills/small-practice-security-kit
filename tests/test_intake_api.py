@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import copy
+import http.client
 import json
+import tempfile
 import threading
 import unittest
 import urllib.error
@@ -9,10 +11,17 @@ import urllib.request
 import uuid
 from pathlib import Path
 
-from small_practice_security_kit.local_api import AppState, LocalIntakeServer, make_handler
+from small_practice_security_kit.local_api import (
+    AppState,
+    LocalIntakeServer,
+    host_header_is_allowed,
+    is_loopback_bind_host,
+    make_handler,
+    origin_matches_host,
+)
 from small_practice_security_kit.packet import build_packet
 from small_practice_security_kit.suggestions import create_profile_from_preset
-from small_practice_security_kit.workspaces import atomic_write_profile, safe_profile_path
+from small_practice_security_kit.workspaces import ROOT, atomic_write_profile, safe_profile_path
 
 
 class IntakeApiTests(unittest.TestCase):
@@ -167,6 +176,106 @@ class IntakeApiTests(unittest.TestCase):
             self.post_json("/api/build", {}, "wrong-token")
         self.assertEqual(raised.exception.code, 403)
         raised.exception.close()
+
+    def test_get_without_local_host_is_forbidden(self) -> None:
+        conn = http.client.HTTPConnection("127.0.0.1", self.server.server_address[1], timeout=5)
+        try:
+            conn.request("GET", "/api/status", headers={"Host": "evil.example"})
+            response = conn.getresponse()
+            body = response.read().decode("utf-8")
+            self.assertEqual(response.status, 403)
+            self.assertIn("Host", body)
+        finally:
+            conn.close()
+
+    def test_origin_suffix_spoof_is_rejected(self) -> None:
+        port = self.server.server_address[1]
+        host = f"127.0.0.1:{port}"
+        request = urllib.request.Request(
+            self.base + "/api/build",
+            data=b"{}",
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "X-SPSK-Token": self.state.csrf_token,
+                "Origin": f"http://evil{host}",
+                "Host": host,
+            },
+        )
+        with self.assertRaises(urllib.error.HTTPError) as raised:
+            urllib.request.urlopen(request, timeout=5)
+        self.assertEqual(raised.exception.code, 403)
+        body = raised.exception.read().decode("utf-8")
+        self.assertIn("Same-origin", body)
+        raised.exception.close()
+
+    def test_write_accepts_exact_local_origin(self) -> None:
+        port = self.server.server_address[1]
+        request = urllib.request.Request(
+            self.base + "/api/connectors/wizard",
+            data=b"{}",
+            method="POST",
+            headers={
+                "Content-Type": "application/json",
+                "X-SPSK-Token": self.state.csrf_token,
+                "Origin": f"http://127.0.0.1:{port}",
+            },
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        self.assertTrue(payload["ok"])
+
+    def test_inventory_folder_rejects_etc_passwd(self) -> None:
+        with self.assertRaises(urllib.error.HTTPError) as raised:
+            self.post_json("/api/evidence/inventory-folder", {"path": "/etc/passwd"}, self.state.csrf_token)
+        self.assertEqual(raised.exception.code, 400)
+        body = raised.exception.read().decode("utf-8")
+        self.assertIn("outside the allowed workspace", body)
+        self.assertNotIn("root:", body)
+        raised.exception.close()
+
+    def test_msp_response_rejects_etc_passwd(self) -> None:
+        with self.assertRaises(urllib.error.HTTPError) as raised:
+            self.post_json("/api/connectors/msp-response", {"path": "/etc/passwd"}, self.state.csrf_token)
+        self.assertEqual(raised.exception.code, 400)
+        body = raised.exception.read().decode("utf-8")
+        self.assertIn("outside the allowed workspace", body)
+        self.assertNotIn("root:", body)
+        raised.exception.close()
+
+    def test_msp_response_does_not_return_parse_contents(self) -> None:
+        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+            bad = Path(tmp) / "bad-msp.yaml"
+            bad.write_text("responses: not-a-list\nsecret: super-secret-value\n", encoding="utf-8")
+            with self.assertRaises(urllib.error.HTTPError) as raised:
+                self.post_json("/api/connectors/msp-response", {"path": str(bad)}, self.state.csrf_token)
+            self.assertEqual(raised.exception.code, 400)
+            body = raised.exception.read().decode("utf-8")
+            self.assertIn("Could not import MSP response file.", body)
+            self.assertNotIn("super-secret-value", body)
+            self.assertNotIn("not-a-list", body)
+            raised.exception.close()
+
+    def test_inventory_folder_accepts_workspace_samples(self) -> None:
+        result = self.post_json("/api/evidence/inventory-folder", {"path": "samples"}, self.state.csrf_token)
+        self.assertTrue(result["ok"])
+        self.assertGreater(len(result["inventory"]["evidence"]), 0)
+
+    def test_loopback_host_and_origin_helpers(self) -> None:
+        self.assertTrue(is_loopback_bind_host("127.0.0.1"))
+        self.assertTrue(is_loopback_bind_host("localhost"))
+        self.assertTrue(is_loopback_bind_host("::1"))
+        self.assertTrue(is_loopback_bind_host("[::1]"))
+        self.assertFalse(is_loopback_bind_host("0.0.0.0"))
+        self.assertFalse(is_loopback_bind_host("192.168.1.5"))
+        self.assertTrue(host_header_is_allowed("127.0.0.1:8765", 8765))
+        self.assertTrue(host_header_is_allowed("localhost:8765", 8765))
+        self.assertTrue(host_header_is_allowed("[::1]:8765", 8765))
+        self.assertFalse(host_header_is_allowed("evil.example:8765", 8765))
+        self.assertFalse(host_header_is_allowed("127.0.0.1:9999", 8765))
+        self.assertTrue(origin_matches_host("http://127.0.0.1:8765", "127.0.0.1:8765"))
+        self.assertFalse(origin_matches_host("http://evil127.0.0.1:8765", "127.0.0.1:8765"))
+        self.assertFalse(origin_matches_host("http://127.0.0.1.attacker.example:8765", "127.0.0.1:8765"))
 
 
 if __name__ == "__main__":

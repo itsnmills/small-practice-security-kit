@@ -12,7 +12,8 @@ Small Practice Security Kit is designed for **local-first, PHI-avoidant evidence
 
 ## Local-only defaults
 
-- The local server binds to `127.0.0.1` by default.
+- The local server binds to `127.0.0.1` by default and refuses a non-loopback `--host`.
+- GET and POST both require a loopback client address and a loopback `Host` header (`127.0.0.1`, `localhost`, or `[::1]` with the bound port).
 - The UI displays local-only status.
 - There is no telemetry.
 - There is no analytics.
@@ -83,7 +84,8 @@ Bad examples:
 Write endpoints require:
 
 - localhost client address,
-- same-origin request,
+- loopback `Host` header (`127.0.0.1`, `localhost`, or `[::1]` with the bound port),
+- same-origin request (scheme, host, and port compared exactly when `Origin` is present),
 - JSON content type,
 - request body under the local size limit,
 - per-session `X-SPSK-Token`,
@@ -111,6 +113,8 @@ The evidence screen can optionally scan a local folder for evidence references.
 
 This inventory:
 
+- only scans folders that resolve under the kit workspace evidence root (`out/`, `profiles/`, `examples/`, `samples/`, or the workspace itself),
+- rejects `..` segments, symlink escapes, and paths outside that tree,
 - records filename-derived titles,
 - records relative paths,
 - records extension,
@@ -120,6 +124,8 @@ This inventory:
 - skips unsupported file types,
 - skips hidden files and folders,
 - blocks sensitive-looking filenames before import.
+
+Local MSP response import uses the same workspace/evidence-root allowlist and does not return raw parse exceptions.
 
 ## Sensitive data detection
 

@@ -8,7 +8,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from small_practice_security_kit.dashboard import build_dashboard
-from small_practice_security_kit.local_api import AppState, LocalIntakeServer, make_handler
+from small_practice_security_kit.local_api import AppState, LocalIntakeServer, is_loopback_bind_host, make_handler
 from small_practice_security_kit.packet import build_packet
 
 
@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build and serve the local Small Practice Security Kit intake workspace.")
     parser.add_argument("--profile", default="samples/family_dental_clinic.yaml", help="Practice profile YAML to open.")
-    parser.add_argument("--host", default="127.0.0.1", help="Host to bind. Default: 127.0.0.1")
+    parser.add_argument("--host", default="127.0.0.1", help="Loopback host to bind (127.0.0.1, localhost, or ::1). Default: 127.0.0.1")
     parser.add_argument("--port", type=int, default=8765, help="Port to bind. Default: 8765")
     parser.add_argument("--no-open", action="store_true", help="Do not open the browser automatically.")
     parser.add_argument("--build-only", action="store_true", help="Build dashboard files without starting the local server.")
@@ -32,6 +32,14 @@ def main() -> int:
         profile_path = ROOT / profile_path
     if not profile_path.exists():
         print(f"Profile not found: {profile_path}", file=sys.stderr)
+        return 1
+
+    if not args.build_only and not is_loopback_bind_host(args.host):
+        print(
+            f"ERROR: Refusing to bind to {args.host!r}. "
+            "This local server only accepts loopback addresses (127.0.0.1, localhost, or ::1).",
+            file=sys.stderr,
+        )
         return 1
 
     out_dir = build_packet(profile_path)

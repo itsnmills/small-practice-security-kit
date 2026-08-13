@@ -10,6 +10,8 @@ from socketserver import ThreadingMixIn
 from typing import Any
 from urllib.parse import urlparse
 
+import yaml
+
 from .catalogs import load_catalogs
 from .connectors import (
     collect_dns_email_auth,
@@ -26,7 +28,7 @@ from .connectors import (
 )
 from .dashboard import build_dashboard
 from .evidence_refresh import build_refresh_report, write_refresh_report
-from .file_inventory import FileInventoryError, inventory_folder
+from .file_inventory import FileInventoryError, default_evidence_roots, inventory_folder, resolve_allowed_path
 from .incident_runner import enrich_incident_timeline, safety_findings, scenario_options, scenario_template
 from .packet import build_packet
 from .profile import load_profile
@@ -40,6 +42,74 @@ from .workspaces import ROOT, atomic_write_profile, ensure_workspace_dirs, safe_
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 MAX_BODY_BYTES = 512 * 1024
+LOOPBACK_HOSTNAMES = frozenset({"127.0.0.1", "localhost", "::1"})
+
+
+def is_loopback_bind_host(host: str) -> bool:
+    value = host.strip().lower()
+    if value.startswith("[") and value.endswith("]"):
+        value = value[1:-1]
+    return value in LOOPBACK_HOSTNAMES
+
+
+def parse_http_host(host: str) -> tuple[str, int | None] | None:
+    value = host.strip()
+    if not value:
+        return None
+    if value.startswith("["):
+        end = value.find("]")
+        if end <= 1:
+            return None
+        hostname = value[1:end]
+        rest = value[end + 1 :]
+        if not rest:
+            return hostname, None
+        if not rest.startswith(":"):
+            return None
+        try:
+            return hostname, int(rest[1:])
+        except ValueError:
+            return None
+    if value.count(":") == 1:
+        hostname, port_text = value.rsplit(":", 1)
+        if not hostname or not port_text.isdigit():
+            return None
+        return hostname, int(port_text)
+    if ":" in value:
+        return None
+    return value, None
+
+
+def host_header_is_allowed(host: str, bound_port: int) -> bool:
+    parsed = parse_http_host(host)
+    if parsed is None:
+        return False
+    hostname, port = parsed
+    if hostname.lower() not in LOOPBACK_HOSTNAMES:
+        return False
+    if port is None:
+        return bound_port == 80
+    return port == bound_port
+
+
+def origin_matches_host(origin: str, host: str) -> bool:
+    parsed = urlparse(origin)
+    if parsed.scheme != "http" or not parsed.netloc:
+        return False
+    if parsed.username or parsed.password:
+        return False
+    if parsed.path not in {"", "/"}:
+        return False
+    if parsed.params or parsed.query or parsed.fragment:
+        return False
+    return parsed.netloc.lower() == host.strip().lower()
+
+
+def _import_msp_response(response_path: Path) -> dict[str, Any]:
+    try:
+        return collect_msp_response(response_path)
+    except (OSError, UnicodeError, ValueError, yaml.YAMLError) as exc:
+        raise ValueError("Could not import MSP response file.") from exc
 
 
 def _connector_dir(out_dir: Path) -> Path:
@@ -90,8 +160,15 @@ class AppState:
     csrf_token: str = ""
 
     def __post_init__(self) -> None:
+        if not is_loopback_bind_host(self.host):
+            raise ValueError(
+                f"Local intake server host must be loopback (127.0.0.1, localhost, or ::1), not {self.host!r}."
+            )
         if not self.csrf_token:
             self.csrf_token = secrets.token_urlsafe(24)
+
+    def evidence_roots(self) -> list[Path]:
+        return default_evidence_roots(self.out_dir)
 
 
 class LocalIntakeServer(ThreadingMixIn, HTTPServer):
@@ -124,16 +201,27 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             self._json(status, payload)
 
         def _is_local(self) -> bool:
-            return self.client_address[0] in {"127.0.0.1", "::1", "localhost"}
+            client = self.client_address[0]
+            if client in {"127.0.0.1", "::1", "localhost"}:
+                return True
+            return client == "::ffff:127.0.0.1"
 
-        def _check_post_security(self) -> bool:
+        def _check_local_request(self) -> bool:
             if not self._is_local():
-                self._error(HTTPStatus.FORBIDDEN, "Write endpoints are localhost-only.")
+                self._error(HTTPStatus.FORBIDDEN, "This service is localhost-only.")
+                return False
+            host = self.headers.get("Host", "")
+            if not host_header_is_allowed(host, self.server.server_address[1]):
+                self._error(HTTPStatus.FORBIDDEN, "Invalid Host header.")
                 return False
             origin = self.headers.get("Origin")
-            host = self.headers.get("Host", "")
-            if origin and not origin.endswith(host):
+            if origin and not origin_matches_host(origin, host):
                 self._error(HTTPStatus.FORBIDDEN, "Same-origin check failed.")
+                return False
+            return True
+
+        def _check_post_security(self) -> bool:
+            if not self._check_local_request():
                 return False
             if self.headers.get("X-SPSK-Token") != state.csrf_token:
                 self._error(HTTPStatus.FORBIDDEN, "Missing or invalid local session token.")
@@ -151,6 +239,8 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             return json.loads(raw.decode("utf-8") or "{}")
 
         def do_GET(self) -> None:
+            if not self._check_local_request():
+                return
             request_path = urlparse(self.path).path
             if request_path in {"/", "/intake.html"}:
                 self._serve_file(STATIC_DIR / "intake.html", "text/html; charset=utf-8")
@@ -278,7 +368,9 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     folder = payload.get("path")
                     if not isinstance(folder, str) or not folder.strip():
                         raise ValueError("path is required")
-                    inventory = inventory_folder(Path(folder))
+                    allowed_roots = state.evidence_roots()
+                    inventory_path = resolve_allowed_path(folder.strip(), allowed_roots)
+                    inventory = inventory_folder(inventory_path, allowed_roots=allowed_roots)
                     self._json(HTTPStatus.OK, {"ok": True, "inventory": inventory})
                     return
                 if self.path == "/api/incident-runner/template":
@@ -338,7 +430,13 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     response_path = str(payload.get("path") or "").strip()
                     if not response_path:
                         raise ValueError("path is required")
-                    path = write_connector_bundle(collect_msp_response(Path(response_path)), _connector_dir(state.out_dir) / "msp-response.json")
+                    safe_path = resolve_allowed_path(response_path, state.evidence_roots())
+                    if not safe_path.is_file():
+                        raise FileInventoryError("MSP response path must be a file inside the workspace.")
+                    path = write_connector_bundle(
+                        _import_msp_response(safe_path),
+                        _connector_dir(state.out_dir) / "msp-response.json",
+                    )
                     self._json(HTTPStatus.OK, {"ok": True, "path": str(path), "connectors": _connector_status(state.out_dir)})
                     return
                 if self.path == "/api/connectors/google-workspace/connect":

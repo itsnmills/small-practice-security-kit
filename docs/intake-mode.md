@@ -72,6 +72,8 @@ The owner-friendly path is still important, but the best first user is often the
 
 The evidence step can optionally scan a local evidence folder and import metadata-only references.
 
+The folder must resolve under this kit workspace (`out/`, `profiles/`, `examples/`, `samples/`, or the workspace root). Parent-directory segments and symlink escapes are rejected.
+
 It does not read document contents. It records relative file names, extensions, sizes, modified timestamps, and reference paths so the packet can point reviewers to evidence without storing PHI.
 
 ## Non-goals
