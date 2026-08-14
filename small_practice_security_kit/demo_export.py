@@ -73,6 +73,11 @@ BROWSER_CANDIDATES = [
     "google-chrome-stable",
     "chrome",
 ]
+MAC_BROWSER_PATHS = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Chromium.app/Contents/MacOS/Chromium",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+]
 
 
 @dataclass(frozen=True)
@@ -87,6 +92,10 @@ def find_browser() -> str | None:
         browser = shutil.which(candidate)
         if browser:
             return browser
+    if platform.system() == "Darwin":
+        for path in MAC_BROWSER_PATHS:
+            if Path(path).exists():
+                return path
     return None
 
 

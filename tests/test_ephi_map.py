@@ -72,8 +72,10 @@ class EphiMapTests(unittest.TestCase):
         self.assertIn("Patient Data Outside the EHR", text)
         self.assertIn("Never touches the EHR", text)
         self.assertIn("Leaves or enters the EHR", text)
-        self.assertLess(text.index("Patient Data Outside the EHR"), text.index("All Systems"))
-        self.assertIn("FLOW-003", text.split("## All Systems", 1)[0])
+        self.assertIn("Staff email", text.split("## Patient Data Outside the EHR", 1)[1])
+        self.assertNotIn("## Systems Outside the EHR", text)
+        self.assertNotIn("## All Systems", text)
+        self.assertNotIn("## Traceability Summary", text)
 
     def test_annotate_and_strip_keep_profile_clean(self) -> None:
         profile = load_profile(SAMPLE)

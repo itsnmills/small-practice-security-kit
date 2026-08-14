@@ -6,8 +6,7 @@ import re
 from datetime import date
 from pathlib import Path
 
-from .brand import VELARI_CSS_VARIABLES
-from .ephi_map import KIND_LABELS, LANE_LABELS, build_ephi_map
+from .ephi_map import build_ephi_map
 from .evidence_lifecycle import (
     build_evidence_lifecycle,
     closeout_label,
@@ -37,8 +36,253 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "out"
 
 
+READINESS_ITEMS = [
+    ("mfa_email", "Email MFA", "Access"),
+    ("mfa_ehr", "EHR MFA", "Access"),
+    ("unique_accounts", "Unique accounts", "Access"),
+    ("quarterly_access_review", "Quarterly access review", "Evidence"),
+    ("tested_backups", "Tested backups", "Resilience"),
+    ("vendor_inventory", "Vendor inventory", "Vendor"),
+    ("baa_register", "BAA register", "Vendor"),
+    ("incident_contact_list", "Incident contact list", "Incident"),
+    ("downtime_plan", "Downtime plan", "Resilience"),
+    ("security_training_current", "Training current", "Workforce"),
+    ("log_review_cadence", "Log review cadence", "Monitoring"),
+]
+SETTLED_BAA = {
+    "signed",
+    "not applicable",
+    "not needed for no-PHI demo workflow",
+    "payer relationship",
+}
+
+
 def yn(value: bool) -> str:
     return "Yes" if value else "No"
+
+
+def _bullets(items: list[str]) -> str:
+    return "\n".join(f"- {item}" for item in items) if items else "- None recorded."
+
+
+def _joined_kinds(labels: list[str]) -> str:
+    unique = [label for label in dict.fromkeys(labels) if label]
+    if not unique:
+        return "sidecar systems"
+    if len(unique) == 1:
+        return unique[0]
+    if len(unique) == 2:
+        return f"{unique[0]} and {unique[1]}"
+    return f"{', '.join(unique[:-1])}, and {unique[-1]}"
+
+
+def readiness_insight(profile: dict) -> str:
+    readiness = profile["readiness"]
+    ready = [label for key, label, _area in READINESS_ITEMS if readiness.get(key)]
+    missing = [label for key, label, _area in READINESS_ITEMS if not readiness.get(key)]
+    total = len(READINESS_ITEMS)
+    if not missing:
+        return f"All {total} baseline items have an evidence mark."
+    return (
+        f"{len(ready)} of {total} baseline items have evidence. "
+        f"Still open: {', '.join(missing)}."
+    )
+
+
+def ephi_insight(profile: dict) -> str:
+    mapped = build_ephi_map(profile)
+    counts = mapped["counts"]
+    hot = [
+        flow["outside_kind_label"]
+        for flow in mapped["never_touches"]
+        if str(flow.get("risk", "")).lower() in {"high", "critical"}
+    ]
+    if not counts["outside_flows"]:
+        return "No patient-data paths outside the EHR were mapped."
+    lead = (
+        f"{counts['never_touches']} flows never touch the EHR; "
+        f"{counts['crosses']} leave or enter the chart."
+    )
+    if hot:
+        return f"{lead} The high-risk paths that stay off the chart are {_joined_kinds(hot)}."
+    return lead
+
+
+def vendor_insight(profile: dict) -> str:
+    vendors = list(profile.get("vendors") or [])
+    ephi = [vendor for vendor in vendors if vendor.get("touches_ephi")]
+    open_baa = [vendor for vendor in ephi if str(vendor.get("baa_status", "")).lower() not in SETTLED_BAA]
+    if not ephi:
+        return "No vendors are marked as touching ePHI."
+    if not open_baa:
+        return f"All {len(ephi)} ePHI vendors have a settled BAA status. Confirm review dates still."
+    names = ", ".join(vendor["name"] for vendor in open_baa)
+    return f"{len(open_baa)} of {len(ephi)} ePHI vendors still need a BAA answer: {names}."
+
+
+def ai_insight(profile: dict) -> str:
+    workflows = list(profile.get("ai_workflows") or [])
+    if not workflows:
+        return "No AI workflows were recorded."
+    counts = {"allowed": 0, "restricted": 0, "prohibited": 0}
+    for workflow in workflows:
+        key = str(workflow.get("decision", "")).lower()
+        if key in counts:
+            counts[key] += 1
+    return (
+        f"{len(workflows)} AI workflows recorded: "
+        f"{counts['allowed']} allowed, {counts['restricted']} restricted, {counts['prohibited']} prohibited."
+    )
+
+
+MAIN_SECTION_TITLES = {
+    "Readiness Review",
+    "ePHI Flow Map",
+    "Vendor and BAA Review",
+    "AI Workflow Review",
+}
+
+
+def _vendor_for_flow(flow: dict, vendors: list[dict]) -> dict:
+    name = str(flow.get("vendor") or "").strip()
+    for vendor in vendors:
+        if vendor.get("name") == name:
+            return vendor
+    dest = str(flow.get("destination") or "").casefold()
+    for vendor in vendors:
+        vendor_name = str(vendor.get("name") or "").casefold()
+        if dest and (dest in vendor_name or vendor_name in dest):
+            return vendor
+    return {}
+
+
+def _owner_for(profile: dict, kind: str) -> str:
+    practice = profile.get("practice") or {}
+    if kind == "vendor":
+        return str(practice.get("security_owner") or "Office Manager")
+    return str(practice.get("technical_owner") or "MSP Lead")
+
+
+def joined_findings(profile: dict) -> list[dict[str, str]]:
+    mapped = build_ephi_map(profile)
+    vendors = list(profile.get("vendors") or [])
+    readiness = profile.get("readiness") or {}
+    findings: list[dict[str, str]] = []
+    seen: set[str] = set()
+
+    def add(key: str, path: str, why: str, ask: str, owner: str) -> None:
+        if key in seen:
+            return
+        seen.add(key)
+        findings.append({"path": path, "why": why, "ask": ask, "owner": owner})
+
+    for flow in mapped["outside_flows"]:
+        if str(flow.get("risk", "")).lower() not in {"high", "critical"}:
+            continue
+        vendor = _vendor_for_flow(flow, vendors)
+        parts = [flow["ehr_lane_label"].rstrip(".")]
+        if flow.get("outside_kind_label"):
+            parts.append(str(flow["outside_kind_label"]))
+        if flow.get("ephi_type"):
+            parts.append(str(flow["ephi_type"]))
+        baa_status = str(vendor.get("baa_status") or "")
+        if flow.get("baa_needed") and vendor:
+            if baa_status.lower() not in SETTLED_BAA:
+                parts.append(f"BAA {baa_status}")
+        elif flow.get("baa_needed") and not vendor:
+            parts.append("no vendor row in the register")
+        if flow.get("outside_kind") in {"files", "imaging"} and not readiness.get("tested_backups"):
+            parts.append("no restore-test evidence")
+        if flow.get("outside_kind") == "ai":
+            ai_use = str(vendor.get("ai_training_use") or "")
+            if ai_use:
+                parts.append(f"AI/data use {ai_use}")
+        path = f"{flow['source']} → {flow['destination']}"
+        owner = _owner_for(profile, "vendor" if flow.get("outside_kind") == "ai" else "technical")
+        add(path, path, ". ".join(parts) + ".", f"{flow['evidence_needed'].rstrip('.')}.", owner)
+
+    if not readiness.get("mfa_ehr"):
+        add(
+            "ehr-mfa",
+            "EHR access",
+            "EHR MFA is unmarked, while billing and intake still enter or leave the chart.",
+            "MFA enforcement export for EHR, admin, and vendor-support accounts.",
+            _owner_for(profile, "technical"),
+        )
+    if not readiness.get("tested_backups") and any(
+        flow.get("outside_kind") in {"files", "imaging", "email"} for flow in mapped["outside_flows"]
+    ):
+        add(
+            "restore",
+            "Backup restore",
+            "Patient-data copies sit on shared drives and imaging workstations, and no restore test is recorded.",
+            "Backup scope, last restore-test date, recovery owner, private binder reference.",
+            _owner_for(profile, "technical"),
+        )
+
+    return findings
+
+
+def verdict(profile: dict) -> str:
+    readiness = profile.get("readiness") or {}
+    mapped = build_ephi_map(profile)
+    vendors = [vendor for vendor in profile.get("vendors") or [] if vendor.get("touches_ephi")]
+    open_baa = [
+        vendor["name"]
+        for vendor in vendors
+        if str(vendor.get("baa_status", "")).lower() not in SETTLED_BAA
+    ]
+    have = []
+    if readiness.get("mfa_email"):
+        have.append("email MFA")
+    if readiness.get("vendor_inventory"):
+        have.append("a vendor list")
+    if readiness.get("incident_contact_list"):
+        have.append("an incident contact list")
+    if len(have) >= 3:
+        have_text = f"{', '.join(have[:-1])}, and {have[-1]}"
+    elif len(have) == 2:
+        have_text = f"{have[0]} and {have[1]}"
+    else:
+        have_text = have[0] if have else "little baseline evidence"
+    missing = []
+    if not readiness.get("mfa_ehr"):
+        missing.append("EHR MFA")
+    if not readiness.get("tested_backups"):
+        missing.append("a restore test")
+    if open_baa:
+        missing.append("current BAAs for " + ", ".join(open_baa))
+    if len(missing) >= 3:
+        missing_text = f"{', '.join(missing[:-1])}, and {missing[-1]}"
+    elif len(missing) == 2:
+        missing_text = f"{missing[0]} and {missing[1]}"
+    else:
+        missing_text = missing[0] if missing else "no critical gaps"
+    first = f"The practice can show {have_text}. It cannot show {missing_text}."
+    hot = [
+        flow["outside_kind_label"]
+        for flow in mapped["never_touches"]
+        if str(flow.get("risk", "")).lower() in {"high", "critical"}
+    ]
+    if hot:
+        return f"{first} Patient data also moves off the chart through {_joined_kinds(hot)}."
+    if mapped["counts"]["outside_flows"]:
+        return f"{first} {ephi_insight(profile)}"
+    return first
+
+
+def vendor_needs_attention(vendor: dict) -> bool:
+    status = str(vendor.get("baa_status", "")).lower()
+    ai_use = str(vendor.get("ai_training_use", "")).lower()
+    terms = str(vendor.get("incident_notification_terms", "")).lower()
+    risk = str(vendor.get("risk", "")).lower()
+    if vendor.get("touches_ephi") and status not in SETTLED_BAA:
+        return True
+    if risk in {"high", "critical"}:
+        return True
+    if "unknown" in ai_use or ai_use == "not reviewed":
+        return True
+    return terms in {"unknown", "not reviewed", ""}
 
 
 def risk_level(profile: dict) -> tuple[str, list[str]]:
@@ -138,176 +382,82 @@ def action_packet_table(profile: dict) -> str:
 
 
 def readiness_review(profile: dict) -> str:
-    risk, gaps = risk_level(profile)
+    risk, _gaps = risk_level(profile)
     readiness = profile["readiness"]
     readiness_lifecycle = lifecycle_by_source(lifecycle_records(profile), "readiness")
-    rows = [
-        ["Email MFA", yn(readiness["mfa_email"]), "Access"],
-        ["EHR MFA", yn(readiness["mfa_ehr"]), "Access"],
-        ["Unique accounts", yn(readiness["unique_accounts"]), "Access"],
-        ["Quarterly access review", yn(readiness["quarterly_access_review"]), "Evidence"],
-        ["Tested backups", yn(readiness["tested_backups"]), "Resilience"],
-        ["Vendor inventory", yn(readiness["vendor_inventory"]), "Vendor"],
-        ["BAA register", yn(readiness["baa_register"]), "Vendor"],
-        ["Incident contact list", yn(readiness["incident_contact_list"]), "Incident"],
-        ["Downtime plan", yn(readiness["downtime_plan"]), "Resilience"],
-        ["Training current", yn(readiness["security_training_current"]), "Workforce"],
-        ["Log review cadence", yn(readiness["log_review_cadence"]), "Monitoring"],
-    ]
-    closeout_rows = []
-    for key, record in readiness_lifecycle.items():
-        if key in {"mfa_email", "vendor_inventory", "incident_contact_list", "security_training_current"} and record["closeout_state"] == "closed":
+    missing = [f"{label} — {area}" for key, label, area in READINESS_ITEMS if not readiness.get(key)]
+    open_evidence = []
+    for record in readiness_lifecycle.values():
+        if record["closeout_state"] in {"closed", "not_applicable"}:
             continue
-        closeout_rows.append(
-            [
-                record["title"],
-                lifecycle_label(record["lifecycle_status"]),
-                closeout_label(record["closeout_state"]),
-                record["owner"],
-                _joined(record["acceptable_evidence"]),
-                record["closeout_rule"],
-            ]
+        open_evidence.append(
+            f"{record['title']} — {record['owner']} · {closeout_label(record['closeout_state'])}. "
+            f"{_joined(record['acceptable_evidence'])}."
         )
     return f"""# Readiness Review
 
-Practice: {profile['practice']['name']}
+{readiness_insight(profile)} Initial risk: **{risk}**.
 
-Overall initial risk: **{risk}**
+## Missing
 
-{table(['Item', 'Ready?', 'Area'], rows)}
-
-## Priority Gaps
-
-{chr(10).join(f'- {gap}' for gap in gaps) if gaps else '- No priority gaps found.'}
+{_bullets(missing)}
 
 ## Evidence Closeout Queue
 
-{table(['Item', 'Lifecycle', 'Closeout', 'Owner', 'Acceptable evidence', 'Closeout rule'], closeout_rows)}
+{_bullets(open_evidence)}
 """
 
 
 def ephi_flow_map(profile: dict) -> str:
     mapped = build_ephi_map(profile)
-    counts = mapped["counts"]
-    flow_lifecycle = lifecycle_by_source(lifecycle_records(profile), "flow")
-    outside_rows = [
-        [
-            flow["id"],
-            flow["ehr_lane_label"],
-            flow["outside_kind_label"],
-            flow["source"],
-            flow["destination"],
-            flow["vendor"],
-            flow["ephi_type"],
-            yn(flow["baa_needed"]),
-            flow["risk"],
-            flow["evidence_needed"],
-        ]
-        for flow in mapped["outside_flows"]
-    ]
-    outside_system_rows = [
-        [system["name"], system["category"], system["ephi_role"], system["vendor"], system["evidence_needed"]]
-        for system in mapped["outside_systems"]
-    ]
-    system_rows = [[s["name"], s["category"], s["ephi_role"], s["vendor"], s["evidence_needed"]] for s in profile["systems"]]
-    flow_rows = [
-        [
-            f["id"],
-            LANE_LABELS.get(f.get("ehr_lane", ""), f.get("ehr_lane_label", "")),
-            KIND_LABELS.get(f.get("outside_kind", ""), f.get("outside_kind_label", "")),
-            f["source"],
-            f["destination"],
-            f["vendor"],
-            f["ephi_type"],
-            yn(f["baa_needed"]),
-            f["risk"],
-            lifecycle_label(flow_lifecycle[f["id"]]["lifecycle_status"]),
-            closeout_label(flow_lifecycle[f["id"]]["closeout_state"]),
-            f["evidence_needed"],
-        ]
-        for f in mapped["flows"]
-    ]
-    trace_rows = [
-        [
-            record["source_ref"],
-            trace_label(record),
-            _joined(record["artifact_refs"]),
-            record["closeout_rule"],
-        ]
-        for record in flow_lifecycle.values()
-    ]
-    if counts["outside_flows"]:
-        lead = (
-            f"{counts['never_touches']} flow(s) never touch the EHR. "
-            f"{counts['crosses']} leave or enter the EHR. "
-            f"{counts['high_risk_outside']} of those are high or critical risk."
+    flow_lines = []
+    for flow in mapped["outside_flows"]:
+        baa = "BAA needed" if flow.get("baa_needed") else "no BAA flag"
+        flow_lines.append(
+            f"**{flow['source']} → {flow['destination']}** — {flow['ehr_lane_label']}. "
+            f"{flow['outside_kind_label']}. {flow['risk']} risk. {baa}. "
+            f"{flow['ephi_type']}. Evidence: {flow['evidence_needed']}."
         )
-    else:
-        lead = "No patient-data paths outside the EHR were mapped in this profile."
-    outside_table = (
-        table(
-            ["Flow", "Lane", "Location", "Source", "Destination", "Vendor", "ePHI Type", "BAA Needed", "Risk", "Evidence Needed"],
-            outside_rows,
-        )
-        if outside_rows
-        else "No outside-the-EHR flows were identified."
-    )
-    outside_systems_table = (
-        table(["System", "Category", "ePHI Role", "Vendor", "Evidence Needed"], outside_system_rows)
-        if outside_system_rows
-        else "No non-EHR systems were listed."
-    )
     return f"""# ePHI Flow Map
 
-Patient data outside the EHR is where small-practice evidence usually breaks: inboxes, shared drives, imaging exports, messaging, billing, AI tools, and other sidecar workflows. The EHR is one system. This map is the rest.
-
-{lead}
+{ephi_insight(profile)}
 
 ## Patient Data Outside the EHR
 
-{outside_table}
-
-## Systems Outside the EHR
-
-{outside_systems_table}
-
-## All Systems
-
-{table(['System', 'Category', 'ePHI Role', 'Vendor', 'Evidence Needed'], system_rows)}
-
-## All Flows
-
-{table(['Flow', 'Lane', 'Location', 'Source', 'Destination', 'Vendor', 'ePHI Type', 'BAA Needed', 'Risk', 'Lifecycle', 'Closeout', 'Evidence Needed'], flow_rows)}
-
-## Traceability Summary
-
-{table(['Flow', 'Trace', 'Downstream artifacts', 'Closeout rule'], trace_rows)}
+{_bullets(flow_lines)}
 """
 
 
 def vendor_review(profile: dict) -> str:
-    vendor_lifecycle = lifecycle_by_source(lifecycle_records(profile), "vendor")
-    rows = [
-        [
-            v["name"],
-            v["service"],
-            yn(v["touches_ephi"]),
-            v["baa_status"],
-            v["ai_training_use"],
-            vendor_soc2_status(v),
-            vendor_hitrust_status(v),
-            v["subcontractors_known"],
-            v["incident_notification_terms"],
-            v["risk"],
-            lifecycle_label(vendor_lifecycle[v["name"]]["lifecycle_status"]),
-            closeout_label(vendor_lifecycle[v["name"]]["closeout_state"]),
-            trace_label(vendor_lifecycle[v["name"]]),
-        ]
-        for v in profile["vendors"]
-    ]
+    attention = []
+    settled = []
+    for vendor in profile["vendors"]:
+        ephi = "touches ePHI" if vendor.get("touches_ephi") else "no ePHI mark"
+        line = (
+            f"**{vendor['name']}** — {vendor['service']}. {ephi}. "
+            f"BAA {vendor['baa_status']}. SOC 2 Status {vendor_soc2_status(vendor)}. "
+            f"HITRUST Status {vendor_hitrust_status(vendor)}. "
+            f"Incident terms: {vendor['incident_notification_terms']}. "
+            f"AI/data use: {vendor['ai_training_use']}. {vendor['risk']} risk."
+        )
+        if vendor_needs_attention(vendor):
+            attention.append(line)
+        else:
+            settled.append(vendor["name"])
+    settled_line = (
+        f"{', '.join(settled)} can wait: BAA is signed enough to review later."
+        if settled
+        else ""
+    )
     return f"""# Vendor and BAA Review
 
-{table(['Vendor', 'Service', 'Touches ePHI?', 'BAA Status', 'AI Training Use', 'SOC 2 Status', 'HITRUST Status', 'Subcontractors', 'Incident Terms', 'Risk', 'Lifecycle', 'Closeout', 'Trace'], rows)}
+{vendor_insight(profile)}
+
+## Needs attention
+
+{_bullets(attention)}
+
+{settled_line}
 
 ## Next Evidence
 
@@ -319,30 +469,35 @@ def vendor_review(profile: dict) -> str:
 
 
 def ai_review(profile: dict) -> str:
-    ai_lifecycle = lifecycle_by_source(lifecycle_records(profile), "ai_workflow")
-    rows = [
-        [
-            w["name"],
-            w["proposed_use"],
-            w["data_used"],
-            w["vendor"],
-            w["decision"],
-            lifecycle_label(ai_lifecycle[w["name"]]["lifecycle_status"]),
-            closeout_label(ai_lifecycle[w["name"]]["closeout_state"]),
-            trace_label(ai_lifecycle[w["name"]]),
-            w["evidence_needed"],
-        ]
-        for w in profile["ai_workflows"]
-    ]
+    grouped = {"prohibited": [], "restricted": [], "allowed": []}
+    allowed_names = []
+    for workflow in profile["ai_workflows"]:
+        decision = str(workflow.get("decision", "restricted")).lower()
+        line = (
+            f"**{workflow['name']}** — {workflow['proposed_use']}. "
+            f"Data: {workflow['data_used']}. Evidence: {workflow['evidence_needed']}."
+        )
+        grouped.setdefault(decision, []).append(line)
+        if decision == "allowed":
+            allowed_names.append(workflow["name"])
+    allowed_note = (
+        f"Allowed and left in the background: {', '.join(allowed_names)}."
+        if allowed_names
+        else ""
+    )
     return f"""# AI Workflow Review
 
-{table(['Workflow', 'Use', 'Data Used', 'Vendor', 'Decision', 'Lifecycle', 'Closeout', 'Trace', 'Evidence Needed'], rows)}
+{ai_insight(profile)}
 
-## Rules of Thumb
+## Prohibited
 
-- Allowed: generic administrative drafting with no patient or clinical details.
-- Restricted: workflows involving claim, treatment, billing, or operationally sensitive data.
-- Prohibited: pasting patient-level notes or identifiers into tools without approved safeguards and a reviewed vendor relationship.
+{_bullets(grouped["prohibited"])}
+
+## Restricted
+
+{_bullets(grouped["restricted"])}
+
+{allowed_note}
 """
 
 
@@ -1058,26 +1213,134 @@ Initial risk level: **{risk}**
 """
 
 
+PACKET_KICKER = "Small Practice Security Kit"
+PACKET_CSS_PATH = Path(__file__).resolve().parent / "static" / "packet.css"
+PACKET_NOTICE = (
+    "Not legal advice, not a certification, and not a substitute for qualified review. "
+    "Do not enter PHI, secrets, or real incident details."
+)
+PRINT_HIDE_HEADERS = {
+    "lifecycle",
+    "closeout",
+    "trace",
+    "downstream artifacts",
+    "closeout rule",
+    "acceptable evidence",
+    "unsafe inputs",
+    "reviewer needed",
+    "timeframe",
+    "artifacts",
+}
+CHIP_CLASSES = {
+    "yes": "chip-ok",
+    "no": "chip-blocked",
+    "high": "chip-high",
+    "critical": "chip-high",
+    "medium": "chip-medium",
+    "low": "chip-low",
+    "needs evidence": "chip-review",
+    "requested": "chip-review",
+    "blocked": "chip-blocked",
+    "ready for review": "chip-review",
+    "closed": "chip-ok",
+    "provided": "chip-ok",
+    "missing": "chip-blocked",
+    "never touches the ehr": "chip-outside",
+    "leaves or enters the ehr": "chip-crosses",
+    "stays in the ehr": "chip-ok",
+}
+
+
+def packet_css() -> str:
+    return PACKET_CSS_PATH.read_text(encoding="utf-8")
+
+
+def heading_slug(title: str, used: dict[str, int]) -> str:
+    base = slugify(title) or "section"
+    count = used.get(base, 0) + 1
+    used[base] = count
+    return base if count == 1 else f"{base}_{count}"
+
+
 def inline_markdown(text: str) -> str:
     escaped = html.escape(text)
     return re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", escaped)
 
 
-def render_table(lines: list[str]) -> str:
-    rows = []
+def render_status_cell(text: str) -> str:
+    css = CHIP_CLASSES.get(text.strip().casefold())
+    if css:
+        return f'<span class="chip {css}">{inline_markdown(text)}</span>'
+    return inline_markdown(text)
+
+
+def _parse_table(lines: list[str]) -> list[list[str]]:
+    parsed: list[list[str]] = []
     for line in lines:
         cells = [cell.strip() for cell in line.strip("|").split("|")]
         if all(set(cell) <= {"-", ":", " "} for cell in cells):
             continue
-        tag = "th" if not rows else "td"
-        rows.append("<tr>" + "".join(f"<{tag}>{inline_markdown(cell)}</{tag}>" for cell in cells) + f"</tr>")
-    return "<div class='table-wrap'><table>" + "".join(rows) + "</table></div>"
+        parsed.append(cells)
+    return parsed
+
+
+def render_finding_rows(headers: list[str], rows: list[list[str]]) -> str:
+    items = []
+    for row in rows:
+        title = row[0] if row else "Item"
+        dek_parts: list[str] = []
+        ask = ""
+        for header, cell in zip(headers[1:], row[1:]):
+            key = header.casefold()
+            if key in PRINT_HIDE_HEADERS or key in {"trace", "closeout rule"}:
+                continue
+            if key in {"evidence needed", "next action", "ask"}:
+                ask = cell
+                continue
+            if cell:
+                dek_parts.append(cell)
+        dek = " · ".join(dek_parts)
+        ask_html = f'<p class="finding-ask">{inline_markdown(ask)}</p>' if ask else ""
+        items.append(
+            "<li>"
+            f'<p class="finding-hed">{render_status_cell(title)}</p>'
+            f'<p class="finding-dek">{inline_markdown(dek)}</p>'
+            f"{ask_html}"
+            "</li>"
+        )
+    return f'<ol class="findings">{"".join(items)}</ol>'
+
+
+def render_table(lines: list[str]) -> str:
+    parsed = _parse_table(lines)
+    if not parsed:
+        return ""
+    headers = parsed[0]
+    keys = [header.casefold() for header in headers]
+    if "trace" in keys and "closeout rule" in keys:
+        return ""
+    if len(headers) >= 6:
+        return render_finding_rows(headers, parsed[1:])
+    hide = [header.strip().casefold() in PRINT_HIDE_HEADERS for header in headers]
+    rows = []
+    for index, cells in enumerate(parsed):
+        tag = "th" if index == 0 else "td"
+        rendered = []
+        for column, cell in enumerate(cells):
+            extra = ' class="print-hide"' if column < len(hide) and hide[column] else ""
+            content = inline_markdown(cell) if index == 0 else render_status_cell(cell)
+            rendered.append(f"<{tag}{extra}>{content}</{tag}>")
+        rows.append("<tr>" + "".join(rendered) + "</tr>")
+    return '<div class="table-wrap"><table>' + "".join(rows) + "</table></div>"
 
 
 def render_html(markdown: str, profile: dict) -> str:
     blocks: list[str] = []
     table_buffer: list[str] = []
     list_buffer: list[str] = []
+    toc: list[tuple[str, str]] = []
+    used_slugs: dict[str, int] = {}
+    section_open = False
 
     def flush_table() -> None:
         nonlocal table_buffer
@@ -1088,8 +1351,15 @@ def render_html(markdown: str, profile: dict) -> str:
     def flush_list() -> None:
         nonlocal list_buffer
         if list_buffer:
-            blocks.append("<ul>" + "".join(f"<li>{inline_markdown(item)}</li>" for item in list_buffer) + "</ul>")
+            css = ' class="findings"' if any(item.startswith("**") for item in list_buffer) else ""
+            blocks.append("<ul" + css + ">" + "".join(f"<li>{inline_markdown(item)}</li>" for item in list_buffer) + "</ul>")
             list_buffer = []
+
+    def close_section() -> None:
+        nonlocal section_open
+        if section_open:
+            blocks.append("</section>")
+            section_open = False
 
     for line in markdown.splitlines():
         stripped = line.strip()
@@ -1102,20 +1372,61 @@ def render_html(markdown: str, profile: dict) -> str:
             list_buffer.append(stripped[2:])
             continue
         flush_list()
-        if not stripped:
+        if not stripped or stripped == "---":
             continue
-        if stripped == "---":
-            blocks.append("<hr>")
-        elif stripped.startswith("# "):
-            blocks.append(f"<section class='packet-section'><h1>{inline_markdown(stripped[2:])}</h1>")
+        if stripped.startswith("# "):
+            close_section()
+            title = stripped[2:]
+            slug = heading_slug(title, used_slugs)
+            primary = title in MAIN_SECTION_TITLES
+            toc.append((slug, title, primary))
+            css = "packet-section" if primary else "packet-section appendix"
+            blocks.append(f'<section class="{css}" id="{html.escape(slug)}"><h1>{inline_markdown(title)}</h1>')
+            section_open = True
         elif stripped.startswith("## "):
             blocks.append(f"<h2>{inline_markdown(stripped[3:])}</h2>")
         else:
             blocks.append(f"<p>{inline_markdown(stripped)}</p>")
     flush_table()
     flush_list()
+    close_section()
+
     practice = profile["practice"]
     title = f"{practice['name']} Security Review Packet"
+    risk, _gaps = risk_level(profile)
+    week_items = joined_findings(profile)[:4]
+    week_html: list[str] = []
+    for item in week_items:
+        if "→" in item["path"]:
+            source, dest = item["path"].split("→", 1)
+            path_html = (
+                f"{html.escape(source.strip())} <span class=\"arrow\">→</span> "
+                f"{html.escape(dest.strip())}"
+            )
+        else:
+            path_html = html.escape(item["path"])
+        week_html.append(
+            "<li>"
+            f'<p class="path">{path_html}</p>'
+            f'<p class="why">{html.escape(item["why"])}</p>'
+            f'<p class="ask">{html.escape(item["owner"])} — {html.escape(item["ask"])}</p>'
+            "</li>"
+        )
+    if not week_html:
+        week_html.append("<li><p class=\"path\">Review the packet with the owner and MSP.</p></li>")
+    main_toc = "".join(
+        f'<li><a href="#{html.escape(slug)}">{inline_markdown(label)}</a></li>'
+        for slug, label, primary in toc
+        if primary
+    )
+    note_toc = "".join(
+        f'<li><a href="#{html.escape(slug)}">{inline_markdown(label)}</a></li>'
+        for slug, label, primary in toc
+        if not primary
+    )
+    notes_block = (
+        f'<p class="toc-notes-label">Notes</p><ol class="toc-notes">{note_toc}</ol>' if note_toc else ""
+    )
     body = "\n".join(blocks)
     return f"""<!doctype html>
 <html lang="en">
@@ -1124,52 +1435,31 @@ def render_html(markdown: str, profile: dict) -> str:
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{html.escape(title)}</title>
   <style>
-    :root {{ {VELARI_CSS_VARIABLES} }}
-    * {{ box-sizing: border-box; }}
-    body {{ margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, Avenir Next, "Segoe UI", Arial, sans-serif; line-height: 1.55; }}
-    .shell {{ max-width: 1120px; margin: 0 auto; padding: 32px 22px 56px; }}
-    .cover {{ background: var(--app-bg); color: var(--text-on-dark); border-top: 8px solid var(--gold); border-radius: var(--radius); padding: 34px; display: grid; gap: 8px; box-shadow: var(--shadow); }}
-    .kicker {{ color: var(--gold-soft); font-weight: 800; text-transform: uppercase; font-size: 12px; }}
-    h1, h2 {{ line-height: 1.12; letter-spacing: 0; }}
-    .cover h1 {{ font-size: clamp(34px, 5vw, 54px); margin: 0; max-width: 900px; }}
-    .meta {{ display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; margin-top: 18px; }}
-    .meta div {{ border: 1px solid var(--line-strong); padding: 10px; background: var(--elevated); }}
-    .meta strong {{ display: block; font-size: 12px; color: var(--muted-inverse); margin-bottom: 3px; }}
-    .notice {{ background: var(--surface); border-left: 4px solid var(--gold); border-radius: var(--radius); box-shadow: var(--shadow); padding: 12px 14px; margin: 18px 0; font-size: 14px; }}
-    .packet-section {{ display: block; padding: 24px; margin: 16px 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }}
-    .packet-section h1 {{ font-size: 30px; margin: 0 0 12px; }}
-    h2 {{ font-size: 20px; margin: 22px 0 10px; color: var(--primary); }}
-    p, li {{ font-size: 15px; }}
-    .table-wrap {{ overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--line); background: var(--surface); }}
-    table {{ width: 100%; border-collapse: collapse; min-width: 760px; font-size: 13px; }}
-    th {{ text-align: left; background: var(--accent-soft); color: var(--primary); }}
-    th, td {{ border-bottom: 1px solid var(--line); padding: 9px 10px; vertical-align: top; }}
-    tr:last-child td {{ border-bottom: 0; }}
-    hr {{ border: 0; border-top: 1px solid var(--line); margin: 28px 0; }}
-    @media print {{
-      :root {{ --bg: #e9f0f7; --paper: #e9f0f7; --surface: #f8fafc; --surface-strong: #f8fafc; --panel: #f8fafc; --elevated: #e9f0f7; --ink: #050a10; --muted: #64748b; --line: #94a3b8; --primary-soft: #e9f0f7; --blue-soft: #e9f0f7; }}
-      body {{ background: var(--paper); color: var(--ink); }}
-      .shell {{ max-width: none; padding: 0.4in; }}
-      .table-wrap {{ overflow: visible; }}
-      table {{ min-width: 0; font-size: 10px; }}
-      .packet-section {{ page-break-inside: avoid; }}
-    }}
-    @media (max-width: 760px) {{ .meta {{ grid-template-columns: 1fr; }} .cover h1 {{ font-size: 34px; }} }}
+{packet_css()}
   </style>
 </head>
 <body>
+  <div class="print-footer">{html.escape(str(practice["name"]))} · {html.escape(str(practice["review_period"]))} · Not legal advice</div>
   <main class="shell">
     <header class="cover">
-      <div class="kicker">Velari Security Kit</div>
-      <h1>{html.escape(title)}</h1>
-      <div class="meta">
-        <div><strong>Practice Type</strong>{html.escape(str(practice['type']))}</div>
-        <div><strong>Review Period</strong>{html.escape(str(practice['review_period']))}</div>
-        <div><strong>Security Owner</strong>{html.escape(str(practice['security_owner']))}</div>
-        <div><strong>Technical Owner</strong>{html.escape(str(practice['technical_owner']))}</div>
+      <div class="masthead">
+        <p class="kicker">{PACKET_KICKER}</p>
+        <p class="issue">{html.escape(str(practice["type"]))} · {html.escape(str(practice["review_period"]))} · {html.escape(risk)} risk</p>
+      </div>
+      <h1>{html.escape(str(practice["name"]))}</h1>
+      <p class="deck">Security review packet</p>
+      <p class="verdict">{html.escape(verdict(profile))}</p>
+      <div class="next-block">
+        <span class="label">This week</span>
+        <ol class="week">{"".join(week_html)}</ol>
       </div>
     </header>
-    <div class="notice">This packet is an operational planning aid. It is not legal advice, does not establish legal or regulatory status, does not decide incident reporting duties, and is not a substitute for qualified review. Do not include PHI, secrets, credentials, or real incident details.</div>
+    <p class="notice">{PACKET_NOTICE}</p>
+    <nav class="toc" aria-label="Packet contents">
+      <h2>In this packet</h2>
+      <ol>{main_toc}</ol>
+      {notes_block}
+    </nav>
     {body}
   </main>
 </body>
