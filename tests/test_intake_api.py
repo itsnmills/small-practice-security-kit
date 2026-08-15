@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import http.client
 import json
+import re
 import tempfile
 import threading
 import unittest
@@ -47,6 +48,13 @@ class IntakeApiTests(unittest.TestCase):
         with urllib.request.urlopen(self.base + path, timeout=5) as response:
             return json.loads(response.read().decode("utf-8"))
 
+    def get_page_token(self) -> str:
+        with urllib.request.urlopen(self.base + "/", timeout=5) as response:
+            page = response.read().decode("utf-8")
+        match = re.search(r'<meta name="spsk-csrf-token" content="([^"]+)">', page)
+        self.assertIsNotNone(match)
+        return match.group(1)
+
     def post_json(self, path: str, payload: dict, token: str | None = None) -> dict:
         data = json.dumps(payload).encode("utf-8")
         request = urllib.request.Request(
@@ -67,11 +75,11 @@ class IntakeApiTests(unittest.TestCase):
         created = self.post_json(
             "/api/workspaces",
             {"practice_name": "API Intake Test Clinic", "preset": "dental", "size_tier": "small"},
-            status["csrf_token"],
+            self.get_page_token(),
         )
         self.assertTrue(created["ok"])
         self.assertGreater(len(created["profile"]["flows"]), 0)
-        built = self.post_json("/api/build", {}, status["csrf_token"])
+        built = self.post_json("/api/build", {}, self.get_page_token())
         self.assertEqual(built["links"]["dashboard"], "/dashboard.html")
         with urllib.request.urlopen(self.base + "/dashboard.html", timeout=5) as response:
             self.assertIn("Owner dashboard", response.read().decode("utf-8"))
@@ -89,30 +97,30 @@ class IntakeApiTests(unittest.TestCase):
         created = self.post_json(
             "/api/workspaces",
             {"practice_name": practice_name, "preset": "dental", "size_tier": "small"},
-            status["csrf_token"],
+            self.get_page_token(),
         )
         self.assertTrue(created["ok"])
         empty = self.get_json("/api/connectors")
         self.assertEqual(empty["connectors"]["summary"]["total_items"], 0)
 
-        wizard = self.post_json("/api/connectors/wizard", {}, status["csrf_token"])
+        wizard = self.post_json("/api/connectors/wizard", {}, self.get_page_token())
         self.assertEqual(wizard["href"], "/connector-wizard.html")
 
-        dns = self.post_json("/api/connectors/dns", {"domain": "exampleclinic.test"}, status["csrf_token"])
+        dns = self.post_json("/api/connectors/dns", {"domain": "exampleclinic.test"}, self.get_page_token())
         self.assertEqual(dns["connectors"]["summary"]["by_connector"]["dns_email_auth"], 4)
         self.assertFalse(any(item["phi_expected"] for item in dns["connectors"]["items"]))
 
         msp_path = Path("samples/connectors/msp_response.yaml").resolve()
-        msp = self.post_json("/api/connectors/msp-response", {"path": str(msp_path)}, status["csrf_token"])
+        msp = self.post_json("/api/connectors/msp-response", {"path": str(msp_path)}, self.get_page_token())
         self.assertEqual(msp["connectors"]["summary"]["total_items"], 5)
         self.assertEqual(msp["connectors"]["summary"]["data_boundary"], "metadata_only_no_phi_expected")
 
-        refresh = self.post_json("/api/connectors/refresh", {}, status["csrf_token"])
+        refresh = self.post_json("/api/connectors/refresh", {}, self.get_page_token())
         self.assertEqual(refresh["href"], "/evidence-refresh.json")
-        views = self.post_json("/api/connectors/views", {}, status["csrf_token"])
+        views = self.post_json("/api/connectors/views", {}, self.get_page_token())
         self.assertIn("/views/owner-view.md", views["hrefs"])
 
-        built = self.post_json("/api/build", {}, status["csrf_token"])
+        built = self.post_json("/api/build", {}, self.get_page_token())
         self.assertEqual(built["links"]["command_center"], "/sprint-command-center.html")
         self.assertEqual(built["links"]["connector_summary"], "/connector-evidence-summary.json")
         with urllib.request.urlopen(self.base + "/connector-evidence-summary.json", timeout=5) as response:
@@ -126,7 +134,7 @@ class IntakeApiTests(unittest.TestCase):
         created = self.post_json(
             "/api/workspaces",
             {"practice_name": f"API Incident Runner Clinic {uuid.uuid4().hex[:8]}", "preset": "dental", "size_tier": "small"},
-            status["csrf_token"],
+            self.get_page_token(),
         )
         self.assertTrue(created["ok"])
 
@@ -134,7 +142,7 @@ class IntakeApiTests(unittest.TestCase):
         scenario_keys = {scenario["key"] for scenario in runner["scenarios"]}
         self.assertIn("ransomware_concern", scenario_keys)
 
-        templated = self.post_json("/api/incident-runner/template", {"scenario_key": "ransomware_concern"}, status["csrf_token"])
+        templated = self.post_json("/api/incident-runner/template", {"scenario_key": "ransomware_concern"}, self.get_page_token())
         incident = templated["incident_timeline"]
         self.assertEqual(incident["scenario_key"], "ransomware_concern")
         self.assertGreaterEqual(len(incident["timeline"]), 5)
@@ -147,7 +155,7 @@ class IntakeApiTests(unittest.TestCase):
         self.assertIn("escalation_triggers", first_phase)
         self.assertFalse(first_phase["complete"])
 
-        saved = self.post_json("/api/incident-runner", {"incident_timeline": incident, "build": True}, status["csrf_token"])
+        saved = self.post_json("/api/incident-runner", {"incident_timeline": incident, "build": True}, self.get_page_token())
         self.assertEqual(saved["incident_timeline"]["scenario_key"], "ransomware_concern")
         with urllib.request.urlopen(self.base + "/incident-evidence-timeline.md", timeout=5) as response:
             self.assertIn("Ransomware concern", response.read().decode("utf-8"))
@@ -155,7 +163,7 @@ class IntakeApiTests(unittest.TestCase):
         unsafe = copy.deepcopy(incident)
         unsafe["timeline"][0]["event"] = "Patient Name: Jane Example"
         with self.assertRaises(urllib.error.HTTPError) as raised:
-            self.post_json("/api/incident-runner", {"incident_timeline": unsafe}, status["csrf_token"])
+            self.post_json("/api/incident-runner", {"incident_timeline": unsafe}, self.get_page_token())
         self.assertEqual(raised.exception.code, 422)
         raised.exception.close()
 
@@ -283,6 +291,17 @@ class IntakeApiTests(unittest.TestCase):
         self.assertTrue(origin_matches_host("http://127.0.0.1:8765", "127.0.0.1:8765"))
         self.assertFalse(origin_matches_host("http://evil127.0.0.1:8765", "127.0.0.1:8765"))
         self.assertFalse(origin_matches_host("http://127.0.0.1.attacker.example:8765", "127.0.0.1:8765"))
+
+    def test_status_omits_csrf_token(self) -> None:
+        status = self.get_json("/api/status")
+        self.assertNotIn("csrf_token", status)
+
+    def test_intake_page_carries_csrf_meta_tag(self) -> None:
+        self.assertEqual(self.get_page_token(), self.state.csrf_token)
+
+    def test_responses_are_marked_no_store(self) -> None:
+        with urllib.request.urlopen(self.base + "/api/status", timeout=5) as response:
+            self.assertEqual(response.headers.get("Cache-Control"), "no-store")
 
 
 if __name__ == "__main__":

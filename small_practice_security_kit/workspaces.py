@@ -57,8 +57,13 @@ def atomic_write_profile(profile: dict[str, Any], path: Path, *, action: str = "
         backup.write_text(resolved.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
     profile.setdefault("workspace", {})["updated_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     tmp = resolved.with_suffix(".yaml.tmp")
-    tmp.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8", newline="\n")
-    os.replace(tmp, resolved)
+    try:
+        tmp.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8", newline="\n")
+        os.replace(tmp, resolved)
+    except BaseException:
+        # Security decision: never leave a plaintext profile in a stray tmp file.
+        tmp.unlink(missing_ok=True)
+        raise
     log_entry = {
         "timestamp": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "action": action,

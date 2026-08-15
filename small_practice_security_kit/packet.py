@@ -26,6 +26,7 @@ from .external_precheck import (
     external_precheck_scope,
 )
 from .incident_runner import phase_guidance_for
+from .exchange import markdown_cell
 from .manifest import build_packet_manifest, finding_entries
 from .profile import load_profile, slugify
 from .sensitive_data import blocking_findings
@@ -308,9 +309,11 @@ def risk_level(profile: dict) -> tuple[str, list[str]]:
 
 
 def table(headers: list[str], rows: list[list[str]]) -> str:
-    lines = ["| " + " | ".join(headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
+    # Security decision: unescaped pipes or newlines in profile values would shift
+    # reviewer-facing table columns (e.g. making a vendor's BAA look signed).
+    lines = ["| " + " | ".join(markdown_cell(header) for header in headers) + " |", "| " + " | ".join(["---"] * len(headers)) + " |"]
     for row in rows:
-        lines.append("| " + " | ".join(str(cell) for cell in row) + " |")
+        lines.append("| " + " | ".join(markdown_cell(cell) for cell in row) + " |")
     return "\n".join(lines)
 
 
@@ -1276,9 +1279,9 @@ def render_status_cell(text: str) -> str:
 
 def _parse_table(lines: list[str]) -> list[list[str]]:
     parsed: list[list[str]] = []
-    for line in lines:
-        cells = [cell.strip() for cell in line.strip("|").split("|")]
-        if all(set(cell) <= {"-", ":", " "} for cell in cells):
+    for index, line in enumerate(lines):
+        cells = [cell.strip().replace("\\|", "|") for cell in re.split(r"(?<!\\)\|", line.strip("|"))]
+        if index == 1 and all("-" in cell and set(cell) <= {"-", ":", " "} for cell in cells):
             continue
         parsed.append(cells)
     return parsed

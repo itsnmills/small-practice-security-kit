@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from small_practice_security_kit.suggestions import create_profile_from_preset
 from small_practice_security_kit.workspaces import ROOT, WorkspaceError, atomic_write_profile, safe_profile_path
@@ -16,6 +17,15 @@ class WorkspaceWriteTests(unittest.TestCase):
         log = (ROOT / "profiles" / ".logs" / "profile_changes.jsonl").read_text(encoding="utf-8")
         self.assertIn("patient_name_label", log)
         self.assertNotIn("redacted", log)
+
+    def test_atomic_write_cleans_up_tmp_file_on_failure(self) -> None:
+        profile = create_profile_from_preset("Tmp Cleanup Clinic", "dental", "solo")
+        path = safe_profile_path(profile["practice"]["name"])
+        with mock.patch("small_practice_security_kit.workspaces.os.replace", side_effect=OSError("disk full")):
+            with self.assertRaises(OSError):
+                atomic_write_profile(profile, path, action="test")
+        self.assertEqual(list((ROOT / "profiles").glob("*.yaml.tmp")), [])
+        self.assertFalse(path.exists())
 
     def test_atomic_write_rejects_outside_profiles(self) -> None:
         profile = create_profile_from_preset("Outside Test Clinic", "dental", "solo")

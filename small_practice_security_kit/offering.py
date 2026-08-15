@@ -3,6 +3,7 @@ from __future__ import annotations
 import html
 from typing import Any
 
+from .exchange import markdown_cell
 from .vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
 
@@ -483,7 +484,7 @@ def markdown_table(headers: list[str], rows: list[list[Any]]) -> str:
         "| " + " | ".join(["---"] * len(headers)) + " |",
     ]
     for row in rows:
-        lines.append("| " + " | ".join(str(cell).replace("\n", " ") for cell in row) + " |")
+        lines.append("| " + " | ".join(markdown_cell(cell) for cell in row) + " |")
     return "\n".join(lines)
 
 

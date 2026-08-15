@@ -3,7 +3,7 @@ from __future__ import annotations
 import csv
 from pathlib import Path
 
-from ..exchange import ExchangeRecord, records_to_csv, records_to_markdown
+from ..exchange import ExchangeRecord, csv_safe, markdown_cell, records_to_csv, records_to_markdown
 from ..profile import load_profile, slugify
 from ..vendor_evidence import vendor_hitrust_status, vendor_soc2_status
 
@@ -130,10 +130,11 @@ def export_binder_index(profile_path: Path, output_dir: Path | None = None) -> P
     with (output_dir / "evidence-binder-index.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=BINDER_FIELDS, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({field: csv_safe(row.get(field, "")) for field in BINDER_FIELDS} for row in rows)
     markdown = ["# Evidence Binder Export", "", "Target companion repo: `hipaa-evidence-binder-template`", "", "| Evidence ID | Section | Priority | Frequency | Evidence Needed |", "|---|---|---|---|---|"]
     for row in rows:
-        markdown.append(f"| {row['evidence_id']} | {row['section']} | {row['priority']} | {row['review_frequency']} | {row['evidence_needed']} |")
+        cells = [row["evidence_id"], row["section"], row["priority"], row["review_frequency"], row["evidence_needed"]]
+        markdown.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
     (output_dir / "evidence-binder-index.md").write_text("\n".join(markdown) + "\n", encoding="utf-8")
     (output_dir / "binder-import-notes.md").write_text(
         "# Binder Import Notes\n\n"

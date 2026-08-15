@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import html
 import json
 import secrets
 from dataclasses import dataclass
@@ -43,6 +44,7 @@ from .workspaces import ROOT, atomic_write_profile, ensure_workspace_dirs, safe_
 
 STATIC_DIR = Path(__file__).resolve().parent / "static"
 MAX_BODY_BYTES = 512 * 1024
+CSRF_META_PLACEHOLDER = "<!--SPSK_CSRF-->"
 LOOPBACK_HOSTNAMES = frozenset({"127.0.0.1", "localhost", "::1"})
 
 
@@ -190,6 +192,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             self.send_header("Content-Length", str(len(body)))
             self.send_header("X-Content-Type-Options", "nosniff")
             self.send_header("Referrer-Policy", "no-referrer")
+            self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(body)
 
@@ -231,7 +234,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
 
         def _read_json(self) -> dict[str, Any]:
             length = int(self.headers.get("Content-Length", "0") or "0")
-            if length > MAX_BODY_BYTES:
+            if length < 0 or length > MAX_BODY_BYTES:
                 raise ValueError("Request body too large.")
             content_type = self.headers.get("Content-Type", "")
             if "application/json" not in content_type:
@@ -244,7 +247,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                 return
             request_path = urlparse(self.path).path
             if request_path in {"/", "/intake.html"}:
-                self._serve_file(STATIC_DIR / "intake.html", "text/html; charset=utf-8")
+                self._serve_intake()
                 return
             if request_path.startswith("/static/"):
                 requested = STATIC_DIR / request_path.removeprefix("/static/")
@@ -257,7 +260,6 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         "ok": True,
                         "local_only": True,
                         "network_status": "offline/local only",
-                        "csrf_token": state.csrf_token,
                         "profile": str(state.profile_path),
                     },
                 )
@@ -509,6 +511,14 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                 self._error(HTTPStatus.NOT_FOUND, "Static file not found.")
                 return
             self._serve_file(resolved, self._content_type(resolved))
+
+        def _serve_intake(self) -> None:
+            # Security decision: the CSRF token travels only inside the served
+            # page, never via an unauthenticated JSON endpoint.
+            page = (STATIC_DIR / "intake.html").read_text(encoding="utf-8")
+            meta = f'<meta name="spsk-csrf-token" content="{html.escape(state.csrf_token, quote=True)}">'
+            page = page.replace(CSRF_META_PLACEHOLDER, meta)
+            self._send(HTTPStatus.OK, page.encode("utf-8"), "text/html; charset=utf-8")
 
         def _serve_file(self, path: Path, content_type: str) -> None:
             self._send(HTTPStatus.OK, path.read_bytes(), content_type)

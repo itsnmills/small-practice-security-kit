@@ -38,6 +38,19 @@ class VendorImportTests(unittest.TestCase):
             profile = load_profile(output)
             self.assertGreater(len(profile["vendors"]), 3)
 
+    def test_import_blocks_sensitive_data_in_csv(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            path = Path(temp) / "leaky.csv"
+            path.write_text(
+                "name,service,touches_ephi,baa_status,ai_training_use,subcontractors_known,incident_notification_terms,risk\n"
+                "Billing Vendor,Billing SSN 123-45-6789,yes,unknown,unknown,unknown,unknown,high\n",
+                encoding="utf-8",
+            )
+            output = Path(temp) / "profile.yaml"
+            with self.assertRaisesRegex(ValueError, "blocked sensitive data"):
+                import_vendors(path, ROOT / "samples" / "family_dental_clinic.yaml", output)
+            self.assertFalse(output.exists())
+
     def test_missing_column_fails(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             path = Path(temp) / "bad.csv"

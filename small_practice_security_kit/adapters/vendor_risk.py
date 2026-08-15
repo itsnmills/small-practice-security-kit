@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ..exchange import ExchangeRecord, records_to_csv, records_to_markdown
 from ..profile import load_profile, write_profile
+from ..sensitive_data import blocking_findings
 from ..validation import REQUIRED_VENDOR, parse_bool, validate_required_columns, validate_risk
 from ..vendor_evidence import (
     DEFAULT_EVIDENCE_STATUS,
@@ -71,6 +72,12 @@ def import_vendors(csv_path: Path, base_profile: Path, output_profile: Path, app
     profile = load_profile(base_profile)
     vendors = read_vendor_csv(csv_path)
     profile["vendors"] = [*profile["vendors"], *vendors] if append else vendors
+    # Security decision: imported CSVs are third-party data, so the same PHI/secret
+    # blocker that gates API profile saves must gate this write.
+    blocked = blocking_findings(profile)
+    if blocked:
+        joined = "; ".join(f"{finding.path}: {finding.message}" for finding in blocked[:5])
+        raise ValueError(f"import contains blocked sensitive data; use references only ({joined})")
     write_profile(profile, output_profile)
     records = vendor_exchange_records(csv_path, vendors)
     out_dir = output_profile.parent / "vendor-register-import"

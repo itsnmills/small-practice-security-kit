@@ -5,6 +5,7 @@ from pathlib import Path
 
 from ..exchange import ExchangeRecord, records_to_csv, records_to_markdown
 from ..profile import load_profile, write_profile
+from ..sensitive_data import blocking_findings
 from ..validation import REQUIRED_FLOW, parse_bool, validate_required_columns, validate_risk
 
 
@@ -57,6 +58,12 @@ def import_flows(csv_path: Path, base_profile: Path, output_profile: Path, appen
     profile = load_profile(base_profile)
     flows = read_flow_csv(csv_path)
     profile["flows"] = [*profile["flows"], *flows] if append else flows
+    # Security decision: imported CSVs are third-party data, so the same PHI/secret
+    # blocker that gates API profile saves must gate this write.
+    blocked = blocking_findings(profile)
+    if blocked:
+        joined = "; ".join(f"{finding.path}: {finding.message}" for finding in blocked[:5])
+        raise ValueError(f"import contains blocked sensitive data; use references only ({joined})")
     write_profile(profile, output_profile)
     records = flow_exchange_records(csv_path, flows)
     out_dir = output_profile.parent / "ephi-flow-import"
