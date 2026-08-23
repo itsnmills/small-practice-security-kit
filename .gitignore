@@ -7,3 +7,4 @@ out/
 profiles/*.yaml
 profiles/.backups/
 profiles/.logs/
+.obsidian/
