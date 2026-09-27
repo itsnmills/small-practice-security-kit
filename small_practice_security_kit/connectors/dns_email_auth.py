@@ -16,11 +16,14 @@ def _find_dig_bin() -> str:
     for candidate in ("/usr/bin/dig", "/bin/dig"):
         if os.path.exists(candidate) and os.access(candidate, os.X_OK):
             return candidate
-    return shutil.which("dig") or "dig"
+    return None
 
 
 def _dig_resolver(name: str, record_type: str) -> list[str]:
-    command = [_find_dig_bin(), "+short", record_type, "--", name]
+    dig_bin = _find_dig_bin()
+    if not dig_bin:
+        return []
+    command = [dig_bin, "+short", record_type, "--", name]
     try:
         completed = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=8)
     except (OSError, subprocess.TimeoutExpired):

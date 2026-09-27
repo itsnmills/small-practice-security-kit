@@ -75,8 +75,8 @@ def atomic_write_profile(
             encoding="utf-8",
             newline="\n",
         ) as tmp:
-            yaml.safe_dump(profile, tmp, sort_keys=False)
             tmp_path = Path(tmp.name)
+            yaml.safe_dump(profile, tmp, sort_keys=False)
         os.replace(tmp_path, resolved)
     except BaseException:
         # Security decision: never leave a plaintext profile in a stray tmp file.

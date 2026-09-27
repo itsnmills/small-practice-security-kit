@@ -43,7 +43,13 @@ def connect_microsoft_365(
     open_browser: bool = True,
 ) -> dict[str, Any]:
     clean_tenant = tenant.strip()
-    if not clean_tenant or not re.fullmatch(r"^(organizations|common|consumers|[a-zA-Z0-9.-]+)$", clean_tenant):
+    if (
+        not clean_tenant
+        or ".." in clean_tenant
+        or clean_tenant.startswith(".")
+        or len(clean_tenant) > 128
+        or not re.fullmatch(r"^(organizations|common|consumers|[a-zA-Z0-9.-]+)$", clean_tenant)
+    ):
         raise ValueError("Invalid Microsoft 365 tenant format.")
     store = token_store or TokenStore()
     return loopback_oauth_authorization_code(

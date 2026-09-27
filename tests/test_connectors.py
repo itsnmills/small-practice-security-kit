@@ -418,7 +418,7 @@ class ConnectorTests(unittest.TestCase):
         expected_json = json.dumps(token, sort_keys=True)
         expected_stdin = (expected_json + "\n" + expected_json + "\n").encode("utf-8")
 
-        with patch("platform.system", return_value="Darwin"),              patch("shutil.which", return_value="/usr/bin/security"),              patch("subprocess.run") as mock_run:
+        with patch("platform.system", return_value="Darwin"),              patch("small_practice_security_kit.connectors.token_store._security_bin", return_value="/usr/bin/security"),              patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0)
             store.save("test-account", token)
 
@@ -427,28 +427,58 @@ class ConnectorTests(unittest.TestCase):
             args, kwargs = add_call
             cmd = args[0]
             self.assertEqual(cmd[1:], ["add-generic-password", "-U", "-s", SERVICE, "-a", "test-account", "-w"])
-            self.assertTrue(cmd[0].endswith("security"))
+            self.assertEqual(cmd[0], "/usr/bin/security")
             self.assertNotIn("secret_abc_123", " ".join(cmd))
             self.assertEqual(kwargs.get("input"), expected_stdin)
 
     def test_vendor_public_rejects_ip_addresses_and_internal_domains(self) -> None:
-        for invalid_domain in ["127.0.0.1", "169.254.169.254", "10.0.0.1", "localhost", "foo.internal", "foo.local", "plain"]:
+        for invalid_domain in [
+            "127.0.0.1",
+            "169.254.169.254",
+            "10.0.0.1",
+            "100.64.0.1",
+            "100.100.100.200",
+            "0.0.0.0",
+            "localhost",
+            "foo.internal",
+            "foo.local",
+            "plain",
+        ]:
             with self.assertRaises(ValueError):
                 collect_vendor_public("Vendor", invalid_domain)
 
     def test_vendor_public_default_fetcher_blocks_private_ip_resolution(self) -> None:
         from unittest.mock import patch
         from small_practice_security_kit.connectors.vendor_public import _default_fetcher, _assert_safe_host_resolution
-        with patch("socket.getaddrinfo", return_value=[(None, None, None, None, ("127.0.0.1", 0))]):
-            with self.assertRaises(ValueError):
-                _assert_safe_host_resolution("rebinding.example.com")
-            with self.assertRaises(ValueError):
-                _default_fetcher("https://rebinding.example.com/security")
+        for blocked_ip in ["127.0.0.1", "10.0.0.1", "169.254.169.254", "100.64.0.1", "100.100.100.200", "0.0.0.0"]:
+            with patch("socket.getaddrinfo", return_value=[(None, None, None, None, (blocked_ip, 0))]):
+                with self.assertRaises(ValueError):
+                    _assert_safe_host_resolution("rebinding.example.com")
+                with self.assertRaises(ValueError):
+                    _default_fetcher("https://rebinding.example.com/security")
+
+    def test_vendor_public_pinned_connection_prevents_dns_rebinding(self) -> None:
+        from unittest.mock import MagicMock, patch
+        from small_practice_security_kit.connectors.vendor_public import PinnedHTTPSConnection
+
+        conn = PinnedHTTPSConnection("safe.example.com", 443)
+        with patch("small_practice_security_kit.connectors.vendor_public._resolve_safe_host_ip", return_value="93.184.216.34") as mock_resolve, \
+             patch("socket.create_connection") as mock_create, \
+             patch.object(conn, "_context") as mock_ctx:
+            mock_sock = MagicMock()
+            mock_create.return_value = mock_sock
+            mock_ctx.wrap_socket.return_value = mock_sock
+
+            conn.connect()
+
+            mock_resolve.assert_called_once_with("safe.example.com")
+            mock_create.assert_called_once_with(("93.184.216.34", 443), conn.timeout, conn.source_address)
+            mock_ctx.wrap_socket.assert_called_once_with(mock_sock, server_hostname="safe.example.com")
 
     def test_vendor_public_safe_redirect_blocks_private_ip_redirects(self) -> None:
         from small_practice_security_kit.connectors.vendor_public import SafeRedirectHandler
         handler = SafeRedirectHandler()
-        for disallowed_url in ["http://127.0.0.1/admin", "http://169.254.169.254/latest/meta-data", "http://localhost:8080/"]:
+        for disallowed_url in ["http://127.0.0.1/admin", "http://169.254.169.254/latest/meta-data", "http://100.64.0.1/", "http://localhost:8080/"]:
             with self.assertRaises(ValueError):
                 handler.redirect_request(None, None, 302, "Found", {}, disallowed_url)
 
@@ -461,13 +491,14 @@ class ConnectorTests(unittest.TestCase):
         from unittest.mock import MagicMock, patch
         from small_practice_security_kit.connectors.dns_email_auth import _dig_resolver
 
-        with patch("subprocess.run") as mock_run:
+        with patch("small_practice_security_kit.connectors.dns_email_auth._find_dig_bin", return_value="/usr/bin/dig"), \
+             patch("subprocess.run") as mock_run:
             mock_run.return_value = MagicMock(returncode=0, stdout="\"v=spf1 ~all\"\n")
             records = _dig_resolver("example.com", "TXT")
             self.assertEqual(records, ["v=spf1 ~all"])
             cmd = mock_run.call_args[0][0]
             self.assertEqual(cmd[1:], ["+short", "TXT", "--", "example.com"])
-            self.assertTrue(cmd[0].endswith("dig"))
+            self.assertEqual(cmd[0], "/usr/bin/dig")
 
     def test_http_client_rejects_non_http_schemes(self) -> None:
         from small_practice_security_kit.connectors.http_client import get_json, post_form
@@ -479,10 +510,9 @@ class ConnectorTests(unittest.TestCase):
 
     def test_microsoft_365_rejects_invalid_tenant_format(self) -> None:
         from small_practice_security_kit.connectors.microsoft_365_api import connect_microsoft_365
-        with self.assertRaises(ValueError):
-            connect_microsoft_365(client_id="cid", tenant="../bad_tenant", open_browser=False)
-        with self.assertRaises(ValueError):
-            connect_microsoft_365(client_id="cid", tenant="tenant;rm -rf", open_browser=False)
+        for bad_tenant in ["../bad_tenant", "tenant;rm -rf", "..", ".hidden", "a" * 150]:
+            with self.assertRaises(ValueError):
+                connect_microsoft_365(client_id="cid", tenant=bad_tenant, open_browser=False)
 
 
 if __name__ == "__main__":
