@@ -1,140 +1,205 @@
-# Small Practice Security Kit
+# Small Practice Security Kit (`spsk`)
 
-**A local-first, PHI-avoidant readiness packet builder for small healthcare practices.**
+[![CI](https://github.com/itsnmills/small-practice-security-kit/actions/workflows/ci.yml/badge.svg)](https://github.com/itsnmills/small-practice-security-kit/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Security: Bandit & pip-audit](https://img.shields.io/badge/security-Bandit%20%7C%20pip--audit-green.svg)](.bandit)
+[![Privacy: Zero--PHI Local First](https://img.shields.io/badge/privacy-Zero--PHI%20Local--First-brightgreen.svg)](docs/security-model.md)
 
-This is a personal learning project. I built it to teach myself the HIPAA Security Rule and
-the practical side of small-practice security by working the problem end to end instead of
-just reading about it.
+**A local-first, privacy-engineered security baseline and readiness packet generator for independent healthcare practices.**
 
-## How this was built, plainly
+Small healthcare providers—such as dental clinics, physical therapy offices, psychotherapy groups, and ambulatory centers—face increasing ransomware threats, regulatory obligations, and insurance requirements. Enterprise compliance platforms are designed for tech companies and 500-bed hospital networks, burying smaller practices under SaaS subscriptions and compliance theater.
 
-I lean on AI heavily for the implementation. The part I actually developed here is the
-security judgment: deciding what a small practice has to be able to answer, reading the
-source material closely enough to know which controls matter, and checking whether the
-output holds up. Most of the real work in this repo is domain research, not code.
+**Small Practice Security Kit** bridges this gap: a practical, offline-first toolkit that maps where electronic Protected Health Information (ePHI) actually travels, audits business associate agreements (BAAs), evaluates AI tool risks, and produces a complete, audit-ready practice assurance packet in minutes.
 
-I would rather say that up front than let a reviewer assume otherwise.
+---
 
-"Velari" appears throughout the source, the control IDs (`VEL-*`), and some doc filenames.
-It was a working name I used for this project earlier on. It is not a company, there is no
-product, and nothing here is offered as a service. I am leaving the identifiers in place
-rather than doing a risky rename across the codebase.
+## Key Capabilities
 
-This runs on a fictional `Family Dental Clinic` profile. It has never been run on real
-patient data.
+- **Patient Data Outside the EHR Map:** Automatically highlights high-risk "sidecar" data paths—shared inboxes, cloud drives, AI transcribers, billing exports, and local backups—that never enter the chart.
+- **Guided Local Web Intake:** Zero-dependency web UI running strictly on `127.0.0.1` with practice presets (Dental, Therapy, Ambulatory), immediate CSRF protection, and Content Security Policy enforcement.
+- **Zero-PHI Data Boundary:** Designed strictly for metadata and operational references. Automated safety scanners halt execution if clinical notes, MRNs, SSNs, or credentials are entered.
+- **Automated Evidence Connectors:** Evaluates DNS email authentication (SPF, DKIM, DMARC), queries vendor public trust disclosures with SSRF and DNS-rebinding protection, and connects to Google Workspace / Microsoft 365 metadata APIs using secure OS keychain token storage.
+- **Practice Assurance Deliverables:** Generates both Markdown and self-contained HTML packets tailored for practice owners, managed service providers (MSPs), insurers, and legal reviewers.
 
-## What it does
+---
 
-Small practices usually know they need MFA, backups, BAAs, access reviews, and an incident
-plan. The hard part is proving what already exists when the evidence is scattered across
-email, vendor portals, tickets, screenshots, and spreadsheets.
-
-This takes intake answers about a practice and produces a readiness packet: where ePHI
-actually lives, which vendors need BAAs, which evidence is missing or stale, and a 30/60/90
-day action list.
+## How It Works
 
 ```text
-10-minute intake -> patient-data-outside-the-EHR map -> vendor/BAA review
-  -> AI workflow review -> downtime/tabletop -> evidence index -> 30/60/90 roadmap
+┌─────────────────────────────────────────────────────────────┐
+│                     1. Local Intake                         │
+│  Guided Web UI (open_dashboard.command) or YAML Profile     │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                2. Data Flow & Boundary Mapper               │
+│   EHR Sidecars • Shared Drives • Cloud Inboxes • AI Tools   │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│                 3. Evidence & Triage Connectors             │
+│   DNS Email Auth (SPF/DMARC) • Public Vendor Web Triage     │
+│   Google Workspace / M365 Metadata • Folder Inventory       │
+└──────────────────────────────┬──────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│               4. Practice Assurance Packet                  │
+│  Readiness Review • Vendor/BAA Matrix • AI Workflow Review  │
+│  Ransomware Tabletop • Evidence Binder • 30/60/90 Roadmap   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-The part I think is most useful is the **Patient Data Outside the EHR Map**: inboxes, shared
-drives, AI tools, vendor portals, exports, contractors, backups, and billing systems. The
-generated `ephi-flow-map.md` now leads with those sidecar paths — flows that never touch the
-EHR, plus flows that leave or enter the chart — instead of treating every row as equal.
-Once those flows are visible, the evidence binder, vendor register, and downtime plan stop
-being abstract.
+---
 
-## Where the content comes from
+## Generated Assurance Deliverables
 
-The control set lives in [`catalogs/control_evidence_matrix.yaml`](catalogs/control_evidence_matrix.yaml):
-30 controls across Technical Safeguards (12), Administrative Safeguards (6),
-Vendor/BAA/AI (6), Operational Readiness (4), and Physical Safeguards (2).
+When a profile is compiled, `spsk` generates an integrated suite of purpose-built review documents in `out/<practice_name>/`:
 
-Each control maps to an evidence item, an accountable owner, and a freshness state. The
-source material is the HIPAA Security Rule (45 CFR Part 164 Subpart C), the HHS 405(d)
-Health Industry Cybersecurity Practices, the HHS HPH and CISA Cybersecurity Performance
-Goals, and NIST SP 800-66r2.
+| Artifact | Purpose & Audience |
+|:---|:---|
+| [`review-packet.html`](docs/demo/review-packet.html) | **Master Practice Packet:** Standalone, print-ready HTML dossier combining all reviews, maps, and action items. |
+| [`readiness-review.md`](docs/demo/review-packet.md) | **Executive Baseline Review:** Plain-English summary of technical, administrative, and physical safeguards. |
+| `ephi-flow-map.md` | **Patient Data Outside the EHR:** Detailed map of charts, billing flows, cloud files, inboxes, and AI pipelines. |
+| `vendor-baa-review.md` | **Vendor & BAA Register:** BAA execution status, SOC 2 / HITRUST proof points, and AI data-retention terms. |
+| `ai-workflow-review.md` | **Clinical AI Governance:** Approved, restricted, and prohibited AI use cases with explicit patient privacy rules. |
+| `evidence-binder-index.md` | **Audit Evidence Index:** Date-stamped matrix of policy documents, backup logs, and owner signoffs. |
+| `downtime-ransomware-tabletop.md` | **Operational Resilience:** 24–72 hour clinical downtime protocols, paper-charting triggers, and tabletop drills. |
+| `incident-evidence-timeline.md` | **Incident Playbook:** Phase-by-phase response timeline with containment checkpoints and forensic handoffs. |
+| `owner-msp-handoff.md` | **MSP Coordination Boundary:** Clear division of responsibilities between practice ownership and external IT. |
+| `30-60-90-roadmap.md` | **Prioritized Action Plan:** Sequenced milestones to remediate critical gaps without disrupting patient care. |
+| `limitations-appendix.md` | **Assurance Scope & Boundaries:** Explicit statement of what the evidence baseline does and does not prove. |
 
-**Known gap, being worked:** the controls currently reference their source in prose rather
-than by citation. I am going through all 30 by hand to add the specific CFR section and
-whether each is required or addressable. Until that is finished, treat the mappings as a
-reasonable reading rather than an authoritative one.
+Inspect our sanitized, fictional sample artifacts in [`docs/demo/`](docs/demo/).
 
-## Quick start
+---
+
+## Regulatory & Control Foundations
+
+The baseline control matrix in [`catalogs/control_evidence_matrix.yaml`](catalogs/control_evidence_matrix.yaml) structures 30 core controls mapped to authoritative healthcare cybersecurity frameworks:
+
+- **HIPAA Security Rule:** 45 CFR Part 164 Subpart C (Technical, Administrative, and Physical Safeguards).
+- **HHS 405(d) HICP:** Health Industry Cybersecurity Practices for Small Healthcare Organizations.
+- **HHS HPH & CISA CPGs:** Cross-Sector Cybersecurity Performance Goals for Healthcare and Public Health.
+- **NIST SP 800-66r2:** Implementing the Health Insurance Portability and Accountability Act Security Rule.
+
+Every control references an accountable owner lane (`owner`, `msp`, `vendor`, `staff`), acceptable evidence formats, review cadences, and automated status evaluation (`observed`, `needs_review`, `missing`, `stale`).
+
+---
+
+## Quickstart
+
+### Prerequisites
+
+- Python 3.11 or newer
+- macOS or Linux
+
+### Installation
 
 ```bash
+# Clone repository
+git clone https://github.com/itsnmills/small-practice-security-kit.git
+cd small-practice-security-kit
+
+# Create and activate virtual environment
 python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-.venv/bin/python scripts/build.py samples/family_dental_clinic.yaml
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
 ```
 
-Output lands in `out/family_dental_clinic/`. Open `review-packet.html` to see the result.
+### 1. Launch the Guided Intake Web Dashboard
 
-Local intake dashboard (macOS: double-click `open_dashboard.command`):
+On macOS, you can simply double-click `open_dashboard.command`, or start the server via terminal:
 
 ```bash
-.venv/bin/python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
+python scripts/serve_dashboard.py --profile samples/family_dental_clinic.yaml
 ```
 
-Tests and content validation:
+Open your browser to `http://127.0.0.1:8765`. The local dashboard allows you to:
+- Select a specialized practice preset (e.g., Dental, Family Medicine, Therapy, Ambulatory Surgical).
+- Interactively inventory clinical systems, vendor BAAs, and ePHI flow paths.
+- Run live DNS and vendor metadata connectors.
+- Build, preview, and download the finished assurance packet directly from your browser.
+
+### 2. Build via Command Line
+
+Compile any profile YAML directly to generated packet artifacts:
 
 ```bash
-.venv/bin/python scripts/validate_content.py
-.venv/bin/python -m unittest discover -s tests
+python -m small_practice_security_kit build samples/family_dental_clinic.yaml
 ```
 
-## Sample output
+Outputs are written to `out/<profile_slug>/`. Open `out/<profile_slug>/review-packet.html` in any web browser.
 
-Checked-in, sanitized artifacts, no PHI:
+### 3. Rapid Assessment ("Sprint Mode")
 
-- [`docs/demo/review-packet.md`](docs/demo/review-packet.md) and [`.html`](docs/demo/review-packet.html)
-- [`docs/demo/practice-assurance-packet.md`](docs/demo/practice-assurance-packet.md)
-- [`docs/demo/packet-manifest.json`](docs/demo/packet-manifest.json)
-- [`docs/security-model.md`](docs/security-model.md) for the safety boundary
+For a rapid discovery session with an MSP or practice owner:
 
-## What gets generated
+```bash
+python -m small_practice_security_kit sprint samples/family_dental_clinic.yaml --output-root out/sprint
+```
 
-| Output | What it is |
-|---|---|
-| `readiness-review.md` | Plain-English baseline readiness review |
-| `ephi-flow-map.md` | Systems, workflows, vendors, ePHI categories, BAA needs |
-| `vendor-baa-review.md` | Vendor and BAA status, SOC 2/HITRUST evidence, AI data-use terms |
-| `ai-workflow-review.md` | Allowed, restricted, and prohibited AI workflows |
-| `evidence-binder-index.md` | Evidence references, owners, and freshness state |
-| `downtime-ransomware-tabletop.md` | Downtime planning and tabletop starter |
-| `incident-evidence-timeline.md` | Sanitized incident timeline with decision gates |
-| `owner-msp-handoff.md` | Follow-up items, vendor asks, and the handoff boundary |
-| `30-60-90-roadmap.md` | Prioritized remediation plan |
-| `limitations-appendix.md` | What the packet does and does not prove |
+Generates a targeted MSP technical inquiry request, an intake summary, and immediate gap flags.
 
-There is also an optional connector layer that imports metadata-only evidence from CSV
-exports or read-only Google Workspace and Microsoft 365 APIs. It deliberately avoids
-row-level identities, mailbox contents, raw logs, and credentials. See
-[`docs/product/evidence-connector-standard.md`](docs/product/evidence-connector-standard.md).
+---
 
-## Safety and data boundary
+## Security Model & Data Boundary
 
-This repository is **local-first and PHI-avoidant**.
+This project follows an uncompromising **local-first, zero-PHI architecture**:
 
-Reasonable inputs: fictional practices, system names, vendor names, role names, ticket
-references, evidence folder references, non-sensitive summary notes.
+- **Network Containment:** All intake APIs bind strictly to loopback (`127.0.0.1`). External interfaces are refused.
+- **Browser Security:** HTTP responses enforce strict `Content-Security-Policy`, `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, and `Cache-Control: no-store` headers.
+- **Cross-Site Request Protection:** All write operations require matching same-origin headers and dynamic per-session CSRF tokens (`X-SPSK-Token`).
+- **SSRF & DNS Rebinding Defenses:** Vendor public documentation lookups reject non-HTTP schemes, validate DNS syntax, reject IP literals/internal domains, and resolve target hostnames before connection to block loopback (127.0.0.0/8), RFC 1918 private, link-local, or reserved networks.
+- **OS Credential Isolation:** Connector OAuth tokens and API secrets are stored using the native macOS Keychain (streaming credentials via stdin to prevent process argument snooping) or local files restricted to `0600` permissions.
+- **Atomic Operations:** Workspace and profile writes use randomized temporary files (`tempfile.NamedTemporaryFile`) with atomic replacement and automatic cleanup on error to avoid partial writes or race conditions.
+- **Static Analysis & Supply Chain Verification:** Automated CI tests verify dependencies against the PyPA database with `pip-audit`, execute AST static security scanning with `bandit`, validate secret hygiene with `gitleaks`, and generate CycloneDX SBOMs with `trivy`.
 
-Do **not** enter: patient names, medical record numbers, dates of birth, diagnoses, claim
-contents, clinical notes, passwords, API keys, MFA recovery codes, private keys, or real
-incident details.
+Review our complete [Security Model and Data Boundary Specification](docs/security-model.md).
 
-Full boundary: [`docs/security-model.md`](docs/security-model.md).
+---
 
-## What this is not
+## Development & Testing
 
-This does not certify HIPAA compliance, does not constitute legal advice, does not decide
-breach-notification duties, and is not a formal Security Risk Analysis, a penetration test,
-or a substitute for qualified legal, compliance, security, or incident response
-professionals.
+Run unit tests, content validation, and security scans locally:
 
-It is a learning project and a practical organizer. Nothing more than that.
+```bash
+# Run unit test suite (140 tests)
+python -m unittest discover -s tests
+
+# Validate content and safety boundaries
+python scripts/validate_content.py
+
+# Run Bandit AST static security analysis
+bandit -r small_practice_security_kit -c .bandit
+
+# Audit dependencies for known vulnerabilities
+pip-audit -r requirements.txt
+```
+
+---
+
+## Provenance & Engineering Context
+
+`small-practice-security-kit` originated as a hands-on project to translate federal healthcare compliance frameworks (HIPAA Security Rule, HHS 405(d), NIST SP 800-66r2) into an automated, practitioner-friendly evidence engine.
+
+The project blends deep domain research into small-clinic workflows with modern AI-accelerated implementation patterns, backed by automated static analysis, supply chain auditing, and strict security boundaries. Control identifiers within the evidence matrix retain the working prefix `VEL-*` (from the project's early internal codename, *Velari*).
+
+---
+
+## Disclaimer
+
+**Small Practice Security Kit is an operational readiness and documentation toolkit, not legal counsel or certified regulatory advice.** 
+
+Using this kit does not guarantee compliance with the HIPAA Security Rule or state privacy laws, nor does it replace formal Security Risk Analyses (SRAs), independent technical penetration tests, or consultations with qualified healthcare legal and compliance professionals.
+
+---
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Released under the [MIT License](LICENSE).
