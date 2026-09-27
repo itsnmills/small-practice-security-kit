@@ -309,6 +309,17 @@ class IntakeApiTests(unittest.TestCase):
         with urllib.request.urlopen(self.base + "/api/status", timeout=5) as response:
             self.assertEqual(response.headers.get("Cache-Control"), "no-store")
 
+    def test_response_security_headers_present(self) -> None:
+        with urllib.request.urlopen(self.base + "/api/status", timeout=5) as response:
+            headers = response.headers
+            self.assertEqual(headers.get("Cache-Control"), "no-store")
+            self.assertEqual(headers.get("X-Content-Type-Options"), "nosniff")
+            self.assertEqual(headers.get("X-Frame-Options"), "DENY")
+            self.assertEqual(headers.get("Referrer-Policy"), "no-referrer")
+            csp = headers.get("Content-Security-Policy", "")
+            self.assertIn("default-src 'self'", csp)
+            self.assertIn("frame-ancestors 'none'", csp)
+
 
 if __name__ == "__main__":
     unittest.main()

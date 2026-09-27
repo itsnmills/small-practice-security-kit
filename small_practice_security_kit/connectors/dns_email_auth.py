@@ -11,8 +11,16 @@ from .base import build_bundle, make_evidence_item, utc_now
 RecordResolver = Callable[[str, str], list[str]]
 
 
+def _find_dig_bin() -> str:
+    import os, shutil
+    for candidate in ("/usr/bin/dig", "/bin/dig"):
+        if os.path.exists(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return shutil.which("dig") or "dig"
+
+
 def _dig_resolver(name: str, record_type: str) -> list[str]:
-    command = ["dig", "+short", record_type, "--", name]
+    command = [_find_dig_bin(), "+short", record_type, "--", name]
     try:
         completed = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=8)
     except (OSError, subprocess.TimeoutExpired):

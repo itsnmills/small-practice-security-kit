@@ -37,6 +37,19 @@ def _is_disallowed_host(host: str) -> bool:
     return False
 
 
+def _assert_safe_host_resolution(hostname: str) -> None:
+    if not hostname or _is_disallowed_host(hostname):
+        raise ValueError(f"Disallowed host: {hostname}")
+    try:
+        addrinfo = socket.getaddrinfo(hostname, None)
+    except socket.gaierror as exc:
+        raise ValueError(f"Could not resolve host: {hostname}") from exc
+    for _, _, _, _, sockaddr in addrinfo:
+        ip_str = sockaddr[0]
+        ip = ipaddress.ip_address(ip_str)
+        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+            raise ValueError(f"Host {hostname} resolved to non-public IP: {ip_str}")
+
 def _clean_domain(domain: str) -> str:
     clean = domain.strip().lower().rstrip(".")
     if not clean or ".." in clean or "/" in clean or "@" in clean or ":" in clean:
@@ -54,20 +67,14 @@ class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
         if parsed.scheme.lower() not in {"http", "https"}:
             raise ValueError(f"Disallowed redirect scheme: {parsed.scheme}")
         hostname = (parsed.hostname or "").lower()
-        if not hostname or _is_disallowed_host(hostname):
-            raise ValueError(f"Disallowed redirect host: {hostname}")
-        try:
-            for _, _, _, _, sockaddr in socket.getaddrinfo(hostname, None):
-                ip_str = sockaddr[0]
-                ip = ipaddress.ip_address(ip_str)
-                if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
-                    raise ValueError(f"Redirect resolved to non-public IP: {ip_str}")
-        except socket.gaierror:
-            pass
+        _assert_safe_host_resolution(hostname)
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 def _default_fetcher(url: str) -> FetchResult:
+    parsed = urllib.parse.urlsplit(url)
+    hostname = (parsed.hostname or "").lower()
+    _assert_safe_host_resolution(hostname)
     request = urllib.request.Request(url, headers={"User-Agent": "VelariSecurityKit/0.1 metadata-only"})
     opener = urllib.request.build_opener(SafeRedirectHandler())
     try:
