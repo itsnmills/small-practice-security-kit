@@ -527,5 +527,5 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                 return "application/json; charset=utf-8"
             return "application/octet-stream"
 
-    ensure_workspace_dirs(ROOT)
+    ensure_workspace_dirs(state.workspace_root)
     return LocalIntakeHandler

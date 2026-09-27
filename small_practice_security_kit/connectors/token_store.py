@@ -70,8 +70,12 @@ class TokenStore:
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
         )
+        # Pass -w as last option without argument to prompt via stdin (retyped twice),
+        # preventing token disclosure in process argument tables (ps / sysctl).
+        input_data = (payload + "\n" + payload + "\n").encode("utf-8")
         subprocess.run(
-            ["security", "add-generic-password", "-U", "-s", SERVICE, "-a", account, "-w", payload],
+            ["security", "add-generic-password", "-U", "-s", SERVICE, "-a", account, "-w"],
+            input=input_data,
             check=True,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -93,4 +97,3 @@ class TokenStore:
         path = self._file_path(account)
         path.write_text(json.dumps(token, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         os.chmod(path, 0o600)
-

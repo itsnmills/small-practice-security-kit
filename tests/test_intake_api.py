@@ -257,7 +257,7 @@ class IntakeApiTests(unittest.TestCase):
         raised.exception.close()
 
     def test_msp_response_does_not_return_parse_contents(self) -> None:
-        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+        with tempfile.TemporaryDirectory(dir=self.state.out_dir) as tmp:
             bad = Path(tmp) / "bad-msp.yaml"
             bad.write_text("responses: not-a-list\nsecret: super-secret-value\n", encoding="utf-8")
             with self.assertRaises(urllib.error.HTTPError) as raised:

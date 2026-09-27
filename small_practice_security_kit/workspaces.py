@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -17,7 +18,7 @@ PROFILES = ROOT / "profiles"
 
 
 def utc_stamp() -> str:
-    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
 
 
 class WorkspaceError(ValueError):
@@ -63,9 +64,18 @@ def atomic_write_profile(
         backup = dirs["backups"] / f"{resolved.stem}-{utc_stamp()}.yaml"
         backup.write_text(resolved.read_text(encoding="utf-8"), encoding="utf-8", newline="\n")
     profile.setdefault("workspace", {})["updated_at"] = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
-    tmp = resolved.with_suffix(".yaml.tmp")
-    tmp.write_text(yaml.safe_dump(profile, sort_keys=False), encoding="utf-8", newline="\n")
-    os.replace(tmp, resolved)
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        dir=resolved.parent,
+        prefix=f".{resolved.stem}-",
+        suffix=".tmp",
+        delete=False,
+        encoding="utf-8",
+        newline="\n",
+    ) as tmp:
+        yaml.safe_dump(profile, tmp, sort_keys=False)
+        tmp_path = Path(tmp.name)
+    os.replace(tmp_path, resolved)
     log_entry = {
         "timestamp": datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
         "action": action,

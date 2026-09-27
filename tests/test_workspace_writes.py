@@ -33,6 +33,18 @@ class WorkspaceWriteTests(unittest.TestCase):
             with self.assertRaises(WorkspaceError):
                 atomic_write_profile(profile, Path(temp) / "outside.yaml", root=Path(temp) / "workspace", action="bad")
 
+    def test_rapid_sequential_writes_generate_distinct_backups(self) -> None:
+        profile = create_profile_from_preset("Rapid Write Clinic", "dental", "solo")
+        with tempfile.TemporaryDirectory(prefix="spsk-workspace-rapid-") as temp:
+            workspace_root = Path(temp).resolve()
+            path = safe_profile_path(profile["practice"]["name"], root=workspace_root)
+            atomic_write_profile(profile, path, root=workspace_root, action="seed")
+            # Write twice in immediate succession
+            atomic_write_profile(profile, path, root=workspace_root, action="update-1")
+            atomic_write_profile(profile, path, root=workspace_root, action="update-2")
+            backups = list((workspace_root / "profiles" / ".backups").glob("*.yaml"))
+            self.assertEqual(len(backups), 2)
+
 
 if __name__ == "__main__":
     unittest.main()

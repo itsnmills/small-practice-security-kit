@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 import urllib.parse
 from datetime import UTC, datetime, timedelta
 from typing import Any, Callable
@@ -40,12 +42,15 @@ def connect_microsoft_365(
     token_store: TokenStore | None = None,
     open_browser: bool = True,
 ) -> dict[str, Any]:
+    clean_tenant = tenant.strip()
+    if not clean_tenant or not re.fullmatch(r"^(organizations|common|consumers|[a-zA-Z0-9.-]+)$", clean_tenant):
+        raise ValueError("Invalid Microsoft 365 tenant format.")
     store = token_store or TokenStore()
     return loopback_oauth_authorization_code(
         provider="microsoft_365",
         account=MICROSOFT_365_ACCOUNT,
-        auth_url=MICROSOFT_AUTH_BASE.format(tenant=tenant),
-        token_url=MICROSOFT_TOKEN_BASE.format(tenant=tenant),
+        auth_url=MICROSOFT_AUTH_BASE.format(tenant=clean_tenant),
+        token_url=MICROSOFT_TOKEN_BASE.format(tenant=clean_tenant),
         client_id=client_id,
         scopes=MICROSOFT_SCOPES,
         token_store=store,

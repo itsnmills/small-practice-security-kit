@@ -29,7 +29,7 @@ class FileInventoryError(ValueError):
 
 
 def default_evidence_roots(*extra: Path) -> list[Path]:
-    roots = [ROOT.resolve()]
+    roots: list[Path] = []
     for name in EVIDENCE_ROOT_NAMES:
         roots.append((ROOT / name).resolve())
     for item in extra:

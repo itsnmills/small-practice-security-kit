@@ -409,5 +409,62 @@ class ConnectorTests(unittest.TestCase):
                 jsonschema.validate(item, evidence_schema)
 
 
+    def test_token_store_keychain_saves_password_via_stdin_without_argv_disclosure(self) -> None:
+        from unittest.mock import MagicMock, patch
+        from small_practice_security_kit.connectors.token_store import TokenStore, SERVICE
+
+        store = TokenStore()
+        token = {"access_token": "secret_abc_123", "refresh_token": "ref_xyz_456"}
+        expected_json = json.dumps(token, sort_keys=True)
+        expected_stdin = (expected_json + "\n" + expected_json + "\n").encode("utf-8")
+
+        with patch("platform.system", return_value="Darwin"),              patch("shutil.which", return_value="/usr/bin/security"),              patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0)
+            store.save("test-account", token)
+
+            self.assertEqual(mock_run.call_count, 2)
+            add_call = mock_run.call_args_list[1]
+            args, kwargs = add_call
+            cmd = args[0]
+            self.assertEqual(cmd, ["security", "add-generic-password", "-U", "-s", SERVICE, "-a", "test-account", "-w"])
+            self.assertNotIn("secret_abc_123", " ".join(cmd))
+            self.assertEqual(kwargs.get("input"), expected_stdin)
+
+    def test_vendor_public_rejects_ip_addresses_and_internal_domains(self) -> None:
+        for invalid_domain in ["127.0.0.1", "169.254.169.254", "10.0.0.1", "localhost", "foo.internal", "foo.local", "plain"]:
+            with self.assertRaises(ValueError):
+                collect_vendor_public("Vendor", invalid_domain)
+
+    def test_vendor_public_safe_redirect_blocks_private_ip_redirects(self) -> None:
+        from small_practice_security_kit.connectors.vendor_public import SafeRedirectHandler
+        handler = SafeRedirectHandler()
+        for disallowed_url in ["http://127.0.0.1/admin", "http://169.254.169.254/latest/meta-data", "http://localhost:8080/"]:
+            with self.assertRaises(ValueError):
+                handler.redirect_request(None, None, 302, "Found", {}, disallowed_url)
+
+    def test_dns_email_auth_rejects_options_and_invalid_names(self) -> None:
+        for invalid in ["-v", "--help", "example..com", "foo/bar", "user@domain.com"]:
+            with self.assertRaises(ValueError):
+                collect_dns_email_auth(invalid)
+
+    def test_dns_dig_resolver_uses_argument_terminator(self) -> None:
+        from unittest.mock import MagicMock, patch
+        from small_practice_security_kit.connectors.dns_email_auth import _dig_resolver
+
+        with patch("subprocess.run") as mock_run:
+            mock_run.return_value = MagicMock(returncode=0, stdout="\"v=spf1 ~all\"\n")
+            records = _dig_resolver("example.com", "TXT")
+            self.assertEqual(records, ["v=spf1 ~all"])
+            cmd = mock_run.call_args[0][0]
+            self.assertEqual(cmd, ["dig", "+short", "TXT", "--", "example.com"])
+
+    def test_microsoft_365_rejects_invalid_tenant_format(self) -> None:
+        from small_practice_security_kit.connectors.microsoft_365_api import connect_microsoft_365
+        with self.assertRaises(ValueError):
+            connect_microsoft_365(client_id="cid", tenant="../bad_tenant", open_browser=False)
+        with self.assertRaises(ValueError):
+            connect_microsoft_365(client_id="cid", tenant="tenant;rm -rf", open_browser=False)
+
+
 if __name__ == "__main__":
     unittest.main()

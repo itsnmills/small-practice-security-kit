@@ -102,9 +102,9 @@ profiles/
 The app:
 
 - refuses writes outside `profiles/`,
-- writes atomically through a temporary file,
-- creates timestamped backups,
-- appends a local change log,
+- writes atomically through a collision-resistant unique temporary file (`.NamedTemporaryFile` with atomic replace),
+- creates microsecond-timestamped backups (`.backups/`),
+- appends a local change log (`.logs/profile_changes.jsonl`),
 - never stores sensitive warning values in the log.
 
 ## Metadata-only folder inventory
@@ -113,7 +113,7 @@ The evidence screen can optionally scan a local folder for evidence references.
 
 This inventory:
 
-- only scans folders that resolve under the kit workspace evidence root (`out/`, `profiles/`, `examples/`, `samples/`, or the workspace itself),
+- only scans folders that resolve under the designated evidence roots (`out/`, `profiles/`, `examples/`, `samples/`, or configured output directories, strictly excluding repository root and source directories),
 - rejects `..` segments, symlink escapes, and paths outside that tree,
 - records filename-derived titles,
 - records relative paths,
@@ -126,6 +126,15 @@ This inventory:
 - blocks sensitive-looking filenames before import.
 
 Local MSP response import uses the same workspace/evidence-root allowlist and does not return raw parse exceptions.
+
+## Connector security and boundary isolation
+
+Connectors collect aggregate, non-sensitive posture proof points (counts, presence flags, dates, policy values) without retrieving user directories, emails, or credentials:
+
+- **Token storage process safety:** When macOS Keychain is available, passwords and tokens are written via standard input rather than command-line arguments (`-w`), preventing token leakage in process argument listings (`ps aux` / `sysctl`). Local file token storage enforces directory permissions `0700` and file permissions `0600`.
+- **Public vendor lookup & SSRF prevention:** Public vendor domain lookup requires a valid public DNS name and rejects IP address literals (IPv4/IPv6), `localhost`, and internal domains (`.local`, `.internal`, `.lan`). The HTTP fetcher uses an explicit redirect handler that validates target hosts and blocks redirects resolving to loopback, private (RFC 1918), link-local, or reserved networks.
+- **DNS resolver hardening:** Domain parameters are strictly validated against public DNS syntax. The `dig` resolver uses the `--` argument delimiter to prevent parameter injection.
+- **Identity provider tenant validation:** Microsoft 365 and Google Workspace connectors strictly sanitize tenant identifiers and only query aggregate metadata endpoints.
 
 ## Sensitive data detection
 
@@ -168,15 +177,11 @@ Cloud AI should remain outside the default workflow unless a practice has a revi
 
 Generated packets do not prove:
 
-- HIPAA compliance,
-- legal sufficiency,
-- formal Security Risk Analysis completion,
-- breach status,
-- vendor safety,
-- AI tool safety,
-- backup restorability,
-- access control correctness,
-- insurer acceptance,
-- that all real evidence exists.
+- continuous compliance,
+- HIPAA certification,
+- that backups actually work without testing,
+- that an MSP is fulfilling its agreement,
+- that devices are encrypted without endpoint evidence,
+- that workforce training was effective.
 
-Bring the packet to qualified legal, compliance, MSP/IT, security, incident response, and/or insurance reviewers before relying on it for operational decisions.
+They provide an organized, date-stamped baseline so qualified reviewers can ask the right questions quickly.
