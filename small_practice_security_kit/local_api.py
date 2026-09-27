@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import html
+import hmac
 import json
 import secrets
 from dataclasses import dataclass
@@ -195,7 +196,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
             self.send_header("X-Frame-Options", "DENY")
             self.send_header(
                 "Content-Security-Policy",
-                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';",
+                "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; object-src 'none';",
             )
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("Cache-Control", "no-store")
@@ -233,7 +234,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
         def _check_post_security(self) -> bool:
             if not self._check_local_request():
                 return False
-            if self.headers.get("X-SPSK-Token") != state.csrf_token:
+            if not hmac.compare_digest(self.headers.get("X-SPSK-Token") or "", state.csrf_token):
                 self._error(HTTPStatus.FORBIDDEN, "Missing or invalid local session token.")
                 return False
             return True

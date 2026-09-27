@@ -40,6 +40,18 @@ class WorkspaceWriteTests(unittest.TestCase):
             self.assertEqual(list((workspace_root / "profiles").glob(".*.tmp")), [])
             self.assertFalse(path.exists())
 
+    def test_atomic_write_cleans_up_tmp_file_on_dump_exception(self) -> None:
+        profile = create_profile_from_preset("Dump Fail Clinic", "dental", "solo")
+        with tempfile.TemporaryDirectory(prefix="spsk-workspace-dump-fail-") as temp:
+            workspace_root = Path(temp).resolve()
+            path = safe_profile_path(profile["practice"]["name"], root=workspace_root)
+            with mock.patch("yaml.safe_dump", side_effect=RuntimeError("serialization aborted")):
+                with self.assertRaises(RuntimeError):
+                    atomic_write_profile(profile, path, root=workspace_root, action="test")
+            self.assertEqual(list((workspace_root / "profiles").glob("*.tmp")), [])
+            self.assertEqual(list((workspace_root / "profiles").glob(".*.tmp")), [])
+            self.assertFalse(path.exists())
+
     def test_atomic_write_rejects_outside_profiles(self) -> None:
         profile = create_profile_from_preset("Outside Test Clinic", "dental", "solo")
         with tempfile.TemporaryDirectory(prefix="spsk-workspace-write-") as temp:

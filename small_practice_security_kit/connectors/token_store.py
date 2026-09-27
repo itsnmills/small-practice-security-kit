@@ -17,7 +17,7 @@ def _security_bin() -> str | None:
     for candidate in ("/usr/bin/security", "/bin/security"):
         if os.path.exists(candidate) and os.access(candidate, os.X_OK):
             return candidate
-    return shutil.which("security")
+    return None
 
 
 class TokenStore:
@@ -43,7 +43,9 @@ class TokenStore:
 
     def delete(self, account: str) -> None:
         if self._use_keychain():
-            sec = _security_bin() or "security"
+            sec = _security_bin()
+        if not sec:
+            raise RuntimeError("Trusted macOS security binary not found.")
             subprocess.run(
                 [sec, "delete-generic-password", "-s", SERVICE, "-a", account],
                 check=False,
@@ -59,7 +61,9 @@ class TokenStore:
         return "macos_keychain" if self._use_keychain() else "local_file_0600"
 
     def _load_keychain(self, account: str) -> dict[str, Any] | None:
-        sec = _security_bin() or "security"
+        sec = _security_bin()
+        if not sec:
+            raise RuntimeError("Trusted macOS security binary not found.")
         completed = subprocess.run(
             [sec, "find-generic-password", "-s", SERVICE, "-a", account, "-w"],
             check=False,
@@ -72,7 +76,9 @@ class TokenStore:
         return json.loads(completed.stdout)
 
     def _save_keychain(self, account: str, token: dict[str, Any]) -> None:
-        sec = _security_bin() or "security"
+        sec = _security_bin()
+        if not sec:
+            raise RuntimeError("Trusted macOS security binary not found.")
         payload = json.dumps(token, sort_keys=True)
         subprocess.run(
             [sec, "delete-generic-password", "-s", SERVICE, "-a", account],

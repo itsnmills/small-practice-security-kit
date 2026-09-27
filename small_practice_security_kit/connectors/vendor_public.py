@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import http.client
 import ipaddress
 import re
 import socket
@@ -9,7 +10,6 @@ import urllib.request
 from typing import Any, Callable
 
 from .base import build_bundle, make_evidence_item, utc_now
-
 
 FetchResult = tuple[int, str]
 PublicPageFetcher = Callable[[str], FetchResult]
@@ -24,6 +24,8 @@ TERM_GROUPS = {
     "incident_terms": ["security incident", "breach notification", "incident response"],
 }
 
+SHARED_ADDRESS_SPACE = ipaddress.ip_network("100.64.0.0/10")
+
 
 def _is_disallowed_host(host: str) -> bool:
     clean_host = host.strip().lower().rstrip(".")
@@ -37,28 +39,84 @@ def _is_disallowed_host(host: str) -> bool:
     return False
 
 
-def _assert_safe_host_resolution(hostname: str) -> None:
+def _is_safe_ip(ip: ipaddress.IPv4Address | ipaddress.IPv6Address) -> bool:
+    if (
+        not ip.is_global
+        or ip in SHARED_ADDRESS_SPACE
+        or ip.is_private
+        or ip.is_loopback
+        or ip.is_link_local
+        or ip.is_reserved
+        or ip.is_multicast
+    ):
+        return False
+    return True
+
+
+def _resolve_safe_host_ip(hostname: str) -> str:
     if not hostname or _is_disallowed_host(hostname):
         raise ValueError(f"Disallowed host: {hostname}")
     try:
         addrinfo = socket.getaddrinfo(hostname, None)
     except socket.gaierror as exc:
         raise ValueError(f"Could not resolve host: {hostname}") from exc
+
+    safe_ips: list[str] = []
     for _, _, _, _, sockaddr in addrinfo:
         ip_str = sockaddr[0]
         ip = ipaddress.ip_address(ip_str)
-        if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
-            raise ValueError(f"Host {hostname} resolved to non-public IP: {ip_str}")
+        if not _is_safe_ip(ip):
+            raise ValueError(f"Host {hostname} resolved to non-public/restricted IP: {ip_str}")
+        safe_ips.append(ip_str)
+
+    if not safe_ips:
+        raise ValueError(f"Host {hostname} did not resolve to any addresses")
+    return safe_ips[0]
+
+
+def _assert_safe_host_resolution(hostname: str) -> None:
+    _resolve_safe_host_ip(hostname)
+
 
 def _clean_domain(domain: str) -> str:
     clean = domain.strip().lower().rstrip(".")
     if not clean or ".." in clean or "/" in clean or "@" in clean or ":" in clean:
         raise ValueError("domain must be a bare public DNS name, for example abridge.com")
-    if not re.fullmatch(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+", clean):
+    if not re.fullmatch(r"""[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+""", clean):
         raise ValueError("domain must be a valid public DNS name with at least one dot, for example abridge.com")
     if _is_disallowed_host(clean):
         raise ValueError("domain cannot be an IP address, localhost, or internal domain")
     return clean
+
+
+class PinnedHTTPSConnection(http.client.HTTPSConnection):
+    """HTTPS connection pinned to the validated IP to prevent DNS rebinding attacks."""
+
+    def connect(self) -> None:
+        ip_str = _resolve_safe_host_ip(self.host)
+        self.sock = socket.create_connection((ip_str, self.port), self.timeout, self.source_address)
+        if self._tunnel_host:
+            self._tunnel()
+        server_hostname = self.host
+        self.sock = self._context.wrap_socket(self.sock, server_hostname=server_hostname)
+
+
+class PinnedHTTPConnection(http.client.HTTPConnection):
+    """HTTP connection pinned to the validated IP to prevent DNS rebinding attacks."""
+
+    def connect(self) -> None:
+        ip_str = _resolve_safe_host_ip(self.host)
+        self.sock = socket.create_connection((ip_str, self.port), self.timeout, self.source_address)
+
+
+class PinnedHTTPSHandler(urllib.request.HTTPSHandler):
+    def https_open(self, req: urllib.request.Request) -> http.client.HTTPResponse:
+        return self.do_open(PinnedHTTPSConnection, req)
+
+
+class PinnedHTTPHandler(urllib.request.HTTPHandler):
+    def http_open(self, req: urllib.request.Request) -> http.client.HTTPResponse:
+        return self.do_open(PinnedHTTPConnection, req)
 
 
 class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -76,7 +134,11 @@ def _default_fetcher(url: str) -> FetchResult:
     hostname = (parsed.hostname or "").lower()
     _assert_safe_host_resolution(hostname)
     request = urllib.request.Request(url, headers={"User-Agent": "VelariSecurityKit/0.1 metadata-only"})
-    opener = urllib.request.build_opener(SafeRedirectHandler())
+    opener = urllib.request.build_opener(
+        PinnedHTTPSHandler(),
+        PinnedHTTPHandler(),
+        SafeRedirectHandler(),
+    )
     try:
         with opener.open(request, timeout=8) as response:
             status = int(getattr(response, "status", 200))
