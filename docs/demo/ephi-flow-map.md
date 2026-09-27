@@ -1,6 +1,6 @@
 # ePHI Flow Map
 
-4 flows never touch the EHR; 2 leave or enter the chart. The high-risk paths that stay off the chart are email, imaging / export, and ai tool.
+4 flows never touch the EHR; 2 leave or enter the chart. The high-risk paths that stay off the chart are Email, Imaging / export, and AI tool.
 
 ## Patient Data Outside the EHR
 
