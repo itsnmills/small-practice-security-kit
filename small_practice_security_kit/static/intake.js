@@ -1345,8 +1345,9 @@ async function connectorAction(path, payload, successMessage, button) {
 
 async function init() {
   $$(".rail button").forEach((button) => button.addEventListener("click", () => navTo(button.dataset.section)));
+  const tokenMeta = document.querySelector('meta[name="spsk-csrf-token"]');
+  csrfToken = tokenMeta ? tokenMeta.content : "";
   const status = await api("/api/status");
-  csrfToken = status.csrf_token;
   $("#network-status").textContent = status.network_status;
   catalogs = (await api("/api/catalogs")).catalogs;
   profile = (await api("/api/profile")).profile;

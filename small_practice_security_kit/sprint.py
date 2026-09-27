@@ -27,6 +27,7 @@ from .control_evidence import (
     write_control_evidence_csv,
 )
 from .adapters.evidence_binder import export_binder_index
+from .exchange import csv_safe, markdown_cell
 from .external_precheck import EXTERNAL_PRECHECK_ARTIFACT, EXTERNAL_PRECHECK_STAGE, external_precheck_findings
 from .manifest import utc_now
 from .offering import (
@@ -107,10 +108,10 @@ class SprintBuildResult:
 
 def _csv_value(value: Any) -> str:
     if isinstance(value, list):
-        return "; ".join(str(item) for item in value)
+        return csv_safe("; ".join(str(item) for item in value))
     if isinstance(value, dict):
-        return json.dumps(value, sort_keys=True)
-    return str(value)
+        return csv_safe(json.dumps(value, sort_keys=True))
+    return csv_safe(value)
 
 
 def _write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
@@ -862,21 +863,16 @@ def render_sprint_index(summary: dict[str, Any], risk_rows: list[dict[str, str]]
         "|---|---|---:|---|---|",
     ]
     for stage in stages:
-        stage_lines.append(
-            f"| {stage['name']} | {stage['status']} | {stage['evidence_gap_count']} | "
-            f"{', '.join(stage['artifact_refs'])} | {stage['next_action']} |"
-        )
+        cells = [stage["name"], stage["status"], stage["evidence_gap_count"], ", ".join(stage["artifact_refs"]), stage["next_action"]]
+        stage_lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
 
     risk_lines = [
         "| Finding | Priority | Plain-English summary | Why it matters | Owner lane | Evidence status | Recommended question | Next action |",
         "|---|---|---|---|---|---|---|---|",
     ]
     for risk in top_risks:
-        risk_lines.append(
-            f"| {risk['title']} | {risk['priority']} | {risk['plain_english_summary']} | "
-            f"{risk['why_it_matters']} | {risk['owner_lane']} | {risk['evidence_status']} | "
-            f"{risk['recommended_question']} | {risk['next_action']} |"
-        )
+        cells = [risk["title"], risk["priority"], risk["plain_english_summary"], risk["why_it_matters"], risk["owner_lane"], risk["evidence_status"], risk["recommended_question"], risk["next_action"]]
+        risk_lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
     if not top_risks:
         risk_lines.append("| No generated findings | low | No high-priority finding generated. | Review evidence support before relying on the packet. | owner | referenced | Which evidence references should be refreshed first? | Review packet with owner and MSP. |")
 
@@ -935,12 +931,8 @@ def render_client_readout(summary: dict[str, Any], risk_rows: list[dict[str, str
         "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for risk in top_risks:
-        risk_lines.append(
-            f"| {risk['title']} | {risk['priority']} | {risk['plain_english_summary']} | {risk['owner_lane']} | "
-            f"{risk['recommended_question']} | {'; '.join(risk['acceptable_evidence'])} | "
-            f"{'; '.join(risk['unsafe_inputs'])} | {risk['timeframe']} | "
-            f"{'; '.join(risk['reviewer_needed'])} | {risk['next_action']} |"
-        )
+        cells = [risk["title"], risk["priority"], risk["plain_english_summary"], risk["owner_lane"], risk["recommended_question"], "; ".join(risk["acceptable_evidence"]), "; ".join(risk["unsafe_inputs"]), risk["timeframe"], "; ".join(risk["reviewer_needed"]), risk["next_action"]]
+        risk_lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
     if not top_risks:
         risk_lines.append("| No generated findings | low | No high-priority finding generated. | owner | Which evidence references should be refreshed first? | evidence reference ID | PHI; credentials; private URLs | quarterly_refresh | owner | Review packet with owner and MSP. |")
 
@@ -949,10 +941,8 @@ def render_client_readout(summary: dict[str, Any], risk_rows: list[dict[str, str
         "|---|---|---|---:|---|",
     ]
     for gap in evidence_gaps:
-        gap_lines.append(
-            f"| {gap['stage_name']} | {gap['owner']} | {gap['recipient']} | "
-            f"{gap['evidence_gap_count']} | {', '.join(gap['artifact_refs'])} |"
-        )
+        cells = [gap["stage_name"], gap["owner"], gap["recipient"], gap["evidence_gap_count"], ", ".join(gap["artifact_refs"])]
+        gap_lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
     if not evidence_gaps:
         gap_lines.append("| Evidence packet/export | Practice owner/MSP | Owner/MSP | 0 | evidence-index.json |")
 
@@ -961,10 +951,8 @@ def render_client_readout(summary: dict[str, Any], risk_rows: list[dict[str, str
         "|---|---:|---:|---|",
     ]
     for lane in handoff_lanes:
-        lane_lines.append(
-            f"| {lane['recipient']} | {lane['actions']} | {lane['high_priority_actions']} | "
-            f"{', '.join(lane['artifact_refs'])} |"
-        )
+        cells = [lane["recipient"], lane["actions"], lane["high_priority_actions"], ", ".join(lane["artifact_refs"])]
+        lane_lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
 
     next_actions = [
         row

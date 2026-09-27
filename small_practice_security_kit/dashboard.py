@@ -26,7 +26,7 @@ STATUS_LABELS = {
 
 
 def esc(value: object) -> str:
-    return html.escape(str(value or ""))
+    return html.escape("" if value is None else str(value))
 
 
 def yes_no(value: bool) -> str:
@@ -41,9 +41,9 @@ def status_class(value: str) -> str:
     normalized = str(value or "").lower()
     if normalized in {"high", "missing", "stale", "outdated", "blocked", "prohibited", "false", "not documented", "not run"}:
         return "blocked"
-    if normalized in {"medium", "restricted", "unknown", "partial", "requested", "needs review", "needs_evidence", "ready_for_review", "missing review date", "not reviewed", "not provided", "absent", ""}:
+    if normalized in {"medium", "restricted", "unknown", "partial", "requested", "needs review", "needs_evidence", "ready_for_review", "missing review date", "not reviewed", "not provided", "absent", "draft", "scheduled", ""}:
         return "review"
-    if normalized in {"low", "signed", "provided", "reviewed", "allowed", "true", "ready", "complete", "completed", "closed", "not_applicable"}:
+    if normalized in {"low", "signed", "provided", "reviewed", "allowed", "true", "ready", "complete", "completed", "closed", "not_applicable", "documented", "tested", "run", "lessons recorded"}:
         return "done"
     return "unknown"
 

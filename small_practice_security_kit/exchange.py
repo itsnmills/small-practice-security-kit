@@ -22,6 +22,19 @@ EXCHANGE_FIELDS = [
 ]
 
 
+def csv_safe(value: object) -> str:
+    # Security decision: exported CSVs are opened in spreadsheet apps by MSPs and
+    # insurers; a leading =+-@ or tab/CR would execute as a formula there.
+    text = str(value)
+    if text[:1] in {"=", "+", "-", "@", "\t", "\r"}:
+        return "'" + text
+    return text
+
+
+def markdown_cell(value: object) -> str:
+    return str(value).replace("|", "\\|").replace("\r", " ").replace("\n", " ")
+
+
 @dataclass
 class ExchangeRecord:
     source_repo: str
@@ -56,7 +69,7 @@ def records_to_csv(records: list[ExchangeRecord], path: Path) -> None:
         writer = csv.DictWriter(handle, fieldnames=EXCHANGE_FIELDS, lineterminator="\n")
         writer.writeheader()
         for record in records:
-            writer.writerow(record.as_row())
+            writer.writerow({field: csv_safe(value) for field, value in record.as_row().items()})
 
 
 def records_from_csv(path: Path) -> list[ExchangeRecord]:
@@ -74,8 +87,6 @@ def records_to_markdown(records: list[ExchangeRecord], path: Path, title: str) -
         "|---|---|---|---|---|---|---|",
     ]
     for record in records:
-        lines.append(
-            f"| {record.item_id} | {record.module} | {record.title} | {record.risk} | "
-            f"{record.owner} | {record.evidence_needed} | {record.evidence_reference} |"
-        )
+        cells = [record.item_id, record.module, record.title, record.risk, record.owner, record.evidence_needed, record.evidence_reference]
+        lines.append("| " + " | ".join(markdown_cell(cell) for cell in cells) + " |")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")

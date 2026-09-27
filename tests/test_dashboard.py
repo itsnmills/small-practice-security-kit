@@ -5,6 +5,8 @@ import sys
 import unittest
 from pathlib import Path
 
+from small_practice_security_kit.dashboard import esc, status_class
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,6 +44,19 @@ class DashboardTests(unittest.TestCase):
         self.assertTrue((ROOT / "out" / "family_dental_clinic" / "incident-evidence-timeline.html").exists())
         self.assertTrue((ROOT / "out" / "family_dental_clinic" / "incident-after-action-report.html").exists())
         self.assertTrue((ROOT / "out" / "family_dental_clinic" / "evidence-binder-index.html").exists())
+
+    def test_esc_renders_zero_and_escapes_markup(self) -> None:
+        self.assertEqual(esc(0), "0")
+        self.assertEqual(esc(None), "")
+        self.assertEqual(esc("<b>"), "&lt;b&gt;")
+
+    def test_status_class_covers_downtime_and_tabletop_states(self) -> None:
+        self.assertEqual(status_class("documented"), "done")
+        self.assertEqual(status_class("tested"), "done")
+        self.assertEqual(status_class("lessons recorded"), "done")
+        self.assertEqual(status_class("draft"), "review")
+        self.assertEqual(status_class("scheduled"), "review")
+        self.assertEqual(status_class("not documented"), "blocked")
 
     def test_serve_refuses_non_loopback_host(self) -> None:
         result = subprocess.run(
