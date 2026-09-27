@@ -146,6 +146,21 @@ python -m small_practice_security_kit sprint samples/family_dental_clinic.yaml -
 
 Generates a targeted MSP technical inquiry request, an intake summary, and immediate gap flags.
 
+### 4. Automated Audit Gap Evaluation (`audit-report` & `matrix-check`)
+
+Evaluate a practice profile against all 30 controls in the HIPAA, NIST SP 800-66r2, and HHS 405(d) HICP matrix:
+
+```bash
+# View human-readable terminal gap summary
+python -m small_practice_security_kit audit-report samples/family_dental_clinic.yaml --gaps-only
+
+# Export structured report (markdown, json, or csv)
+python -m small_practice_security_kit audit-report samples/family_dental_clinic.yaml --format markdown --out out/audit-report.md
+
+# Enforce strict compliance check in CI/CD (exits with code 1 on high/critical gaps)
+python -m small_practice_security_kit matrix-check samples/family_dental_clinic.yaml
+```
+
 ---
 
 ## Security Model & Data Boundary
@@ -169,7 +184,7 @@ Review our complete [Security Model and Data Boundary Specification](docs/securi
 Run unit tests, content validation, and security scans locally:
 
 ```bash
-# Run unit test suite (140 tests)
+# Run unit test suite (148 tests)
 python -m unittest discover -s tests
 
 # Validate content and safety boundaries
@@ -179,7 +194,7 @@ python scripts/validate_content.py
 bandit -r small_practice_security_kit -c .bandit
 
 # Audit dependencies for known vulnerabilities
-pip-audit -r requirements.txt
+pip-audit
 ```
 
 ---
