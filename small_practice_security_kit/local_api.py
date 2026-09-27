@@ -159,6 +159,7 @@ class AppState:
     out_dir: Path
     host: str = "127.0.0.1"
     csrf_token: str = ""
+    workspace_root: Path = ROOT
 
     def __post_init__(self) -> None:
         if not is_loopback_bind_host(self.host):
@@ -323,10 +324,10 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         payload.get("preset") or "dental",
                         payload.get("size_tier") or "small",
                     )
-                    path = safe_profile_path(profile["practice"]["name"])
-                    atomic_write_profile(profile, path, action="create")
+                    path = safe_profile_path(profile["practice"]["name"], root=state.workspace_root)
+                    atomic_write_profile(profile, path, root=state.workspace_root, action="create")
                     state.profile_path = path
-                    state.out_dir = build_packet(path)
+                    state.out_dir = build_packet(path, output_root=state.workspace_root / "out")
                     build_dashboard(path, state.out_dir)
                     self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(profile), "profile_path": str(path), "links": self._links()})
                     return
@@ -341,10 +342,10 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"ok": False, "error": "Sensitive data detected.", "findings": blocked})
                         return
                     validate_profile(profile)
-                    profiles_root = (ROOT / "profiles").resolve()
+                    profiles_root = (state.workspace_root / "profiles").resolve()
                     if profiles_root not in state.profile_path.resolve().parents:
-                        state.profile_path = safe_profile_path(profile["practice"]["name"])
-                    atomic_write_profile(profile, state.profile_path, action="save", warnings=findings)
+                        state.profile_path = safe_profile_path(profile["practice"]["name"], root=state.workspace_root)
+                    atomic_write_profile(profile, state.profile_path, root=state.workspace_root, action="save", warnings=findings)
                     self._json(HTTPStatus.OK, {"ok": True, "profile": annotate_profile(profile), "findings": findings})
                     return
                 if self.path == "/api/suggestions/rebuild":
@@ -363,7 +364,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     if blocked:
                         self._json(HTTPStatus.UNPROCESSABLE_ENTITY, {"ok": False, "error": "Sensitive data detected.", "findings": blocked})
                         return
-                    atomic_write_profile(profile, state.profile_path, action="evidence-save")
+                    atomic_write_profile(profile, state.profile_path, root=state.workspace_root, action="evidence-save")
                     self._json(HTTPStatus.OK, {"ok": True, "evidence": evidence})
                     return
                 if self.path == "/api/evidence/inventory-folder":
@@ -399,9 +400,9 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                     incident = enrich_incident_timeline(profile, incident)
                     profile["incident_timeline"] = incident
                     validate_profile(profile)
-                    atomic_write_profile(profile, state.profile_path, action="incident-runner-save")
+                    atomic_write_profile(profile, state.profile_path, root=state.workspace_root, action="incident-runner-save")
                     if payload.get("build", True):
-                        state.out_dir = build_packet(state.profile_path)
+                        state.out_dir = build_packet(state.profile_path, output_root=state.workspace_root / "out")
                         build_dashboard(state.profile_path, state.out_dir)
                     self._json(
                         HTTPStatus.OK,
@@ -481,7 +482,7 @@ def make_handler(state: AppState) -> type[BaseHTTPRequestHandler]:
                         result = build_sprint(state.profile_path, state.out_dir.parent, evidence_paths=evidence_paths)
                         state.out_dir = result.output_dir
                     else:
-                        state.out_dir = build_packet(state.profile_path)
+                        state.out_dir = build_packet(state.profile_path, output_root=state.workspace_root / "out")
                     dashboard = build_dashboard(state.profile_path, state.out_dir)
                     self._json(HTTPStatus.OK, {"ok": True, "dashboard": str(dashboard), "links": self._links()})
                     return

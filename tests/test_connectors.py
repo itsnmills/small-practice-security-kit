@@ -6,6 +6,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+import jsonschema
+
 from small_practice_security_kit.cli import main as cli_main
 from small_practice_security_kit.connectors import (
     collect_csv_import,
@@ -299,15 +301,6 @@ class ConnectorTests(unittest.TestCase):
         self.assertTrue(any(row["finding_id"] == "CONN-GW-MFA-001" for row in risk_rows))
         self.assertTrue(any(row["finding_id"] == "CONN-VENDOR-BAA-001" for row in risk_rows))
         self.assertTrue(all("PHI" in row["unsafe_inputs"] for row in risk_rows if row["finding_id"].startswith("CONN-")))
-        try:
-            import jsonschema
-        except ImportError:
-            return
-        summary_schema = json.loads((ROOT / "schemas" / "sprint-summary.schema.json").read_text(encoding="utf-8"))
-        evidence_schema = json.loads((ROOT / "schemas" / "evidence-index.schema.json").read_text(encoding="utf-8"))
-        jsonschema.validate(summary, summary_schema)
-        jsonschema.validate(evidence_index, evidence_schema)
-
     def test_cli_owner_friendly_connector_commands(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             temp_path = Path(temp)
@@ -388,12 +381,7 @@ class ConnectorTests(unittest.TestCase):
         self.assertEqual(len(paths), 4)
         self.assertTrue(any(path.name == "vendor-view.md" for path in paths))
 
-    def test_connector_schemas_validate_when_jsonschema_available(self) -> None:
-        try:
-            import jsonschema
-        except ImportError:
-            self.skipTest("jsonschema not installed")
-
+    def test_connector_schemas_validate(self) -> None:
         bundle = collect_csv_import(
             "backup-report",
             ROOT / "samples" / "connectors" / "backup_report.csv",

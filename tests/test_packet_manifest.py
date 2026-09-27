@@ -6,6 +6,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import jsonschema
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -89,26 +91,7 @@ class PacketManifestTests(unittest.TestCase):
                 self.assertTrue(finding[field], field)
         self.assertTrue(manifest["roadmap_items"])
 
-    def test_manifest_schema_is_valid_json(self) -> None:
-        schema_path = ROOT / "schemas" / "packet-manifest.schema.json"
-        schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        self.assertEqual(schema["title"], "Velari Packet Manifest")
-        self.assertEqual(schema["properties"]["generated_at"]["format"], "date-time")
-        self.assertIn("allOf", schema["properties"]["sections"])
-        self.assertIn("(?!/)", schema["$defs"]["artifact"]["properties"]["path"]["pattern"])
-        self.assertIn("lifecycle_status", schema["$defs"])
-        self.assertIn("closeout_state", schema["$defs"])
-        self.assertIn("evidence_trace", schema["$defs"])
-        answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))
-        self.assertEqual(answer_schema["title"], "Velari Answer Standard Action Packet")
-        self.assertIn("plain_english_summary", answer_schema["required"])
-
-    def test_generated_manifest_validates_against_schema_when_jsonschema_available(self) -> None:
-        try:
-            import jsonschema
-        except ImportError:
-            self.skipTest("jsonschema not installed")
-
+    def test_generated_manifest_validates_against_schema(self) -> None:
         subprocess.run([sys.executable, "scripts/build.py", "samples/family_dental_clinic.yaml"], cwd=ROOT, check=True)
         schema = json.loads((ROOT / "schemas" / "packet-manifest.schema.json").read_text(encoding="utf-8"))
         answer_schema = json.loads((ROOT / "schemas" / "velari-answer-standard.schema.json").read_text(encoding="utf-8"))

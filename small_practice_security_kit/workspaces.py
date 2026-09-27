@@ -45,9 +45,16 @@ def safe_profile_path(name: str, root: Path = ROOT) -> Path:
     return resolved
 
 
-def atomic_write_profile(profile: dict[str, Any], path: Path, *, action: str = "save", warnings: list[dict[str, str]] | None = None) -> None:
+def atomic_write_profile(
+    profile: dict[str, Any],
+    path: Path,
+    *,
+    root: Path = ROOT,
+    action: str = "save",
+    warnings: list[dict[str, str]] | None = None,
+) -> None:
     validate_profile(profile)
-    dirs = ensure_workspace_dirs(ROOT)
+    dirs = ensure_workspace_dirs(root)
     resolved = path.resolve()
     profiles_root = dirs["profiles"].resolve()
     if profiles_root not in resolved.parents:
