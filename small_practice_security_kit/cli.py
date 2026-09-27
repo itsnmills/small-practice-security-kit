@@ -6,6 +6,13 @@ import tempfile
 from pathlib import Path
 
 from .adapters.evidence_binder import export_binder_index
+from .audit_report import (
+    generate_audit_gap_report,
+    render_audit_report_csv,
+    render_audit_report_json,
+    render_audit_report_markdown,
+    render_audit_report_text,
+)
 from .connectors import (
     collect_csv_import,
     collect_dns_email_auth,
@@ -18,6 +25,7 @@ from .connectors import (
     write_connector_bundle,
     write_connector_wizard,
 )
+from .connectors.base import flatten_evidence, load_connector_bundles
 from .demo_export import export_demo
 from .evidence_refresh import build_refresh_report, write_refresh_report
 from .packet import OUT, build_packet
@@ -165,6 +173,56 @@ def evidence_refresh_command(args: argparse.Namespace) -> int:
     return 0
 
 
+def audit_report_command(args: argparse.Namespace) -> int:
+    profile = load_profile(args.profile)
+    findings = blocking_findings(profile)
+    if findings:
+        joined = "; ".join(f"{finding.path}: {finding.message}" for finding in findings[:5])
+        print(f"Sensitive data check failed: {joined}", file=sys.stderr)
+        return 2
+
+    evidence_paths = getattr(args, "evidence", None)
+    connector_bundles = load_connector_bundles(evidence_paths) if evidence_paths else []
+    connector_items = flatten_evidence(connector_bundles)
+
+    report = generate_audit_gap_report(profile, connector_items)
+
+    fmt = getattr(args, "format", "text")
+    gaps_only = getattr(args, "gaps_only", False)
+
+    if fmt == "markdown":
+        rendered = render_audit_report_markdown(report, gaps_only=gaps_only)
+    elif fmt == "json":
+        rendered = render_audit_report_json(report)
+    elif fmt == "csv":
+        rendered = render_audit_report_csv(report)
+    else:
+        rendered = render_audit_report_text(report, gaps_only=gaps_only)
+
+    out_path = getattr(args, "out", None)
+    if out_path:
+        out = Path(out_path)
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(rendered, encoding="utf-8")
+        print(f"Wrote audit report to {out}")
+    else:
+        print(rendered)
+
+    if getattr(args, "strict", False):
+        summary = report["summary"]
+        crit = summary["critical_gaps_count"]
+        high = summary["high_gaps_count"]
+        if crit > 0 or high > 0:
+            print(f"\n[FAIL] Audit check found {crit} critical and {high} high gap(s).", file=sys.stderr)
+            return 1
+    return 0
+
+
+def matrix_check_command(args: argparse.Namespace) -> int:
+    args.strict = True
+    return audit_report_command(args)
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="python -m small_practice_security_kit")
     subcommands = parser.add_subparsers(dest="command", required=True)
@@ -288,6 +346,29 @@ def build_parser() -> argparse.ArgumentParser:
     export_demo_parser.add_argument("--pdf", action="store_true", help="Optionally render review-packet.pdf if Chrome/Chromium is installed.")
     export_demo_parser.add_argument("--no-screenshot", action="store_true", help="Skip optional Chrome/Chromium screenshot rendering.")
     export_demo_parser.set_defaults(func=export_demo_command)
+
+    audit_report = subcommands.add_parser(
+        "audit-report",
+        help="Generate an automated audit gap report across all 30 HIPAA/NIST/HICP controls.",
+    )
+    audit_report.add_argument("profile", type=_path)
+    audit_report.add_argument("--format", choices=["text", "markdown", "json", "csv"], default="text", help="Output format.")
+    audit_report.add_argument("--out", "--output", dest="out", type=_path, help="Optional output file path.")
+    audit_report.add_argument("--evidence", type=_path, nargs="*", default=[], help="Optional connector evidence bundles.")
+    audit_report.add_argument("--gaps-only", action="store_true", help="Display only unaddressed and partial gap items.")
+    audit_report.add_argument("--strict", action="store_true", help="Exit code 1 if critical or high gaps are identified.")
+    audit_report.set_defaults(func=audit_report_command)
+
+    matrix_check = subcommands.add_parser(
+        "matrix-check",
+        help="Strict compliance matrix check against all 30 HIPAA/NIST/HICP controls (fails if high/critical gaps found).",
+    )
+    matrix_check.add_argument("profile", type=_path)
+    matrix_check.add_argument("--format", choices=["text", "markdown", "json", "csv"], default="text", help="Output format.")
+    matrix_check.add_argument("--out", "--output", dest="out", type=_path, help="Optional output file path.")
+    matrix_check.add_argument("--evidence", type=_path, nargs="*", default=[], help="Optional connector evidence bundles.")
+    matrix_check.add_argument("--gaps-only", action="store_true", help="Display only unaddressed and partial gap items.")
+    matrix_check.set_defaults(func=matrix_check_command)
 
     return parser
 
