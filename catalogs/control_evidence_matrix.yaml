@@ -20,9 +20,10 @@ controls:
     control_name: Security official and accountable owner designated
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - assigned security responsibility
-      - HHS HPH CPG - governance
-      - CISA CPG - governance and cybersecurity leadership
+      - 45 CFR § 164.308(a)(2) Assigned Security Responsibility (Required)
+      - NIST SP 800-66r2 § 3.1 Assigned Security Responsibility
+      - HHS 405(d) HICP Sub-Practice 10.S.A Cybersecurity Management
+      - CISA CPG 1.A Governance & Leadership
     risk_area: Governance
     practice_applicability: *small_practice_applicability
     evidence_id: EV-GOV-OWNER-001
@@ -57,9 +58,11 @@ controls:
     control_name: Security risk analysis record
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - risk analysis
-      - ONC/OCR Security Risk Assessment Tool
-      - HHS HPH CPG - risk management
+      - 45 CFR § 164.308(a)(1)(ii)(A) Risk Analysis (Required)
+      - NIST SP 800-66r2 § 3.1 Security Management Process - Risk Analysis
+      - HHS 405(d) HICP Sub-Practice 10.M.A / 10.S.A Risk Management
+      - ONC/OCR Security Risk Assessment (SRA) Tool Guidance
+      - CISA CPG 1.F Risk Management Assessment
     risk_area: Risk Analysis
     practice_applicability: *small_practice_applicability
     evidence_id: EV-GOV-SRA-001
@@ -95,9 +98,10 @@ controls:
     control_name: Risk treatment and corrective action register
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - risk management
-      - HHS HPH CPG - risk management
-      - CISA CPG - vulnerability remediation planning
+      - 45 CFR § 164.308(a)(1)(ii)(B) Risk Management (Required)
+      - NIST SP 800-66r2 § 3.1 Security Management Process - Risk Management
+      - HHS 405(d) HICP Sub-Practice 10.M.A Risk Mitigation
+      - CISA CPG 1.E Vulnerability Remediation Planning
     risk_area: Corrective Action
     practice_applicability: *small_practice_applicability
     evidence_id: EV-GOV-RISK-001
@@ -133,8 +137,10 @@ controls:
     control_name: Security policy set with last review date
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - policies and procedures
-      - HHS HPH CPG - policies and training
+      - 45 CFR § 164.316(a), (b)(1), (b)(2)(iii) Policies, Procedures & Periodic Review (Required)
+      - NIST SP 800-66r2 § 3.4 Policies, Procedures, and Documentation Requirements
+      - HHS 405(d) HICP Sub-Practice 10.S.B Policy Architecture
+      - CISA CPG 1.B Cybersecurity Documentation
     risk_area: Policy Review
     practice_applicability: *small_practice_applicability
     evidence_id: EV-GOV-POLICY-001
@@ -170,9 +176,10 @@ controls:
     control_name: Workforce security training record
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - security awareness and training
-      - HHS HPH CPG - security awareness training
-      - CISA CPG - foundational cybersecurity training
+      - 45 CFR § 164.308(a)(5)(i) Security Awareness and Training (Required) & § 164.308(a)(5)(ii)(A)-(D)
+      - NIST SP 800-66r2 § 3.1 Security Awareness and Training
+      - HHS 405(d) HICP Practice 2 - Workforce Training (2.S.A, 2.M.A)
+      - CISA CPG 2.I Foundational Cybersecurity Training
     risk_area: Workforce Training
     practice_applicability: *small_practice_applicability
     evidence_id: EV-WORKFORCE-TRAIN-001
@@ -208,9 +215,10 @@ controls:
     control_name: Incident response plan and contact tree
     control_family: Operational Readiness
     control_refs:
-      - HIPAA Security Rule - security incident procedures
-      - HHS HPH CPG - incident response
-      - CISA CPG - incident response planning
+      - 45 CFR § 164.308(a)(6)(i)-(ii) Security Incident Procedures - Response and Reporting (Required)
+      - NIST SP 800-66r2 § 3.1 Security Incident Procedures
+      - HHS 405(d) HICP Practice 7 - Incident Response (7.S.A, 7.M.A)
+      - CISA CPG 2.S Incident Response Planning
     risk_area: Incident Response
     practice_applicability: *small_practice_applicability
     evidence_id: EV-IR-CONTACT-001
@@ -247,9 +255,10 @@ controls:
     control_name: Contingency, downtime, and disaster recovery plan
     control_family: Operational Readiness
     control_refs:
-      - HIPAA Security Rule - contingency plan
-      - HHS HPH CPG - backup and recovery
-      - CISA CPG - data recovery
+      - 45 CFR § 164.308(a)(7)(i), (a)(7)(ii)(B) Disaster Recovery Plan (Required) & (C) Emergency Mode Operation Plan (Required)
+      - NIST SP 800-66r2 § 3.1 Contingency Plan
+      - HHS 405(d) HICP Practice 8 - Contingency Planning (8.S.A, 8.M.A)
+      - CISA CPG 2.T Business Continuity & Resilience
     risk_area: Downtime / Ransomware
     practice_applicability: *small_practice_applicability
     evidence_id: EV-DR-DOWNTIME-001
@@ -288,8 +297,10 @@ controls:
     control_name: Evidence freshness report
     control_family: Operational Readiness
     control_refs:
-      - HHS HPH CPG - asset and evidence management
-      - CISA CPG - measurable security outcomes
+      - 45 CFR § 164.308(a)(8) Evaluation (Required) & § 164.316(b)(2)(iii) Periodic Review (Required)
+      - NIST SP 800-66r2 § 3.1 Periodic Technical and Nontechnical Evaluation
+      - HHS 405(d) HICP Sub-Practice 10.M.B Audit and Evidence Freshness
+      - CISA CPG 1.G Measurable Security Outcomes
     risk_area: Evidence Freshness
     practice_applicability: *small_practice_applicability
     evidence_id: EV-EVID-FRESHNESS-001
@@ -325,10 +336,10 @@ controls:
     control_name: MFA coverage for email, cloud, admin, and remote access
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - access control
-      - HIPAA Security Rule - person or entity authentication
-      - HHS HPH CPG - multifactor authentication
-      - CISA CPG - implement MFA
+      - 45 CFR § 164.312(a)(1) Access Control (Required) & § 164.312(d) Person or Entity Authentication (Required)
+      - NIST SP 800-66r2 § 3.3 Access Control and Authentication
+      - HHS 405(d) HICP Sub-Practice 1.S.A Multifactor Authentication
+      - CISA CPG 2.H Implement MFA
     risk_area: Access / MFA
     practice_applicability: *small_practice_applicability
     evidence_id: EV-MFA-REMOTE-001
@@ -366,9 +377,10 @@ controls:
     control_name: User access review for EHR, email, file shares, billing, VPN, and RMM
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - access control
-      - HHS HPH CPG - identity and access management
-      - CISA CPG - account inventory
+      - 45 CFR § 164.308(a)(4)(ii)(B) Access Authorization (Addressable) & (C) Access Establishment and Modification (Addressable)
+      - NIST SP 800-66r2 § 3.1 Information Access Management
+      - HHS 405(d) HICP Sub-Practice 3.S.A Identity and Access Management
+      - CISA CPG 2.B Account Inventory and Periodic Review
     risk_area: Access Review
     practice_applicability: *small_practice_applicability
     evidence_id: EV-ACCESS-REVIEW-001
@@ -407,9 +419,10 @@ controls:
     control_name: Termination and offboarding evidence
     control_family: Administrative Safeguards
     control_refs:
-      - HIPAA Security Rule - workforce security
-      - HIPAA Security Rule - access termination procedures
-      - CISA CPG - account deprovisioning
+      - 45 CFR § 164.308(a)(3)(ii)(C) Termination Procedures (Required)
+      - NIST SP 800-66r2 § 3.1 Workforce Security - Termination Procedures
+      - HHS 405(d) HICP Sub-Practice 3.S.B Deprovisioning & Access Revocation
+      - CISA CPG 2.D Rapid Deprovisioning
     risk_area: Offboarding
     practice_applicability: *small_practice_applicability
     evidence_id: EV-OFFBOARDING-001
@@ -448,9 +461,10 @@ controls:
     control_name: Privileged and administrator account inventory
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - access control
-      - HHS HPH CPG - privileged access management
-      - CISA CPG - admin account separation
+      - 45 CFR § 164.308(a)(4)(ii)(B) Access Authorization (Addressable) & § 164.312(a)(1) Access Control (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.3 Access Management and Control
+      - HHS 405(d) HICP Sub-Practice 3.M.A Privileged Account Segregation
+      - CISA CPG 2.A Admin Account Separation & Minimization
     risk_area: Privileged Access
     practice_applicability: *small_practice_applicability
     evidence_id: EV-PRIV-ACCOUNTS-001
@@ -488,9 +502,10 @@ controls:
     control_name: Vendor and MSP remote access inventory
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - access control
-      - HIPAA Security Rule - business associate contracts
-      - CISA CPG - third-party remote access
+      - 45 CFR § 164.308(a)(4)(i) Information Access Management (Required) & § 164.312(a)(1) Access Control (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.3 Access Control and Third-Party Management
+      - HHS 405(d) HICP Sub-Practice 3.M.B Third-Party / Remote Support Access
+      - CISA CPG 2.G Third-Party Remote Access Control
     risk_area: Vendor Remote Access
     practice_applicability: *small_practice_applicability
     evidence_id: EV-VENDOR-REMOTE-001
@@ -529,9 +544,10 @@ controls:
     control_name: Break-glass account register and last test date
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - emergency access procedure
-      - HHS HPH CPG - account recovery
-      - CISA CPG - resilience planning
+      - 45 CFR § 164.312(a)(2)(ii) Emergency Access Procedure (Required)
+      - NIST SP 800-66r2 § 3.3 Emergency Access Procedures (Break-Glass)
+      - HHS 405(d) HICP Sub-Practice 8.S.B Emergency Credentialing & Access
+      - CISA CPG 2.U Emergency Recovery Credentials
     risk_area: Emergency Access
     practice_applicability: *small_practice_applicability
     evidence_id: EV-BREAKGLASS-001
@@ -569,9 +585,10 @@ controls:
     control_name: Backup configuration and asset coverage
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - data backup plan
-      - HHS HPH CPG - backup and recovery
-      - CISA CPG - data backup
+      - 45 CFR § 164.308(a)(7)(ii)(A) Data Backup Plan (Required)
+      - NIST SP 800-66r2 § 3.1 Contingency Plan - Data Backup Plan
+      - HHS 405(d) HICP Practice 4 - Data Protection and Backup (4.S.A, 4.M.A)
+      - CISA CPG 2.R Immutable & Isolated Backups
     risk_area: Backup / downtime
     practice_applicability: *small_practice_applicability
     evidence_id: EV-BACKUP-SCOPE-001
@@ -609,9 +626,10 @@ controls:
     control_name: Backup restore test report
     control_family: Operational Readiness
     control_refs:
-      - HIPAA Security Rule - disaster recovery plan
-      - HIPAA Security Rule - emergency mode operation plan
-      - CISA CPG - test backups
+      - 45 CFR § 164.308(a)(7)(ii)(D) Testing and Revision Procedures (Addressable)
+      - NIST SP 800-66r2 § 3.1 Contingency Plan - Testing and Revision
+      - HHS 405(d) HICP Sub-Practice 4.S.B Periodic Backup Restoration Testing
+      - CISA CPG 2.R Test Backups and Restoration
     risk_area: Backup / downtime
     practice_applicability: *small_practice_applicability
     evidence_id: EV-BACKUP-RESTORE-001
@@ -650,9 +668,10 @@ controls:
     control_name: Patch management report
     control_family: Technical Safeguards
     control_refs:
-      - HHS HPH CPG - vulnerability management
-      - CISA CPG - patch vulnerabilities
-      - NIST Cybersecurity Framework - protect and detect
+      - 45 CFR § 164.308(a)(5)(ii)(B) Protection from Malicious Software (Addressable) & § 164.308(a)(1)(ii)(B) Risk Management (Required)
+      - NIST SP 800-66r2 § 3.1 Flaw Remediation & System Maintenance
+      - HHS 405(d) HICP Sub-Practice 5.S.A Operating System and Application Patching
+      - CISA CPG 1.E Patch Known Exploited Vulnerabilities
     risk_area: Patch Management
     practice_applicability: *small_practice_applicability
     evidence_id: EV-PATCH-MGMT-001
@@ -690,9 +709,10 @@ controls:
     control_name: Vulnerability scan report and remediation status
     control_family: Technical Safeguards
     control_refs:
-      - HHS HPH CPG - vulnerability management
-      - CISA CPG - vulnerability remediation
-      - NIST Cybersecurity Framework - identify and protect
+      - 45 CFR § 164.308(a)(1)(ii)(A) Risk Analysis (Required) & § 164.308(a)(8) Evaluation (Required)
+      - NIST SP 800-66r2 § 3.1 Vulnerability Assessment & Technical Evaluation
+      - HHS 405(d) HICP Sub-Practice 5.M.A Vulnerability Scanning & Remediation
+      - CISA CPG 1.F Vulnerability Scanning
     risk_area: Vulnerability Management
     practice_applicability: *small_practice_applicability
     evidence_id: EV-VULN-MGMT-001
@@ -729,9 +749,10 @@ controls:
     control_name: Endpoint protection or EDR status
     control_family: Technical Safeguards
     control_refs:
-      - HHS HPH CPG - endpoint security
-      - CISA CPG - security monitoring
-      - NIST Cybersecurity Framework - detect
+      - 45 CFR § 164.308(a)(5)(ii)(B) Protection from Malicious Software (Addressable) & § 164.312(c)(1) Integrity (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.3 Malicious Software Protection
+      - HHS 405(d) HICP Practice 1 - Endpoint Protection (1.S.B, 1.M.A)
+      - CISA CPG 2.P Endpoint Detection and Response (EDR)
     risk_area: Endpoint Protection
     practice_applicability: *small_practice_applicability
     evidence_id: EV-EDR-STATUS-001
@@ -768,9 +789,10 @@ controls:
     control_name: Log source inventory and log review record
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - audit controls
-      - HIPAA Security Rule - information system activity review
-      - CISA CPG - logging
+      - 45 CFR § 164.308(a)(1)(ii)(D) Information System Activity Review (Required) & § 164.312(b) Audit Controls (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.3 Audit Controls and Activity Review
+      - HHS 405(d) HICP Practice 6 - Network and System Monitoring (6.S.A, 6.M.A)
+      - CISA CPG 2.M Centralized Logging and Review
     risk_area: Monitoring
     practice_applicability: *small_practice_applicability
     evidence_id: EV-LOG-REVIEW-001
@@ -809,9 +831,10 @@ controls:
     control_name: Encryption and device protection status
     control_family: Technical Safeguards
     control_refs:
-      - HIPAA Security Rule - encryption addressable implementation specification
-      - HHS HPH CPG - endpoint security
-      - CISA CPG - data protection
+      - 45 CFR § 164.312(a)(2)(iv) Encryption and Decryption (Addressable) & § 164.312(e)(2)(ii) Transmission Encryption (Addressable)
+      - NIST SP 800-66r2 § 3.3 Encryption of ePHI at Rest and in Transit
+      - HHS 405(d) HICP Sub-Practice 1.S.C Full Disk Encryption (BitLocker / FileVault)
+      - CISA CPG 2.K Data Protection and At-Rest Encryption
     risk_area: Device Protection
     practice_applicability: *small_practice_applicability
     evidence_id: EV-ENCRYPT-DEVICE-001
@@ -849,9 +872,10 @@ controls:
     control_name: Asset inventory and internet-facing exposure review
     control_family: Technical Safeguards
     control_refs:
-      - HHS HPH CPG - asset inventory
-      - CISA CPG - asset inventory
-      - CISA CPG - reduce exposure to common attacks
+      - 45 CFR § 164.308(a)(1)(ii)(A) Risk Analysis (Required) & § 164.310(d)(1) Device and Media Controls (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.2 Hardware and Electronic Media Inventory
+      - HHS 405(d) HICP Sub-Practice 9.S.A Hardware and Software Inventory
+      - CISA CPG 1.C Asset Inventory & Attack Surface Exposure
     risk_area: Asset Inventory
     practice_applicability: *small_practice_applicability
     evidence_id: EV-ASSET-EXPOSURE-001
@@ -889,9 +913,10 @@ controls:
     control_name: Vendor inventory with ePHI access flag
     control_family: Vendor / BAA / AI
     control_refs:
-      - HIPAA Security Rule - business associate contracts
-      - HHS HPH CPG - third-party risk management
-      - CISA CPG - supply chain risk management
+      - 45 CFR § 164.308(b)(1) Business Associate Contracts (Required) & § 164.314(a)(1) Business Associate Contracts or Other Arrangements (Required)
+      - NIST SP 800-66r2 § 3.1 & § 3.4 Business Associate Contracts
+      - HHS 405(d) HICP Practice 9 - Third-Party Risk Management (9.S.B)
+      - CISA CPG 1.D Supply Chain Risk Management
     risk_area: Vendor / BAA
     practice_applicability: *small_practice_applicability
     evidence_id: EV-VENDOR-INV-001
@@ -929,8 +954,10 @@ controls:
     control_name: BAA status and review date
     control_family: Vendor / BAA / AI
     control_refs:
-      - HIPAA Security Rule - business associate contracts
-      - HHS HPH CPG - vendor management
+      - 45 CFR § 164.502(e)(1)-(2) & § 164.504(e) Disclosures to Business Associates & BAA Terms (Required)
+      - NIST SP 800-66r2 § 3.4 Business Associate Agreement Verification
+      - HHS 405(d) HICP Sub-Practice 9.S.B Business Associate Agreements
+      - CISA CPG 1.D Third-Party Supplier Due Diligence
     risk_area: Vendor / BAA
     practice_applicability: *small_practice_applicability
     evidence_id: EV-BAA-STATUS-001
@@ -968,9 +995,10 @@ controls:
     control_name: Vendor security evidence status
     control_family: Vendor / BAA / AI
     control_refs:
-      - HHS HPH CPG - third-party risk management
-      - CISA CPG - supply chain risk management
-      - NIST Cybersecurity Framework - supply chain risk management
+      - 45 CFR § 164.308(b)(1) Business Associate Contracts (Required) & § 164.314(a)(2)(i)(A) Reasonable Assurances (Required)
+      - NIST SP 800-66r2 § 3.1 Third-Party Security Evaluation
+      - HHS 405(d) HICP Sub-Practice 9.M.A Vendor Security Assurance (SOC 2 / HITRUST)
+      - CISA CPG 1.D Supply Chain Due Diligence
     risk_area: Vendor Security Evidence
     practice_applicability: *small_practice_applicability
     evidence_id: EV-VENDOR-EVIDENCE-001
@@ -1009,9 +1037,10 @@ controls:
     control_name: Vendor incident-notification and retention/deletion terms
     control_family: Vendor / BAA / AI
     control_refs:
-      - HIPAA Security Rule - business associate contracts
-      - HHS HPH CPG - incident response and vendor management
-      - CISA CPG - supply chain risk management
+      - 45 CFR § 164.314(a)(2)(i)(C) Incident Reporting by Business Associate (Required) & § 164.410 Breach by Business Associate (Required)
+      - NIST SP 800-66r2 § 3.4 Business Associate Security Incidents
+      - HHS 405(d) HICP Sub-Practice 9.M.B Third-Party Incident Escalation Terms
+      - CISA CPG 2.S Supply Chain Incident Notification
     risk_area: Vendor Terms
     practice_applicability: *small_practice_applicability
     evidence_id: EV-VENDOR-TERMS-001
@@ -1048,9 +1077,10 @@ controls:
     control_name: AI tool inventory and allowed/restricted/prohibited workflow decision
     control_family: Vendor / BAA / AI
     control_refs:
-      - HHS HPH CPG - data protection
-      - NIST AI Risk Management Framework - governance
-      - OCR HIPAA guidance on online tracking and regulated data handling
+      - 45 CFR § 164.308(a)(1)(ii)(A) Risk Analysis (Required) & § 164.312(a)(1) Access Control (Required)
+      - NIST AI RMF GOVERN 1.2, MAP 1.1, MANAGE 2.1 AI System Characterization and Risk Boundary
+      - HHS 405(d) HICP Sub-Practice 10.M.A Emerging Technology Risk Assessment
+      - OCR HIPAA Guidance on Online Tracking & Cloud/AI Processing
     risk_area: AI Workflow Review
     practice_applicability: *small_practice_applicability
     evidence_id: EV-AI-INVENTORY-001
@@ -1088,9 +1118,10 @@ controls:
     control_name: AI data-use and model-training evidence
     control_family: Vendor / BAA / AI
     control_refs:
-      - HHS HPH CPG - data protection
-      - NIST AI Risk Management Framework - data governance
-      - CISA CPG - data protection
+      - 45 CFR § 164.502(a) Prohibited Uses and Disclosures (Required) & § 164.314(a)(2)(i) Permitted Uses by BA (Required)
+      - NIST AI RMF GOVERN 2.1, MAP 2.3 Data Governance & Prohibited Model Training on PHI
+      - HHS 405(d) HICP Sub-Practice 4.M.B Cloud Data Governance
+      - CISA CPG 2.K Regulated Data Protection
     risk_area: AI Data Use
     practice_applicability: *small_practice_applicability
     evidence_id: EV-AI-DATA-USE-001
@@ -1129,9 +1160,10 @@ controls:
     control_name: Physical access basics
     control_family: Physical Safeguards
     control_refs:
-      - HIPAA Security Rule - facility access controls
-      - HIPAA Security Rule - workstation security
-      - HHS HPH CPG - physical security basics
+      - 45 CFR § 164.310(a)(1) Facility Access Controls (Required) & § 164.310(b) Workstation Use (Required) & § 164.310(c) Workstation Security (Required)
+      - NIST SP 800-66r2 § 3.2 Physical Safeguards - Facility and Workstation Security
+      - HHS 405(d) HICP Sub-Practice 1.S.D Physical Security and Workstation Protection
+      - CISA CPG 2.C Physical Access Controls
     risk_area: Physical Access
     practice_applicability: *small_practice_applicability
     evidence_id: EV-PHYSICAL-ACCESS-001
@@ -1168,9 +1200,10 @@ controls:
     control_name: Device and media disposal or transfer evidence
     control_family: Physical Safeguards
     control_refs:
-      - HIPAA Security Rule - device and media controls
-      - HHS HPH CPG - asset management
-      - CISA CPG - asset disposal
+      - 45 CFR § 164.310(d)(2)(i) Disposal (Required) & § 164.310(d)(2)(ii) Media Re-use (Required)
+      - NIST SP 800-66r2 § 3.2 Device and Media Controls - Disposal and Sanitization
+      - HHS 405(d) HICP Sub-Practice 4.S.C Media Sanitization (NIST SP 800-88r1)
+      - CISA CPG 2.Q Secure Hardware and Media Disposal
     risk_area: Device / Media Handling
     practice_applicability: *small_practice_applicability
     evidence_id: EV-MEDIA-DISPOSAL-001

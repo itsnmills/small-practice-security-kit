@@ -1,32 +1,32 @@
 {
   "artifacts": [
     {
-      "bytes": 3061,
+      "bytes": 1317,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "readiness-review.md",
-      "sha256": "9381513db2fabfa05eeeafd2860fa5b08b9d5b038cb2c90dedc613f4e0916595"
+      "sha256": "3df3b20f5c046a7d96cd8481329c8c6db0fe3f60448fc439f84ae3b414f1c716"
     },
     {
-      "bytes": 4263,
+      "bytes": 1524,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ephi-flow-map.md",
-      "sha256": "4947830d1bebff03dd155b735132c18c9b08ca59a16cb4a2c1f1198d1bf71dc8"
+      "sha256": "f27ce413e4ae6f06cc0f66e6008f862e492694794107c9e8f591f82de10deb9c"
     },
     {
-      "bytes": 2271,
+      "bytes": 1729,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "vendor-baa-review.md",
-      "sha256": "baba96d6f41883161cbe62b7b75f970c5899c31fd46812a49cbff85889f43d13"
+      "sha256": "26651d969a0c9b4cde287dfc56299fa04c376e03db405c288358cf64ed343656"
     },
     {
-      "bytes": 2101,
+      "bytes": 821,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "ai-workflow-review.md",
-      "sha256": "533e6e200f30bc88beabbf115ed89e7acc66a7b24b818144e49f852b74cb702e"
+      "sha256": "245f49d6fb047ccfffad997f79539d98dc0a4daf0c278e1a06872004a75d86cb"
     },
     {
       "bytes": 1244,
@@ -106,18 +106,18 @@
       "sha256": "33567261b7ea0f79aa076d7ae6ebe065b1832567571cd35422b563bfbb4732da"
     },
     {
-      "bytes": 84044,
+      "bytes": 77739,
       "hash_scope": "file_bytes",
       "media_type": "text/markdown",
       "path": "review-packet.md",
-      "sha256": "f1c587f391f95e03a1fd948eb67791319bf2ef23515487b35fc60a8f1d93770b"
+      "sha256": "a03e267e24115811d009c291adbe709abe5ee5a759a30bdcbb4bc8363d47f0d7"
     },
     {
-      "bytes": 101961,
+      "bytes": 82349,
       "hash_scope": "file_bytes",
       "media_type": "text/html",
       "path": "review-packet.html",
-      "sha256": "836480f2161f407b9d2fcf637e753000df68e00211f837c0283e9fe7eb27d7f4"
+      "sha256": "7f456d9165c338b0fe775be9ddf65fe10f69f3957e6fb065f61632c875597f37"
     }
   ],
   "data_boundary": {

@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import unittest
+from pathlib import Path
 
 from small_practice_security_kit.catalogs import evidence_types, flow_templates, presets, size_tiers, systems, vendors
+from small_practice_security_kit.control_evidence import load_control_evidence_catalog, validate_control_evidence_row
 
 
 class CatalogTests(unittest.TestCase):
@@ -35,6 +37,29 @@ class CatalogTests(unittest.TestCase):
                 self.assertTrue(required.issubset(item))
                 self.assertTrue(str(item["soc2_status"]).strip())
                 self.assertTrue(str(item["hitrust_status"]).strip())
+
+    def test_control_evidence_matrix_regulatory_citations(self) -> None:
+        controls = load_control_evidence_catalog()
+        self.assertEqual(len(controls), 30)
+
+        for control in controls:
+            cid = control["control_id"]
+            with self.subTest(control_id=cid):
+                validate_control_evidence_row(control)
+                refs = control.get("control_refs", [])
+                self.assertGreaterEqual(len(refs), 3, f"{cid} has fewer than 3 citations")
+
+                # Verify 45 CFR citation with Required / Addressable designation
+                has_cfr = any("45 CFR § 164." in ref and ("(Required)" in ref or "(Addressable)" in ref) for ref in refs)
+                self.assertTrue(has_cfr, f"{cid} missing required/addressable 45 CFR § 164 citation in {refs}")
+
+                # Verify NIST SP 800-66r2 or NIST AI RMF cross-reference
+                has_nist = any("NIST SP 800-66r2" in ref or "NIST AI RMF" in ref for ref in refs)
+                self.assertTrue(has_nist, f"{cid} missing NIST framework reference in {refs}")
+
+                # Verify HHS 405(d) HICP reference
+                has_hicp = any("HHS 405(d) HICP" in ref for ref in refs)
+                self.assertTrue(has_hicp, f"{cid} missing HHS 405(d) HICP reference in {refs}")
 
 
 if __name__ == "__main__":

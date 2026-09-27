@@ -1,96 +1,57 @@
 # Readiness Review
 
-Practice: Family Dental Clinic
+5 of 11 baseline items have evidence. Still open: EHR MFA, Quarterly access review, Tested backups, BAA register, Downtime plan, Log review cadence. Initial risk: **High**.
 
-Overall initial risk: **High**
+## Missing
 
-| Item | Ready? | Area |
-| --- | --- | --- |
-| Email MFA | Yes | Access |
-| EHR MFA | No | Access |
-| Unique accounts | Yes | Access |
-| Quarterly access review | No | Evidence |
-| Tested backups | No | Resilience |
-| Vendor inventory | Yes | Vendor |
-| BAA register | No | Vendor |
-| Incident contact list | Yes | Incident |
-| Downtime plan | No | Resilience |
-| Training current | Yes | Workforce |
-| Log review cadence | No | Monitoring |
-
-## Priority Gaps
-
-- Enable MFA for EHR access.
-- Run and record a quarterly access review.
-- Run a restore test and record evidence.
-- Complete the BAA register and review dates.
-- Document downtime procedures for critical systems.
-- Set a monthly log review cadence.
+- EHR MFA — Access
+- Quarterly access review — Evidence
+- Tested backups — Resilience
+- BAA register — Vendor
+- Downtime plan — Resilience
+- Log review cadence — Monitoring
 
 ## Evidence Closeout Queue
 
-| Item | Lifecycle | Closeout | Owner | Acceptable evidence | Closeout rule |
-| --- | --- | --- | --- | --- | --- |
-| EHR MFA evidence | Missing | Blocked | MSP Lead | MFA enforcement export; admin screenshot with date observed; covered groups; exceptions; and MSP attestation | Close when mfa enforcement export, admin screenshot with date observed, covered groups, exceptions, and msp attestation are recorded as reference-only evidence. |
-| Unique account evidence | Provided | Closed | MSP Lead | User list export; shared-account exception list; owner signoff; and sunset dates | Close when user list export, shared-account exception list, owner signoff, and sunset dates are recorded as reference-only evidence. |
-| Quarterly access review evidence | Missing | Needs evidence | MSP Lead | User list export; admin role list; owner signoff; removed-account notes; and exception sunset dates | Close when user list export, admin role list, owner signoff, removed-account notes, and exception sunset dates are recorded as reference-only evidence. |
-| Backup restore evidence | Missing | Blocked | MSP Lead | Backup scope summary; restore-test note; date observed; recovery owner; and excluded systems | Close when backup scope summary, restore-test note, date observed, recovery owner, and excluded systems are recorded as reference-only evidence. |
-| BAA register evidence | Missing | Blocked | Office Manager | BAA status; review date; vendor security page; SOC 2/HITRUST status; and incident terms | Close when baa status, review date, vendor security page, soc 2/hitrust status, and incident terms are recorded as reference-only evidence. |
-| Downtime plan evidence | Missing | Blocked | MSP Lead | Downtime workflow; manual workaround owner; staff acknowledgement; and tabletop attendance | Close when downtime workflow, manual workaround owner, staff acknowledgement, and tabletop attendance are recorded as reference-only evidence. |
-| Log review cadence evidence | Missing | Blocked | MSP Lead | Log source list; review cadence record; alert owner; escalation path; and date observed | Close when log source list, review cadence record, alert owner, escalation path, and date observed are recorded as reference-only evidence. |
+- EHR MFA evidence — MSP Lead · Blocked. MFA enforcement export; admin screenshot with date observed; covered groups; exceptions; and MSP attestation.
+- Quarterly access review evidence — MSP Lead · Needs evidence. User list export; admin role list; owner signoff; removed-account notes; and exception sunset dates.
+- Backup restore evidence — MSP Lead · Blocked. Backup scope summary; restore-test note; date observed; recovery owner; and excluded systems.
+- BAA register evidence — Office Manager · Blocked. BAA status; review date; vendor security page; SOC 2/HITRUST status; and incident terms.
+- Downtime plan evidence — MSP Lead · Blocked. Downtime workflow; manual workaround owner; staff acknowledgement; and tabletop attendance.
+- Log review cadence evidence — MSP Lead · Blocked. Log source list; review cadence record; alert owner; escalation path; and date observed.
 
 
 ---
 
 # ePHI Flow Map
 
-## Systems
+4 flows never touch the EHR; 2 leave or enter the chart. The high-risk paths that stay off the chart are Email, Imaging / export, and AI tool.
 
-| System | Category | ePHI Role | Vendor | Evidence Needed |
-| --- | --- | --- | --- | --- |
-| Cloud EHR | EHR | creates, receives, maintains, transmits | Example EHR Vendor | admin settings export, BAA, user access review |
-| Billing Portal | Billing | receives, maintains, transmits | Example Billing Vendor | BAA, user list, incident contact |
-| Shared Drive | File storage | maintains | Workspace Provider | access review, sharing settings, backup reference |
-| Dental Imaging Workstation | Imaging | creates and maintains | Example Imaging Vendor | local account list, backup scope reference, vendor support access procedure |
-| Patient Messaging Portal | Patient communications | receives and transmits | Example Messaging Vendor | BAA, secure message settings, retention settings |
-| General AI Assistant | AI drafting | no PHI approved for public demo workflow | General AI Assistant Vendor | staff no-PHI guidance, acceptable-use acknowledgement |
-| AI Scribe Pilot | AI documentation | potentially receives or creates ePHI if approved later | Example AI Scribe Vendor | BAA review, retention terms, human review process, pilot approval |
+## Patient Data Outside the EHR
 
-## Flows
-
-| Flow | Source | Destination | Vendor | ePHI Type | BAA Needed | Risk | Lifecycle | Closeout | Evidence Needed |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| FLOW-001 | Patient intake form | Cloud EHR | Example EHR Vendor | demographic and insurance categories | Yes | medium | Requested | Needs evidence | BAA, portal access controls, intake workflow owner |
-| FLOW-002 | Cloud EHR | Billing Portal | Example Billing Vendor | billing and payer-submission categories | Yes | high | Requested | Needs evidence | BAA, integration owner, incident notification terms |
-| FLOW-003 | Staff email | External specialist | Email provider | referral attachments | Yes | high | Requested | Needs evidence | secure email policy, forwarding review, staff training |
-| FLOW-004 | Dental Imaging Workstation | Shared Drive | Workspace Provider | image export categories | Yes | high | Requested | Needs evidence | export procedure, shared-folder access review, backup scope reference |
-| FLOW-005 | Front desk notes | General AI Assistant | General AI Assistant Vendor | no patient data approved; generic administrative drafting only | No | medium | Provided | Closed | AI acceptable-use guidance and staff acknowledgement |
-| FLOW-006 | Provider conversation | AI Scribe Pilot | Example AI Scribe Vendor | potential visit-summary categories if approved after vendor review | Yes | high | Requested | Needs evidence | BAA, retention terms, model-training terms, human review approval |
-
-## Traceability Summary
-
-| Flow | Trace | Downstream artifacts | Closeout rule |
-| --- | --- | --- | --- |
-| FLOW-001 | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
-| FLOW-002 | flows FLOW-002; systems Cloud EHR, Billing Portal; vendors Example Billing Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
-| FLOW-003 | flows FLOW-003; vendors Email provider | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
-| FLOW-004 | flows FLOW-004; systems Dental Imaging Workstation, Shared Drive; vendors Workspace Provider | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
-| FLOW-005 | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
-| FLOW-006 | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor | ephi-flow-map.md; evidence-binder-index.md | Close when owner, vendor path, BAA need, access/retention control, and private evidence reference are recorded. |
+- **Cloud EHR → Billing Portal** — Leaves or enters the EHR. Billing / claims. high risk. BAA needed. billing and payer-submission categories. Evidence: BAA, integration owner, incident notification terms.
+- **Staff email → External specialist** — Never touches the EHR. Email. high risk. BAA needed. referral attachments. Evidence: secure email policy, forwarding review, staff training.
+- **Dental Imaging Workstation → Shared Drive** — Never touches the EHR. Imaging / export. high risk. BAA needed. image export categories. Evidence: export procedure, shared-folder access review, backup scope reference.
+- **Provider conversation → AI Scribe Pilot** — Never touches the EHR. AI tool. high risk. BAA needed. potential visit-summary categories if approved after vendor review. Evidence: BAA, retention terms, model-training terms, human review approval.
+- **Patient intake form → Cloud EHR** — Leaves or enters the EHR. Vendor portal / intake. medium risk. BAA needed. demographic and insurance categories. Evidence: BAA, portal access controls, intake workflow owner.
+- **Front desk notes → General AI Assistant** — Never touches the EHR. AI tool. medium risk. no BAA flag. no patient data approved; generic administrative drafting only. Evidence: AI acceptable-use guidance and staff acknowledgement.
 
 
 ---
 
 # Vendor and BAA Review
 
-| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | SOC 2 Status | HITRUST Status | Subcontractors | Incident Terms | Risk | Lifecycle | Closeout | Trace |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | not provided | not provided | partial | 24 hours in contract | medium | Provided | Ready for review | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor |
-| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | not provided | not provided | unknown | unknown | high | Stale | Blocked | flows FLOW-002; systems Billing Portal; vendors Example Billing Vendor |
-| Workspace Provider | Email, calendar, and shared drive | Yes | signed | not reviewed for add-on AI features | not provided | not provided | published list not reviewed | portal notice terms need review | medium | Provided | Ready for review | flows FLOW-004; systems Shared Drive; vendors Workspace Provider |
-| Example Imaging Vendor | Dental imaging software and support | Yes | unknown | not applicable in current deployment | not provided | not provided | unknown | unknown | high | Missing | Blocked | systems Dental Imaging Workstation; vendors Example Imaging Vendor |
-| General AI Assistant Vendor | Administrative drafting assistant | No | not needed for no-PHI demo workflow | consumer/default settings not approved for sensitive data | not applicable | not applicable | not reviewed | not reviewed | medium | Not applicable | Not applicable | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor |
-| Example AI Scribe Vendor | AI scribe pilot | Yes | requested | unknown | not provided | not provided | unknown | unknown | high | Requested | Needs evidence | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor |
+3 of 5 ePHI vendors still need a BAA answer: Example Billing Vendor, Example Imaging Vendor, Example AI Scribe Vendor.
+
+## Needs attention
+
+- **Example EHR Vendor** — EHR hosting and support. touches ePHI. BAA signed. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: 24 hours in contract. AI/data use: not reviewed. medium risk.
+- **Example Billing Vendor** — Claims and billing. touches ePHI. BAA missing review date. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: unknown. high risk.
+- **Example Imaging Vendor** — Dental imaging software and support. touches ePHI. BAA unknown. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: not applicable in current deployment. high risk.
+- **General AI Assistant Vendor** — Administrative drafting assistant. no ePHI mark. BAA not needed for no-PHI demo workflow. SOC 2 Status not applicable. HITRUST Status not applicable. Incident terms: not reviewed. AI/data use: consumer/default settings not approved for sensitive data. medium risk.
+- **Example AI Scribe Vendor** — AI scribe pilot. touches ePHI. BAA requested. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: unknown. high risk.
+
+Workspace Provider can wait: BAA is signed enough to review later.
 
 ## Next Evidence
 
@@ -104,19 +65,18 @@ Overall initial risk: **High**
 
 # AI Workflow Review
 
-| Workflow | Use | Data Used | Vendor | Decision | Lifecycle | Closeout | Trace | Evidence Needed |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Marketing email drafting | Draft generic outreach copy | No patient data | General AI assistant | allowed | Closed | Closed | flows FLOW-005; vendors General AI assistant; workflows Marketing email drafting | staff guidance and prohibited data examples |
-| Insurance renewal questionnaire drafting | Draft plain-language answers for cyber insurance renewal questions | Control status summaries and evidence reference IDs only | General AI assistant | allowed | Closed | Closed | flows FLOW-005; vendors General AI assistant; workflows Insurance renewal questionnaire drafting | owner review and no-PHI/no-secret prompt guidance |
-| Billing appeal drafter | Draft payer appeal language | billing scenario summary; real patient-level details are not approved | General AI assistant | restricted | Requested | Needs evidence | flows FLOW-005; vendors General AI assistant; workflows Billing appeal drafter | BAA review, redaction workflow, owner approval |
-| AI scribe pilot | Draft visit summaries after provider review | potential PHI if enabled after vendor approval | Example AI Scribe Vendor | restricted | Requested | Needs evidence | flows FLOW-006; vendors Example AI Scribe Vendor; workflows AI scribe pilot | BAA, retention/model-training terms, human review workflow, pilot owner signoff |
-| Paste patient-level note into public chatbot | Summarize patient-level documentation | patient-level documentation category | Public chatbot | prohibited | Blocked | Blocked | vendors Public chatbot; workflows Paste patient-level note into public chatbot | training reminder and AI use policy |
+5 AI workflows recorded: 2 allowed, 2 restricted, 1 prohibited.
 
-## Rules of Thumb
+## Prohibited
 
-- Allowed: generic administrative drafting with no patient or clinical details.
-- Restricted: workflows involving claim, treatment, billing, or operationally sensitive data.
-- Prohibited: pasting patient-level notes or identifiers into tools without approved safeguards and a reviewed vendor relationship.
+- **Paste patient-level note into public chatbot** — Summarize patient-level documentation. Data: patient-level documentation category. Evidence: training reminder and AI use policy.
+
+## Restricted
+
+- **Billing appeal drafter** — Draft payer appeal language. Data: billing scenario summary; real patient-level details are not approved. Evidence: BAA review, redaction workflow, owner approval.
+- **AI scribe pilot** — Draft visit summaries after provider review. Data: potential PHI if enabled after vendor approval. Evidence: BAA, retention/model-training terms, human review workflow, pilot owner signoff.
+
+Allowed and left in the background: Marketing email drafting, Insurance renewal questionnaire drafting.
 
 
 ---

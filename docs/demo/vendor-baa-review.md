@@ -1,13 +1,16 @@
 # Vendor and BAA Review
 
-| Vendor | Service | Touches ePHI? | BAA Status | AI Training Use | SOC 2 Status | HITRUST Status | Subcontractors | Incident Terms | Risk | Lifecycle | Closeout | Trace |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Example EHR Vendor | EHR hosting and support | Yes | signed | not reviewed | not provided | not provided | partial | 24 hours in contract | medium | Provided | Ready for review | flows FLOW-001; systems Cloud EHR; vendors Example EHR Vendor |
-| Example Billing Vendor | Claims and billing | Yes | missing review date | unknown | not provided | not provided | unknown | unknown | high | Stale | Blocked | flows FLOW-002; systems Billing Portal; vendors Example Billing Vendor |
-| Workspace Provider | Email, calendar, and shared drive | Yes | signed | not reviewed for add-on AI features | not provided | not provided | published list not reviewed | portal notice terms need review | medium | Provided | Ready for review | flows FLOW-004; systems Shared Drive; vendors Workspace Provider |
-| Example Imaging Vendor | Dental imaging software and support | Yes | unknown | not applicable in current deployment | not provided | not provided | unknown | unknown | high | Missing | Blocked | systems Dental Imaging Workstation; vendors Example Imaging Vendor |
-| General AI Assistant Vendor | Administrative drafting assistant | No | not needed for no-PHI demo workflow | consumer/default settings not approved for sensitive data | not applicable | not applicable | not reviewed | not reviewed | medium | Not applicable | Not applicable | flows FLOW-005; systems General AI Assistant; vendors General AI Assistant Vendor |
-| Example AI Scribe Vendor | AI scribe pilot | Yes | requested | unknown | not provided | not provided | unknown | unknown | high | Requested | Needs evidence | flows FLOW-006; systems AI Scribe Pilot; vendors Example AI Scribe Vendor |
+3 of 5 ePHI vendors still need a BAA answer: Example Billing Vendor, Example Imaging Vendor, Example AI Scribe Vendor.
+
+## Needs attention
+
+- **Example EHR Vendor** — EHR hosting and support. touches ePHI. BAA signed. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: 24 hours in contract. AI/data use: not reviewed. medium risk.
+- **Example Billing Vendor** — Claims and billing. touches ePHI. BAA missing review date. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: unknown. high risk.
+- **Example Imaging Vendor** — Dental imaging software and support. touches ePHI. BAA unknown. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: not applicable in current deployment. high risk.
+- **General AI Assistant Vendor** — Administrative drafting assistant. no ePHI mark. BAA not needed for no-PHI demo workflow. SOC 2 Status not applicable. HITRUST Status not applicable. Incident terms: not reviewed. AI/data use: consumer/default settings not approved for sensitive data. medium risk.
+- **Example AI Scribe Vendor** — AI scribe pilot. touches ePHI. BAA requested. SOC 2 Status not provided. HITRUST Status not provided. Incident terms: unknown. AI/data use: unknown. high risk.
+
+Workspace Provider can wait: BAA is signed enough to review later.
 
 ## Next Evidence
 
