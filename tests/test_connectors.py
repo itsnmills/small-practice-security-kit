@@ -458,6 +458,14 @@ class ConnectorTests(unittest.TestCase):
             cmd = mock_run.call_args[0][0]
             self.assertEqual(cmd, ["dig", "+short", "TXT", "--", "example.com"])
 
+    def test_http_client_rejects_non_http_schemes(self) -> None:
+        from small_practice_security_kit.connectors.http_client import get_json, post_form
+        for bad_url in ["file:///etc/passwd", "ftp://example.com/data", "gopher://example.com/"]:
+            with self.assertRaises(ValueError):
+                get_json(bad_url)
+            with self.assertRaises(ValueError):
+                post_form(bad_url, {"key": "val"})
+
     def test_microsoft_365_rejects_invalid_tenant_format(self) -> None:
         from small_practice_security_kit.connectors.microsoft_365_api import connect_microsoft_365
         with self.assertRaises(ValueError):
