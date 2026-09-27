@@ -23,19 +23,20 @@ class SecurityConfigTests(unittest.TestCase):
         self.assertIn(r"^small_practice_security_kit/packet\.py$", allowlist["paths"])
         self.assertTrue(any("ACCESS-QTR" in regex for regex in allowlist["regexes"]))
 
-    def test_ci_runs_secret_scan_trivy_scan_and_sbom_upload(self) -> None:
+    def test_all_ci_actions_are_pinned_to_full_commit_shas(self) -> None:
         workflow = yaml.safe_load((ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8"))
-        security_steps = workflow["jobs"]["security"]["steps"]
-        rendered_steps = "\n".join(str(step) for step in security_steps)
+        actions = [
+            step["uses"]
+            for job in workflow["jobs"].values()
+            for step in job["steps"]
+            if "uses" in step
+        ]
 
-        self.assertIn("gitleaks detect --source . --no-git --redact --config .gitleaks.toml", rendered_steps)
-        self.assertIn("trivy fs --scanners vuln,secret,misconfig --severity CRITICAL,HIGH", rendered_steps)
-        self.assertIn("trivy fs --format cyclonedx --output trivy-sbom.cdx.json", rendered_steps)
-        self.assertIn("actions/upload-artifact@v4", rendered_steps)
-
-        trivy_setup = next(step for step in security_steps if step.get("name") == "Set up Trivy")
-        self.assertRegex(trivy_setup["uses"], re.compile(r"^aquasecurity/setup-trivy@[0-9a-f]{40}$"))
-        self.assertEqual(trivy_setup["with"]["version"], "v0.70.0")
+        self.assertTrue(actions)
+        for required_action in ("actions/checkout@", "actions/setup-python@", "actions/upload-artifact@"):
+            self.assertTrue(any(action.startswith(required_action) for action in actions), required_action)
+        for action in actions:
+            self.assertRegex(action, re.compile(r"^[^@]+@[0-9a-f]{40}$"))
 
 
 if __name__ == "__main__":

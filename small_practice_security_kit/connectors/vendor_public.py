@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import ipaddress
 import re
+import socket
 import urllib.error
+import urllib.parse
 import urllib.request
 from typing import Any, Callable
 
@@ -22,17 +25,53 @@ TERM_GROUPS = {
 }
 
 
+def _is_disallowed_host(host: str) -> bool:
+    clean_host = host.strip().lower().rstrip(".")
+    if clean_host in {"localhost"} or clean_host.endswith((".local", ".internal", ".lan", ".arpa")):
+        return True
+    try:
+        ipaddress.ip_address(clean_host)
+        return True
+    except ValueError:
+        pass
+    return False
+
+
 def _clean_domain(domain: str) -> str:
     clean = domain.strip().lower().rstrip(".")
-    if not re.fullmatch(r"[a-z0-9][a-z0-9.-]*[a-z0-9]", clean) or ".." in clean:
+    if not clean or ".." in clean or "/" in clean or "@" in clean or ":" in clean:
         raise ValueError("domain must be a bare public DNS name, for example abridge.com")
+    if not re.fullmatch(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+", clean):
+        raise ValueError("domain must be a valid public DNS name with at least one dot, for example abridge.com")
+    if _is_disallowed_host(clean):
+        raise ValueError("domain cannot be an IP address, localhost, or internal domain")
     return clean
+
+
+class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req: Any, fp: Any, code: int, msg: str, headers: Any, newurl: str) -> Any:
+        parsed = urllib.parse.urlsplit(newurl)
+        if parsed.scheme.lower() not in {"http", "https"}:
+            raise ValueError(f"Disallowed redirect scheme: {parsed.scheme}")
+        hostname = (parsed.hostname or "").lower()
+        if not hostname or _is_disallowed_host(hostname):
+            raise ValueError(f"Disallowed redirect host: {hostname}")
+        try:
+            for _, _, _, _, sockaddr in socket.getaddrinfo(hostname, None):
+                ip_str = sockaddr[0]
+                ip = ipaddress.ip_address(ip_str)
+                if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved or ip.is_multicast:
+                    raise ValueError(f"Redirect resolved to non-public IP: {ip_str}")
+        except socket.gaierror:
+            pass
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
 def _default_fetcher(url: str) -> FetchResult:
     request = urllib.request.Request(url, headers={"User-Agent": "VelariSecurityKit/0.1 metadata-only"})
+    opener = urllib.request.build_opener(SafeRedirectHandler())
     try:
-        with urllib.request.urlopen(request, timeout=8) as response:
+        with opener.open(request, timeout=8) as response:
             status = int(getattr(response, "status", 200))
             body = response.read(64_000).decode("utf-8", errors="ignore")
             return status, body

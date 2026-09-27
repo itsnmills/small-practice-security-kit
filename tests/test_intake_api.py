@@ -28,11 +28,13 @@ from small_practice_security_kit.workspaces import ROOT, atomic_write_profile, s
 class IntakeApiTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
+        cls.temp_dir = tempfile.TemporaryDirectory(prefix="spsk-intake-api-")
+        cls.workspace_root = Path(cls.temp_dir.name).resolve()
         profile = create_profile_from_preset("API Seed Clinic", "dental", "small")
-        cls.profile_path = safe_profile_path(profile["practice"]["name"])
-        atomic_write_profile(profile, cls.profile_path, action="api-seed")
-        cls.out_dir = build_packet(cls.profile_path)
-        cls.state = AppState(profile_path=cls.profile_path, out_dir=cls.out_dir)
+        cls.profile_path = safe_profile_path(profile["practice"]["name"], root=cls.workspace_root)
+        atomic_write_profile(profile, cls.profile_path, root=cls.workspace_root, action="api-seed")
+        cls.out_dir = build_packet(cls.profile_path, output_root=cls.workspace_root / "out")
+        cls.state = AppState(profile_path=cls.profile_path, out_dir=cls.out_dir, workspace_root=cls.workspace_root)
         cls.server = LocalIntakeServer(("127.0.0.1", 0), make_handler(cls.state))
         cls.thread = threading.Thread(target=cls.server.serve_forever, daemon=True)
         cls.thread.start()
@@ -43,6 +45,7 @@ class IntakeApiTests(unittest.TestCase):
         cls.server.shutdown()
         cls.thread.join(timeout=5)
         cls.server.server_close()
+        cls.temp_dir.cleanup()
 
     def get_json(self, path: str) -> dict:
         with urllib.request.urlopen(self.base + path, timeout=5) as response:
@@ -78,9 +81,12 @@ class IntakeApiTests(unittest.TestCase):
             self.get_page_token(),
         )
         self.assertTrue(created["ok"])
+        self.assertEqual(Path(created["profile_path"]).parent.resolve(), self.workspace_root / "profiles")
         self.assertGreater(len(created["profile"]["flows"]), 0)
         built = self.post_json("/api/build", {}, self.get_page_token())
         self.assertEqual(built["links"]["dashboard"], "/dashboard.html")
+        self.assertEqual(self.state.out_dir.parent.resolve(), (self.workspace_root / "out").resolve())
+        self.assertTrue((self.state.out_dir / "dashboard.html").is_file())
         with urllib.request.urlopen(self.base + "/dashboard.html", timeout=5) as response:
             self.assertIn("Owner dashboard", response.read().decode("utf-8"))
 
@@ -259,7 +265,7 @@ class IntakeApiTests(unittest.TestCase):
         raised.exception.close()
 
     def test_msp_response_does_not_return_parse_contents(self) -> None:
-        with tempfile.TemporaryDirectory(dir=ROOT) as tmp:
+        with tempfile.TemporaryDirectory(dir=self.state.out_dir) as tmp:
             bad = Path(tmp) / "bad-msp.yaml"
             bad.write_text("responses: not-a-list\nsecret: super-secret-value\n", encoding="utf-8")
             with self.assertRaises(urllib.error.HTTPError) as raised:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import subprocess
 from pathlib import Path
 from typing import Any, Callable
@@ -11,7 +12,7 @@ RecordResolver = Callable[[str, str], list[str]]
 
 
 def _dig_resolver(name: str, record_type: str) -> list[str]:
-    command = ["dig", "+short", record_type, name]
+    command = ["dig", "+short", record_type, "--", name]
     try:
         completed = subprocess.run(command, check=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=8)
     except (OSError, subprocess.TimeoutExpired):
@@ -46,7 +47,13 @@ def collect_dns_email_auth(
     collected_at = generated_at or utc_now()
     resolve = resolver or _dig_resolver
     clean_domain = domain.strip().lower().rstrip(".")
-    if not clean_domain or "/" in clean_domain or "@" in clean_domain:
+    if (
+        not clean_domain
+        or "/" in clean_domain
+        or "@" in clean_domain
+        or ":" in clean_domain
+        or not re.fullmatch(r"[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+", clean_domain)
+    ):
         raise ValueError("domain must be a bare DNS name, for example exampleclinic.com")
 
     mx_records = resolve(clean_domain, "MX")

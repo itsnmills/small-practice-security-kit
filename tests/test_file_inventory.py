@@ -4,10 +4,29 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from small_practice_security_kit.file_inventory import FileInventoryError, inventory_folder, resolve_allowed_path
+from small_practice_security_kit.file_inventory import (
+    ROOT,
+    FileInventoryError,
+    default_evidence_roots,
+    inventory_folder,
+    resolve_allowed_path,
+)
 
 
 class FileInventoryTests(unittest.TestCase):
+    def test_default_evidence_roots_does_not_include_repository_root(self) -> None:
+        roots = default_evidence_roots()
+        self.assertNotIn(ROOT.resolve(), roots)
+
+    def test_resolve_allowed_path_rejects_repo_root_and_source_tree_by_default(self) -> None:
+        roots = default_evidence_roots()
+        with self.assertRaises(FileInventoryError):
+            resolve_allowed_path(".", roots)
+        with self.assertRaises(FileInventoryError):
+            resolve_allowed_path("tests", roots)
+        with self.assertRaises(FileInventoryError):
+            resolve_allowed_path("small_practice_security_kit", roots)
+
     def test_inventory_folder_imports_metadata_without_contents(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
