@@ -13,6 +13,13 @@ SERVICE = "velari-small-practice-security-kit"
 FILE_TOKEN_DIR = Path.home() / ".small-practice-security-kit" / "tokens"
 
 
+def _security_bin() -> str | None:
+    for candidate in ("/usr/bin/security", "/bin/security"):
+        if os.path.exists(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return shutil.which("security")
+
+
 class TokenStore:
     def __init__(self, *, backend: str = "auto", file_dir: Path = FILE_TOKEN_DIR) -> None:
         self.backend = backend
@@ -21,7 +28,7 @@ class TokenStore:
     def _use_keychain(self) -> bool:
         if self.backend == "file":
             return False
-        return platform.system() == "Darwin" and shutil.which("security") is not None
+        return platform.system() == "Darwin" and _security_bin() is not None
 
     def load(self, account: str) -> dict[str, Any] | None:
         if self._use_keychain():
@@ -36,8 +43,9 @@ class TokenStore:
 
     def delete(self, account: str) -> None:
         if self._use_keychain():
+            sec = _security_bin() or "security"
             subprocess.run(
-                ["security", "delete-generic-password", "-s", SERVICE, "-a", account],
+                [sec, "delete-generic-password", "-s", SERVICE, "-a", account],
                 check=False,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -51,8 +59,9 @@ class TokenStore:
         return "macos_keychain" if self._use_keychain() else "local_file_0600"
 
     def _load_keychain(self, account: str) -> dict[str, Any] | None:
+        sec = _security_bin() or "security"
         completed = subprocess.run(
-            ["security", "find-generic-password", "-s", SERVICE, "-a", account, "-w"],
+            [sec, "find-generic-password", "-s", SERVICE, "-a", account, "-w"],
             check=False,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
@@ -63,9 +72,10 @@ class TokenStore:
         return json.loads(completed.stdout)
 
     def _save_keychain(self, account: str, token: dict[str, Any]) -> None:
+        sec = _security_bin() or "security"
         payload = json.dumps(token, sort_keys=True)
         subprocess.run(
-            ["security", "delete-generic-password", "-s", SERVICE, "-a", account],
+            [sec, "delete-generic-password", "-s", SERVICE, "-a", account],
             check=False,
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
@@ -74,7 +84,7 @@ class TokenStore:
         # preventing token disclosure in process argument tables (ps / sysctl).
         input_data = (payload + "\n" + payload + "\n").encode("utf-8")
         subprocess.run(
-            ["security", "add-generic-password", "-U", "-s", SERVICE, "-a", account, "-w"],
+            [sec, "add-generic-password", "-U", "-s", SERVICE, "-a", account, "-w"],
             input=input_data,
             check=True,
             stdout=subprocess.DEVNULL,
@@ -93,7 +103,7 @@ class TokenStore:
 
     def _save_file(self, account: str, token: dict[str, Any]) -> None:
         self.file_dir.mkdir(parents=True, exist_ok=True)
-        os.chmod(self.file_dir, 0o700)
+        self.file_dir.chmod(0o700)
         path = self._file_path(account)
-        path.write_text(json.dumps(token, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        os.chmod(path, 0o600)
+        path.write_text(json.dumps(token, indent=2), encoding="utf-8")
+        path.chmod(0o600)

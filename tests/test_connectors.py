@@ -426,7 +426,8 @@ class ConnectorTests(unittest.TestCase):
             add_call = mock_run.call_args_list[1]
             args, kwargs = add_call
             cmd = args[0]
-            self.assertEqual(cmd, ["security", "add-generic-password", "-U", "-s", SERVICE, "-a", "test-account", "-w"])
+            self.assertEqual(cmd[1:], ["add-generic-password", "-U", "-s", SERVICE, "-a", "test-account", "-w"])
+            self.assertTrue(cmd[0].endswith("security"))
             self.assertNotIn("secret_abc_123", " ".join(cmd))
             self.assertEqual(kwargs.get("input"), expected_stdin)
 
@@ -434,6 +435,15 @@ class ConnectorTests(unittest.TestCase):
         for invalid_domain in ["127.0.0.1", "169.254.169.254", "10.0.0.1", "localhost", "foo.internal", "foo.local", "plain"]:
             with self.assertRaises(ValueError):
                 collect_vendor_public("Vendor", invalid_domain)
+
+    def test_vendor_public_default_fetcher_blocks_private_ip_resolution(self) -> None:
+        from unittest.mock import patch
+        from small_practice_security_kit.connectors.vendor_public import _default_fetcher, _assert_safe_host_resolution
+        with patch("socket.getaddrinfo", return_value=[(None, None, None, None, ("127.0.0.1", 0))]):
+            with self.assertRaises(ValueError):
+                _assert_safe_host_resolution("rebinding.example.com")
+            with self.assertRaises(ValueError):
+                _default_fetcher("https://rebinding.example.com/security")
 
     def test_vendor_public_safe_redirect_blocks_private_ip_redirects(self) -> None:
         from small_practice_security_kit.connectors.vendor_public import SafeRedirectHandler
@@ -456,7 +466,8 @@ class ConnectorTests(unittest.TestCase):
             records = _dig_resolver("example.com", "TXT")
             self.assertEqual(records, ["v=spf1 ~all"])
             cmd = mock_run.call_args[0][0]
-            self.assertEqual(cmd, ["dig", "+short", "TXT", "--", "example.com"])
+            self.assertEqual(cmd[1:], ["+short", "TXT", "--", "example.com"])
+            self.assertTrue(cmd[0].endswith("dig"))
 
     def test_http_client_rejects_non_http_schemes(self) -> None:
         from small_practice_security_kit.connectors.http_client import get_json, post_form

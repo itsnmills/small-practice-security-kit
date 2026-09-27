@@ -91,6 +91,14 @@ Write endpoints require:
 - per-session `X-SPSK-Token`,
 - schema-valid profile data.
 
+All API and static responses enforce browser defense-in-depth headers:
+
+- `Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-ancestors 'none';`
+- `X-Frame-Options: DENY` (prevents clickjacking and unauthorized embedding),
+- `X-Content-Type-Options: nosniff` (prevents MIME type sniffing),
+- `Cache-Control: no-store` (prevents local browser caching of sensitive intake forms or API payloads),
+- `Referrer-Policy: no-referrer`.
+
 ## Profile write safety
 
 Profiles are saved under:
@@ -132,7 +140,8 @@ Local MSP response import uses the same workspace/evidence-root allowlist and do
 Connectors collect aggregate, non-sensitive posture proof points (counts, presence flags, dates, policy values) without retrieving user directories, emails, or credentials:
 
 - **Token storage process safety:** When macOS Keychain is available, passwords and tokens are written via standard input rather than command-line arguments (`-w`), preventing token leakage in process argument listings (`ps aux` / `sysctl`). Local file token storage enforces directory permissions `0700` and file permissions `0600`.
-- **Public vendor lookup & SSRF prevention:** Public vendor domain lookup requires a valid public DNS name and rejects IP address literals (IPv4/IPv6), `localhost`, and internal domains (`.local`, `.internal`, `.lan`). The HTTP fetcher uses an explicit redirect handler that validates target hosts and blocks redirects resolving to loopback, private (RFC 1918), link-local, or reserved networks.
+- **Public vendor lookup & SSRF / DNS rebinding prevention:** Public vendor domain lookup requires a valid public DNS name and rejects IP address literals (IPv4/IPv6), `localhost`, and internal domains (`.local`, `.internal`, `.lan`, `.arpa`). The HTTP fetcher performs DNS resolution checks before connecting and utilizes an explicit redirect handler (`SafeRedirectHandler`), ensuring both the initial target host and subsequent redirect destinations resolve exclusively to public IPs (blocking loopback, RFC 1918 private, link-local, multicast, or reserved networks).
+- **System binary execution paths:** Invocations of system binaries (macOS `security`, DNS `dig`) prioritize trusted absolute system locations (`/usr/bin/security`, `/usr/bin/dig`) over relative environment `$PATH` lookups to eliminate binary hijacking vectors.
 - **DNS resolver hardening:** Domain parameters are strictly validated against public DNS syntax. The `dig` resolver uses the `--` argument delimiter to prevent parameter injection.
 - **Identity provider tenant validation:** Microsoft 365 and Google Workspace connectors strictly sanitize tenant identifiers and only query aggregate metadata endpoints.
 
