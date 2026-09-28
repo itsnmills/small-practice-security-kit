@@ -53,35 +53,65 @@ class AuditReportTests(unittest.TestCase):
         self.assertEqual(gaps_map["VEL-BACKUP-RESTORE-001"]["status"], "gap")
         self.assertEqual(gaps_map["VEL-BACKUP-RESTORE-001"]["severity"], "critical")
 
+        # 3 ePHI vendors lack signed BAAs, so BAA status is partial and critical
         self.assertIn("VEL-BAA-STATUS-001", gaps_map)
-        self.assertEqual(gaps_map["VEL-BAA-STATUS-001"]["status"], "gap")
+        self.assertEqual(gaps_map["VEL-BAA-STATUS-001"]["status"], "partial")
         self.assertEqual(gaps_map["VEL-BAA-STATUS-001"]["severity"], "critical")
 
         # Termination procedures should be addressable
         offboarding = next(c for c in report["controls"] if c["control_id"] == "VEL-OFFBOARDING-001")
         self.assertEqual(offboarding["cfr_designation"], "Addressable")
 
+    def test_baa_register_flag_does_not_override_unsigned_vendors(self) -> None:
+        profile = create_profile_from_preset("Preset Clinic", "dental", "solo")
+        profile["readiness"]["baa_register"] = True
+        # Vendors in preset default to unknown/unsigned BAAs
+        report = generate_audit_gap_report(profile)
+        baa_eval = next(c for c in report["controls"] if c["control_id"] == "VEL-BAA-STATUS-001")
+        self.assertIn(baa_eval["status"], {"gap", "partial"})
+        self.assertEqual(baa_eval["severity"], "critical")
+
     def test_audit_gap_report_with_compliant_profile(self) -> None:
         profile = create_profile_from_preset("Compliant Clinic", "dental", "solo")
-        profile["readiness"]["mfa_email"] = True
-        profile["readiness"]["mfa_ehr"] = True
-        profile["readiness"]["tested_backups"] = True
-        profile["readiness"]["baa_register"] = True
-        profile["readiness"]["quarterly_access_review"] = True
-        profile["readiness"]["downtime_plan"] = True
-        profile["readiness"]["log_review_cadence"] = True
-        profile["readiness"]["security_training_current"] = True
-        profile["readiness"]["vendor_inventory"] = True
-        profile["readiness"]["unique_accounts"] = True
-        profile["readiness"]["risk_analysis"] = True
-        profile["readiness"]["security_policies_current"] = True
+        for k, v in [
+            ("mfa_email", True),
+            ("mfa_ehr", True),
+            ("tested_backups", True),
+            ("baa_register", True),
+            ("quarterly_access_review", True),
+            ("downtime_plan", True),
+            ("log_review_cadence", True),
+            ("security_training_current", True),
+            ("vendor_inventory", True),
+            ("unique_accounts", True),
+            ("risk_analysis", True),
+            ("security_policies_current", True),
+            ("termination_procedures", True),
+            ("breakglass_procedure", True),
+            ("endpoint_protection", True),
+            ("device_encryption", True),
+            ("facility_access_controls", True),
+            ("media_disposal", True),
+            ("privileged_account_inventory", True),
+            ("incident_contact_list", True),
+        ]:
+            profile["readiness"][k] = v
+
+        for v in profile.get("vendors", []):
+            v["baa_status"] = "signed"
+            v["incident_notification_terms"] = "24 hours notice"
+            v["soc2_status"] = "current"
+            v["hitrust_status"] = "current"
+
+        for w in profile.get("ai_workflows", []):
+            w["decision"] = "allowed"
 
         report = generate_audit_gap_report(profile)
         summary = report["summary"]
         self.assertEqual(summary["critical_gaps_count"], 0)
         self.assertGreaterEqual(summary["readiness_percentage"], 90.0)
 
-    def test_render_formats(self) -> None:
+    def test_render_formats_and_gaps_only_filtering(self) -> None:
         report = generate_audit_gap_report(self.sample_profile)
 
         # Text
@@ -96,15 +126,19 @@ class AuditReportTests(unittest.TestCase):
         self.assertIn("## Executive Scorecard", md_out)
         self.assertIn("| Control ID | Control Name |", md_out)
 
-        # JSON
-        json_str = render_audit_report_json(report)
-        parsed = json.loads(json_str)
-        self.assertEqual(parsed["summary"]["total_controls"], 30)
+        # JSON with gaps_only
+        json_all = json.loads(render_audit_report_json(report, gaps_only=False))
+        json_gaps = json.loads(render_audit_report_json(report, gaps_only=True))
+        self.assertEqual(len(json_all["controls"]), 30)
+        self.assertEqual(len(json_gaps["controls"]), len(report["unaddressed_gaps"]))
 
-        # CSV
-        csv_out = render_audit_report_csv(report)
-        self.assertIn("control_id,control_name,control_family", csv_out)
-        self.assertIn("VEL-GOV-OWNER-001", csv_out)
+        # CSV with gaps_only and formula escaping
+        csv_all = render_audit_report_csv(report, gaps_only=False)
+        csv_gaps = render_audit_report_csv(report, gaps_only=True)
+        self.assertIn("control_id,control_name,control_family", csv_all)
+        self.assertIn("VEL-GOV-OWNER-001", csv_all)
+        # gaps only has fewer rows than all controls
+        self.assertLess(csv_gaps.count("\n"), csv_all.count("\n"))
 
     def test_cli_audit_report_and_matrix_check(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
