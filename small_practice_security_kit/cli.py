@@ -173,7 +173,7 @@ def evidence_refresh_command(args: argparse.Namespace) -> int:
     return 0
 
 
-def audit_report_command(args: argparse.Namespace) -> int:
+def audit_report_command(args: argparse.Namespace, force_strict: bool = False) -> int:
     profile = load_profile(args.profile)
     findings = blocking_findings(profile)
     if findings:
@@ -193,9 +193,9 @@ def audit_report_command(args: argparse.Namespace) -> int:
     if fmt == "markdown":
         rendered = render_audit_report_markdown(report, gaps_only=gaps_only)
     elif fmt == "json":
-        rendered = render_audit_report_json(report)
+        rendered = render_audit_report_json(report, gaps_only=gaps_only)
     elif fmt == "csv":
-        rendered = render_audit_report_csv(report)
+        rendered = render_audit_report_csv(report, gaps_only=gaps_only)
     else:
         rendered = render_audit_report_text(report, gaps_only=gaps_only)
 
@@ -208,7 +208,8 @@ def audit_report_command(args: argparse.Namespace) -> int:
     else:
         print(rendered)
 
-    if getattr(args, "strict", False):
+    strict = force_strict or getattr(args, "strict", False)
+    if strict:
         summary = report["summary"]
         crit = summary["critical_gaps_count"]
         high = summary["high_gaps_count"]
@@ -219,8 +220,7 @@ def audit_report_command(args: argparse.Namespace) -> int:
 
 
 def matrix_check_command(args: argparse.Namespace) -> int:
-    args.strict = True
-    return audit_report_command(args)
+    return audit_report_command(args, force_strict=True)
 
 
 def build_parser() -> argparse.ArgumentParser:
